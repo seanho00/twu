@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE>13.0 Chapter Goals</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.0 Chapter Goals</B></H2>
+<P>The purpose of this chapter is to provide an introduction to some of the methods commonly used to search or sort data.  On completing the chapter, the student should understand and be able to use the following:</P>
+<H3><B>Data Representation Abstractions</B></H3>
+<P><I>General</I>:</P>
+<P>	No new data types are taken up in chapter 13.</P>
+<H3><B>Data Manipulation Abstractions</B></H3>
+<P><I>General</I>:</P>
+<P>	searching and sorting algorithms and their performance, simple sorts and advanced sorts</P>
+<P><I>Realized in the Modula-2 notation</I>:</P>
+<P>	linear and binary searches, bubble sort, insert sort, selection sort, Shell sort, comb sort, quicksort, and merge sort</P>
+<H3><B>Programming Abstractions</B></H3>
+<P><I>General</I>:</P>
+<P>	No new programming abstractions are taken up in this chapter; but the ability to analyze the performance of loops is important to this material.</P>
+<P><I>Realized in the Modula-2 notation</I>:</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

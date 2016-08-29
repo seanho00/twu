@@ -1,0 +1,126 @@
+<HTML>
+<HEAD>
+<TITLE>8.12 Chapter Summary</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, high, low, level, implementation, dependent, defined, binary, octal, hexadecimal, unit, units, storage, system, cast, val, generic, generics, logical, program, physical, file, sequence, stream, streams, channel, channels, sequential, random, access, file, files, restricted, restrict, module, modules, raw, input, output, iso, modula, termfile">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.12 Chapter Summary</B></H2>
+<P>This chapter covered these topics:</P>
+<UL><!--€--><LI> the difference between high and low-level considerations</LI>
+<!--€--><LI> implementation dependent and implementation defined items</LI>
+<!--€--><LI> about binary, octal, and hexadecimal number systems</LI>
+<!--€--><LI> about units of computer storage </LI>
+<!--€--><LI> about some high level access to low-level facilities in Modula-2</LI>
+<!--€--><LI> about the module SYSTEM</LI>
+<!--€--><LI> about type transfer functions CAST (unsafe) and VAL (safe)</LI>
+<!--€--><LI> about generic procedures</LI>
+<!--€--><LI> what is a logical file, a program file and a physical file</LI>
+<!--€--><LI> about sequences, streams, and channels</LI>
+<!--€--><LI> about sequential and random access files</LI>
+<!--€--><LI> how to manipulate files with sequential and restricted stream modules</LI>
+<!--€--><LI> about raw input and output</LI>
+<!--€--><LI> some of the inner workings of lower level ISO modules</LI>
+<!--€--><LI> one method of using the device driver TermFile</LI></UL>
+<P>It included discussion of the following Modula-2 items:</P>
+
+<TABLE WIDTH=350><TR><TH ALIGN=LEFT>Reserved Words</TH>	<TH ALIGN=LEFT>Standard Identifiers</TH>
+<TR>  <TD>none</TD>		<TD>none</TD></TR></TABLE>
+ 
+<P><B>Symbols</B>:<BR>
+H (Hexadecimal numeral indicator)<BR>
+B (Octal numeral indicator)</P>
+
+<P><B>Imports</B>:<BR>
+Standard:
+  <UL><LI>From SYSTEM:
+    <UL>WORD, ADDRESS, BYTE
+    ADR, CAST
+    BITSPERLOC, LOCSPERWORD, LOCSPERBYTE
+    ADDADR, SUBADR, DIFADR, MAKEADR</UL></LI>
+  <LI>From SeqFile:
+    <UL>ChanId, OpenRead, OpenWrite, OpenAppend, Close, Reread, Rewrite</UL></LI>
+  <LI>From StreamFile:
+    <UL>Open, Close</UL></LI>
+  <LI>From RawIO:
+    <UL>Read, Write</UL></LI>
+  <LI>From TermFile:
+    <UL>ChanId, Open, OpenResults, read, echo, Close</UL></LI>
+  <LI>From one or more modules:
+    <UL><LI>the flags:
+      <UL>read, write, text, raw, old, echo</UL></LI>
+    <LI>the procedure:
+      <UL>OpenResults</UL></LI>
+    <LI>the type:
+      <UL>ChanId</UL></LI></UL></LI>
+  <LI>From IOResult
+    <UL>ReadResult, ReadResults;</UL></LI>
+  <LI>From IOChan:
+    <UL>Look, Skip, SkipLook, TextRead, RawRead,
+   WriteLn, TextWrite, RawWrite</UL></LI>
+  <LI>From StdChans:
+    <UL>StdInChan, StdOutChan, StdErrChan,
+    NullChan, InChan, OutChan, ErrChan,
+    SetInChan, SetOutChan, SetErrChan;</UL></LI></UL>
+
+Macintosh Specific:
+  <UL><LI>From Events:
+    <UL>EventRecord, WaitNextEvent, GetCaretTime, keyDown, cmdKey, everyEvent, keyDownMask;</UL></LI>
+
+Non-Standard:
+  <UL><LI>From Filer/FileSystem/Files:
+    <UL>File, Open, Create, Close, FileErr, FileDone,
+    ReadChar, WriteChar,
+    ReadWord, ReadBytes, WriteByte, WriteWord, WriteBytes</UL></LI>
+  <LI>From TextIO (non-standard):
+    <UL>WriteChar, WriteString, WriteLn, WriteInt, WriteCard, WriteReal
+    ReadChar, ReadString, ReadCard, ReadInt, ReadReal,</UL></LI>
+  <LI>From Keyboard:
+    <UL>Read, BusyRead;</UL></LI></UL></P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

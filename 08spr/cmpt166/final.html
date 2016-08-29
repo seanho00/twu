@@ -1,0 +1,308 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT167 Spr2008 Final, Trinity Western 23Apr2008</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ Ans ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+
+<ol class="main">
+
+<li> What do you think of the <b>Java</b> programming language overall? <u>[3]</u>
+<br><br><br><br><br><br><br>
+
+<li> Discuss the pros and cons of <b>object-oriented</b> programming as compared
+with procedural programming. <u>[4]</u>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe the role of the Java <b>compiler</b> <tt>javac</tt>:
+what does it take as input, and what does it output? <u>[3]</u>
+<br><i>
+The compiler translates Java source code (.java files) to machine-independent
+Java bytecode (.class files).  A further runtime translation step by the
+Java virtual machine is still needed to produce machine code.
+</i>
+<br><br><br><br><br>
+
+<li> Write a complete Java program that outputs the string
+"Hello, World!" to the command-line console.
+Include full <b>doc-comments</b> as we did in the labs.  <u>[5]</u>
+<br><i>
+(See <a href="java/HelloWorld.java">HelloWorld.java</a>)
+</i>
+<br><br>
+
+<li class="break"> Describe and contrast the eight Java <b>primitive types</b>.
+<u>[5]</u>
+<br><i> <dl>
+<dt> <tt>bool</tt> <dd> boolean type, just true and false
+<dt> <tt>char</tt> <dd> a Unicode character
+<dt> <tt>byte</tt> <dd> an integer represented with 1 byte
+<dt> <tt>short</tt> <dd> an integer represented with 2 bytes
+<dt> <tt>int</tt> <dd> an integer represented with 4 bytes
+<dt> <tt>long</tt> <dd> an integer represented with 8 bytes
+<dt> <tt>float</tt> <dd> a real value represented with 4 bytes
+<dt> <tt>double</tt> <dd> a real value represented with 8 bytes
+</dl></i><br><br>
+<br><br><br><br><br><br>
+
+<li> What is the effect of the <b><tt>static</tt></b> keyword on
+variables and methods?  Why must <tt>main()</tt> be declared static?
+<u>[5]</u>
+<br><i>
+Static members belong to the whole class, rather than to each instance.
+Static methods can be invoked from the class without needing to instantiate
+the class.  <tt>main()</tt> has to be static because when it is run no
+objects have been instantiated yet.
+</i>
+<br><br><br><br><br><br>
+
+<li> Describe and contrast the four options we have in Java for 
+<b>access modifiers</b> on attributes/methods. <u>[4]</u>
+<br><br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> (no modifier) <dd> methods in this class and this package can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i>
+<br><br><br><br><br>
+
+<li> What is the effect of the <b><tt>final</tt></b> keyword on
+  <ul class="subparts">
+  <li> instance variables? <u>[2]</u>
+  <br><i>Constant: cannot change the value of the variable</i>
+  <br><br>
+
+  <li> methods? <u>[2]</u>
+  <br><i>Subclasses cannot override (redefine) the method</i>
+  <br><br>
+
+  <li> classes? <u>[2]</u>
+  <br><i>Cannot be subclassed</i>
+  <br><br>
+  </ul>
+
+<li> Tell me everything you know about <b>polymorphism</b>.
+Why is it useful?  <u>[5]</u>
+<br><i>
+Polymorphism in object-oriented programming is when a single program
+or method can act upon multiple types of objects using the same code.
+If we write a program to operate on instances of a superclass, then we
+can run that program on instances of subclasses of the given superclass
+without writing a new version of the program.  We can even create new 
+subclasses that hadn't been thought of when the program was written, and
+it will run just the same on instances of the new subclass.
+</i>
+<br><br><br>
+
+<li class="break"> What is <b>downcasting</b>?  Write a simple example in Java.
+<u>[5]</u>
+<br><i>
+A name that is declared to be an instance of a superclass, but that actually
+references an instance of a subclass, can be downcast to that subclass type.
+An example is when we readObject() from an ObjectInputStream, the object
+returned only has type Object.  If we know the real type of the object we read
+in, we can downcast it to the appropriate type in order to extract its members.
+<pre>
+class Fruit { }
+class Apple extends Fruit { }
+Fruit myFruit = new Apple();
+Apple myAppleRef = (Apple) myFruit;	// downcasting is okay
+</pre></i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What is an <b>abstract</b> method?  Write complete Java code defining
+an abstract class with an abstract method, as well as a concrete subclass.
+<u>[5]</u>
+<br><i>
+Abstract methods do not have bodies; they can only be declared within abstract
+classes.  Concrete subclasses provide implementations of the abstract methods.
+<pre>
+abstract class Fruit {
+	public abstract boolean isRed();
+}
+public class Apple extends Fruit {
+	public boolean isRed() { return true; }
+}
+</pre>
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Contrast <b>TCP</b> with <b>UDP</b>. <u>[4]</u>
+<br><i>
+TCP provides connection-oriented network communication, with certain guarantees
+about the circuit.
+UDP provides connectionless communication: packets may arrive out of order, or
+duplicated, or may not arrive at all.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li> What is object <b>serialization</b> in Java?  Describe, in as much detail
+as you can, a situation where serialization might be useful. <u>[4]</u>
+<br><i>
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li class="break"> Compare and contrast the role of a Java
+<b><tt>Executor</tt></b> with the role of the <b>task scheduler</b> in
+multithreading.
+<u>[4]</u>
+<br><i>
+The Executor for a pool of threads manages which runnable tasks get queued up
+for execution.  A Java program may have multiple Executors for multiple pools
+of threads.  Executors are software constructs within the Java VM.
+The task scheduler is part of the operating system (there is only one), and
+manages which tasks get the actual processors at any point in time -- this may
+include other tasks on the machine, e.g., reading email, browsing the web,
+other users on the same computer, etc.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li> In programming, what are <b>generics</b>?  (C++ calls it "templating".)
+<u>[3]</u>
+<br><i>
+  Generic classes can take a type parameter at instantiation; thus for instance
+  we have a generic ArrayList class which can hold objects of any type -- the
+  element type of the ArrayList is specified at instantiation.
+</i>
+<br><br><br><br><br><br><br>
+
+<li> Name and describe two <b>design patterns</b>. <u>[6]</u>
+<br><i><ul>
+    <li>Creational: factory method, abstract factory,
+prototype, singleton
+<li> Structural: facade, adapter, bridge, proxy,
+decorator, flyweight
+<li> Behavioural: observer, mediator, chain of
+responsibility, iterator, memento, command
+</ul></i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li> Name and describe two examples (need not be computer-related) of
+<b>component architectures</b>. What are the components? What are
+the interfaces between components? <u>[6]</u>
+<br><i>
+  JavaBeans, ActiveX/VB, plugins (Firefox, Apache),
+Zope/ZCA, Rails, hardware
+</i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li class="break">
+Describe a situation (need not be computer-related) in which a <b>lock</b>
+might be required on a shared object.  What are the two (or more) entities that
+access the shared object, and why is a lock needed?  <u>[5]</u>
+<br><i>
+Locks provide mutual exclusion.  If two threads wish to use the same resource
+(e.g., write to the same file), they must synchronize their accesses or risk
+incorrect results (e.g., corrupting the file).  To use, each thread first
+requests the lock before accessing the shared resource.  If another thread has
+the lock, the requesting thread is blocked, waiting until the lock is freed.
+If no other thread has the lock, the lock is given to the requesting thread,
+whereupon it may freely use the shared resource.  After it is done, it yields
+the lock so that any other waiting threads may try to get the lock.
+<p>
+An example might be the lock on a washroom door: the entities competing for
+access might be you and your roommate; a lock is needed because only one
+person at a time may use the washroom.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li> The following Python function works on many types:
+int, float, str, etc.
+Outline a Java class/method to be just as flexible. <u>[5]</u>
+<pre>def double(x):
+	return x + x
+</pre>
+<i>Something along the lines of:
+  <pre>public class Doubler<T> {
+  	public Doubler() { }
+	public T double(T x) {
+		return(x + x);
+	}
+}
+</pre></i>
+<br><br><br><br><br>
+
+<li> Define simple Java declarations and sketch a UML 
+class diagram that formalizes the following set of statements.
+There may be multiple correct interpretations.  <u>[8]</u>
+<ul>
+<li> Both <tt>Apple</tt>s and <tt>Pear</tt>s are <tt>Fruit</tt>.
+<li> Every <tt>Fruit</tt> has a <tt>colour</tt>.
+<li> <tt>Fuji</tt> and <tt>Gala</tt> are both kinds of <tt>Apple</tt>s.
+<li> All <tt>Apple</tt>s and all <tt>Pear</tt>s (but not all <tt>Fruit</tt>)
+are capable of being <tt>Edible</tt>.
+<li> Everything that is <tt>Edible</tt> knows how to tell you whether it
+<tt>isSweet</tt> or not.
+<li> All <tt>Pear</tt>s are sweet (yeah, just assume this!).
+<li> I have five <tt>Fuji</tt> <tt>Apple</tt>s.
+</ul>
+<br><br><i><pre>
+public interface Edible {
+	public boolean isSweet();
+}
+public class Fruit {
+	String colour;
+}
+public class Apple extends Fruit implements Edible {
+	public boolean isSweet() { return false; }
+}
+public class Fuji extends Apple {}
+public class Gala extends Apple {}
+public class Pear extends Fruit implements Edible {
+	public boolean isSweet() { return true; }
+}
+Apple[] myApples = new Apple[5];
+</pre></i><br><br>
+<br><br><br><br><br><br><br>
+
+<li class="break">
+The last question is a small <b>programming</b> project: you will need
+to write complete Java code (one or more classes) to solve the given problem.
+
+<br><br>
+Include a rudimentary test-bed (a separate class or just a main() method).
+The API, error-checking, limitations, etc. are all up to
+you, but if there are limitations or preconditions on the input, you need to
+state that somewhere in your answer.  A full write-up, pseudocode,
+comments/doc-comments, etc. are not necessary, but may garner points if your 
+code isn't perfect. Please use as much paper as you like; ask me if you need 
+more.
+
+<br><br>
+Choose from <b>one</b> of the following options
+(circle which option you choose;
+no extra credit if you work on more than one)
+<u>[15]</u>
+<ul>
+
+<li> Implement a <b>sorting</b> algorithm of your choice
+that works on arrays of characters (or Strings, if you like).
+(No, you may not use one of Java's built-in sorting methods!)
+<br><br>
+
+<li> Write a <b>TCP</b> server and client, and make the client say something
+to the server.  You may use any format you wish (strings, binary data,
+serialized objects, etc.) for the data to be sent.
+
+<li> Write a <b>Swing</b> program to do a simple graphical counter: every time
+you click a button widget, a displayed number is incremented.
+
+</ul>
+
+</ol>
+
+</body></html>
+
+

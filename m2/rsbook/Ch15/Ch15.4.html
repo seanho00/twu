@@ -1,0 +1,802 @@
+<HTML><HEAD><TITLE>15.4 Implementing and Testing a Semi-Generic Heap</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Semi-Generic Heap">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.4 Implementing and Testing a Semi-Generic Heap </B></H2>
+<P>Enough pseudocode was given in <A HREF="Ch15.3.html#15.3.2">section 15.3.2</A> to allow the following heavily commented implementation to stand on its own.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> Heaps;
+
+(******************
+  Design by R. Sutcliffe copyright 1996
+  Modified 1996 10 16
+  This module provides a Heap ADT.
+ ******************)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+<B>FROM</B> DataADT <B>IMPORT</B>
+  DataType, Assign, GetKey, ActionProc, Compare, CompareResults;
+
+<B>TYPE</B>
+  NodePointer = <B>POINTER</B> <B>TO</B> TreeNode;
+  TreeNode =
+    <B>RECORD</B>
+      dataItem : DataType;
+      leftPoint, rightPoint, parent, (* binary tree linkage *) 
+    next, prev : NodePointer; (* linear linkage across rows *)
+    <B>END</B>;
+  Heap = <B>POINTER</B> <B>TO</B> TreeData;
+  TreeData =
+    <B>RECORD</B>
+      root, (* first node *)
+      last, (* last node *)
+      lowerLeft (* first node in last row; helps for adding linkage to next row *)
+         : NodePointer;
+      state : HeapState; (* stores error conditions *)
+      travKind : TraverseKind; (* inOrder, preOrder, postOrder or rowOrder *)
+      travDirIsForward : <B>BOOLEAN</B>;
+      room, (* how many could be stored if last row full *)
+     numItems (* how many are actually stored *)
+          : <B>CARDINAL</B>;
+    <B>END</B>;
+
+<B>PROCEDURE</B> MakeNode () : NodePointer;
+(* set up one new node with all nil pointers and no data; return a pointer to the new node. *)
+<B>VAR</B>
+  temp : NodePointer;
+<B>BEGIN</B>
+  <B>NEW</B> (temp); (* get node memory *)
+  <B>IF</B> temp # <B>NIL</B>
+    <B>THEN</B>
+      temp^.leftPoint := <B>NIL</B>;
+      temp^.rightPoint := <B>NIL</B>;
+      temp^.parent := <B>NIL</B>;
+      temp^.next := <B>NIL</B>;
+      temp^.prev := <B>NIL</B>;
+  <B>END</B>;
+  <B>RETURN</B> temp;
+<B>END</B> MakeNode;
+
+<B>PROCEDURE</B> KillNode (<B>VAR</B> node : NodePointer);
+(* give back all memory associated with node *)
+<B>BEGIN</B>
+  <B>IF</B> node # <B>NIL</B>
+    <B>THEN</B>
+      <B>DISPOSE</B> (node);
+    <B>END</B>;
+<B>END</B> KillNode;
+
+<B>PROCEDURE</B> Erase (<B>VAR</B> r : NodePointer);
+(* Pre: r is the root of a subtree
+   Post: recursive post traverse killing all nodes below as well as the one passed in *)
+<B>BEGIN</B>
+  <B>IF</B> r # <B>NIL</B>
+    <B>THEN</B> 
+       Erase (r^.leftPoint);
+       Erase (r^.rightPoint);
+       KillNode (r);
+   <B>END</B>;
+<B>END</B> Erase;
+
+(* It turned out the following was not needed, but who knows; why not leave it. *)
+<B>PROCEDURE</B> <a name="IsLeaf">IsLeaf</a> (<B>VAR</B> node : NodePointer) : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>RETURN</B> (node # <B>NIL</B>) <B>AND</B> (node^.leftPoint = <B>NIL</B>); (* don't care about right *)
+<B>END</B> IsLeaf;
+
+<B>PROCEDURE</B> FindKey (node : NodePointer; key : KeyType;
+     <B>VAR</B> result : NodePointer) : <B>BOOLEAN</B>;
+(* start at the given node and go looking for the data with the given key.  If found, return both a pointer to it and TRUE; if not found, return FALSE.
+Recursive preorder traversal *)
+<B>
+BEGIN</B>
+  <B>IF</B> node = <B>NIL</B> (* safety measure *)
+    <B>THEN</B> 
+      <B>RETURN</B> <B>FALSE</B>;
+    (* look at node data first *)
+    <B>ELSIF</B> Compare (GetKey(node^.dataItem), key) = equal <B>THEN</B>
+      result := node; 
+      <B>RETURN</B> <B>TRUE</B>;
+    (* then at the left subtree *)
+    <B>ELSIF</B> FindKey (node^.leftPoint, key, result) <B>THEN</B>  
+      <B>RETURN</B> <B>TRUE</B>;
+    (* and at the right one *)
+    <B>ELSE</B>
+      <B>RETURN</B> FindKey (node^.rightPoint, key, result)
+    <B>END</B>;
+<B>END</B> FindKey;
+
+<B>PROCEDURE</B> TraverseRows (heap : Heap; Proc : ActionProc);
+(* Traverse the tree row by row, that is, using the linear linkage doing the procedure on each data item *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  node: NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> heap^.travDirIsForward
+    <B>THEN</B> (* start at the root *)
+      count := 0;
+      node := heap^.root;
+      (* and work consecutively through the noides *)
+      <B>WHILE</B> count <!--<-->&lt; heap^.numItems
+        <B>DO</B>
+          <B>INC</B> (count);
+          Proc (node^.dataItem);
+          node := node^.next;
+        <B>END</B>;  (* while *)  
+    <B>ELSE</B> (* go in reverse order *)
+      count := heap^.numItems;
+      node := heap^.last;
+      <B>WHILE</B> count <!-->&gt; 0
+        <B>DO</B>
+          <B>DEC</B> (count);
+          Proc (node^.dataItem);
+          node := node^.prev;
+        <B>END</B>;  (* while *)
+    <B>END</B> (*if *)
+<B>END</B> TraverseRows;
+
+<B>PROCEDURE</B> ForwardTraverseNodes (node : NodePointer; tKind : TraverseKind; Proc : ActionProc);
+(* These are the forward recursive tree traverse routines. Call with the root to traverse the whole tree. *)
+<B>BEGIN</B>
+  <B>IF</B> node = <B>NIL</B> (* safety measure *)
+    <B>THEN</B>
+      <B>RETURN</B>
+    (* if at leaf then process it and report up *)
+    <B>ELSIF</B> node^.leftPoint = <B>NIL</B> <B>THEN</B>
+      Proc (node^.dataItem);
+      <B>RETURN</B>;
+    (* not at leaf so kick in recursion *)
+    <B>ELSE</B>
+      <B>CASE</B> tKind
+        <B>OF</B>
+          inOrder:
+            ForwardTraverseNodes (node^.leftPoint, tKind, Proc);
+            Proc (node^.dataItem);
+            ForwardTraverseNodes (node^.rightPoint, tKind, Proc);|
+          preOrder:
+            Proc (node^.dataItem);
+            ForwardTraverseNodes (node^.leftPoint, tKind, Proc);
+            ForwardTraverseNodes (node^.rightPoint, tKind, Proc);|
+          postOrder:
+            ForwardTraverseNodes (node^.leftPoint, tKind, Proc);
+            ForwardTraverseNodes (node^.rightPoint, tKind, Proc);
+            Proc (node^.dataItem);
+          <B>ELSE</B>
+           (* row order is handled elsewhere *)
+        <B>END</B>; (* case *)
+    <B>END</B>; (* if *)
+<B>END</B> ForwardTraverseNodes;
+
+<B>PROCEDURE</B> ReverseTraverseNodes (node : NodePointer; tKind : TraverseKind; Proc : ActionProc);
+(* These are the reverse recursive tree traverse routines. Call with the root to traverse the whole tree. *)
+<B>BEGIN</B>
+  <B>IF</B> node = <B>NIL</B> (* safety measure *)
+    <B>THEN</B>
+      <B>RETURN</B>
+    (* if at leaf then process it and report up *)
+    <B>ELSIF</B> node^.leftPoint = <B>NIL</B> <B>THEN</B>
+      Proc (node^.dataItem);
+      <B>RETURN</B>;
+    (* not at leaf so kick in recursion *)
+    <B>ELSE</B>
+      <B>CASE</B> tKind
+        <B>OF</B>
+          inOrder:
+            ReverseTraverseNodes (node^.rightPoint, tKind, Proc);
+            Proc (node^.dataItem);
+            ReverseTraverseNodes (node^.leftPoint, tKind, Proc);|
+          preOrder:
+            Proc (node^.dataItem);
+            ReverseTraverseNodes (node^.rightPoint, tKind, Proc);
+            ReverseTraverseNodes (node^.leftPoint, tKind, Proc);|
+          postOrder:
+            ReverseTraverseNodes (node^.rightPoint, tKind, Proc);
+            ReverseTraverseNodes (node^.leftPoint, tKind, Proc);
+            Proc (node^.dataItem);
+          <B>ELSE</B>
+            (* row order is handled elsewhere *)
+          <B>END</B>; (* case *)
+    <B>END</B>; (* if *)
+<B>END</B> ReverseTraverseNodes;
+
+<B>PROCEDURE</B> SiftUp (node : NodePointer);
+(* Sift a data item up through heap until it is a proper parent.  If it is already in the right place, nothing happens. *)
+<B>VAR</B>
+  data : DataType;
+<B>BEGIN</B>
+  (* set data item from node aside *)
+  Assign (node^.dataItem, data);
+  (* see if it needs to go up the tree *)
+  <B>WHILE</B> (node^.parent # <B>NIL</B>)
+      <B>AND</B> (Compare (data, node^.parent^.dataItem) = less)
+    <B>DO</B> 
+      (* yes, so move parent down and look higher *)
+      Assign (node^.parent^.dataItem, node^.dataItem);
+      node := node^.parent;
+    <B>END</B>;
+  (* put data into proper place *)
+  Assign (data, node^.dataItem);
+<B>END</B> SiftUp;
+
+<B>PROCEDURE</B> SiftDown (node : NodePointer);
+(* Sift data item down through heap until it is a proper child.  If it is already in the right place, nothing happens. *)
+<B>VAR</B>
+  data : DataType;
+<B>BEGIN</B>
+  (* set data item from node aside *)
+  Assign (node^.dataItem, data);
+  (* see if it needs to go down the tree *)
+  <B>WHILE</B> ((node^.leftPoint # <B>NIL</B>) <B>AND</B> (Compare (data, node^.leftPoint^.dataItem) = greater))
+        <B>OR</B> ((node^.rightPoint # <B>NIL</B>) <B>AND</B> (Compare (data, node^.rightPoint^.dataItem) = greater))
+    <B>DO</B> (* pull up smaller child until it is a proper child  *)
+      (* yes, so move smaller child up and look lower *)
+      <B>IF</B> (node^.rightPoint = <B>NIL</B>)
+         <B>OR</B> (Compare (node^.leftPoint^.dataItem, node^.rightPoint^.dataItem) # greater)
+        <B>THEN</B>
+          Assign (node^.leftPoint^.dataItem, node^.dataItem);
+          node := node^.leftPoint;
+        <B>ELSE</B>
+          Assign (node^.rightPoint^.dataItem, node^.dataItem);
+          node := node^.rightPoint;
+        <B>END</B>;
+    <B>END</B>;
+  (* put data into proper place *)
+  Assign (data, node^.dataItem);
+<B>END</B> SiftDown;
+
+
+(************************************
+  Exported Procedures
+ ************************************)
+
+<B>PROCEDURE</B> Status (heap : Heap) : HeapState;
+(* Pre : t is a valid initialized heap
+   Post : The State of the heap is returned *)
+<B>BEGIN</B>
+  <B>RETURN</B> heap^.state;
+<B>END</B> Status;
+
+<B>PROCEDURE</B> Init (<B>VAR</B> heap : Heap);
+(* Allocates memory for a new heap sets state to allRight *)
+<B>BEGIN</B>
+  <B>NEW</B> (heap);
+  <B>IF</B> heap # <B>NIL</B>
+    <B>THEN</B>
+      heap^.state := allRight;
+      heap^.root := <B>NIL</B>;
+      heap^.last := <B>NIL</B>;
+      heap^.lowerLeft := <B>NIL</B>;
+      heap^.numItems := 0;
+      heap^.room := 0;
+      heap^.travKind := inOrder;
+      heap^.travDirIsForward := <B>TRUE</B>;
+    <B>END</B>;
+<B>END</B> Init;
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> heap : Heap);
+(* disposes the whole heap *)
+<B>BEGIN</B>
+  Erase (heap^.root);  (* all nodes *)
+  <B>DISPOSE</B> (heap); (* tree data *)
+<B>END</B> Destroy;
+
+<B>PROCEDURE</B> Add (<B>VAR</B> heap : Heap; data : ItemType);
+(* Adds a new item to the heap. If successful sets state to allRight, else to enheapFailed *)
+<B>VAR</B>
+  temp, mom : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> heap # <B>NIL</B>
+    <B>THEN</B>
+      (* make a new node to hold the data *)
+      temp := MakeNode();
+      <B>IF</B> temp # <B>NIL</B>
+        <B>THEN</B>
+          (* stuff data in node *)
+          Assign (data, temp^.dataItem);
+          <B>INC</B> (heap^.numItems);
+          <B>IF</B> heap^.numItems = 1
+            <B>THEN</B> (* we just made a root *)
+              heap^.root := temp;
+              heap^.lowerLeft := temp;
+              heap^.last := temp;
+              heap^.room := 1; 
+              <B>RETURN</B>;
+            <B>ELSIF</B> heap^.numItems <!-->&gt; heap^.room  <B>THEN</B> (* need to make new row *)
+              mom := heap^.lowerLeft; 
+              heap^.lowerLeft := temp;
+              heap^.room := 2*heap^.room + 1;
+            <B>ELSE</B> (* continue on the same row *)
+              (* either the parent can take a new right child *)
+              mom := heap^.last^.parent;
+              <B>IF</B> mom ^.rightPoint # <B>NIL</B>
+                <B>THEN</B> (* or the next one on the row can -- not at end *)
+                  mom := mom^.next;
+                <B>END</B>;
+            <B>END</B>; (* if heap *)
+          (* now set up all the rest of the linkage *)
+          temp^.parent := mom;
+          <B>IF</B> mom ^.leftPoint = <B>NIL</B>
+            <B>THEN</B>
+              mom^.leftPoint := temp;
+            <B>ELSE</B>
+              mom^.rightPoint := temp;
+            <B>END</B>; (* if mom *)
+          heap^.last^.next := temp;
+          temp^.prev := heap^.last;
+          heap^.last := temp;
+          (* ensure data goes to right ancestral node *)
+          SiftUp (temp);
+          heap^.state := allRight;
+        <B>ELSE</B> (* couldn't get node room *)
+          heap^.state := enheapFailed;
+        <B>END</B> (* if temp *)
+  <B>ELSE</B> (* heap itself is <B>NIL</B> *)
+    heap^.state := enheapFailed;
+  <B>END</B>; (* if heap *)
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> heap : Heap; key : KeyType);
+(* deletes an item whose key is defined equal to _key_ from the heap. If successful sets state to allRight; if heap was empty sets state to empty *)
+<B>VAR</B>
+  targetNode, temp : NodePointer;
+  lastData : DataType;
+<B>BEGIN</B>
+  (* find the node with the data if it is there *)
+  <B>IF</B> heap^.numItems = 0
+    <B>THEN</B> (* can't delete from an empty heap so set flag *)
+      heap^.state := empty;
+      <B>RETURN</B>;
+    <B>ELSE</B> (* whether we find an item to delete does not matter *)
+      heap^.state := allRight;
+    <B>END</B>;
+  (* ok so go out and look for it *)
+  <B>IF</B> FindKey (heap^.root, key, targetNode)
+    <B>THEN</B> 
+      temp := heap^.last; (* save data from end of heap *)
+      (* now fix all the pointers at the end to delete that last node *)
+      lastData := temp^.dataItem;
+      heap^.last := temp^.prev;
+      <B>IF</B> temp^.parent^.leftPoint = temp
+        <B>THEN</B>
+          temp^.parent^.leftPoint := <B>NIL</B>;
+        <B>ELSE</B>
+          temp^.parent^.rightPoint := <B>NIL</B>;
+        <B>END</B>; (* if temp^ *)
+      <B>DEC</B> (heap^.numItems); 
+     
+      (* check to see if must shrink number of levels *)
+      <B>IF</B> heap^.numItems = heap^.room <B>DIV</B> 2
+        <B>THEN</B> (* must have killed first item in row, so *)
+          heap^.lowerLeft := temp^.parent;
+          heap^.room := heap^.numItems;
+        <B>END</B>; (* if heap^ *)
+      <B>IF</B> temp # targetNode (* if it is, we're done *)
+        <B>THEN</B>
+          (* pop the data item from last into node of data to delete *)
+          Assign (lastData, targetNode^.dataItem);
+          (* then see if it needs moving up or down *)
+          (* only one of the following will do anything *)
+          SiftDown (targetNode);
+          SiftUp (targetNode);
+        <B>END</B>; (* if temp *)
+      (* finally, dump memory from the last node *)
+      KillNode (temp);
+    <B>ELSE</B> (* if FindKey *)
+      (* nothing.  If data not found we just don't care.*)
+    <B>END</B>;  (* if FindKey *)
+<B>END</B> Delete;          
+    
+<B>PROCEDURE</B> Search (heap : Heap; key : KeyType; <B>VAR</B> data : ItemType) : <B>BOOLEAN</B>;
+(* if found, returns <B>TRUE</B> and _data_ returns item at that point  *)
+<B>VAR</B> 
+  temp : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> (heap^.root # <B>NIL</B>) <B>AND</B> (heap^.numItems # 0)
+       <B>AND</B> (FindKey (heap^.root, key, temp))
+    <B>THEN</B>
+      data := temp^.dataItem;
+      <B>RETURN</B> <B>TRUE</B>;
+    <B>ELSE</B>
+      <B>RETURN</B> <B>FALSE</B>;
+    <B>END</B>;
+<B>END</B> Search;
+        
+<B>PROCEDURE</B> SetTraverseKind (heap : Heap; tKind : TraverseKind);
+(* The default is inorder *)
+
+<B>BEGIN</B>
+  <B>IF</B> heap # <B>NIL</B>
+    <B>THEN</B>
+    heap^.travKind := tKind;
+  <B>END</B>;
+<B>END</B> SetTraverseKind;
+
+<B>PROCEDURE</B> ReverseTraverseDirection (heap : Heap);
+(* The default is forward, but this can be changed to and fro.  The user has to keep track. *)
+<B>BEGIN</B>
+  <B>IF</B> heap # <B>NIL</B>
+    <B>THEN</B>
+    heap^.travDirIsForward := ~heap^.travDirIsForward;
+  <B>END</B>;
+<B>END</B> ReverseTraverseDirection;
+
+<B>PROCEDURE</B> Size (heap : Heap) : <B>CARDINAL</B>;
+(* Pre : heap is a valid initialized Heap
+   Post: The number of data items in the heap is returned *)
+<B>BEGIN</B>
+  <B>RETURN</B> heap^.numItems
+<B>END</B> Size;
+
+<B>PROCEDURE</B> Traverse (heap : Heap; Proc : ActionProc);
+(* Pre : heap is a valid initialized Heap
+   Post : the nodes are traversed inorder and Proc is performed on each data item. *)
+<B>VAR</B> 
+  temp : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> (heap^.root # <B>NIL</B>) <B>AND</B> (heap^.numItems # 0)
+    <B>THEN</B>
+      (* special case the linear, nonrecursive traverses *)
+      <B>IF</B> heap^.travKind = rowOrder
+        <B>THEN</B>
+        TraverseRows (heap, Proc);
+      <B>ELSIF</B> heap^.travDirIsForward <B>THEN</B>
+        ForwardTraverseNodes (heap^.root, heap^.travKind, Proc);
+      <B>ELSE</B>
+        ReverseTraverseNodes (heap^.root, heap^.travKind, Proc);
+      <B>END</B>;
+    <B>END</B>;
+<B>END</B> Traverse;
+       
+<B>END</B> Heaps.</pre>
+
+<P>The same cardinal ADT was used in the testing of this module as in the testing of the B-tree module.  In addition, the following program module was written to check the implementation and ensure that it was correct. It should be studied carefully for completeness. The data used is that shown above in the discussion of heaps.</P>
+
+<pre><B>MODULE</B> TestHeaps;
+(* A simple program to test the Heaps library module.
+by R. Sutcliffe
+last modified 1996 10 18 *)
+
+<B>IMPORT</B> Heaps, DataADT, SWholeIO, STextIO;
+<B>FROM</B> Heaps <B>IMPORT</B>
+  TraverseKind;
+
+<B>VAR</B>
+  theHeap : Heaps.Heap;
+  sum : <B>CARDINAL</B>;
+  dataRet: DataADT.DataType;
+  
+<B>PROCEDURE</B> Summit (item : DataADT.DataType);
+(* a procedure to use in a test traverse *)
+<B>BEGIN</B>
+  sum := sum + DataADT.GetKey (item)
+<B>END</B> Summit;
+
+(* The following procedures are used to print out the tree looking a little like a tree *)
+
+<B>PROCEDURE</B> WriteSpace (n:<B>CARDINAL</B>);
+(* write a specified number of spaces *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := 1 <B>TO</B> n 
+    <B>DO</B>
+      STextIO.WriteChar (" ");
+    <B>END</B>;
+<B>END</B> WriteSpace;
+
+(* these need to be global as both procs manipulate them *)
+<B>VAR</B>
+  count, rowEnd, space : <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> AltWriteData ( item : DataADT.DataType);
+(* write out a heap item followed by some space.
+If at row end, start a new row and adjust spacing for that row. *)
+<B>BEGIN</B>
+  <B>IF</B> count = rowEnd
+    <B>THEN</B>
+      STextIO.WriteLn;
+      space := space <B>DIV</B> 2;
+      <B>IF</B> space # 0
+        <B>THEN</B>
+          WriteSpace (space-1);
+        <B>END</B>;
+      rowEnd := rowEnd*2 +1;
+    <B>END</B>;
+  DataADT.WriteData (item);
+  <B>INC</B> (count);
+  <B>IF</B> (space # 0) <B>AND</B> (count # rowEnd)
+    <B>THEN</B>
+      WriteSpace (2*space-1);
+    <B>END</B>; 
+<B>END</B> AltWriteData;
+
+<B>PROCEDURE</B> WriteHeap ( heap : Heaps.Heap);
+(* Writes a heap in a way that resembles a tree.
+Won't work very well except to write a number, say a key. *)
+<B>VAR</B>
+  size : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  Heaps.SetTraverseKind (theHeap,rowOrder);
+  (* compute spacing parameters based on size of heap *)
+  size := Heaps.Size(heap);
+  space := 1;
+  <B>WHILE</B> space <!--<-->&lt;= size
+    <B>DO</B>
+      space := 2 * space;
+    <B>END</B>;
+   (* so, it's empirical.  Experiment. *)
+  space := 2 * space - 1;
+  count := 0;
+  rowEnd := 0;
+  Heaps.Traverse (heap, AltWriteData);
+  STextIO.WriteLn;
+  STextIO.WriteLn;
+<B>END</B> WriteHeap;
+
+<B>BEGIN</B>
+  Heaps.Init (theHeap);
+  Heaps.Add (theHeap, 54);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 87);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 27);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 67);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 19);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 31);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 29);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 18);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 32);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 56);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 7);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 12);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 31);WriteHeap (theHeap);
+ 
+  
+  STextIO.WriteString ("*****forward traverses****"); STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,inOrder);
+  STextIO.WriteString ("in  :");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,preOrder);
+  STextIO.WriteString ("pre :");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,postOrder);
+  STextIO.WriteString ("post:");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,rowOrder);
+  STextIO.WriteString ("row :");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,inOrder);
+  STextIO.WriteString ("****end forward traverses*****"); STextIO.WriteLn;STextIO.WriteLn;
+
+  Heaps.ReverseTraverseDirection(theHeap);
+  
+  STextIO.WriteString ("*****reverse traverses****"); STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,inOrder);
+  STextIO.WriteString ("in  :");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,preOrder);
+  STextIO.WriteString ("pre :");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,postOrder);
+  STextIO.WriteString ("post:");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,rowOrder);
+  STextIO.WriteString ("row :");
+  Heaps.Traverse (theHeap, DataADT.WriteData);STextIO.WriteLn;
+  Heaps.SetTraverseKind (theHeap,inOrder);
+  STextIO.WriteString ("****end reverse traverses*****"); STextIO.WriteLn;STextIO.WriteLn;
+
+
+  (* look for something that is supposed to be there *)
+  <B>IF</B> Heaps.Search (theHeap,31,dataRet)
+    <B>THEN</B>
+      STextIO.WriteString ("data found OK as ");
+      DataADT.WriteData (dataRet);
+    <B>ELSE</B>
+      STextIO.WriteString ("31 not found");
+    <B>END</B>;
+  STextIO.WriteLn;  STextIO.WriteLn;  
+ 
+  (* and for something that is not *)
+  <B>IF</B> Heaps.Search (theHeap,100,dataRet)
+    <B>THEN</B>
+      STextIO.WriteString ("data found OK as ");
+      DataADT.WriteData (dataRet);
+    <B>ELSE</B>
+      STextIO.WriteString ("100 not found");
+    <B>END</B>;
+  STextIO.WriteLn;STextIO.WriteLn;    
+
+  (* now traverse the heap and add everything up *)
+  sum := 0;
+  Heaps.Traverse (theHeap, Summit);
+  STextIO.WriteLn;
+  STextIO.WriteString ("Sum is ");
+  SWholeIO.WriteCard (sum, 10);
+  STextIO.WriteLn;STextIO.WriteLn;
+  
+  (* now, try a few deletes *)
+  Heaps.ReverseTraverseDirection(theHeap);
+  Heaps.Delete (theHeap, 31);WriteHeap (theHeap);
+  Heaps.Delete (theHeap, 67);WriteHeap (theHeap);
+  Heaps.Delete (theHeap, 19);WriteHeap (theHeap);
+  Heaps.Delete (theHeap, 7);WriteHeap (theHeap);
+  Heaps.Delete (theHeap, 42);WriteHeap (theHeap);
+  Heaps.Add (theHeap, 12); WriteHeap (theHeap);
+ 
+<B>END</B> TestHeaps</pre>
+
+<P>When this program was run, the following output was collected. The reader should verify that the traverses are in fact all correct.</P>
+
+<pre>
+
+ 54
+
+
+   54
+ 87 
+
+
+   27
+ 87  54
+
+
+       27
+   67      54
+ 87 
+
+
+       19
+   27      54
+ 87  67 
+
+
+       19
+   27      31
+ 87  67  54 
+
+
+       19
+   27      29
+ 87  67  54  31
+
+
+               18
+       19              29
+   27      67      54      31
+ 87 
+
+
+               18
+       19              29
+   27      67      54      31
+ 87  32 
+
+
+               18
+       19              29
+   27      56      54      31
+ 87  32  67 
+
+
+               7
+       18              29
+   27      19      54      31
+ 87  32  67  56 
+
+
+               7
+       18              12
+   27      19      29      31
+ 87  32  67  56  54 
+
+
+               7
+       18              12
+   27      19      29      31
+ 87  32  67  56  54  31 
+
+*****forward traverses****
+in  : 87 27 32 18 67 19 56 7 54 29 31 12 31
+pre : 7 18 27 87 32 19 67 56 12 29 54 31 31
+post: 87 32 27 67 56 19 18 54 31 29 31 12 7
+row : 7 18 12 27 19 29 31 87 32 67 56 54 31
+****end forward traverses*****
+
+*****reverse traverses****
+in  : 31 12 31 29 54 7 56 19 67 18 32 27 87
+pre : 7 12 31 29 31 54 18 19 56 67 27 32 87
+post: 31 31 54 29 12 56 67 19 32 87 27 18 7
+row : 31 54 56 67 32 87 31 29 19 27 12 18 7
+****end reverse traverses*****
+
+data found OK as  31
+
+100 not found
+
+
+Sum is           470
+
+
+               7
+       18              12
+   27      19      29      31
+ 87  32  67  56  54 
+
+
+               7
+       18              12
+   27      19      29      31
+ 87  32  54  56 
+
+
+               7
+       18              12
+   27      54      29      31
+ 87  32  56 
+
+
+               12
+       18              29
+   27      54      56      31
+ 87  32 
+
+
+               12
+       18              29
+   27      54      56      31
+ 87  32 
+
+
+               12
+       12              29
+   27      18      56      31
+ 87  32  54</pre>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

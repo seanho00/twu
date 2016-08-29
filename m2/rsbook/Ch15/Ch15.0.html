@@ -1,0 +1,69 @@
+<HTML><HEAD><TITLE>15.0 Chapter Goals</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Chapter Goals">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<b><h2>15.0 Chapter Goals</B></H2>
+<P>The purpose of this chapter is to develop some more advanced data structure ideas, to explore some of the problems and pitfalls of using pointers, and to provoke the reader to think about the issues raised by attempts to make software as generic as possible.  On completing the chapter, the student should understand and be able to use the following:</P>
+
+<B><h3>Data Representation Abstractions</h3></B>
+<P><I>General:</P>
+<P>	</I>Handles, B-trees and Heaps are defined in Chapter 15.<I></P>
+<P>Realized in the Modula-2 notation:</P>
+<P></I>	B-trees and Heaps are implemented, and a probable (implementation defined) implementation of handles is discussed.</P>
+<B><h3>Data Manipulation Abstractions</h3></B>
+<P><I>General:</P>
+<P>	</I>The problem of generic handling of data and algorithms is revisited and pointers are discussed again at some length.</P>
+<P><I> Realized in the Modula-2 notation:</I></P>
+<P>	the structure of B-Trees and Heaps and the heapsort</P>
+<B><h3>Programming Abstractions</h3></B>
+<P><I>General:</I></P>
+<P>	Memory fragmentation and garbage are discussed, and some possible solutions to these problems are explored. Programming for genericity is emphasized.</P>
+<P><I> Realized in the Modula-2 notation:</I></P>
+<P>	Some additional genericity is achieved using ISO Standard Modula-2.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

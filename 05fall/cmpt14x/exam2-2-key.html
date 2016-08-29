@@ -1,0 +1,197 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li {
+  margin-top: 1em;
+}
+.subparts li {
+  margin-top: 0.3em;
+} 
+ol.subparts {
+  list-style-type: lower-alpha;
+}
+.break {
+  page-break-before: always;
+}
+--></style>
+<title>CMPT/ISYS 140 Fall2005 FINAL ch1-7 Part2 KEY, TWU
+27 Oct 2005.</title>
+</head><body>
+
+<ol>
+
+<li>
+Explain all the differences between <b>assignment</b>
+<br>compatibility and <b>expression</b> compatibility.
+<br>Give examples.
+<br>
+
+<center>
+Two types are assignment compatible if a value of one type can be
+assigned into a variable of the other type.  CARDINAL and INTEGER are
+assignment compatible (within the range of CARDINAL), but CARDINAL and 
+REAL are not.
+<br>
+Two types are expression compatible for a particular operator if that
+operator is defined with one operand of one type and another operand of
+the other type.  Again, CARDINAL and INTEGER are expression compatible,
+but CARDINAL and REAL are not.  More complex examples also exist, e.g.,
+the compatibility rules for subranges.
+</center>
+
+<li>
+Explain all the differences between the built-in <b>string concatenation</b>
+operator (<b>+</b>) and the standard library function <tt>Strings.Concat()</tt>.
+<br>
+
+<center>
+The builtin operator only works on string literals and constants.
+<tt>Strings.Concat(src1, src2: ARRAY OF CHAR; VAR dst: ARRAY OF CHAR)</tt>
+also works with string variables, concatenating <tt>src1</tt> and <tt>src2</tt>
+and storing the result in <tt>dst</tt>.
+</center>
+
+<li>
+Explain the advantages and disadvantages of 
+<b><tt>FOR</tt></b> versus <b><tt>WHILE</tt></b>.
+<br>Be specific (not just "one is more flexible").
+<br>
+
+<center>
+Any <tt>FOR</tt> loop can be rewritten as a <tt>WHILE</tt> loop,
+but the converse is not true.  
+Any one of the following points is a valid answer:
+The loop counter in a <tt>FOR</tt> loop must
+proceed in order from the starting value to the ending value by the given
+increment; the increment cannot be changed during the course of the loop, and
+the loop cannot be exited prematurely.  The <tt>FOR</tt> loop counter may not
+be <em>threatened</em> by code within the loop, and after the <tt>FOR</tt> loop
+concludes, the value of the loop control variable is undefined.
+</center>
+
+<li>
+The following module will not compile.  What is <b>wrong</b>?
+  How would you <b>fix</b> it?
+<pre>
+MODULE BuggyReadVector;
+	(* user inputs values to initialize a vector *)
+FROM SWholeIO IMPORT
+	ReadCard;
+VAR
+	myVector : ARRAY [1 .. 11] OF CARDINAL;
+	count, counter : CARDINAL;
+BEGIN
+	FOR count := 1 to 10
+		DO
+			counter := count;
+			ReadCard (count);
+			SkipLine;
+			myVector [counter] := count;
+		END;
+	myVector [counter + 1] := 11;
+END BuggyReadVector.
+</pre>
+<br>
+
+<center>
+The problem is that the <tt>FOR</tt> loop control variable 
+(<tt>count</tt>) is threatened by the <tt>ReadCard(count)</tt> statement.
+If the desired semantics are to fill in the first 10 entries with 
+user-supplied values, then the following code is one possible solution:
+</center>
+<pre>
+MODULE FixedReadVector;
+	(* user inputs values to initialize a vector *)
+FROM SWholeIO IMPORT
+	ReadCard;
+VAR
+	myVector : ARRAY [1 .. 11] OF CARDINAL;
+	count : CARDINAL;
+BEGIN
+	FOR count := 1 TO 10
+		DO
+			ReadCard (myVector [count]);
+			SkipLine;
+		END;
+	myVector [11] := 11;
+END FixedReadVector.
+</pre>
+
+<li>
+In the remainder of this exam, you will be writing up a library and test-suite
+for generating <b>pseudorandom</b> numbers:
+
+Your library should provide a <tt>Random()</tt> function, which returns 
+a new random real between 0 and 1 each time it is invoked.  There should 
+also be a way to <b>seed</b> the random number generator.  The default seed 
+(if the user does not manually set it) should be 0. 
+
+<center>
+	Section 7.8 (p.299) of the textbook contains a library
+	implementation that almost completely satisfies the requirements.
+	The lecture notes also have example code.
+</center>
+
+  <ol>
+  <li> Write a separate <b>test suite</b> (test harness, test framework)
+  for your library -- a complete Modula-2 program module that imports from
+  your library.  This program should produce 1,000 random <b>CARDINALS</b>
+  between 0 and 9,999 and save them into a file of the user's choosing.
+  The numbers should be formatted ten per row, in <b>columns</b>: e.g.,
+  <pre>
+	9472 3930 4876  239 1029   12 7349 1920    0 2382
+	3390 1528    3 5867 9999 8821 2002   77 1103  902
+	....</pre>
+
+  <center>
+	  Here's one possible implementation of the test suite:
+  </center>
+  <pre>
+MODULE PseudoRandomTest;
+FROM STextIO IMPORT
+  WriteString, WriteLn;
+FROM SWholeIO IMPORT
+  WriteCard;
+FROM RedirStdIO IMPORT
+  OpenOutput, CloseOutput;
+FROM PseudoRandom IMPORT
+  Random;
+VAR
+  row, col : CARDINAL;
+BEGIN
+  WriteString ("This program will output 1,000 random numbers between ");
+  WriteString ("0 and 9999 to a file of your choosing.");
+  WriteLn;
+  WriteString ("Please select a file in the popup window.");
+  WriteLn;
+
+  OpenOutput;
+  FOR row := 1 TO 100
+    DO
+      FOR col := 1 TO 10
+        DO
+	  WriteCard (TRUNC (10000.0 * Random()), 5);
+        END;
+      WriteLn;
+    END;
+  CloseOutput;
+
+  WriteString ("All done!");
+  WriteLn;
+END PseudoRandomTest.
+  </pre>
+
+
+  </ol>
+
+</ol>
+
+</body></html>
+

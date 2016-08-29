@@ -1,0 +1,83 @@
+<HTML><HEAD><TITLE>Chapter 13: Searching and Sorting</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter 13<BR>
+Searching and Sorting</B></H1></CENTER>
+
+<BR><A class = navgrn HREF="Ch13.0.html">13.0 Chapter Goals</A><!--	566-->
+<BR><A class = navgrn HREF="Ch13.1.html">13.1 Searching</A><!--	566-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.1.html#13.1.1">  13.1.1 Linear (Sequential) Searches</A><!--	566-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.1.html#13.1.2">  13.1.2 Binary Searches</A><!--	568-->
+<BR><A class = navgrn HREF="Ch13.2.html">13.2 Introduction to Sorting</A><!--	571-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.2.html#13.2.1">  13.2.1 The Bubble Sort</A><!--	572-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.2.html#13.2.2">  13.2.2 The Selection Sort</A><!--	575-->
+<BR><A class = navgrn HREF="Ch13.3.html">13.3 Analyzing Sorting Routines</A><!--	576-->
+<BR><A class = navgrn HREF="Ch13.4.html">13.4 Inserting Methods</A><!--	577-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.4.html#13.4.1">  13.4.1 The Insert Sort</A><!--	581-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.4.html#13.4.2">  13.4.2 The Shell Sort</A><!--	583-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.4.html#13.4.3">  13.4.3 The Combsort</A><!--	589-->
+<BR><A class = navgrn HREF="Ch13.5.html">13.5 Advanced Sorting of Arrays</A><!--	590-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.5.html#13.5.1">  13.5.1 The QuickSort</A><!--	590-->
+<BR><A class = navgrn HREF="Ch13.6.html">13.6 Sorting With Auxiliary Storage</A><!--	596-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.6.html#13.6.1">  13.6.1 The Merge Sort</A><!--	597-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch13.6.html#13.6.2">  13.6.2 Pointers and Sorting</A><!--	600-->
+<BR><A class = navgrn HREF="Ch13.7.html">13.7 An Extended Example (Searching in Text)</A><!--	603-->
+<BR><A class = navgrn HREF="Ch13.8.html">13.8 Chapter Summary</A><!--	607-->
+<BR><A class = navgrn HREF="Ch13.9.html">13.9 Exercises</A><!--	607-->
+
+<!--Version History:
+Version 3.0 released to MS 93 07 19 to Deane 94 01 04
+Version 3.0.1 with character graphics 1994 01 24
+Version 3.0.2 with table of contents 1994 08 25
+Version 4.0 with HTML markup by G Tisher 1995 05 15
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 07 07 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch13.0.html»
+«INCLUDE Ch13.1.html»
+«INCLUDE Ch13.2.html»
+«INCLUDE Ch13.3.html»
+«INCLUDE Ch13.4.html»
+«INCLUDE Ch13.5.html»
+«INCLUDE Ch13.6.html»
+«INCLUDE Ch13.7.html»
+«INCLUDE Ch13.8.html»
+«INCLUDE Ch13.9.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

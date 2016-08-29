@@ -1,0 +1,85 @@
+<HTML><HEAD><TITLE>19.1 Introduction to Object Oriented Thinking</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Object Oriented Thinking">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.1 Introduction to Object Oriented Thinking</b></H2>
+
+<P>At this stage of the discussion, the reader is must be very much aware of the value, for both design and debugging purposes, of breaking large software projects down into constituent parts. Procedures are one such constituent, or piece of reusable software, and modules are another. Procedures are activity or flow-centred constituents; they deal with actions that either change data or alter the user perception or experience of the data. Modules are usually collections of such procedural activities, but may sometimes be centred around a particular data type and its appropriate manipulations. In the latter case, the term <i>Abstract Data Type</i> is appropriate to describe the entire collection (with its associated procedures) encapsulated in the module, and thinking in terms of such ADTs is a somewhat more data-centred approach to software design and implementation.</P>
+<P>However, such ADTs are still rather activity-centric, for they offer collections of procedures, each of which can be passed a data entity of the appropriate type. A more data-centric approach than even the module ADT involves subordinating the manipulative activities and attributes to each individual data item, rather than to the type as a whole. Notationally, this is usually reflected by writing:</P>
+<P><i>for a procedural or activity-centric approach:</i></P>
+
+<PRE>Manipulate (a);
+c := SomeAttributeOf (a);
+Combine (a, b);</PRE>
+
+<P><i>but, for a data-centric approach:</i></P>
+
+<PRE>a.Manipulate;
+c := a.SomeAttribute;
+a.Combine (b);</PRE>
+
+<P>To make things more concrete, consider an abstract data entity <i>BankAccount</i> with associated procedures <i>Create, Destroy, Balance; Credit</i> and <i>Debit</i>. In the conventional and action-oriented approach used so far in this text, one would write a module called <i>Accounts</i> containing, say, a type <i>Account</i> and the two procedures. A client program would declare the entity <i>BankAccount</i> to be of type <i>Account</i> and then issue invocations such as:</P>
+
+<PRE>Create (BankAccount);
+Credit (BankAccount, 23.45);
+Debit (BankAccount, mortgage);</PRE>
+
+<P>or, possibly, if the ADT were imported qualified,</P>
+
+<PRE>Accounts.Debit (BankAccount, orthodonticsPayment);
+Current := Accounts.Balance (BankAccount);</PRE>
+
+<P>For each of the procedure invocations, an account name has to be provided in the client code in order  for the action to be valid.</P>
+<P>In the object oriented approach, <i>BankAccount</i> would be the name of an object that would have its own access to the specified procedures and information (in this case, the balance) and the code of the procedures would be invoked by sending a message to the object to act as an agent in performing the required task, thus:</P>
+
+<PRE>BankAccount.Credit (23.45);
+BankAccount.Debit (mortgage);
+Current := BankAccount.Balance;</PRE>
+
+<P>The action of <i>Credit</i> does not stand alone waiting, as it were, to be given an account on which to act. Rather, it is owned by the account, which "knows" how to credit itself. That is, both attributes or qualities on the one hand, and activities or manipulative procedures on the other are tied to the data item itself, rather than being independent entities in their own right. </P>
+<P>An astute reader ought to see some similarities between objects and modules and be able to take some things for granted here.</P>
+
+<UL><LI><!--…--> an object defines a scope within which its attributes and procedures are visible</LI>
+<LI><!--…--> an object can hide some information items or procedures and prevent clients from using them</LI></UL>
+
+<P>However, some other things are implicit in the data-centricity of this approach:</P>
+
+<UL><LI><!--…--> responsibility for carrying the message lies with the agent, not the procedure</LI>
+<LI><!--…--> two similar agents might interpret messages with the same name in different ways</LI>
+<LI><!--…--> there ought to be a way to re-use some of the code declared for one object in another object</LI></UL>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

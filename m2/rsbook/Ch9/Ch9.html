@@ -1,0 +1,102 @@
+<HTML><HEAD><TITLE>Chapter 9: Structured Data--Intermediate Techniques</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H1><CENTER><B>Chapter 9<BR>
+Structured Data<!--‹-->--Intermediate Techniques</B></CENTER></H1>
+
+
+<BR><A class = navgrn HREF="Ch9.0.html">9.0 Chapter Goals</A><!--	388-->
+<BR><A class = navgrn HREF="Ch9.1.html">9.1 Structured Data Revisited</A><!--	388-->
+<P><b>Part A<!--‹-->--Sets</b></P>
+<A class = navgrn HREF="Ch9.2.html">9.2 Representation and Membership</A><!--	389-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.2.html#9.2.1">  9.2.1 Set Union</A><!--	391-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.2.html#9.2.2">  9.2.2 Set Intersection</A><!--	392-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.2.html#9.2.3">  9.2.3 Set Difference</A><!--	392-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.2.html#9.2.4">  9.2.4 Symmetric Set Difference</A><!--	392-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.2.html#9.2.5">  9.2.5  One Element at a Time</A><!--	392-->
+<BR><A class = navgrn HREF="Ch9.3.html">9.3 Set Comparisons</A><!--	395-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.3.html#9.3.1">  9.3.1 Set Equality and Inequality</A><!--	395-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.3.html#9.3.2">  9.3.2 Subset</A><!--	396-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.3.html#9.3.3">  9.3.3 Superset</A><!--	396-->
+<BR><A class = navgrn HREF="Ch9.4.html">9.4 Sets and the I/O Library</A><!--	397-->
+<BR><A class = navgrn HREF="Ch9.5.html">9.5 Sets at the Low Level</A><!--	398-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.5.html#9.5.1">  9.5.1 Bitsets</A><!--	398-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.5.html#9.5.2">  9.5.2 Packed Sets</A><!--	400-->
+<BR><A class = navgrn HREF="Ch9.6.html">9.6 An Extended Example</A><!--	403-->
+<P><b>Part B<!--‹-->--Records</b></P>
+<A class = navgrn HREF="Ch9.7.html">9.7 Declaring and Assigning to Records</A><!--	406-->
+<BR><A class = navgrn HREF="Ch9.8.html">9.8 Using Records</A><!--	408-->
+<BR><A class = navgrn HREF="Ch9.9.html">9.9 Records and Arrays<!--‹-->--Which, or Both?</A><!--	410-->
+<BR><A class = navgrn HREF="Ch9.10.html">9.10 Getting Physical With Records</A><!--	412-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.10.html#9.10.1">  9.10.1 RawIO in Non-Standard Modula-2</A><!--	413-->
+<BR><A class = navgrn HREF="Ch9.11.html">9.11 Records and Random Access Files</A><!--	414-->
+<BR><A class = navgrn HREF="Ch9.12.html">9.12 An Extended Example (Inventory)</A><!--	418-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.12.html#9.12.1">  9.12.1 Inventory with Raw Sequential I/O</A><!--	418-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch9.12.html#9.12.2">  9.12.2 Inventory with Raw Random I/O</A><!--	424-->
+<BR><A class = navgrn HREF="Ch9.13.html">9.13 Chapter Summary</A><!--	427-->
+<BR><A class = navgrn HREF="Ch9.14.html">9.14 Exercises</A><!--	428-->
+
+<!--Version History:
+Version 3.0 First complete version 1994 03 29
+Version 3.02 with table of contents 1994 09 22
+Version 3.02b with minor corrections on record comparison 1994 11 25
+Version 4.0 with HTML markup by G Tisher May 1995
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 07 04 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+note need for different enclosing characters because the regular ones are used in the chapter
+
+ÝINCLUDE Ch9.0.htmlý
+ÝINCLUDE Ch9.1.htmlý
+ÝINCLUDE Ch9.2.htmlý
+ÝINCLUDE Ch9.3.htmlý
+ÝINCLUDE Ch9.4.htmlý
+ÝINCLUDE Ch9.5.htmlý
+ÝINCLUDE Ch9.6.htmlý
+ÝINCLUDE Ch9.7.htmlý
+ÝINCLUDE Ch9.8.htmlý
+ÝINCLUDE Ch9.9.htmlý
+ÝINCLUDE Ch9.10.htmlý
+ÝINCLUDE Ch9.11.htmlý
+ÝINCLUDE Ch9.12.htmlý
+ÝINCLUDE Ch9.13.htmlý
+ÝINCLUDE Ch9.14.htmlý
+--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

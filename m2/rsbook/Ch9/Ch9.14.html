@@ -1,0 +1,155 @@
+<HTML>
+<HEAD>
+<TITLE>9.14 Exercises </TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, structured, structure, data, set, membership, construction, union, intersection, difference, symmetry, symmetric, bitset, bitsets, packedset, packedsets, sets, sets, bit, pack, packed, record, bits, array, arrays, records, stream, streams, strore, storeage, random, access, file, files, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.14 Exercises</B></H2>
+<H3><B>Questions</B></H3>
+<P>1.  What is the difference between a Modula-2 set and an abstract set?</P>
+<P>2.  What is the difference between a subrange of a scalar data type and a subset of a set type?  Illustrate with an example of each.</P>
+<P>3.  The problem is to write a payroll problem.  The monthly salaries are fixed, but daily salaries (for computing overtime) depend on the number of days in the month.  Write out syntactically correct declarations for sets to contain month names.  Months with the same number of days should be grouped into common sets.</P>
+<P>4.  Explain why sets were of limited use in older versions of Modula-2, and say what the ISO requirement is that makes them more useful.</P>
+<P>5.  	Which ISO Modula-2 libraries that have been used so far export sets, and why are these items all compatible even though they are imported from different modules?</P>
+<P>6.  Name all the operations and operators that can be used on sets and explain their meaning.</P>
+<P>7.  What are packedsets and bitsets, and what procedures are there for manipulating them, either in the language proper, or in library modules?</P>
+<P>8.  What arithmetic operation is shifting one bit left equivalent to?  One bit right? N bits left or right?</P>
+<P>9.  Assuming that the underlying base type is CharSet = SET OF CHAR or NumSet = SET OF [0..10] as appropriate for each question, work out the answers to the following Modula-2 set expressions: (Be sure to indicate any errors and explain)</P>
+<P>	a)  NumSet{1,2,5,7} * NumSet{1,3,4,6} + NumSet{3,1,5}</P>
+<P>	b)  NumSet{3,4,6,2} / NumSet{1,3,5,6} - NumSet{2}</P>
+<P>	c)  NumSet{1,2} + NumSet{3,4} * NumSet{4,5} / NumSet{1} - NumSet{1}</P>
+<P>	d)  CharSet{'a','b','2'} - CharSet{'b','c','d'} / CharSet{'c','d'} + CharSet{'2'}</P>
+<P>	e)  NumSet{10,5,1} / NumSet{8,5,2} * NumSet{9,1,10}</P>
+<P>	f)  CharSet{'k','f','j','n'} - CharSet{'t','j','n'} / CharSet{'t'} + {CharSet{'3','4,'m'} * CharSet{'2','12','m'}</P>
+<P>	g)  NumSet{9,7,2} + NumSet{7,6,5} * NumSet{3,4,5} - NumSet{2}</P>
+<P>	h)  NumSet{1,4,8} / NumSet{1,2,3} - NumSet{2,3}</P>
+<P>	i)   CharSet{'r','g'} * CharSet{'1','2'} + CharSet{'y'}</P>
+<P>	j)  CharSet{2, 3, 4} + CharSet{a, b, c}</P>
+<P>10.  Evaluate the following BOOLEAN expressions, if all the sets are of type Num.</P>
+<P>	a)  (5 IN Num{1,3,5}) AND (Num{1,3} <!--<-->&lt;= Num{1,3})</P>
+<P>	b)  (Num{2,4,7} <!-->&gt;= Num{2,3,4,5,6,7}) OR (3 IN Num{1,5})</P>
+<P>	c)  Num {1,1,1,1} = Num {1}</P>
+<P>11. Define the term <i>Record</i> both mathematically and in terms of Modula-2.</P>
+<P>12. For the data aggregate</P>
+<P>traveller =</P>
+<P>	  name</P>
+<P>	  home address</P>
+<P>	  airline</P>
+<P>	  flight number</P>
+<P>	  arrival</P>
+<P>	  departure</P>
+<P>	  luggage</P>
+<P>	define a model in Modula-2.</P>
+<P>13. Write a Modula-2 procedure to fill the fields of the above record from data typed in from the keyboard.</P>
+<P>14. Declare a Modula-2 record to model a student with fields for name, student number, age, and amount owed asstring <!--¥-->* CARDINAL <!--¥-->* [0..100] <!--¥-->* REAL.</P>
+<P>15. Write a Modula-2 procedure to fill the fields of the above record from data typed in.</P>
+<P>16. Give an example of a record contained within a record, and the code to fill its fields.</P>
+<P>17. When should you use a record and an array?  Give specific examples of real world data suitable for modeling by each.</P>
+<P>18. What is a <!--"-->&quot;qualified identifier<!--"-->&quot; and under what circumstances does it arise in Modula-2?  How is it unqualified in each case?</P>
+<P>19. Describe three ways of storing records in files.</P>
+<P>20. What is a random access file, and which module is used in ISO Modula-2 to implement this model?</P>
+<P>21. Under what circumstances should you employ sequential files, and what circumstances should you employ random access files?</P>
+<P>22. What is a file position variable?  What procedures can manipulate this variable?</P>
+<P>23. What other marker is important in manipulating random access files?</P>
+<P>24. What is the difference between <I>OpenOld</I> and <I>OpenClean</I>?</P>
+<P>25. If you read a record from a random access file, edit it, and then immediately write the record back, the file will be incorrect.  Explain.  What step is missing?</P>
+<P>26. What happens if you attempt to position the read/write file to a place beyond the actual limits of the file?</P>
+<P>27. Make a chart detailing the meanings of all the flags in the device drivers available in your system. (Some or all of <I>StreamFile</I>, <I>SeqFile</I>, <I>RndFile</I>, and <I>TermFile</I> should be included.)</P>
+<P>28. Demonstrate that you understand the inventory example by producing a complete set of planning documents for it.</P>
+<P>29. Further demonstrate this understanding by fully commenting the second version in <A HREF="Ch9.12.html#9.12.2">9.12.2</A></P>
+<H3><B>Problems</B></H3>
+<P>30. Many previous programs have involved asking for keyboard input before proceeding.  A typical case is one that prints a prompt</P>
+
+<PRE>Do you want to do another (Y/N)? ==<!-->&gt;</PRE>
+<P>	and then waits for a Y or an N to be typed.  Other times, only certain characters are permitted in response to a menu offering.  Write and check by using it in one of your old programs:</P>
+
+<PRE><B>PROCEDURE</B> WaitAnsOK (validAnswers : CharSet; retrys : <B>CARDINAL</B>) : <B>BOOLEAN</B>;
+(* Pre : the calling code supplies a set of valid character
+answers and should also print part of a prompt
+WaitOKAns prints the prompt <!--"-->&quot;here ==<!-->&gt; <!--"-->&quot; and then does a ReadChar and SkipLine, 
+and checks the answer against validAnswers
+Post: If it is valid, WaitAnsOK returns TRUE.  If not,
+it prints an error message and asks the user to try again, then
+repeats the prompt.  It is only to do this retrys times,
+however, before giving up and returning FALSE. *)</PRE>
+<P>31. Write a program that will scan an input line of text and then print out all consonants and all vowels (separately, with headings) that have been found in the line.</P>
+<P>32. Modify the <A HREF="Ch9.6.html#syllable">syllable counting program</A> in section 9.6 to improve the algorithm for determining what is or is not a syllable.</P>
+<P>33. Modify the module <A HREF="Ch9.5.html#BitsetDemo"><i>BitsetDemo</i></A> in section 9.5 to print out the contents of REAL numbers.  Attempt to deduce the storage format of this type.  If you cannot do this just by looking at some examples, see if you can learn it from the documentation of your system followed by a visit to your library.  WARNING: This could take some research.</P>
+<P>34. Re-implement the module <I><A HREF="../Ch6/Ch6.9.html#Points">Points</A></I> in Chapter 6 using a record to represent the basic data type.</P>
+<P>35. Implement the module <I><A HREF="../Ch7/Ch7.11.html#Vectors">Vectors</A></I> in Chapter 7.11 using a record to represent the basic data type.</P>
+<P>36. Modify the module <A HREF="Ch9.12.html#Inventory"><i>Inventory</i></A> in section 9.12 to employ a SET OF [<!--"-->&quot;1<!--"-->&quot; ..<!--"-->&quot;6<!--"-->&quot;] in checking for the correct range of answers to the menu prompt.</P>
+<P>37. Write and test a module to enter data for a collection of people that is in the following categories into a suitable structure: name, height, mass, sex, hair colour, eye colour, church affiliation.  It is not necessary to sort by name.</P>
+<P>38. Now add a section to take someone specified at the keyboard (list them all and give a choice?) and search the rest of the list for the person of the opposite sex who matches in the most categories.  (This kind of program has interesting possibilities.)  Allow for a reasonable range in height and mass for a match.</P>
+<P>39. A class of students, which the user may enter in alphabetical (or other) order (no sorting) has been given four marks expressed as whole number percentages.  Write a program module to:<BR>
+	a) Enter all this data into a record.  The record has to be able to hold a letter grade as well.<BR>
+	b) Find the average grade.<BR>
+	c) Find the median (middle) grade.<BR>
+	d) Scale the marks so that the class average is 70. (Do this by simply adding the difference 70 - Actual Average to every grade.)<BR>
+	e) Assign letter grades to the scaled marks according to: 86+ (A), 73+ (B), 54+ (C), 40+ (D), 39- (F).<BR>
+	f) Count the number of letter grades in each category.<BR>
+	g) Print out a summary of the results in parts b, c, e, and f.</P>
+<P>40. Write a module to keep track of a chequebook.  It will need to have the ability to read numbers in from the keyboard, tell the program whether the transaction is a cheque, or a deposit, update the balance, and record both the transaction and the new balance in a disk file for future reference. When the program is executed the first time, it should ask for the prior balance.  On subsequent executions, it should read this from the disk file.</P>
+<P>41.  Add to the facilities in the previous question the ability to print out from the disk records the entire stored transaction history from the data file, along with the balance after each transaction.</P>
+<P>42. Add to the module <i><A HREF="Ch9.12.html#Inventory">Inventory</A></i> in section 9.12.1 the ability to delete a record from the data.  Make other improvements that you think add to the usability, functionality and safety of this module.  Detail any bugs you find in the process and document how you fixed them.</P>
+<P>43. As in the previous question, modify the random access version of the inventory program.  At least include the ability to delete an item.  Observe that the file must be restructured and given a new end marker when this is done.</P>
+<P>44. Make a different modification to the random access version of the inventory program, this time to do searching by having the user type the name of the item first and then find the item of that name in the disk file, rather than by scanning the disk file and printing all the names.  When you have this working, modify the search capability further so as to present the user with a menu to search by item name or bin number before proceeding.</P>
+<P>45. The Acme Pewter Tuning Fork Company makes four models of tuning fork (economy, standard, super, and deluxe).  Each one can be made to play the notes A, B, C, D, E, F, or G, from a single octave and any of these could be sharp.  Both wholesale and retail prices need to be recorded, as well as the current inventory stock.  Because there are a fixed number of different items, it is not necessary to generate new items once the inventory is set up.  The operations that are needed are</P>
+<P>	a) search inventory for items low in stock (<!--<-->&lt;10) to generate manufacturing orders<BR>
+	b) add newly manufactured items to inventory<BR>
+	c) fill wholesalers orders from stock<BR>
+	d) alter wholesale or retail pricing.</P>
+<P>	Write an program module to keep track of all this activity.  Use a random access file.  (You can improve on the simplistic and slightly inaccurate musical notation if you know how.)</P>
+<P>46. A Church address list needs to have the following information: Last name, first names, childrens' names, address, town, province, postal code, telephone number.  The first name of anyone who is a member is to be printed (and may be stored) with an asterisk before it.  Write a program to keep track of all this.  You need to be able to add or delete records, and to edit any field.</P>
+<P>47. A bibliography program is to store records of books used in writing papers.  It must have the name of the author, title, place of publication, publisher, and year of publication.  Items can be added or deleted, and any field can be edited.  There should be a field to contain a mark that can be set or removed.  When the bibliography is printed out, only the currently marked items should be printed (many sets of citations possible from one list) and citations should be written (without the italics) in the form:</P>
+<P>	Granberg-Michaelson, Wesley, (ed.). <I>Tending the Garden<!--</I>‹<I>-->--Essays on the Gospel and the Earth</I>.  Grand Rapids, MI: Eerdmans, 1987 <BR>
+	Hofstadter, Douglas R. <I>G<!--ö-->&ouml;del, Escher, Bach: an Eternal Golden Braid</I>.  New York: Basic Books, 1979 <BR>
+	Holmes, Arthur F. <I>All Truth is God's Truth</I>.  Grand Rapids, MI: Eerdmans, 1977 </P>
+<P>48. The problem with using random access files with textual I/O is that the text fields are not all the same length (and therefore the records do not occupy the same amount of disk space).  Devise a way to overcome this and rewrite one of the programs in this chapter (or one of the exercises) to employ your method.  Carefully document the limitations of your technique.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

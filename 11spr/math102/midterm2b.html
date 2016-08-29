@@ -1,0 +1,271 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Midterm 2 (B) :: MATH102 11SP :: TWU</title>
+</head><body>
+
+<!--
+-->
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<p>MATH102 11SP Midterm ch7-10<br>
+<small>B <a href="#" onClick="toggleAnswers()">[ answers in web view ]</a>
+  Total points: 70</small></p>
+
+<div class="inspiration">
+  Let the words of my mouth and the meditation of my heart<br>
+  Be acceptable in Your sight, O LORD, my Rock and my Redeemer.<br>
+  -- Psalm 19:14
+</div>
+
+<ul class="instructions">
+  <li> Please show all your work!  No partial credit will be given for
+  incorrect answers with no work shown.
+  <li> Please draw a box around your final answer.
+  <li> You are only permitted to use your own calculator and writing implements.
+  Cell phones should be muted and left in your pocket or bag.
+  <li> All relevant tables are attached to the back.  You may detach them for your
+  reference.
+  <li> Assume &alpha; = 0.05 everywhere unless indicated otherwise.
+  <li> For t-tests on two groups, if the df is not given, you may use the
+  conservative estimate of df = min(n<sub>1</sub>, n<sub>2</sub>) - 1.
+</ul>
+
+<ol class="main">
+
+<li>
+Drug company "Faizer" claims their antidepressant is preferred by 30 out of
+40 physicians.  In response, drug company "Vonartis" claims their
+antidepressant is preferred by 55 out of 60 physicians.  Is Vonartis' drug
+significantly more preferred than Faizer's? <ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br> H<sub>0</sub>: binomial proportion p<sub>V</sub> &le; p<sub>F</sub>
+    <br>  H<sub>A</sub>: binomial proportion p<sub>V</sub> &gt; p<sub>F</sub>
+  </i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  <br>Should it be 1-tailed or 2-tailed? <u>[2]</u>
+  <i><br>Comparing two independent proportions, 1-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test (either p-value or classical approach) and
+  draw a conclusion. <u>[4]</u>
+  <i><br> SE<sub>V</sub> = sqrt(pq/n) = sqrt(0.917*0.083/60) = 0.03568
+    <br>  SE<sub>F</sub> = sqrt(pq/n) = sqrt(0.75*0.25/40) = 0.068465
+    <br> SE<sub>p1-p2</sub> = sqrt(0.917*0.083/60 + 0.75*0.25/40) = 0.07721
+    <br> z = ( (p'<sub>V</sub> - p'<sub>F</sub>) - 0 ) / SE
+      = (0.917 - 0.75) / 0.07721 = 2.1588
+    <br> P-value: p = 0.0156
+    <br> Classical: z* = 1.65
+  </i>
+  <div class="answerbox" style="height:9em"></div>
+
+  <li> <b>Interpret</b> your conclusion in the context of the two drug companies.
+  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br> </i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  Are the assumptions met?  Why? <u>[2]</u>
+  <i><br>Random sampling of physicians (this is a big assumption here!),
+    np = 30 &gt; 5, nq = 10 &gt; 5, np = 55 &gt; 5, nq = 5 &ge; 5 (borderline!).</i>
+  <div class="answerbox" style="height:4em"></div>
+</ol>
+
+<li>
+Human beta-endorphin (HBE) is a hormone secreted by the pituitary gland under
+conditions of stress (like exams!).  Suppose we wish to determine whether
+blood concentration of <b>HBE</b> (pg/mL) is different for men who
+<b>exercise</b> regularly as compared with men who do <b>not exercise</b>
+regularly.  <ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br>[H<sub>0</sub>: &mu;<sub>ex</sub> = &mu;<sub>no</sub>:
+    HBE levels are the same for both groups.
+    <br>H<sub>A</sub>: &mu;<sub>ex</sub> &ne; &mu;<sub>no</sub>:
+    HBE levels are different for the two groups.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  <br>Should it be 1-tailed or 2-tailed? <u>[2]</u>
+  <i><br>t-test on independent groups, 2-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> Data for this experiment are given below.  Sketch <b>boxplots</b>
+  for the data, on a common axis (number line). <u>[4]</u>
+  <table class="data">
+    <tr><td colspan="8"></td><th>Mean:</th><th>SD:</th></tr>
+    <tr><th>Exercisers:</th>
+      <td> 60</td><td> 58</td><td> 63</td><td> 49</td>
+      <td> 51</td><td> 43</td><td> 54</td>
+      <td> 54</td><td>6.9282</td></tr>
+    <tr><th>Non-exercisers:</th>
+      <td> 41</td><td> 37</td><td> 51</td><td> 60</td>
+      <td> 28</td><td> 35</td><td>   </td>
+      <td> 42</td><td>11.6276</td></tr>
+  </table>
+  <div class="answerbox" style="height:10em"></div>
+
+  <li> <b>Run</b> the test (either p-value or classical approach) and
+  draw a conclusion. <u>[4]</u>
+  <i><br>SE<sub>E</sub> = 2.6186, SE<sub>N</sub> = 4.7469, SE = 5.4213.
+    <br>mean diff = 12, so t = 2.2135
+    <br> df = min(n<sub>1</sub>, n<sub>2</sub>) - 1 = 5 (real df = 6.45).
+    <br>P-value: two-tailed: 0.05 &lt; p &lt; 0.10 (real p = 0.0778).
+    <br>Classical: t* = 2.5706</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> <b>Interpret</b> your conclusion in the context of the original 
+  research question.  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br>Fail to reject H<sub>0</sub>,
+    HBE levels for the two groups are not significantly different.</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling on both groups; HBE levels are normally
+    distributed in both groups; variance of HBE levels is similar in both
+    groups.</i>
+  <div class="answerbox" style="height:3em"></div>
+</ol>
+
+<li>
+Does HBE concentration in men increase after they exercise?
+<br>Data from a study of 6 men are below.
+<table class="data">
+  <tr><td colspan="7"></td><th>Mean</th><th>SD</th></tr>
+  <tr><th>Before:</th>
+    <td>42</td><td>55</td><td>39</td>
+    <td>50</td><td>49</td><td>47</td>
+    <td>47</td><td> 5.762</td></tr>
+  <tr><th>After:</th>
+    <td>47</td><td>55</td><td>44</td>
+    <td>51</td><td>49</td><td>54</td>
+    <td>50</td><td> 4.195</td></tr>
+</table>
+<ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br>H<sub>0</sub>: &mu;<sub>d</sub> &le; 0
+    (presuming d = after - before; you could also subtract in the other order),
+    HBE concentration does not increase after exercise.
+    <br> H<sub>A</sub>: &mu;<sub>d</sub> &gt; 0,
+    HBE concentration does increase after exercise.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  <br>Should it be 1-tailed or 2-tailed? <u>[2]</u>
+  <i><br> Dependent t-test on pairwise differences. 1-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test (either p-value or classical approach) and
+  draw a conclusion. <u>[4]</u>
+  <i><br>mean diff = 3.00, SD of diffs = 3.033,
+    <br>SE<sub>d</sub> = 1.238, so t = 2.423.  df=5, one-tailed.
+    <br> P-value: 0.02 &lt; p &lt; 0.05 (real p = 0.03)
+    <br> Classical: t* = 2.015.</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> <b>Interpret</b> your conclusion in the context of the original
+  research question.  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br>Reject H<sub>0</sub>,
+    HBE concentration rises after exercise.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling of men; change in HBE concentration is
+    normally distributed.</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+<li>
+A factory needs to ensure that the widgets it produces have variance no more
+than 2.5mm<sup>2</sup>.  An inspector from corporate headquarters randomly
+selects 41 widgets from the factory, to check if the factory is within
+specifications.  Those 41 widgets have a variance of 3.6mm<sup>2</sup> in
+length. <ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br> H<sub>0</sub>: variance &sigma;<sup>2</sup> &le; 2.5
+    <br> H<sub>A</sub>: variance &sigma;<sup>2</sup> &gt; 2.5</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  <br>Should it be 1-tailed or 2-tailed? <u>[2]</u>
+  <i><br>&chi;<sup>2</sup> (chi-squared), 1-tailed.</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> <b>Run</b> the test (either p-value or classical approach) and
+  draw a conclusion. <u>[4]</u>
+  <i><br> &chi;<sup>2</sup> = 57.6, df = 40.
+    <br> P-value: 0.025 &lt; p &lt; 0.05 (actual p = 0.03527)
+    <br> Classical: &chi;<sup>2</sup>* = 55.8</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> <b>Interpret</b> your conclusion in the context of the original
+  research question.  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br> Reject H<sub>0</sub>: the factory is out of spec.</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling; length of widgets is normally distributed.</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+<li>
+"Faizer" and "Vonartis" also produce competing blood <b>glucose</b> monitors.
+An independent lab obtains one glucose monitoring
+device from each company.  A single sample of blood is tested 15 times in each
+company's glucose monitoring device.  Faizer's device yields a standard
+deviation of 0.35 mmol/L; Vonartis' device yields a standard deviation of
+0.22 mmol/L.  Is there a difference in the <b>precision</b> of the two companies'
+devices? <ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br> H<sub>0</sub>: &sigma;<sub>F</sub> = &sigma;<sub>V</sub>, or
+    &sigma;<sub>F</sub><sup>2</sup> / &sigma;<sub>V</sub><sup>2</sup> = 1
+     <br> H<sub>A</sub>: &sigma;<sub>F</sub> &ne; &sigma;<sub>V</sub>, or
+    &sigma;<sub>F</sub><sup>2</sup> / &sigma;<sub>V</sub><sup>2</sup> &ne; 1
+  </i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  <br>Should it be 1-tailed or 2-tailed? <u>[2]</u>
+  <i><br>F-test comparing two variances, 2-tailed.</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> <b>Run</b> the test (either p-value or classical approach) and
+  draw a conclusion. <u>[5]</u>
+  <i><br> F = 0.35<sup>2</sup> / 0.22<sup>2</sup> = 2.5310, df = (14, 14)
+    <br> 2-tailed p-value: p &cong; 0.10 (actual p = 0.0934)
+    <br> Classical: F*(12,14,0.025) = 3.05, F*(15,14,0.025) = 2.95</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> <b>Interpret</b> your conclusion in the context of the two drug companies.
+  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br> Fail to reject H0: no significant difference in precision between
+  the two companies' blood glucose monitors.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?  <u>[2]</u>
+  <i><br>Random sampling of blood, normal distribution of blood glucose levels.</i>
+  <div class="answerbox" style="height:3em"></div>
+</ol>
+
+</ol>
+</body></html>

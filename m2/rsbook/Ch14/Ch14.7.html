@@ -1,0 +1,134 @@
+<HTML><HEAD><TITLE>14.7 Trees</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Trees">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.7 Trees</B></H2>
+<P>As with the treatment of sorting, it is natural to ask whether the problems of linear access to data that become evident with linked lists (whether viewed as lists, stacks, queues, or tables) can be overcome by organizing the data in some manner that is not strictly sequential.  There is another data structure that can be employed to cut down on the amount of search time considerably; it involves attaching the connecting strands in such a way that a given item (node) in the structure can point to more than one other successor item.</P>
+<P>As before, there is a unique first item that has no predecessor in the structure, and a pointer (initially NIL) is kept to this item, but this time the first node is called the <I>root</I> rather than the <I>head</I>.</P>
+<BLOCKQUOTE><I><A NAME="Tree">A</A> data structure in which all nodes may have more than one successor and all nodes except one (the root) have one predecessor is called a <U>tree</U>.</I></BLOCKQUOTE>
+<P><CENTER><IMG SRC="Figure/Figure_14.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>In figure 14.1, each box represents a node that encapsulates some data elements and some pointers to subsequent nodes.  Pointers without nodes attached would be given the value NIL to mark the end of a chain of descent through the tree.  In this diagram, some of the boxes have two pointers and some have three, which is all right in an abstract tree in mathematics, but will not do for the data structures here, as one would want all the nodes to be of the same <I>Node Type</I>.</P>
+<P>So, usually, one works with a small but fixed number of pointers. In the simplest possible case, this number is two.  The root item has two pointers, called a <I>left</I> and <I>right</I> pointer, and the items pointed to in turn each point to at most two more, (also via <I>left</I> and <I>right</I> pointers) and so on, through possibly several levels.  As with other structures, one eventually gets to items with no successors; their pointers are set to <i>NIL</i></P>
+<BLOCKQUOTE><I><A NAME="Trees">A</A> tree whose nodes each have two pointers to potential  subsequent nodes is called a <U>binary</U> tree.</I></BLOCKQUOTE>
+<P>Here are some commonly used terms that apply to all trees, whether binary or not.</P>
+<BLOCKQUOTE><I>The number of pointer links required to move from a given node to the root node is called the <U>level</U> of that node.</BLOCKQUOTE>
+<BLOCKQUOTE>The highest level number of any node in a tree is its <U>depth</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>A node with no successors (both pointer values are  NIL) is called a <U>leaf</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>An immediate successor node is called a <U>child</U> of its predecessor.</BLOCKQUOTE>
+<BLOCKQUOTE>An immediate predecessor node is called the <U>parent</U> of its children.</BLOCKQUOTE>
+<BLOCKQUOTE>Nodes with a parent-child path of length one or more between them are called <U>ancestors</U> and <U>descendents</U>.  The root has no ancestors, and leaves have no children.</BLOCKQUOTE>
+<BLOCKQUOTE>The maximum number of children a node can have is called the <U>degree</U> of the node (and hence, by extension, the degree of the tree.)</I></BLOCKQUOTE>
+<P><IMG SRC="Figure/Figure_14.2.GIF"><!----></P>
+<P>At level i there are potentially 2<sup>i</sup> items, and if there are n levels, then there are at most (2<sup>(n+1)</sup>) - 1 items in the tree altogether.  At the last level, there are many NIL pointers, and for simplicity, these have not been shown on this diagram.  Of course, the tree may have some positions not filled on one or more levels, but it is possible to characterize a tree that has the maximum number of items actually present by the following:</P>
+<BLOCKQUOTE><I><A NAME="Full">If</A> all the NIL pointers on level n are NIL (no children) then the tree is <U>full</U>.</I></BLOCKQUOTE>
+<P>Notice that this use of the term <I>full</I> is different that earlier uses of the same word.  Here, it does not mean that no more items can be added (just start on the next level). Rather it means that all potential positions up to the given level are actively being used. Of course, if the attempt to allocate memory for a new node fails, the tree could be <I>full</I> full, not just mathematically or abstractly full.</P>
+<P>What is the advantage of using a tree to store data nodes?  Observe that a 15-item collection has only four levels when organized this way and a pointer-by-pointer search for data starting at the root will take at most four pointer assignments, including the first, whereas the same search on strictly linear (un-indexed) data could take fifteen steps.  In other words,</P>
+<BLOCKQUOTE><I>Linear searches are <B>O</B>(n) but searches in binary trees are <B>O</B>(log<sub>2</sub>n).</I></BLOCKQUOTE>
+<P>All that remains is to develop a rule whereby new data is sorted into a tree.  The same rule can be adapted for the traversal of a tree, whether it is to search for an item or to process them all.  The most commonly used rule for binary trees is:</P>
+<BLOCKQUOTE><I>If an item is less, it goes on the left; if it is greater, it goes on the right.</I></BLOCKQUOTE>
+<H3><B>Example: </B></H3>
+<P>Data whose key items are the cardinals 4, 10, 19, 1, 78, 17, and 12 arrive to be entreed into the binary tree above.  The first item is placed in the root node, the second is greater, so it goes into the left child node of the root.  The third is greater than the root and goes into tits right child, producing figure 14.3 at this stage.</P>
+<P><CENTER><IMG SRC="Figure/Figure_14.3.GIF" BORDER="1"></CENTER><!----></P>
+<P>Now the number 1 arrives.  It is less than 14 so move left, and less than 10, so move left again.  Here there is no node yet, so make one.  Likewise, the number 78 goes at the far right, 17 to the right of 14 and then the left of 19, and finally 12 goes to the left of 14 and the right of 10, neatly filling the tree as shown in figure 14.4.</P>
+<P><CENTER><IMG SRC="Figure/Figure_14.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>When the tree is traversed for searching or processing, there are three possible orders in which the traversal can be done (recursively).</P>
+<BLOCKQUOTE><U><I><A NAME="Traversal">In-order traversal</A></U>: left child, parent, right child.<BR>
+<U>Pre-order traversal</U>: parent, left child, right child.<BR>
+<U>Post- order traversal</U>: left child, right child, parent.<U></I></U></BLOCKQUOTE>
+<P>For instance in the above tree, if the data were processed in-order starting at the root, the processor would postpone the root and go left, postpone that node as a parent and go left again, and so on until reaching a leaf.  This leaf would be processed, then its parent, then anything to the right of that parent in the same fashion.  Next, processing would back up to the parent of that parent and process to its right (the left is done.)   The rightmost child is processed last.  This yields (for the tree above)</P>
+<P>1, 10, 12, 14, 17, 19, 78</P>
+<P>The same tree traversed pre-order would result in processing the nodes in the sequence:</P>
+<P>14, 10, 1, 12, 19, 17, 78</P>
+<P>The same tree traversed post-order would result in processing the nodes in the sequence:</P>
+<P>1, 12, 10, 17, 78, 19, 14</P>
+<P>Notice that a slight change to the data results in a rather different tree.  For instance suppose the number 17 were changed to the number 21.  It would have gone right of the 19 and then left of the 78, producing the tree in figure 14.5.</P>
+<P><CENTER><IMG SRC="Figure/Figure_14.5.GIF" BORDER="1"></CENTER><!----></P>
+<P>An in traversal of this tree processes the nodes in the sequence:</P>
+<P>1, 10, 12, 14, 19, 21, 78</P>
+<P>which is, as above, the correct order from lowest to highest.  Indeed, a binary tree filled with the rule <!--"-->&quot;left is less and right is more<!--"-->&quot; can always be traversed in-order to process the elements in their sorted order.  There may be times when one of the other two processing orders are more useful, but for sorted binary trees, it seems that only one of the methods is of immediate use.  It is useful for the purposes of this work to think of a parent and all of its descendents as a <i>sub-tree</i> of the original tree.  In so doing, such processing provides a interesting illustration of recursion.</P>
+<P>For instance, suppose one had:</P>
+<PRE>
+<B>TYPE</B>
+  ShortString = <B>ARRAY</B> [0..10] <B>OF</B> <B>CHAR</B>;
+  NodePointer = <B>POINTER</B> <B>TO</B> Node;
+  Node =
+    <B>RECORD</B>
+      name : ShortString;
+        (* more data fields here *)
+      leftPoint, rightPoint : NodePointer;
+    <B>END</B>;
+ActionProc = <B>PROCEDURE</B> (NodePointer);
+
+<B>VAR</B>
+  root : Point;</PRE>
+<P>Then, assuming the list to have been correctly initialized, the following procedure will take the pointer to any node and process the data at all following nodes (descendents) from the given parent:</P>
+<PRE>
+<B>PROCEDURE</B> InTraverse (parent : NodePointer, Proc :ActionProc);
+<B>BEGIN</B>
+  <B>IF</B> root # <B>NIL</B>
+    <B>THEN</B>
+      InTraverse (parent^.leftPoint, Proc);
+      ActionProc (parent);
+      InTraverse (parent^.rightPoint, Proc);
+    <B>END</B>;
+  <B>END</B> PrintTree;</PRE>
+<P>If the desired processing involved printing out data elements, a procedure such as :</P>
+<PRE>
+<B>PROCEDURE</B> WriteNode (point : NodePointer);
+<B>BEGIN</B>
+  <B>WITH</B> point^
+    <B>DO</B>
+      WriteString (name);
+      (* print other fields here *)
+    <B>END</B>;
+<B>END</B> WriteNode;</PRE>
+<P>could be executed on the entire tree with the call</P>
+<PRE>
+InTraverse (root, WriteNode);</PRE>
+<P>and, if necessary, corresponding <I>PreTraverse</I> and <I>PostTraverse</I> procedures could easily be constructed from <I>InTraverse</I> by reordering the three lines.  In a more complex situation, one would modify this to print out as much of the data as required at each node before printing the left and right sub-trees.  If all this were to be encapsulated in a library, some additional definitions would be necessary to account for the opacity of the type <I>Tree</I> and the traverse procedure available to the outside world would be written with a tree parameter rather than with a node pointer parameter.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

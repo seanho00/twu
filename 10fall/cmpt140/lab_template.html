@@ -1,0 +1,188 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>Template Lab Write-up :: CMPT140 :: TWU</title>
+</head><body>
+
+<h1>CMPT140 Lab 00: Template Lab Write-up</h1>
+<em>(Labs1-2 require only a simplified version of this.
+  Labs3 and on require every section of this write-up!
+  Don't underestimate the amount of effort it takes to do a good write-up!)</em>
+
+<h2>Problem:</h2>
+Compute the amount there will be in my bank account after one year if
+the interest is compounded quarterly and any withdrawals I make are entered
+immediately after the interest is paid.
+
+<h2>Problem Suitability:</h2>
+The bank account example given above is well within the reach of a simple
+calculator, and is therefore of somewhat marginal suitability for computer
+solution.  However, the solution does illustrate how a number of the
+programming ideas discussed in chapter one are actually implemented in Python.
+
+<h2>Problem Restatement:</h2><ul>
+<li> <b>Given:</b> A bank account, possibly containing money.
+<li> <b>To Do:</b> Compute interest, make withdrawals every 3 months.
+<li> <b>Desired Result:</b> Final balance.
+<li> <b>Formula:</b> <tt>interest = principal * rate * time</tt>
+</ul>
+
+<h2>Libraries:</h2>
+This problem has both input and output requirements.  It will, therefore
+make use of the standard I/O Python functions <b>input()</b> and 
+<b>print()</b>.
+Because of the withdrawals, four separate simple interest
+calculations will be made, rather than one compound interest calculation.  
+No mathematical or financial libraries are required.
+
+<h2>Problem Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input Section:</b> <ul>
+  <li> obtain bank balance
+  <li> obtain interest rate
+  <li> obtain quarterly withdrawal amounts
+  </ul>
+<li> <b>Computation:</b> <ul>
+  <li> calculate interest each quarter
+  <li> subtract withdrawal each quarter
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> print out final balance
+  </ul>
+</ol>
+		
+<h2>Second Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input Section:</b> <ul>
+  <li> Ask the user for the initial balance,
+       	and assign the value to a float variable
+  <li> Ask the user for the interest rate,
+	and assign the value to another float variable
+  </ul>
+<li> <b>Computation:</b> <ul>
+  <li> For loop: for each current quarter from 1 to 4: <ul>
+    <li> Ask user for widthdrawl amount, and assign the value to a real variable
+    <li> Compute the interest using <tt>interest = principal * rate * time</tt>
+    <li> Add this to the original balance: <tt>balance = balance + interest</tt>
+    <li> Subtract the withdrawal from last balance:
+         <tt>balance = balance - withdrawal</tt>
+    </ul>
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> Print out the final balance
+  </ul>
+</ol>
+
+<h2>Pseudocode (third refinement; a fourth may also be necessary):</h2>
+In this refinement, only portions of the code that involve several steps,
+formulas, or computations (i.e. an algorithm) are detailed.  In this example,
+the last natural language refinement is followed very closely, so this 
+section might have been left out in this case, but it is included to make the 
+model for students to follow as complete as possible.
+
+<ul>
+<li> For quarter in a range from 1 to 5 (excluding 5): <ul>
+  <li> prompt user, "what is widthdrawal amount?", store in widthdrawal
+  <li> interest := principal * time * rate
+  <li> balance := balance + interest
+  <li> balance := balance - widthdrawl
+  </ul>
+</ul>
+
+<h2>Data Table:</h2>
+<h3>Variables:</h3> <ul>
+  <li> balance, rate, interest, withdrawal: all floats
+  <li> quarter: integer
+  </ul>
+<h3>Constants:</h3> <ul>
+  <li> time = 0.25
+  </ul>
+
+<h2>Sample I/O:</h2>
+<ul>
+<li> What is the opening balance? $100
+<li> What percent is the annual interest rate? 12.3
+<li> How much do you wish to withdraw in quarter number 1? $20
+<li> How much do you wish to withdraw in quarter number 2? $10
+<li> How much do you wish to withdraw in quarter number 3? $50
+<li> How much do you wish to withdraw in quarter number 4? $25
+<li> The final balance in your account is $ 3.81478643166
+</ul>
+
+<h2>User Manual:</h2>
+
+<h3>Description:</h3>
+Bank Interest is a small application designed to maintain a
+simple bank account record.  It allows the user to specify the opening balance,
+and annual interest rate at the beginning of the program, and then to make
+quarterly withdrawals.  Interest is calculated on the balance before the
+withdrawal.
+
+<h3>Operation:</h3>
+Locate the bankinterest.py file in your filesystem.
+You may run the file directly by double-clicking on its icon (in Windows),
+or by typing the name of the file at the operating system command prompt
+(DOS or Unix).
+<p>
+Alternately, you may start the IDLE Python environment first, then select
+the File/Open menu item and select the Python file to open.  Then press F5 
+to run the program.
+<p>
+Upon starting, the program will prompt
+  <pre>What is the opening balance? $</pre>
+Type in the number of dollars that the bank account had at
+the start of the year.
+
+Following this, the prompt
+  <pre>What percent is the annual interest rate? </pre>
+will appear on the screen.  Type in the interest rate as a percentage;
+for example, type <tt>6.5</tt> if the interest rate is 6.5%.  Do not type
+the percent symbol.
+
+Now, for each quarter, a message like
+  <pre>How much do you wish to withdraw in quarter number 1? $</pre>
+will appear on the screen.  Respond with the amount being withdrawn for that
+quarter in the form 10.23.  That is, give the number in decimal form and
+without a dollar sign.  The program will finally respond with a message like:
+  <pre>The final balance in your account is $103.47</pre>
+
+<h2>Code:</h2>
+<em>(In an actual lab write-up, you would upload your code as a separate .py file
+  rather than including it within the write-up document.)</em>
+
+<pre>
+"""A simple bank account example for our template lab writeup.
+
+Name: Nellie Hacker
+Student Number: 123456
+CMPT 140 Fall 2009
+Lab 00
+Bank Interest Computation
+"""
+
+# Welcome blurb
+print "This program computes interest on an account", \
+      "quarterly, and then allows for withdrawals."
+print
+
+# Get initial input
+balance = input("What is the opening balance? $")
+rate = input("What percent is the annual interest rate? ")
+time = 0.25     #compound quarterly
+
+# Input / computation for each quarter
+for quarter in range(1,5):
+    withdrawal = input("How much do you wish to withdraw in quarter number " +
+                      str(quarter) + "? $")
+    interest = balance * time * rate / 100
+    balance = balance + interest
+    balance = balance - withdrawal
+
+# Final output
+print "The final balance in your account is $", balance
+
+# Pause before quitting so user can read output
+raw_input()
+
+</pre>
+<b>NOTE:</b> An actual lab assignment submission should include several
+sample runs with different input.
+
+</body></html>

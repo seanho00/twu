@@ -1,0 +1,265 @@
+<HTML><HEAD><TITLE>17.8 The Date and Time</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Date and Time">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>17.8 The Date and Time</B></H2>
+<P>It is often important to time operations or to keep track of elapsed time between user responses.  This could be done in order to:</P>
+
+<P>- determine the relative efficiency of sorting procedures</P>
+<P>- time user responses in a game or learning environment</P>
+<P>- calculate the number of elapsed days for interest calculations</P>
+<P>- place a time or date "stamp" in a document, such as a letter</P>
+
+<P>Some computing systems have only an elapsed time clock. These only keep track of how much time has passed since the system was started up for the last time.  Better (not all) systems have a battery operated real time clock that keeps track of the current year, month, day, hour, minute, and second.  They may also have fractions of a second, information on the difference between local time and Universal Time, and on whether daylight savings time is in effect. The details of what information is available will vary from one system to another.</P>
+<P>If there is a clock present, it may be possible for a client program to set the clock as well as get information from it. In a UNIX system, this is unlikely, as users are generally not allowed access to system features.  On personal computers, the opposite is the rule<!--‹-->--the user can do almost anything.</P>
+<P>In order to take as many as possible of these variations in effect, ISO Modula-2 mandates the following low-level module for setting and examining the system clock.  Note that some items are implementation defined.</P>
+<h3><a name="17.8.1">17.8.1</a> The Module SysClock</h3>
+ 
+<Pre><B>DEFINITION</B> <B>MODULE</B> SysClock;
+
+(* =========================================
+             Definition Module from
+                  ISO Modula-2
+ISO/IEC IS10515 by JTC1/SC22/WG13
+  Original specification and design of SysClock 
+    Copyright © 1990-1991 by R. Sutcliffe
+    Assigned to ISO for standards work
+    Language and Module designs © 1992 - 1995by
+BSI, D.J. Andrews, B.J. Cornelius, R. B. Henry
+R. Sutcliffe, D.P. Ward, and M. Woodman
+
+=========================================== *)
+
+(* Facilities for accessing a system clock that records the date and time of day *)
+
+<B>CONST</B>
+  maxSecondParts = 0; (* this number is implementation defined *)
+  
+<B>TYPE</B>
+  Month    = [1 .. 12];
+  Day      = [1 .. 31];
+  Hour     = [0 .. 23];
+  Min      = [0 .. 59];
+  Sec      = [0 .. 59];
+  Fraction = [0 .. maxSecondParts];
+  UTCDiff  = [-780 .. 720];
+  DateTime =
+    <B>RECORD</B>
+      year:      <B>CARDINAL</B>;
+      month:     Month;
+      day:       Day;
+      hour:      Hour;
+      minute:    Min;
+      second:    Sec;
+      fractions: Fraction;      (* parts of a second *)
+      zone:      UTCDiff;       (* Time zone differential factor which is the number
+                                   of minutes to add to local time to obtain UTC. *)
+      summerTimeFlag: <B>BOOLEAN</B>;  (* Interpretation of flag depends on local usage. *)
+    <B>END</B>;
+  
+<B>PROCEDURE</B> CanGetClock (): <B>BOOLEAN</B>;
+  (* Returns TRUE if a system clock can be read; FALSE otherwise *)
+ 
+<B>PROCEDURE</B> CanSetClock (): <B>BOOLEAN</B>;
+  (* Returns TRUE if a system clock can be set; FALSE otherwise *)
+ 
+<B>PROCEDURE</B> IsValidDateTime (userData: DateTime): <B>BOOLEAN</B>;
+  (* Returns TRUE if the value of userData represents a valid date and time; FALSE otherwise *)
+ 
+<B>PROCEDURE</B> GetClock (<B>VAR</B> userData: DateTime);
+  (* If possible, assigns system date and time of day to userData *)
+ 
+<B>PROCEDURE</B> SetClock (userData: DateTime);
+  (* If possible, sets the system clock to the values of userData *)
+
+<B>END</B> SysClock.</Pre>
+
+<B><h3><a name="17.8.2">17.8.2</a> Time and Date I/O</h3></B>
+<P>No other facilities are provided in the ISO standard library, as needs vary from one application and system to another.  However, if the clock is available, it is not difficult to write procedures to output the last date and/or time read from the clock.</P>
+
+<Pre><B>MODULE</B> TestClock;
+(*  by R. Sutcliffe
+ to illustrate SysClock *)
+
+<B>FROM</B> SysClock <B>IMPORT</B>
+  DateTime , CanGetClock, GetClock;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+    WriteCard;
+
+<B>PROCEDURE</B> Pad (number : <B>CARDINAL</B>);
+<B>BEGIN</B>
+  <B>IF</B> number <!--<-->&lt; 10
+    <B>THEN</B>
+      WriteChar("0");
+    <B>END</B>;
+<B>END</B> Pad;
+
+<B>PROCEDURE</B> WriteDateTime (dateTime : DateTime);
+<B>BEGIN</B>
+  WriteString ("Date: ");
+  WriteCard (dateTime.year, 1);
+  Pad (dateTime.month);
+  WriteCard (dateTime.month, 0);
+  WriteChar (" ");
+  Pad (dateTime.day);
+  WriteCard (dateTime.day, 1);
+
+  WriteString ("   Time: ");
+  Pad (10* dateTime.hour);
+  Pad (dateTime.hour);
+  WriteCard (dateTime.hour, 1);
+   Pad (dateTime.minute);
+  WriteCard (dateTime.minute, 1);
+  WriteString (" : ");
+   Pad (dateTime.second);
+  WriteCard (dateTime.second, 1);
+  
+<B>END</B> WriteDateTime;
+
+<B>VAR</B>
+  dateTime : DateTime;
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> CanGetClock()
+    <B>THEN</B>
+      <B>FOR</B> count := 1 <B>TO</B> 10
+        <B>DO</B>
+          GetClock (dateTime);
+          WriteDateTime (dateTime);
+          WriteLn;
+        <B>END</B>;
+    <B>ELSE</B>
+      WriteString ("No clock available");
+    <B>END</B>;
+<B>END</B> TestClock.
+</Pre>
+<P>When this program was run, the following output was produced.</P>
+
+<Pre>Date: 1996 11 08   Time: 0911 : 05
+Date: 1996 11 08   Time: 0911 : 05
+Date: 1996 11 08   Time: 0911 : 05
+Date: 1996 11 08   Time: 0911 : 05
+Date: 1996 11 08   Time: 0911 : 06
+Date: 1996 11 08   Time: 0911 : 06
+Date: 1996 11 08   Time: 0911 : 06
+Date: 1996 11 08   Time: 0911 : 06
+Date: 1996 11 08   Time: 0911 : 06
+Date: 1996 11 08   Time: 0911 : 06</Pre>
+
+<P>There are a number of possibilities for expanding the primitive I/O for date and time in this module. Consider the following formats for date  input and output:</P>
+
+<Pre>January 7, 1996      month day year     long month name with comma
+Jan 7 1996           month day year     short month name without comma
+1/7/96               month day year     all numeric with slashes
+01/07/1996           month day year     numeric, slashes, leading zeros, century
+7th Jan 1996         day month year     day with suffix, short month name with spaces
+1996 01 07           year month day     ISO format with century, spaces, leading zeros
+</Pre>
+<P>These possibilities could be encapsulated in a conversion module in the following way:</P>
+
+<Pre><B>TYPE</B>
+  separator = (space, slash, comma);
+  order = (ymd, dmy, mdy);
+  monthNames = (numeric, short, long);
+  Date =
+    <B>RECORD</B>
+      year : <B>CARDINAL</B>;
+      month : Month;
+      day : Day;
+    <B>END</B>;
+  Format =
+    <B>RECORD</B>
+      sep : separator;
+      ord : order;
+      useNames : monthNames;
+      useSuffix : <B>BOOLEAN</B>;
+    <B>END</B>;
+
+<B>PROCEDURE</B> FormatDate (date: Date, format : Format; <B>VAR</B> result : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);</Pre>
+
+<P>The task of designing and writing a suite of formatting and I/O modules for date and time has been left for the exercises.</P>
+<h3><a name="17.8.3">17.8.3</a> Time and Date Arithmetic</h3>
+<P>The most common arithmetic that might have to be done on dates and times is to find the elapsed time or date (or both) between two events or to add or subtract a period to a time or a date.  For instance, one could define a module:</P>
+
+<Pre><B>DEFINITION</B> <B>MODULE</B> DateMath;
+
+<B>FROM</B> SysClock <B>IMPORT</B>
+  DateTime, Month, Day;
+<B>TYPE</B>
+  Date =
+    <B>RECORD</B>
+      year : <B>CARDINAL</B>;
+      month : Month;
+      day : Day;
+    <B>END</B>;
+
+<B>PROCEDURE</B> IsValid (da : Date)  : <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> AssignDateToDateTime (da : Date) : DateTime;
+
+<B>PROCEDURE</B> AssignDateTimeToDate (dt : DateTime)  : Date;
+
+<B>PROCEDURE</B> Inc (<B>VAR</B> da : Date; delta : Date);
+(* Increase the given date by the year, month and day specified in delta *)
+
+<B>PROCEDURE</B> Dec (<B>VAR</B> da : Date; delta : Date);
+(* Decrease the given date by the year, month and day specified in delta *)
+
+<B>PROCEDURE</B> DateSpan (from, to : Date) : Date;
+(* Increase the given date by the year, month and day specified in delta *)
+
+<B>END</B> DateMath.</Pre>
+
+<P>A very similar module could be written for doing mathematics on times.  Doing so, and implementing both, is left as an exercise for the reader.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>
+

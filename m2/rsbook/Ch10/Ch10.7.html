@@ -1,0 +1,147 @@
+<HTML>
+<HEAD>
+<TITLE>10.7 Library Modules--Scope and Visibility Rules</TITLE>
+<meta NAME="keywords" CONTENT="library, module, modules, scope, visibility, rule, rules, import, export, qualified, qualify, access, import, imported, library, libraries, inner, outer, scope, scopes, definition, define, implementation, implement, opaque, listerine, type, transparent">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.7 Library Modules<!--</B>‹<B>-->--Scope and Visibility Rules</B></H2>
+<P>Consider for a moment the modules already used, and recall that the <I>WriteString</I> of <I>STextIO</I> is not the same procedure as the <I>WriteString</I> of <I>TextIO</I>.  A number of previous examples have utilized the fact that when both are needed, a clash can  be avoided by writing:</P>
+<PRE>
+<B>IMPORT</B> STextIO;</PRE>
+<P>among the other IMPORT lists and then referring to the qualified identifier <I>STextIO.WriteString</I> when it was required instead of the <I>WriteString</I> from <I>TextIO</I>.</P>
+<P>The astute reader should realize that this treatment must be a consequence of the very nature of library modules, for since their exported items are available to be imported into unknown scopes, all those exports must in fact be QUALIFIED.  Not only is this true, but in earlier versions of Modula-2, it was also necessary to include the line</P>
+<PRE>
+<B>EXPORT</B> <B>QUALIFIED</B> <!--<-->&lt;list of entities<!-->&gt;;</PRE>
+<P>in <I>every</I> definition module, so as to specify which items were available for import by program modules.  However, since the normal reason for not exporting an item was to have it for the private use of the implementation, Wirth decided that the meaning of a definition module should include an implicit qualified export of all items listed in it, so this line is no longer necessary.</P>
+<P>Thus, there is always a choice between importing only the library name and having to refer to all its items qualified, or listing the items in an unqualifying FROM and then referring to them unqualified.</P>
+<P><B>NOTE</B>:	Some (including many of those involved in the ISO work) prefer to import always by library name only, never by item name.  They use all library items in qualified fashion at all module levels.  On the other hand, the author of this text takes the view that in most cases, qualified identifiers are too cumbersome for code writing, and avoids them unless there is some other reason than the additional clarity alleged for individual statements. </P>
+<H3><B><A NAME="10.7.1">10.7.1</A> Access to Imported Libraries at Inner Scopes</B></H3>
+<P>As already observed, IMPORT and EXPORT, of whatever kind, can only affect visibility one scope at a time.  Thus, when one writes:</P>
+<PRE>
+<B>FROM</B> French <B>IMPORT</B>
+  Fries;</PRE>
+<P><I>Fries</I> becomes visible in the scope where the IMPORT is being done, provided <I>French</I> was already visible in that scope.  This in turn implies that one could have referred to <I>French.Fries</I> in the scope where <I>French</I> is visible without doing any IMPORT at all, unless, of course, the module <I>French</I> is visible only because it is actually resident on the disk, and is only visible in the global scope.</P>
+<P>The first part of this chapter included a discussion of global and local identifiers, and made the observation that, since a program executes as a procedure, an identifier declared at the outermost level is really <I>local to the outer block</I> rather than <I>global</I>, though the difference in practice is not important.</P>
+<P>Now, because modules are really identifiers used in a way that allows control over visibility, the same considerations of <I>global</I> versus <I>local</I> apply to them as to any other identifier.  That is, a module can be declared at or imported into the outermost level of a program (<I>global</I>) or declared at or imported into some module buried inside the program (<I>local</I> - to some degree).</P>
+<P>Specifically, if a local module requires some entities from external libraries, they must first be made available in the main program module, after which they can be imported to some inner scope.  Here is a follow-up from the last example to illustrate this.  This one is like <I>LocalDemo</I>, except that both procedures are inside the local module.  Since imports can only come from the surrounding scope, note how the local module gains the use of library modules, with either an import of items directly visible there, or of ones in libraries visible there.</P>
+<PRE>
+<B>MODULE</B> LibVisibilityDemo;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString;
+<B>IMPORT</B> STextIO;
+
+<B>MODULE</B> Inner;
+<B>IMPORT</B> WriteString;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn;
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;I can do this here.<!--"-->&quot;);
+  WriteLn;
+<B>END</B> Inner;
+
+(* WriteLn visible only as STextIO.WriteLn *)
+
+<B>END</B> LibVisibilityDemo.</PRE>
+<P>Note that if the program module requires entities from <I>STextIO</I>, it can import them unqualified as well as qualified (FROM).  Since only one copy of an item obtained from an imported module lives in the computer's memory at any one time, no additional storage space is required to do both types of imports.</P>
+<P>Any items not directly needed in the outer scope ought to be imported only as part of whole libraries, then imported into inner scopes as needed.  Then, only those items actually being used are available in each scope.</P>
+<H3><B><A NAME="10.7.2">10.7.2</A> Visibility in Library Modules</B></H3>
+<P>Like any other modules, library modules may employ only those entities that they either define themselves, or that they import from elsewhere.  These imports are subject to some special rules that apply only to library modules.  These were referred to in Chapter 6, and are included here for the sake of completeness.</P>
+<P>1. Any entities declared in the DEFINITION part of the library module are automatically visible to the IMPLEMENTATION part of the module.<BR>
+2. The converse is false.  Items declared only in the implementation part are visible only in the implementation part.<BR>
+3. Items imported from elsewhere by the definition part (for instance, types for parameter lists) are available only in the definition part.  They must be imported separately by the implementation part.<BR>
+4. Even if the definition part redefines an enumerated import as its own, that does not make the field names of the original item visible in the implementation.</P>
+<P>Thus, one has, for instance:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RndFile;
+
+<B>IMPORT</B> IOChan, ChanConsts, <B>SYSTEM</B>;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+ 
+  (* Accepted singleton values of FlagSet *)
+ 
+<B>CONST</B>
+  read = FlagSet{ChanConsts.readFlag};
+  write = FlagSet{ChanConsts.writeFlag}; 
+  old = FlagSet{ChanConsts.oldFlag};
+  text = FlagSet{ChanConsts.textFlag};
+  raw = FlagSet{ChanConsts.rawFlag};
+
+<B>PROCEDURE</B> OpenOld (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+
+(* more stuff *)
+
+<B>END</B> RndFile.</PRE>
+<P>where assorted items are imported for the use of the definition module, and a number of them are redefined for the convenience of other modules that might want to import these common items from here, the redefined items are all available in the implementation part, but it must import its own copy of SYSTEM, and it does not have access to the enumeration values of the re-defined OpenResults directly; it must refer to them by importing ChanConsts.OpenResults itself and employing qualified identifiers of that module.  Here is a portion of the author's implementation:</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> RndFile;
+ 
+<B>IMPORT</B> ChanConsts, IOConsts, IOLink, IOChan, SYSTEM;
+<B>IMPORT</B> Filer;
+<B>FROM</B> Filer <B>IMPORT</B>
+  FileErr;
+<B>FROM</B> Strings <B>IMPORT</B>
+  Assign;
+  
+(* all the rest here *)
+
+<B>END</B> RndFile.</PRE>
+<H3><B><A NAME="10.7.3">10.7.3</A> Opaque Types<!--‹-->--a Brief Introduction</B></H3>
+<P>The more curious readers may have peeked into the Appendices by now and looked over some of the definition modules reproduced there.  If so, they may have noticed a few cases where there was a line like:</P>
+<PRE>
+<B>TYPE</B>
+   ChanId;</PRE>
+<P>with no actual definition of what the type was.  In this case, the details of the type definition are hidden away in the implementation module, and are not accessible to the programmer.  One reason this is done is so that the same definition module can serve many different computers, even though something like a <I>ChanId</I> might have a completely different structure, depending on the operating system or the disk format.</P>
+<BLOCKQUOTE><I><A NAME="Type">A</A> type that is exported from a definition module, but whose details are hidden in the implementation module is called an <U>opaque type</U>.  Types whose details are visible (normal types) are called <U>transparent types</U>. </I></BLOCKQUOTE>
+<P>These last two definitions are presented for information at this point.  This book will not be making use of opaque types for a while yet.  Suffice it to say for now that opaque types allow hiding the details of data from the view of the main program and prevent it from becoming corrupted inadvertently.  All access to that data is controlled by the procedures written specifically for that purpose.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

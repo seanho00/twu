@@ -1,0 +1,274 @@
+<HTML>
+<HEAD>
+<TITLE>11.7 The Variant Record--a Chameleon<</TITLE>
+<meta NAME="keywords" CONTENT="variant, variants, record, records, chameleon, type, case, constructor, constructors, discriminator, tag, field, selector, restrict, restriction, restrictions, name, named, undiscriminate, undiscriminated, union, data, entry, error, errors, trapping, trap, nondiscriminated, nondiscriminate, non-discriminating, non-discriminated">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>11.7 The Variant Record<!--</B>‹<B>-->--a Chameleon</B></H2>
+<P>Not only is it possible to model the data in a complex situation using a record that contains a variety of types and structures of data, it is even possible to arrange things so that the structure of the record is not itself fixed, but varies from one situation to another.</P>
+<P>Depending on the value contained in a designated fields, the ones that follow can have different identifiers and there may even be a different number of them.  Suppose one wanted the record <I>person</I> to contain the year and identity number only if the data represented a student, but the rank and pay if it was a faculty member, and the name of the position if it was a staff member.  The declarations might then look something like this:</P>
+<PRE>
+<B>TYPE</B>
+  Name = <B>ARRAY</B> [0 .. 20] <B>OF</B> <B>CHAR</B>;
+  Classification = (student, faculty, staff);
+  Year = (freshman, sophomore, junior, senior);
+  Rank = (instructor, assistant, associate, professor);
+  Job = (secretary, maintenance, janitor);
+  Date =
+    <B>RECORD</B>
+      year : <B>CARDINAL</B>;
+      month : MonthType;
+      day : [1 .. 31];
+    <B>END</B>;   (* of the record Date *)
+  Person =
+    <B>RECORD</B>
+      lastname, firstname : Name;
+      birthdate : Date;
+      (* use previous declarations for these. *)
+      male : <B>BOOLEAN</B>;
+      <B>CASE</B> status : Classification <B>OF</B>  (* varient part here *)
+        student:
+          idnumber : <B>CARDINAL</B>;
+          year : <B>CARDINAL</B> |
+        faculty:
+          position : Rank;
+          pay : <B>REAL</B> |
+        staff:
+          occupation : Job;
+      <B>END</B>;  (* case *)
+      married : <B>BOOLEAN</B>;
+    <B>END</B>;  (* of the record Person *)</PRE>
+<P>In an arrangement like this, the contents of the field <I>status</I> will determine the following fields and their names.  The selection is outlined using the CASE construction.  This is somewhat similar to the CASE statement, except that each value that is a potential selection is followed not by a statement sequence, but by the appropriate field names and their types for that particular case.</P>
+<BLOCKQUOTE><I><A NAME="Discriminator">A</A> record field whose sole purpose is to select the possible fields to follow is called a <U>discriminator</U> or a <U>tag</U> field or a <U>selector</U> field.</I></BLOCKQUOTE>
+<P><B>NOTES</B>:	1. This particular record has seven fields if the <I>status</I> field contains the value <I>student</I> or the value <I>faculty</I> and only six if it has the value <I>staff</I>.  The names of the other fields change accordingly.</P>
+<P>	2. Any number of variant sections can be introduced in a record and these can be intermingled freely with the fixed fields.  Note that in this respect, Modula-2 differs from some other languages which restrict the number of variant sections to one and require it to be last. </P>
+<P>	However, some non-standard implementations may otherwise restrict this by requiring that all but the last of such variant fields take the same amount of memory for each possible value of the tag that determines that variant.  In such versions, only the variant field that comes last in the record can have differing amounts of memory consumed by the various cases.</P>
+<P>	3. Each CASE section of the declaration has its own END.</P>
+<P>	4. The syntax of the variant part of a record is similar to that of the CASE statement.  For instance, the cases can be selected by lists or ranges of several values.</P>
+<P>	5. An ELSE clause is allowed, and must be present if not all the values of the tag field have been listed in the various cases.</P>
+<P>	6. Repeated or redundant case separators (such as before the ELSE) are permitted in ISO and all but the oldest of other versions of Modula-2, just as in the CASE statement.</P>
+<P>The general syntax of the variant part is:</P>
+<PRE>
+<B>CASE</B> tagName : tagType <B>OF</B>
+  selector list a:
+    fieldname 1a : fieldtype 1a;
+    fieldname 2a : fieldtype 2a;
+    ...
+
+    fieldname na : fieldtype na |
+  selector list b:
+    ...
+                |
+  selector list z
+    ...
+                |
+    fieldname nz : fieldtype nz
+  <B>ELSE</B>
+    last list of fields
+  <B>END</B>;</PRE>
+<P><B>NOTE</B>:	If one of the selectors will have no fields associated with it, none are put after the colon following the selector label, but even in such cases, the case separator between cases cannot be left out.</P>
+<P>The requirement on the else clause means that the following is illegal:</P>
+<PRE>
+<B>TYPE</B>
+  Range = [0..10];
+<B>VAR</B>
+  dist : Range;
+<B>TYPE</B>
+  Variant =
+    <B>RECORD</B>
+      <B>CASE</B> dist <B>OF</B>
+        2,3,4..7 :
+          int : <B>INTEGER</B>; |
+        1 :
+          card : <B>CARDINAL</B>
+        <B>END</B>;  (* illegal *)</PRE>
+<P>because the case values 6,8,9, and 10 have not been covered.  It could be replaced by one of the following:</P>
+<PRE>
+<B>TYPE</B>
+  Variant =
+    <B>RECORD</B>
+      <B>CASE</B> dist <B>OF</B>
+        2,3,4..7 :
+          int : <B>INTEGER</B>; |
+        1 :
+          card : <B>CARDINAL</B> |
+        6, 8..10 :
+        <B>END</B>;</PRE>
+<P>or by:</P>
+<PRE>
+<B>TYPE</B>
+  Variant =
+    <B>RECORD</B>
+      <B>CASE</B> dist <B>OF</B>
+        2,3,4..7 :
+          int : <B>INTEGER</B>; |
+        1 :
+          card : <B>CARDINAL</B>
+        <B>ELSE</B>
+        <B>END</B>;</PRE>
+<P>In some situations the tag field is anonymous<!--‹-->--it has a type, but no name.  If so, then the colon and the field name type are still required.</P>
+<BLOCKQUOTE><I><A NAME="Undiscriminated">A</A> variant part of a record that has no named tag or discriminator field is called an <U>undiscriminated union</U>.</I></BLOCKQUOTE>
+<PRE>
+<B>TYPE</B>
+  Number =
+    <B>RECORD</B>
+       <B>CASE</B> : <B>BOOLEAN</B> <B>OF</B> (* undiscriminated *)
+       (* no field name, but colon and type needed *)
+         <B>TRUE</B>:
+            int: <B>INTEGER</B>
+       |  <B>FALSE</B>:
+            card : <B>CARDINAL</B>
+         <B>END</B>
+      <B>END</B>;
+<B>VAR</B>
+  num: Number;</PRE>
+<P>In this last situation, there is only one field, because the tag field has not been named.  The one field that is present can, of course, be referred to either as <I>num.int</I>, or as <I>num.card</I>.  In the former case, it is an integer, and in the latter, it is a cardinal.  This ability could sometimes be quite important in Pascal, which lacked any other means of coercion to reinterpret the contents of a variable of one type as being of another type, but it is less likely to serve the same role in Modula-2, and has been commented on here only for the sake of completeness.  In Modula-2 one would use:</P>
+<PRE>
+int := <B>SYSTEM</B>.<B>CAST</B> (<B>INTEGER</B>, card);</PRE>
+<P>rather than sometimes refer to the item as a cardinal and others as an integer.  This latter solution is only possible if both types occupy the same amount of storage space.  The undiscriminated union would still work, but may give very strange results if both do not take the same amount of space.</P>
+<P>In the discriminated case (tag field has a name) it is the programmer's responsibility to ensure that the correct field name is chosen for filling in the record in a given situation.  For instance, for the type Person defined earlier, one could declare:</P>
+<PRE>
+<B>CONST</B>
+  nullStudent = Person {<!--"-->&quot;<!--"-->&quot;, {1900, 1, 1}, <B>TRUE</B>, student, 0, freshman}</PRE>
+<P>as a default record for initializing variables prior to entering student data.  Note that the value of the tag field must be given in the constructor along with values for the variant fields that value determines are needed.</P>
+<P>It is now possible to give the complete syntax diagram for the record declaration (figure 11.4):</P>
+<P><CENTER><IMG SRC="Figure/Figure_11.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>Naturally, a CASE statement is convenient when it comes time to write the code to fill the fields of a variant record.</P>
+<PRE>
+<B>PROCEDURE</B> Fill (<B>VAR</B> person : Person);
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+   index : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>WITH</B> person
+    <B>DO</B>
+      WriteString (<!--"-->&quot;Last name, please. <!--"-->&quot;);
+      ReadString (lastname); SkipLine;
+      WriteLn;
+      WriteString (<!--"-->&quot;And now the first name: <!--"-->&quot;);
+      ReadString (firstname); SkipLine;
+      WriteLn;
+      (* code to read date can be placed here *)
+      WriteString (<!--"-->&quot;Is this a male?  Answer Y or N. <!--"-->&quot;);
+      ReadChar (ch); SkipLine;
+      male := (<B>CAP</B> (ch) = <!--"-->&quot;Y<!--"-->&quot;);
+      WriteString (<!--"-->&quot;Enter a '0' for a student <!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;a '1' for a faculty member, <!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;or a '2' for a staff member. <!--"-->&quot;);
+      ReadCard (index); SkipLine;
+      WriteLn;
+      Status := <B>VAL</B> (Classification, index);
+
+      <B>CASE</B> Status <B>OF</B>
+        student:
+          WriteString (<!--"-->&quot;Give i.d. number, please. <!--"-->&quot;);
+          ReadCard (idnumber); SkipLine;
+          WriteLn;
+          WriteString (<!--"-->&quot;and enter the year 1 .. 4 <!--"-->&quot;);
+          WriteString (<!--"-->&quot;of studies. <!--"-->&quot;);
+          ReadCard (index); SkipLine;
+          year := <B>VAL</B> (Year, index - 1) |
+        faculty:
+          WriteString (<!--"-->&quot;Enter the rank of the faculty member <!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;by number.  A '1' for instructor, <!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;a '2' for assistant, a '3' for associate, <!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;or a '4' for a full professor. <!--"-->&quot;);
+          ReadCard (index); SkipLine;
+          position := <B>VAL</B> (Rank, index - 1);
+          WriteLn;
+          WriteString (<!--"-->&quot;How much is this faculty member paid? <!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;Answer using decimal point, please. <!--"-->&quot;);
+          GetNum (pay);  (* remember to include this procedure *) |
+        staff:
+          WriteString (<!--"-->&quot;Please enter a '1' for a secretary, <!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;a '2' for a maintenance employee, <!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;or a '3' for a janitor. <!--"-->&quot;);
+          ReadCard (index); SkipLine;
+          WriteLn;
+          occupation := <B>VAL</B> (Job, index - 1);  (* no bar here *)
+      <B>END</B>;  (* CASE *)
+
+      WriteString (<!--"-->&quot;Is this person married?  Y / N  <!--"-->&quot;);
+      ReadChar (ch); SkipLine;
+      married := ( <B>CAP</B> (ch) = 'Y');
+    <B>END</B>;  (* WITH *)
+<B>END</B> Fill;</PRE>
+<P>It would probably be wise to do a little idiot-proofing on this sort of data entry.  There are several places where a person is asked to enter a CARDINAL in a certain range.  (0 .. 2, 1 .. 4, 1 .. 3)  Should the entry be incorrect, a fatal error and an inelegant exit to the outer system is likely to take place.  The following procedure is somewhat more foolproof:</P>
+<PRE>
+<B>PROCEDURE</B> GetCard (min, max : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+<B>VAR</B>
+  number : <B>CARDINAL</B>;
+<B>BEGIN</B>
+
+  <B>REPEAT</B>
+    WriteLn;
+    WriteString (<!--"-->&quot;Enter a number in the range <!--"-->&quot;);
+    WriteCard (min, 10);
+    WriteString (<!--"-->&quot; to <!--"-->&quot;);
+    WriteCard (max, 10);
+    WriteString (<!--"-->&quot; here ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (number); SkipLine;
+  <B>UNTIL</B> (ReadResult () = allRight) <B>AND</B> (number <!-->&gt;= min) <B>AND</B> (number <!--<-->&lt;= max);
+  <B>RETURN</B> number;
+<B>END</B> GetCard;</PRE>
+<P>In the main program, this procedure can be called by:</P>
+<PRE>
+year := <B>ORD</B> (Year, GetCard (1, 4) - 1)</PRE>
+<P>and suitable modifications would need to be made to other portions of the first procedure as well.</P>
+<P>The variant record is an extraordinarily versatile construction.  It allows for a free-form structure to data that incorporates all the possible variations that the data can have, while maintaining certain common features among related structures.  (Every person has a last name, a first name, etc.)</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,242 @@
+<HTML>
+<HEAD>
+<TITLE>5.6 Arrays as Parameters</TITLE>
+<meta NAME="keywords" CONTENT="array, arrays, parameter, parameters, formal, procedure, procedures, function, functions, open, array, high, cardinal, var, char, real, closed, memory, warning, copies, copy, variable, reals, integers, cardinals, vars, chars">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.6 Arrays as Parameters</B></H2>
+<P>As indicated by two of the examples in the last section, entire arrays (or their individual elements, as appropriate) may be passed to procedures as parameters.  As in all other such cases, an actual value parameter passed must be assignment compatible with the formal value parameter found in the procedure declaration.  If using variable parameters, the types of the actual and formal parameters must be the same. </P>
+<P>These limitations are not onerous in most cases, but by themselves they would prevent the writing of general-purpose code in some situations.  For instance, suppose one had two arrays of the same type and wished to add them element by element and place the sum in a third array.  That is, given the declarations:</P>
+<PRE>
+<B>CONST</B>
+  size = 3;
+<B>TYPE</B>
+  Vector = <B>ARRAY</B> [0 .. size - 1] <B>OF</B> <B>CARDINAL</B>;
+<B>VAR</B>
+  vectA, vectB, ansVector : Vector;</PRE>
+
+<P>and the assignments</P>
+<PRE>
+  vectA [0] = 5; vectA [1] = 3; vectA [2] = 7;
+  vectB [0] = 4; vectB [1] = 8;  vectB [2] = 10;</PRE>
+
+<P>and, one wished to end up with:</P>
+<P>ansVector [0] <!--¨-->&lt;-- 9,  ansVector [1] <!--¨-->&lt;-- 11, and ansVector [2] <!--¨-->&lt;-- 17</P>
+<P>one could write a routine procedure like:</P>
+<PRE>
+<B>PROCEDURE</B> AddArrays (firstVector, secondVector : Vector; <B>VAR</B> resultVector : Vector);
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> size - 1
+    <B>DO</B>
+      resultVector [count] := firstVector [count] + secondVector [count];
+    <B>END</B>;     (* for *)
+<B>END</B> AddArrays;</PRE>
+
+<P>This procedure would be called as usual by including the line <I>AddArrays (vectA, vectB, ansVector)</I> in the main program.  However, suppose there were two vector types in the main program, one of length three, and one of length two.</P>
+<PRE>
+<B>TYPE</B>
+  Vector2 = <B>ARRAY</B> [0 .. 1] <B>OF</B> <B>CARDINAL</B>;
+  Vector3 = <B>ARRAY</B> [0 .. 2] <B>OF</B> <B>CARDINAL</B>;
+<B>VAR</B>
+  vect2A, vect2B, ansVector2 : Vector2;
+  vect3A, vect3B, ansVector3 : Vector3;</PRE>
+
+<P>In order to add the vectors of type <i>Vector2</i>, one would have to have a different procedure than the one above for adding vectors of type <i>Vector3</i>, because the vectors to be added must be passed to the formal parameter of a compatible type, and a vector of two components is clearly not compatible with one of three components.  There is nothing to assign to the third component.</P>
+<P>However, there is a way to make the above code more generic or multi-purpose in Modula-2 by using an array parameter that does not specify the length of the array formally, but calculates the number of components being used when an actual assignment to the parameter is made.  For instance, the above procedure would be re-written as:</P>
+<PRE>
+<B>PROCEDURE</B> AddArrays2 (vect1, vect2 : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+                             <B>VAR</B> ansVector : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>);
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (vect1)
+    <B>DO</B>
+      ansVector [count] := vect1 [count] + vect2 [count];
+    <B>END</B>;
+<B>END</B> AddArrays2;</PRE>
+
+<P>and this could be used to add vectors of either type discussed here, or of any similar type defined as ARRAY range OF CARDINAL.</P>
+<P><B>NOTES</B>:	1. The anonymous type ARRAY OF CARDINAL replaces ARRAY range OF CARDINAL or a named type in the formal declaration.</P>
+<P>	2. When the procedure is called, any actual parameter that is an ARRAY range of CARDINAL is assignment compatible with the formal parameter.</P>
+<P>	3. Within the operating procedure, the actual range of the parameters is always [0 .. HIGH (parameter)].</P>
+<BLOCKQUOTE><I><A NAME="Array">An</A> <U>open array</U> is an array of some base type without any range specified.  It is written as ARRAY OF type and its implied definition is: ARRAY [0 .. HIGH (name)]  OF someType.</I></BLOCKQUOTE>
+<BLOCKQUOTE><I>HIGH is a standard function procedure that computes the highest cardinal index employed when the actual parameter was assigned upon the procedure being invoked.</I></BLOCKQUOTE>
+<P>All three arrays passed to this particular procedure ought to be of the same base type, or else the use of HIGH applied only to one of them would be rather misleading.  This stipulation should be added to the code as a precondition in the form of a comment.  If there were any possibility that this might not be the case, some action would have to be undertaken.  There are two possibilities:</P>
+<PRE>
+<B>PROCEDURE</B> <A NAME="AddArrays3">AddArrays3</A> (vect1, vect2 : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+                             <B>VAR</B> ansVector : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>);
+(* adds the first two arrays and places the result in the third component by component
+Pre: none
+Post: If all three vectors are the same size then the third is the sum of the first two.  <BR>All components of any of the vectors that is longer than any of the others are ignored.  An overflow error may be generated on an individual component at run time if the values being added are too large. *)
+
+<B>VAR</B>
+  count, size : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* pick the minimum of the three sizes *)
+  size := <B>HIGH</B> (vect1);
+  <B>IF</B> <B>HIGH</B> (vect2) <!--<-->&lt; size
+    <B>THEN</B>
+      size := <B>HIGH</B> (vect2);
+    <B>END</B>;
+  <B>IF</B> <B>HIGH</B> (ansVector) <!--<-->&lt; size
+    <B>THEN</B>
+      size := <B>HIGH</B> (ansVector);
+    <B>END</B>;
+  <B>FOR</B> count := 0 <B>TO</B> size
+    <B>DO</B>
+      ansVector [count] := vect1 [count] + vect2 [count];
+    <B>END</B>;
+<B>END</B> AddArrays3;</PRE>
+
+<P>This approach detects an error and deals with it by ignoring it and computing as much of a sum as is meaningful under the circumstances.  A second approach detects and reports the error, and refuses to do the sum, leaving it to the calling code to decide what to do about the error:</P>
+<PRE>
+<B>PROCEDURE</B> AddArrays4 (vect1, vect2 : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+                             <B>VAR</B> ansVector : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+                             <B>VAR</B> addOk : <B>BOOLEAN</B>);
+(* adds the first two arrays and places the result in the third component by component
+Pre: none
+Post: If all three vectors are the same size then the third is the sum of the first two and addOk returns true.  <BR>If any of the vectors is longer than any of the others, addOk returns false and ansVector is undefined.  An overflow error may be generated on an individual component at run time if the values being added are too large. *)
+
+<B>VAR</B>
+  count, size : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  size := <B>HIGH</B> (vect1);
+  <B>IF</B> (size # <B>HIGH</B> (vect2)) <B>OR</B> (size # <B>HIGH</B> (ansVector))
+    <B>THEN</B>
+      addOk := <B>FALSE</B>; (* bad data; don't do addition *)
+    <B>ELSE</B>
+      <B>FOR</B> count := 0 <B>TO</B> size
+        <B>DO</B>
+          ansVector [count] := vect1 [count] + vect2 [count];
+        <B>END</B>;
+      addOk := <B>TRUE</B>;
+    <B>END</B>;
+<B>END</B> AddArrays4;</PRE>
+
+<P>Here are two first procedures from section 5.5 modified to use open arrays:</P>
+<PRE>
+<B>PROCEDURE</B> Init2 (<B>VAR</B> theArray : <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>);
+(* sets all elements of the array passed to zero *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (theArray)
+    <B>DO</B>
+      theArray [count] :=0;
+    <B>END</B>;
+<B>END</B> Init;
+
+<B>PROCEDURE</B> Add (<B>VAR</B> theArray : <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>) : <B>INTEGER</B>;
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+  sum : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  sum := 0;
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (theArray)
+    <B>DO</B>
+      sum := sum + theArray [count];
+    <B>END</B>;
+  <B>RETURN</B> sum;
+<B>END</B> Add;</PRE>
+
+<P><B>NOTES</B>:	1. If an ARRAY OF CHAR is passed an empty literal string, HIGH would return zero.</P>
+<P>	2. Within the procedure, no assignment can be made to the entire open array.  Its type is anonymous, so such entities are incompatible with anything else when taken as a whole.  One can assign to it only element by element.  So, <I>ansVector := vect1</I> would be illegal if <I>ansVector</I> were an open array.</P>
+<P>HIGH always returns a cardinal value.  It is quite proper to assign any actual parameter array of the correct type, however indexed, to an open array.  However, in the procedure, the indexing will be by cardinal values starting at zero, and not by the values of the formal index parameter type.  Thus, given the declarations</P>
+<PRE>
+  <B>TYPE</B>
+    Days = (Mon, Tue, Wed, Thu, Fri);
+    PayList  = <B>ARRAY</B> [Mon .. Fri] <B>OF</B> <B>REAL</B>;
+    OddVector = <B>ARRAY</B> [-3 .. 4] <B>OF</B> <B>REAL</B>;
+
+  <B>VAR</B>
+    pay : PayList;
+    theVector : OddVector;
+
+  <B>PROCEDURE</B> FindMax (theReals : <B>ARRAY</B> <B>OF</B> <B>REAL</B>) : <B>REAL</B>;
+  (* appropriate code here *)</PRE>
+
+<P>the procedure <I>FindMax</I> can be invoked in the program with either <I>pay</I> or <I>theVector</I> as actual parameter.  Inside the procedure, the formal parameter is indexed starting at zero in both cases. <i>HIGH (theReals)</i> would therefore produce 4 in the former case, and 7 in the latter.</P>
+<P>In the examples given thus far, all arrays being returned by procedures have been handled as variable (or in-out) parameters.  Modula-2 also permits function procedures to return an array.</P>
+<PRE>
+  <B>TYPE</B>
+    RVector = <B>ARRAY</B> [0 .. 1] <B>OF</B> <B>REAL</B>;
+
+  <B>PROCEDURE</B> AddRVector (v1, v2 : RVector) : RVector;
+
+  <B>VAR</B>
+    z : RVector;
+
+  <B>BEGIN</B>
+    z [0] := v1 [0] + v2 [0];
+    z [1] := v1 [1] + v2 [1];
+    <B>RETURN</B> z;
+  <B>END</B> AddVector;</PRE>
+
+<P><B>NOTE</B>:  The type <i>RVector</i> contains reals, and is therefore not compatible with an open array containing type cardinal as used in previous examples.</P>
+<P>It is not permitted to use the syntax of an open array anywhere except in the parameter list of a procedure.  Thus the following are both</P>
+<H3><B>Incorrect:</B></H3>
+
+<PRE>  <B>TYPE</B>
+    openArray = <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+  <B>PROCEDURE</B> AddArray (v1, v2 : <B>ARRAY</B> <B>OF</B> <B>REAL</B>) : <B>ARRAY</B> <B>OF</B> <B>REAL</B>;</PRE>
+
+<P><B>WARNING</B>:  In most cases when an array is passed as a parameter, and the array itself is not being changed, one would use a value parameter (passing data in only).  However, arrays can consume a large amount of memory.  If several arrays are passed as value parameters, the space each takes is doubled while the procedure is active.  In some such cases, it might be better to use variable parameters even though the data is not in/out.  This practice also saves the time taken to make the extra copies when the procedure is entered, and this time may be substantial if the array is large.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

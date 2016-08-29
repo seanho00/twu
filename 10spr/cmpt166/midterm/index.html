@@ -1,0 +1,281 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Midterm :: CMPT166 10SP :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">(answers in web view)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li> Describe the <b>MVC</b> design pattern, and give an example of
+  each component of the MVC system. <u>[5]</u>
+<br><i><dl>
+<dt>Model:
+<dd>Data structures and methods to interact with the data.
+e.g., 2D array of letters for word-search
+<dt>View:
+<dd>Display/output, summary of the data, statistics, etc.
+e.g., Swing labels, text output
+<dt>Controller:
+<dd>Input/control from the user or other programs.
+e.g., Swing buttons, keyboard input
+</dl></i><br><br><br><br><br><br>
+
+<li> What is an <b>abstract superclass</b>? What would you use one for?
+Give an example of such a situation (no code required, just describe the
+situation).  Why does your example need to use an abstract superclass
+instead of a regular superclass?  <u>[5]</u>
+<br><i>An abstract class is not meant to be instantiated directly.
+  An abstract superclass can be used as a way of organizing its subclasses
+  under one category.  For example, Dog, Cat, and Cow all are within the
+  Mammal category.  It makes sense to have specific instances of Dog, Cat,
+  and Cow, but not of Mammal.  Mammal is the abstract superclass.
+  In Java, an abstract class is declared with the 'abstract' keyword.
+  Concrete subclasses must override all abstract functions and provide 
+  bodies to them.
+</i><br><br><br><br><br><br><br><br>
+
+<li> What does the <tt><b>final</b></tt> keyword mean in Java as applied
+to (a) attributes, (b) methods, or (c) classes? <u>[4]</u>
+<br><i>
+  A final attribute is a constant: its value cannot be changed.
+  A final method cannot be overriden by subclasses.
+  A final class cannot be subclassed.
+</i><br><br><br><br>
+
+<li> Name and briefly describe at least three of the five 
+<b>Swing layout managers</b> we learned about. <u>[5]</u>
+<br><i><dl>
+    <dt>FlowLayout:</dt><dd>widgets are placed side-by-side in order of 
+    add().</dd>
+    <dt>BorderLayout:</dt><dd>widgets can be placed on NORTH, SOUTH,
+    EAST, WEST, and CENTER of the container.</dd>
+    <dt>GridLayout:</dt><dd>widgets are placed on a regular grid of
+    equal-size cells.</dd>
+    <dt>GridBagLayout:</dt><dd>like GridLayout, but cells may be non-uniform
+    size, and widgets may span multiple cells.  Akin to HTML tables.</dd>
+    <dt>GroupLayout:</dt><dd>Specify constraints as ParallelGroups or
+    SequentialGroups, independently for each axis.</dd>
+</dl></i>
+<br><br><br><br><br><br><br>
+
+<li> Tell me everything you know about <b>serialization</b> in Java. <u>[5]</u>
+<br><i>
+Serialization is converting an abstract data structure (object) into a series of
+bytes suitable for writing into a file or sending over the network.  (In Python
+this is "pickling".)  In Java an object is serializable if its class implements
+the (empty) interface <tt>Serializable</tt> and if every non-transient attribute
+is serializable.  The primitive types (int, char, etc.) and arrays of them are
+serializable.  Non-serializable attributes can be skipped over by declaring them
+<tt>transient</tt>.  A serializable object can be written out to an
+<tt>ObjectOutputStream</tt> by calling its <tt>writeObject()</tt> method.
+Similarly, objects (of unknown type) may be read from an <tt>ObjectInputStream</tt>
+by calling <tt>readObject()</tt>.
+</i>
+
+<li class="break"> What is a <b>copy constructor</b> used for?
+On a separate page, implement in Java a
+<tt>Student</tt> class with attributes <tt>name</tt> (String), <tt>ID</tt>
+(int), and <tt>GPA</tt> (float).  Write three constructors: one with no
+parameters, one with three parameters (String, int, float), and one that is
+a copy constructor. <u>[8]</u>
+<br><i>
+  A copy constructor performs deep copy: the one parameter is another object
+  of the same type, and the copy constructor copies attributes from the other
+  object into the current object.
+  <pre>
+	public class Student {
+		String name;
+		int ID;
+		float GPA;
+
+		public Student( String name, int ID, float GPA ) {
+			if (name == null) name = "John Doe";
+			if (ID &lt; 0) ID = 0;
+			if (GPA &lt; 0.0) GPA = 0.;
+			if (GPA &gt; 5.0) GPA = 5.0;
+			self.name = name;
+			self.ID = ID;
+			self.GPA = GPA;
+		}
+
+		public Student() { self( null, 0, 0. ); }
+
+		public Student( Student other ) {
+			if (other == null) {
+				self();
+			} else {
+				self( other.name, other.ID, other.GPA );
+			}
+		}
+	}
+  </pre>
+</i>
+
+<li> What is the <b>catch-or-declare</b> rule in Java?  Write a short
+function or two in Java that illustrates this rule. <u>[6]</u>
+<br><i>
+  Catch-or-declare means that if a method runs code that could throw an 
+  Exception, that method must either handle the exception itself or
+  "pass the buck" by declaring that it could throw that exception:
+  e.g., <tt>public void myMethod() throws IOException</tt>.
+  If it declares the exception, then any code that calls the method is faced
+  with the same catch-or-declare choice.
+<pre>
+	public Scanner openInput(File filename) throws IOException {
+		return new Scanner( filename );
+	}
+	public static void main( String[] args ) {
+		Scanner kbd;
+		try {
+			kbd = openInput("input.txt");
+		} except IOException {
+			System.out.println("error reading file");
+		}
+	}
+</pre>
+  </i><br><br><br><br><br><br><br><br><br><br>
+
+<li> On a separate page, declare simple Java classes and sketch a UML class diagram 
+that formalizes the following set of statements.  Declare and diagram
+every (non-primitive) class used.  Implementations of methods are not required.<u>[10]</u>
+<ul>
+  <li> Every <tt>Shape</tt> has a <tt>lineColour</tt> and <tt>fillColour</tt>.
+  <li> Every <tt>Shape</tt> knows how to <tt>draw</tt> itself.
+  <li> Everything that knows how to <tt>draw</tt> itself is called a <tt>Drawable</tt>;
+  <tt>Shape</tt>s are <tt>Drawable</tt>s.
+  <li> There are various kinds of <tt>Shape</tt>s: <tt>Rectangle</tt>s, <tt>Oval</tt>s,
+  and <tt>Dot</tt>s.  It doesn't make sense to have an instance of a <tt>Shape</tt>, only
+  instances of the subclasses.
+  <li> Every <tt>Rectangle</tt> has a <tt>width</tt> and <tt>height</tt>;
+  every <tt>Oval</tt> has a <tt>radius</tt> and an <tt>eccentricity</tt> (non-circularity).
+  <li> There are also <tt>Square</tt>s, which are <tt>Rectangle</tt>s where the
+  height is enforced to be equal to the width, and <tt>Circle</tt>s, which are 
+  <tt>Oval</tt>s with <tt>eccentricity=1</tt>.
+</ul>
+<i><pre>
+interface Drawable {
+	void draw();
+}
+abstract class Shape implements Drawable {
+	private Colour lineColour;
+	private Colour fillColour;
+	public void draw() {};
+}
+class Rectangle extends Shape {
+	private float width;
+	private float height;
+}
+class Oval extends Shape {
+	private float radius;
+	private float eccentricity;
+}
+class Dot extends Shape {}
+class Square extends Rectangle {}
+class Circle extends Oval {}
+</pre></i>
+
+<li> On a separate page, write a Java function that reads a list of integers
+from the file <tt>input.txt</tt> and prints out to the console:
+for each unique integer in the file, print the number of times it occurs
+in the file (i.e., a <b>frequency table</b>.)
+You may assume that the input will only be integers between 0 and 99.
+For example, if <tt>input.txt</tt> contained the numbers
+<tt>12, 2, 0, 5, 2, 2, 12</tt>, then the output could be:<pre>
+N   Count
+12  2
+2   3
+0   1
+5   1
+</pre>
+Format the output so it lines up in neat columns.
+The output does not need to be in sorted order.
+You do not need to write a complete program that tests this
+(and you do not need keyboard-interactive user input), just a
+stand-alone function.
+Docstrings and comments are not necessary but may be good for partial
+credit.  <u>[12]</u>
+<br><i>
+  See <a href="FreqTable.java">FreqTable.java</a>.
+</i>
+
+<li> The Java code below implements a bare-bones Swing application
+(just an empty window).  The code works properly.
+Modify the code to add a button labelled "Quit"
+that closes the application (use <tt>System.exit(0)</tt>) when clicked.
+Docstrings and comments are not necessary but may be good for partial
+credit.  If you do not remember the exact names of 
+classes/interfaces/methods, just make up something close and explain
+what you are trying to do.
+<u>[10]</u>
+<pre>
+import javax.swing.*;
+import java.awt.event.*;
+
+public class HiBye extends JFrame {
+
+
+
+
+
+	public HiBye() {
+		super( "HiBye: Click to quit" );
+
+
+
+
+
+
+
+
+
+
+		setSize( 100, 100 );
+		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		setVisible( true );
+
+
+	}
+
+
+
+
+
+
+
+
+	public static void main( String[] args ) {
+		new HiBye();
+	}
+}
+</pre>
+<i>
+  Either use an inner class to define the event handler
+  <a href="HiBye_Inner.java">(see HiBye_Inner.java)</a>,
+  or make the HiBye class itself the event handler
+  <a href="HiBye_AllInOne.java">(see HiBye_AllInOne.java)</a>.
+</i>
+
+</ol>
+
+</body></html>
+
+
+
+</ol>
+
+</body></html>
+
+

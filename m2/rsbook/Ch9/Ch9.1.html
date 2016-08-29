@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>9.1 Structured Data Revisited</TITLE>
+<meta NAME="keywords" CONTENT="structured, structure, data, atomic, unstructure, unstructured, component, components, part, parts, array, arrays, set, sets, record, records">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.1 Structured Data Revisited</B></H2>
+<P>Recall the discussion of section 1.6.3 on the subject of whether data was of a kind that could be decomposed into simpler parts.</P>
+<BLOCKQUOTE><I><A NAME="Data">Data</A> items that are normally handled as indivisible whole items are called <U>atomic</U> or <U>unstructured</U>.</I></BLOCKQUOTE>
+<P>Examples of Modula-2 types that model unstructured data include	INTEGER, CARDINAL, CHAR, BOOLEAN, all enumerated types, all subranges of any of these, and the types REAL and LONGREAL.  While it would be possible to decompose, say, a real number into significant figures on the one hand and an exponent on the other, or even into individual digits, neither of these decompositions would serve much useful purpose in most problems.  It is more practical to think of items of these types as entire entities, and to manipulate them as such.  To this point in the text, almost all data has been atomic in nature.  In real life, on the other hand, things may be much more complex.</P>
+<BLOCKQUOTE><I><A NAME="Structured">A</A> data type is called <U>structured</U> if its elements are not atomic, but have component parts. </I></BLOCKQUOTE>
+<P>There are three common types of structured data: arrays, sets, and records.</P>
+<P>An array is a collection of data of the same type, organized in an ordered fashion by an indexing scheme.  For instance, in an array A of three real numbers numbered a1, a2 , and a3, the structured entity is the entire array A, and the individual real numbers are its atomic components.  For more details on arrays and their representation in the Modula-2 notation, see chapter 5.</P>
+<P>A set is a structured, but unorganized collection of data without any indexing scheme at all.  In the set {1, 2, 3, 4, 5} the structured entity is the entire set, and the individual items in the set are the atoms.  An item is either an element of a given set or it is not.  The first part of this chapter will examine sets in detail, and show how they are represented and manipulated in Modula-2.</P>
+<P>Next, consider the problem of a college that must keep student and personnel records, or that of a business that must store its customer accounts data.  In both cases, a real-life person could be abstracted or modeled for computational purposes by a <I>record</I> consisting of a name, an address, phone number, student or account number, marks or balance owing, and so on.</P>
+<P>One needs to be able to collect this information into an identifiable personal record, but cannot use an array for the enclosing structure because the component data is of different types<!--‹-->--some parts are numbers, some are strings, and some such as marital status or sex could perhaps be represented as booleans.</P>
+<P>At one time, one might have done this by making a small file card for each person or account, and kept the whole lot in shoe boxes on the back shelf of an office.  Each card contains a structured representation of one personal record.  The atoms of a record are the values on each line of the card.  The second part of this chapter will examine the record type in more  detail, and show how to represent and manipulate them in Modula-2.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

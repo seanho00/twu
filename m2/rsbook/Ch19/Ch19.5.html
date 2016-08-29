@@ -1,0 +1,77 @@
+<HTML><HEAD><TITLE>19.5 Assignment and Comparison of Objects</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Assignment and Comparison of Objects">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.5 Assignment and Comparison of Objects </b></H2>
+
+<P><b>NOTE:</b> Except where otherwise indicated, the comments in this section apply to all OOM-2 objects, whether members of traced classes or of untraced classes.</P>
+
+<P>As might be expected, two object references that are members of the same class are assignment compatible. (It turns out that there is somewhat more to object assignment compatibility than this, however; see <A HREF="Ch19.7.html">section 19.7</A>.) Thus, if one has:</P>
+
+<PRE><b>VAR</b>
+  obj1, obj2 : ClassyClass;</PRE>
+
+<P>it is perfectly legitimate in the course of a program to write</P>
+
+<PRE>obj1 := obj2;</PRE>
+
+<P>as long as the programmer understands that this is a copying of references, not of the values accessed by those references. Thus, there is little point in such an assignment being made before the second of the two objects referred to has even been created, as the call to CREATE will change the reference value.</P>
+<P>Likewise, two objects can be compared in expressions such as those found in</P>
+
+<PRE><b>IF</b> obj1 = obj 2
+<b>WHILE</b> obj1 # obj2</PRE>
+
+<P>and again, it is the references that are being compared, not the values accessed by those references. Of course, if two references are to the same memory, the values stored there are indeed the same, but if two different but compatible objects do happen to have the same values in their attribute components, this kind of code will never discover that fact. </P>
+<P>Earlier, when dealing with pointers, there was a useful value (<b>NIL</b>) that could be used for initialization. A similar value is used for initialization of object references.</P>
+
+<P><i>The pervasive value <u>EMPTY</u> is assignment compatible to all object references.</i></P>
+
+<P>It will, of course, cause an exception to be raised if one attempts to use a component of an object that has the value EMPTY, just as it would to attempt to dereference the pointer value NIL. (The object in question is the empty object; it currently has no components.)</P>
+<P>In yet another parallel with pointers, should the attempt to call CREATE on an object fail to allocate memory for the object, its reference will have the value EMPTY after the failure, but no exception will be raised. Bullet-proof code ought to have a check for success after a CREATE:</P>
+
+<PRE><b>CREATE</b> (myObject);
+<b>IF</b> myObject # <b>EMPTY</b>
+  <b>THEN</b> (* carry on *)</PRE>
+
+<P>For traced objects only, there is an automatic initialization to the value EMPTY on declaration. This includes traced objects declared in static modules, in procedures, and even in dynamic modules inside procedures. This will help prevent references to objects not yet created. Setting the value of a traced object reference to EMPTY is also a way of informing the garbage collector that the memory it previously held may be collected (as least, insofar as this reference is concerned.)</P>
+<P>On the other hand, if a reference to an object of a traced class that currently has the value EMPTY is assigned some other value, the garbage collector is informed of that fact as well.</P>
+<P>In addition, any references to objects of traced classes declared in procedures (including parameters) are reported to the garbage collector as empty (that is, defunct)  when the procedure is exited (whether normally or exceptionally). This is also true of any traced object references that may have been used to construct components of an untraced object that is subsequently destroyed.</P>
+<P>For references to objects of untraced classes, the standard does not say what the value of the reference is after a call to DESTROY. It has to be assumed, therefore, that the value is undefined at that point, not that it is necessarily EMPTY.</P>
+<P>Although pointers and object references behave in similar ways, they are different kinds of entities. This should be evident if for no other reason than that pointers are dereferenced using the dereferencing operator ^, wheras the components of  an object are accessed using a qualified identifier. These differences mean, among other things, that there is no assignment compatibility between object references and pointers.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

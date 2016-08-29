@@ -1,0 +1,782 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>Chapter 11 Answer Key</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 11</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	Backtracking is the recursive use of trial-and-error steps through some kind of pattern, retracing the logical path back to the last success and then following a different branch.</P>
+
+<P>2.	The IF and CASE statements are the Modula-2 selection constructs.</P>
+
+<P>3.	One should opt for the CASE statement when: (i) the decision involves only the value of a single variable, (ii) there are several (but not very many) adjacent alternative values, (iii) the majority of the alternatives do NOT fall into the ELSE category.</P>
+
+<P>4.	CARDINAL has too many values, unless there is an optimizing compiler to reduce the size of the code.</P>
+
+<P>5.	The range in one case of a CASE statement cannot be interlaced with ranges in other cases.</P>
+
+<P>6.	Range checking can be turned off when error trapping code has been thoroughly tested.</P>
+
+<P>7.	Answers may vary.</P>
+
+<P>8.	In Modula-2, a pragma is a directive to the compiler that is included in the source file it is compiling.  It gives the programmer a chance to give directions to the compiler while the code is being compiled.  It is written in pragma brackets:  "<*" and "*>"</P>
+
+<P>9.	Answers may vary.</P>
+
+<P>10.	Some strategies for reducing running time include: (i) Control Run-Time Checking (ii) Compile programs for specified environments (iii) Fine-tune loops (iv) link code segments or (v) use an optimized linker (the latter two are system dependent).</P>
+
+<P>11.	Answers may vary.</P>
+
+<P>12.	A program library is a collection of the code of one or more modules into a single file.</P>
+
+<P>13.	A structure constructor has the form typeName{values}.  It is able to construct specific sets, arrays, and records using literals.</P>
+
+<P>14.<pre>	TYPE
+	  realArray = ARRAY [1..10] OF REAL;
+	VAR
+	  reels : realArray;
+	BEGIN
+	  reels := realArray{0.0 BY 10};</pre></P>
+
+15.	The case separator is denoted by the "|" (vertical bar) character and is used to separate cases in a CASE statement.  The statement separator is the ";" character and is used to denote the end of a statement in a block of code.
+	Example for case and statement separators:
+<pre>	CASE num OF
+	  1:
+	    <!--<-->&lt;statement1<!-->&gt;;  (* notice the semicolon used to separate statements *)
+	    <!--<-->&lt;statement2<!-->&gt;;
+	    <!--<-->&lt;statement3<!-->&gt;;  |  (* notice the vertical bar used to denote the end of a case *)
+	  2:
+	    <!--<-->&lt;statement1<!-->&gt;;
+	END;</pre>
+
+<P>16.	If none of cases match the value of case variable then an error will be generated at execution time.  To avoid this problem, an ELSE clause can be attached to the CASE statement to handle any other values that are not handled by a case.</P>
+
+<P>17.	A variant record field is a record field that gives the option to select different fields from a CASE clause embedded in the record depending on the value of a tag variable.  One would declare a variant field by using a case statement in a record with the expression as a record field and the cases as an optional record fields.</P>
+
+<P>18.	TYPE</P>
+<pre>	  Classification  = (single, married, divorce);
+	  Date =
+	    RECORD
+	      year, month, day : CARDINAL;
+	    END;
+
+	  Employee =
+	  RECORD
+	    lastname : nameString;
+	    firstname : nameString;
+	    sex : SexType;  (* enumerated data type of M or F *)
+	    dob : Date;
+	    CASE marital : Classification OF
+	      single : 
+	        nextofKin : nameString; |
+	        married :
+	        marriageDate : Date;
+	        spouse : nameString;
+	        kids : CARDINAL; |
+	      divorce:
+	        divorceDate : Date;
+	        nextofKin : nameString;
+	      END; (* end CASE *)
+	    CASE executive : BOOLEAN OF
+	      TRUE:
+	        salary : REAL;
+	        car : REAL;
+	        rank : RankString;  |
+	      FALSE:
+	        hourly : REAL;
+	        rank : RankString;
+	      END;  (* end CASE *)
+	  END (* end RECORD *)</pre>
+
+<P>19.	CONST</P>
+<P>	  defSingle = Employee{"", BY 2, M, Date{0 BY 3}, single, "", TRUE, 0 BY 2, ""};</P>
+<P>	and there are 5 more to make a complete set.</P>
+
+<P>20.	Using a variant record can improve the simplify the structure of the RECORD.  However, it can also make many nested CASEes that could make the programmer confused when debugging.  If most of the fields in the records are identical, a variant form may be best.</P>
+
+<P>21.	Unrolling a loop is writing two or more repetitions of the steps in each iteration of the loop.  This is done because some control structures are more efficient than repetition.</P>
+
+<P>22.	More efficient programs run faster, saving time and money.  However, most efficiency improvements can be made with minimal changes to code, and determining the most efficient code technique may not be practical in any reasonable amount of time.</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note:  Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*  Created
+    June.22.1999
+    Chapter 11, Question#26
+
+    No error checking has been used for this program...be careful when inputting data!! *)
+
+MODULE DataBase;
+
+FROM STextIO IMPORT
+  WriteString, ReadString, WriteLn, ReadChar, SkipLine;
+FROM SWholeIO IMPORT
+  ReadCard, WriteCard;
+FROM SRealIO IMPORT
+  ReadReal, WriteFixed;
+FROM SeqFile IMPORT  (* use regular text so we can see what the file contains *)
+  OpenWrite, OpenRead, ChanId, Close, OpenResults, read, write, old;
+FROM Strings IMPORT
+  Compare, CompareResults, Delete;
+IMPORT TextIO;
+IMPORT RealIO;
+IMPORT WholeIO;
+
+CONST
+  min = 1;
+  max = 10;
+TYPE
+  Name = ARRAY [0 .. 20] OF CHAR;
+  MonthType = ARRAY [0..9] OF CHAR;
+  Classification = (student, faculty, staff);
+  Year = (freshman, sophomore, junior, senior);
+  Rank = (instructor, assistant, associate, professor);
+  Job = (secretary, maintenance, janitor);
+  Date =
+    RECORD
+      year : CARDINAL;
+      month : MonthType;
+      day : [1 .. 31];
+    END;   (* of the record Date *)
+  Person =
+    RECORD
+      lastname, firstname : Name;
+      birthdate : Date;
+      (* use previous declarations for these. *)
+      male : BOOLEAN;
+      CASE status : Classification OF  (* variant part here *)
+        student:
+          idnumber : CARDINAL;
+          year : Year |
+        faculty:
+          position : Rank;
+          pay : REAL |
+        staff:
+          occupation : Job;
+      END;  (* case *)
+      married : BOOLEAN;
+    END;  (* of the record Person *)
+  RecType = ARRAY [min..max] OF Person;
+
+VAR
+  RecArray : RecType;
+  option, current : CARDINAL;
+
+PROCEDURE Menu (VAR option : CARDINAL);
+(*   pre: none
+    post: changes the value of option *)
+
+BEGIN
+  WriteString ("********************************");
+  WriteLn;
+  WriteString ("1.  Insert Record ");
+  WriteLn;
+  WriteString ("2.  Edit Record ");
+  WriteLn;
+  WriteString ("3.  Display Info ");
+  WriteLn;
+  WriteString ("4.  Save Record");
+  WriteLn;
+  WriteString ("5.  Get Record File ");
+  WriteLn;
+  WriteString ("6.  Exit ");
+  WriteLn;
+  WriteString ("********************************");
+  WriteLn; WriteLn;
+  WriteString ("Enter an option: ");
+  ReadCard (option);
+  SkipLine;
+  WriteLn; WriteLn; WriteLn;
+END Menu;
+
+PROCEDURE Insert (VAR RecArray : RecType; currentRecNum : CARDINAL);
+(*   pre: none
+    post: Adds a record into the array *)
+
+VAR
+  tempcard : CARDINAL;
+  tempreal : REAL;
+  tempchar : CHAR;
+  str : Name;
+  str1 : MonthType;
+
+BEGIN
+  WITH RecArray[currentRecNum]
+    DO
+      WriteString ("Name:");
+      WriteLn; WriteLn;
+      WriteString ("Last Name: ");
+      ReadString (lastname);
+      SkipLine;
+      WriteLn;
+      WriteString ("First Name : ");
+      ReadString (str);
+      SkipLine;
+      firstname := str;
+      WriteLn;WriteLn;
+
+      WITH birthdate DO
+        WriteString ("Date of Birth: ");
+        WriteLn; WriteLn;
+        WriteString ("Month: ");
+        ReadString (month);
+        SkipLine;
+        WriteLn;
+        WriteString ("Day: ");
+        ReadCard (tempcard);
+        SkipLine;
+        day := tempcard;
+        WriteLn;
+        WriteString ("Year: ");
+        ReadCard (year);
+        SkipLine;
+      END;
+      WriteLn; WriteLn;
+
+      WriteString ("Male or Female (m/f): ");
+      ReadChar (tempchar);
+      SkipLine;
+
+      IF CAP(tempchar) = 'M' THEN
+        male := TRUE;
+      ELSE
+        male := FALSE;
+      END; (* IF *)
+
+      WriteLn; WriteLn;
+
+      WriteString ("Classifcation: ");
+      WriteLn;
+      WriteString ("1. student");
+      WriteLn;
+      WriteString ("2. faculty");
+      WriteLn;
+      WriteString ("3. staff");
+      WriteLn;
+      WriteString ("Choice: ");
+      ReadCard (tempcard);
+      SkipLine;
+      status := VAL (Classification, tempcard - 1);
+
+      CASE status OF
+        student:
+          WriteString ("Give i.d. number, please. ");
+          ReadCard (idnumber);
+          SkipLine;
+          WriteLn;
+          WriteString ("and enter the year 1 .. 4 ");
+          WriteString ("of studies. ");
+          ReadCard (tempcard);
+          SkipLine;
+          year := VAL(Year, tempcard - 1) |
+        faculty:
+          WriteString ("Enter the rank of the faculty member ");
+          WriteLn;
+          WriteString ("by number.  A '1' for instructor, ");
+          WriteLn;
+          WriteString ("a '2' for assistant, a '3' for associate, ");
+          WriteLn;
+          WriteString ("or a '4' for a full professor. ");
+          ReadCard (tempcard);
+          SkipLine;
+          position := VAL (Rank, tempcard - 1);
+          WriteLn;
+          WriteString ("How much is this faculty member paid? ");
+          WriteLn;
+          WriteString ("Answer using decimal point, please. ");
+          ReadReal (pay);
+          SkipLine; |
+        staff:
+          WriteString ("Please enter a '1' for a secretary, ");
+          WriteLn;
+          WriteString ("a '2' for a maintenance employee, ");
+          WriteLn;
+          WriteString ("or a '3' for a janitor. ");
+          ReadCard (tempcard);
+           SkipLine;
+          WriteLn;
+          occupation := VAL (Job, tempcard - 1);  (* no bar here *)
+      END;  (* CASE *)
+
+      WriteLn; WriteLn;
+
+      WriteString ("Married (y/n)? ");
+      ReadChar (tempchar);
+      SkipLine;
+
+      IF CAP(tempchar) = 'Y' THEN
+        married := TRUE;
+      ELSE
+        married := FALSE;
+      END;  (* IF *)
+
+    END;  (* WITH *)
+
+END Insert;
+
+PROCEDURE Display (record : RecType; currentRecNum : CARDINAL);
+(*   pre: none
+    post: changes a displayed record *)
+
+VAR
+  count : CARDINAL;
+
+BEGIN
+  IF currentRecNum = 0 THEN
+    WriteString ("No records available");
+    WriteLn; WriteLn;
+  ELSE
+
+    FOR count := 1 TO currentRecNum DO
+      WriteCard (count, 1);
+      WriteString (".  ");
+
+      WITH record[count] DO
+        WriteString (lastname);
+        WriteString (", ");
+        WriteString (firstname);
+      END;
+
+      WriteLn;
+    END; (* end FOR *)
+
+  END; (* end IF *)
+  WriteLn; WriteLn;
+END Display;
+
+PROCEDURE DisplayFull (RecArray : RecType; recnum : CARDINAL);
+(*   pre: none
+    post: displays full record information  *)
+
+VAR
+  class : Classification;
+
+BEGIN
+  WITH RecArray[recnum] DO
+    WriteString ("Name: ");
+    WriteString (firstname);
+    WriteString (" ");
+    WriteString (lastname);
+    WriteLn;
+
+    WITH birthdate DO
+      WriteString ("Date of Birth:");
+      WriteString ("  Month: ");
+      WriteString (month);
+      WriteString ("  Day:");
+      WriteCard (ORD(day), 0);
+      WriteString ("  Year:");
+      WriteCard (year, 0);
+      WriteLn;
+    END;  (* end WITH *)
+
+    WriteString ("Gender: ");
+
+    IF male THEN
+      WriteString ("Male");
+    ELSE
+      WriteString ("Female");
+    END;
+
+    WriteLn;
+    WriteString ("Classification: ");
+
+    CASE status OF
+      student:
+        WriteString ("Student");
+        WriteLn;
+        WriteString ("Id Number: ");
+        WriteCard (idnumber, 1);
+        WriteLn;
+        WriteString ("Year: ");
+
+        IF year = freshman THEN
+          WriteString ("Freshman");
+        ELSIF year = sophomore THEN
+          WriteString ("Sophomore");
+        ELSIF year = junior THEN
+          WriteString ("Junior");
+        ELSE
+          WriteString ("Senior");
+        END; |
+
+      faculty:
+        WriteString ("Faculty");
+        WriteLn;
+        WriteString ("Rank: ");
+
+        IF position = instructor THEN
+          WriteString ("Instructor");
+        ELSIF position = assistant THEN
+          WriteString ("Assistant");
+        ELSIF position = associate THEN
+          WriteString ("Associate");
+        ELSE
+          WriteString ("Professor");
+        END;
+
+        WriteLn;
+        WriteString ("Salary: $");
+        WriteFixed (pay, 2, 1); |
+      staff:
+        WriteString ("Staff");
+        WriteLn;
+        WriteString ("Job: ");
+
+        IF occupation = secretary THEN
+          WriteString ("Secretary");
+        ELSIF occupation = maintenance THEN
+          WriteString ("Maintenance");
+        ELSE
+          WriteString ("Janitor");
+        END;
+
+    END; (* end CASE *)
+
+    WriteLn;
+    WriteString ("Married: ");
+
+    IF married THEN
+      WriteString ("Yes");
+    ELSE
+      WriteString ("No");
+    END;
+
+    WriteLn; WriteLn;
+  END; (* end WITH *)
+
+END DisplayFull;
+
+PROCEDURE SaveRec (record : RecType; numtosave : CARDINAL) : BOOLEAN;
+(*   pre: none
+    post: saves the array of records to a file specified by user *)
+VAR
+  file : ChanId;
+  filename : ARRAY [0..12] OF CHAR;
+  res : OpenResults;
+  count : CARDINAL;
+
+BEGIN
+  WriteString ("Enter filename: ");
+  ReadString (filename);
+  SkipLine;
+  WriteLn;
+  OpenWrite (file, filename, read+write+old, res);
+  IF res = opened THEN
+    FOR count := 1 TO numtosave DO
+      WITH record[count] DO
+        (* save name *)
+        TextIO.WriteString (file, lastname);
+        TextIO.WriteString (file, " ");
+        TextIO.WriteString (file, firstname);
+	TextIO.WriteLn (file);
+
+        (* save birthdate *)
+        WITH birthdate DO
+          TextIO.WriteString (file, month);
+          TextIO.WriteString (file, " ");
+          WholeIO.WriteCard (file, ORD(day), 1);
+          TextIO.WriteString (file, " ");
+          WholeIO.WriteCard (file, year, 1);
+          TextIO.WriteLn (file);
+        END;  (* end WITH *)
+
+        (* save gender *)
+        WholeIO.WriteCard (file, ORD(male), 1);
+        TextIO.WriteLn (file);
+
+        (* save classification *)
+        WholeIO.WriteCard (file, ORD(status), 1);
+        TextIO.WriteString (file, " ");
+
+        CASE status OF
+          student:
+          WholeIO.WriteCard (file, idnumber, 1);
+          TextIO.WriteString (file, " ");
+          WholeIO.WriteCard (file, ORD(year), 1); |
+          faculty:
+          WholeIO.WriteCard (file, ORD(position), 1);
+          TextIO.WriteString (file, " ");
+          RealIO.WriteFixed (file, pay, 2, 1); |
+          staff:
+          WholeIO.WriteCard (file, ORD(occupation), 1);
+        END; (* end CASE *)
+
+        TextIO.WriteLn (file);
+        (* save marital status *)
+        WholeIO.WriteCard (file, ORD(married), 1);
+        TextIO.WriteLn (file);
+        TextIO.WriteLn (file);
+      END; (* end WITH *)
+    END; (* end FOR *)
+    TextIO.WriteString (file, "<<EOF>>");
+    Close (file);
+    RETURN TRUE;
+  ELSE
+    Close (file);
+    RETURN FALSE;
+  END; (* end IF *)
+END SaveRec;
+
+PROCEDURE GetRec (VAR record : RecType; VAR numofRecs : CARDINAL) : BOOLEAN;
+(*   pre: none
+    post: retrieves a record from a file and puts it in an array *)
+VAR
+  done : BOOLEAN;
+  count, tempcard : CARDINAL;
+  file : ChanId;
+  res : OpenResults;
+  filename : ARRAY [0..13] OF CHAR;
+
+BEGIN
+  WriteString ("Enter name of record file to retrieve: ");
+  ReadString (filename);
+  SkipLine;
+
+  (* initialize variables *)
+  numofRecs := 0;
+  done := FALSE;
+  count := 1;
+
+  (* open file *)
+  OpenRead (file, filename, read+write+old, res);
+  IF res = opened THEN
+    WHILE NOT done DO
+      WITH record[count] DO
+        (* get name *)
+        TextIO.ReadToken (file, lastname);
+        (* check for end of file *)
+        IF Compare (lastname, "<<EOF>>") # equal THEN
+          TextIO.ReadString (file, firstname);
+          TextIO.SkipLine (file);
+          Delete (firstname, 0, 1);   (* to counter the extra space effect *)
+
+          (* get birthdate *)
+          WITH birthdate DO
+            TextIO.ReadToken (file, month);
+            WholeIO.ReadCard (file, tempcard);
+            day := tempcard;
+            WholeIO.ReadCard (file, year);
+            TextIO.SkipLine (file);
+          END;  (* end WITH *)
+
+          (* get gender *)
+          WholeIO.ReadCard (file, tempcard);
+          male := VAL(BOOLEAN, tempcard);
+          TextIO.SkipLine (file);
+
+          (* get classification *)
+          WholeIO.ReadCard (file, tempcard);
+          status := VAL(Classification, tempcard);
+
+          CASE status OF
+            student:
+              WholeIO.ReadCard (file, idnumber);
+              WholeIO.ReadCard (file, tempcard);
+              year := VAL(Year, tempcard); |
+            faculty:
+              WholeIO.ReadCard (file, tempcard);
+              position := VAL(Rank, tempcard);
+              RealIO.ReadReal (file, pay); |
+            staff:
+              WholeIO.ReadCard (file, tempcard);
+              occupation := VAL(Job, tempcard);
+          END; (* end CASE *)
+
+          TextIO.SkipLine (file);
+
+          (* get marital status *)
+          WholeIO.ReadCard (file, tempcard);
+          married := VAL(BOOLEAN, tempcard);
+          TextIO.SkipLine (file);
+          TextIO.SkipLine (file);
+          INC (count);
+          INC (numofRecs);
+        ELSE
+          done := TRUE;
+        END;
+
+      END; (* end WITH *)
+    END; (* end WHILE *)
+    Close (file);
+    RETURN TRUE;
+  ELSE
+    Close (file);
+    RETURN FALSE;
+  END; (* end IF *)
+END GetRec;
+
+(* begin main block *)
+BEGIN
+  current := 0;
+  REPEAT
+    Menu (option);
+
+    IF option = 1 THEN
+      INC (current);
+      Insert(RecArray, current);
+    ELSIF option = 2 THEN
+      Display (RecArray, current);
+
+      IF current # 0 THEN
+        WriteString ("Choose a record to edit: ");
+        ReadCard (option);
+        SkipLine;
+        Insert (RecArray, option);
+        option := 2;
+      END;
+
+    ELSIF option = 3 THEN
+      Display (RecArray, current);
+
+      IF current # 0 THEN
+        WriteString ("Choose a record to display full info: ");
+        ReadCard (option);
+        SkipLine;
+        DisplayFull(RecArray, option);
+        option := 3;
+      END;
+
+    ELSIF option = 4 THEN
+
+      IF SaveRec(RecArray, current) THEN
+        WriteString ("Save successful");
+      ELSE
+        WriteString ("An error has occured couldn't save");
+      END;
+
+    ELSIF option = 5 THEN
+
+      IF GetRec(RecArray, current) THEN
+        WriteCard (current, 1);
+        WriteString ("record(s) retrieved");
+      ELSE
+        WriteString ("Error occured when retrieved");
+      END;
+
+    END (* End IF *);
+
+    WriteLn;
+  UNTIL option = 6;
+END DataBase.</pre>
+
+<pre>(*  Created
+    June.21.1999
+    Chapter 11 Question 27 *)
+
+MODULE NumberCheck;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, ReadChar, SkipLine;
+FROM SWholeIO IMPORT
+  ReadInt, WriteInt;
+FROM SIOResult IMPORT
+  ReadResult, ReadResults;
+
+VAR
+  number, count, sum : INTEGER;
+  exit : CHAR;
+
+BEGIN
+  REPEAT
+  (* get input *)
+  WriteString ("Enter a whole number to be evaluated: ");
+  ReadInt (number);
+
+  IF ReadResult () # allRight THEN
+    WriteString ("Not the right a valid number");
+  END;
+
+  SkipLine;
+  WriteLn;
+  (* initialize *)
+  count := 1;
+  sum := 0;
+
+  (* evaluate if it's a perfect, deficitent, or abundant *)
+  WHILE count < number DO
+
+    IF number MOD count = 0 THEN
+      sum := sum + count;
+    END;
+
+    INC (count);
+  END;
+
+  (* print *)
+  WriteString ("The number");
+  WriteInt (number, 0);
+  WriteString (" is ");
+  count := sum - number;
+
+  CASE count OF
+    0:
+      WriteString ("PERFECT");|
+    1..MAX(INTEGER):
+      WriteString ("ABUNDANT");
+    ELSE
+      WriteString ("DEFICIENT");
+    END;
+
+  (* redo *)
+  WriteLn;
+  WriteString ("Do you want to do another (y/n)? ");
+  ReadChar (exit);
+  SkipLine;
+  UNTIL CAP(exit) = 'N';
+END NumberCheck.</pre>
+
+</BODY>
+
+</HTML>

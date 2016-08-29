@@ -1,0 +1,80 @@
+<HTML><HEAD><TITLE>18.1 Basic Graphics Concepts</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Basic Graphics Concepts">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>18.1 Basic Graphics Concepts </B></H2>
+
+<P>Picturing the relationships between two kinds of data is commonly done using points on a Cartesian plane as described in <A HREF="../Ch6/Ch6.9.html">section 6.9</A>. In that section, however, only the algebraic characteristics of points in a plane were realized<!--‹-->--no graphical results were achieved. This type of support more difficult to achieve for three reasons:</P>
+<P><i>first</i> because providing support for drawing on the screen of the computer requires at least some platform specific abilities, </P>
+<P><i>second</i> because, although the mathematical model for graphing envisions a coordinate system employing real numbers, the graphics environment on computers uses discrete dots, and these are limited in number. This requires some compromises in the visual presentation,</P>
+<P><i>third</i> because the number of dots (pixels) available in the vertical and horizontal directions cannot be know ahead of time, and</P>
+<P><i>fourth</i> because even in typical mathematical use there is more than one type of coordinate system.</P>
+<P>It should be noted at this stage that the ISO committee made <i>no</i> attempt to include any form of graphics support in its standard library, so this leaves the student on her own for such important tasks.</P>
+<P>The underlying graphics user interface supplied by the computer manufacturer, and to which the compiler vendor will no doubt provide some interface will probably include a number of  tools for indicating points on the screen, drawing lines, curves, and even a few predefined shapes. As these are quite system dependent, consideration of them will be postponed for a few sections.</P>
+
+<H3><b><A NAME="18.1.1">18.1.1</A> Discrete Grids<!--‹-->--Graphing Pixels</b></H3>
+
+<P>The standard rectangular or Cartesian (named after René Descartes) has two perpendicular real number lines (axes) which divide the plane into four quadrants. The place where the number lines cross is the origin (0, 0) and the numbering is positive to the right and up; negative to the left and down. This abstraction includes the ability to graph a line as a set of continuous points, including those such as (¼, 1) where the decimal representation continues indefinitely without repetition or terminating.</P>
+<P>On a typical computer generated graphics raster, there are several hundred pixel points available in both the horizontal and vertical directions, and they are much closer together than suggested in figure 18.1 below. The standard grid could simply be modified to take this into account, but only points with whole number coordinates can be properly depicted. The point (¼, 1) would have to be depicted as (3,1) unless some form of scaling were used. Indeed, since the individual pixels are rather close together on the screen, it might be better to magnify this and use, say, ten points for a unit, marking (31, 10) on the raster to represent this point.</P>
+<P><CENTER><IMG SRC="Figure/Figure_18.1.GIF" WIDTH=366 HEIGHT=189 BORDER="1"></CENTER></P><!--
+-->
+
+<H3><b><A NAME="18.1.2">18.1.2</A> Where is the origin?</b></H3>
+<P>When the Macintosh<!--‹-->--the first popular graphics-oriented computer was developed<!--‹-->--it had the origin not at the centre of the screen as suggested in the above diagrams, but at the top left corner. The positive horizontal direction was still to the right, but the positive vertical direction goes down, rather than up. There are still four quadrants, as points can have negative coordinates, but three of the quadrants are off the screen. As with many other parts of the interface, this arrangement was subsequently copied into other graphics user systems, including the various versions of Windows. The standard mathematical system and the Mac/Windows screen are illustrated in figure 18.2. </P>
+<P>A graphing module used on either of these systems will need to have the option of using the native system directly, or passing conventional mathematical coordinates and then translating to the native screen.</P>
+<P><CENTER><IMG SRC="Figure/Figure_18.2.GIF" WIDTH=371 HEIGHT=190 BORDER="1"></CENTER></P><!---->
+
+<H3><b><A NAME="18.1.3"></A>18.1.3 Measuring Angles</b></H3>
+<P>Yet another option needed for graphing is created by the fact that when the focus is on polar coordinates<!--‹-->--that is, the angle and distance from the origin are given<!--‹-->--rather than on rectangular coordinates, there are two common systems for measuring angles. In the <i>standard</i> system used in mathematics and physics, the angle zero is the positive horizontal axis (East; also called the polar axis) and angles are measured counterclockwise (either in degrees or radians.) However, in the <i>bearing</i> system used in navigation, the positive vertical axis (North) is taken as the zero angle, and bearings are measured clockwise. For the Macintosh/Windows raster, it makes sense to use the positive horizontal axis for zero and measure counterclockwise, as only one quadrant is on the screen.</P>
+<P>In addition, because some people prefer to graph in degrees and others in radians, a graphing module perhaps ought to provide  the option to do either.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.3.GIF" WIDTH=573 HEIGHT=219 BORDER="1"></CENTER></P><!--
+
+<P>Observe that bearing style angles are by convention recorded in degrees using three digits, including leading zeros where necessary.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

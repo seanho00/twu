@@ -1,0 +1,71 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<meta name="generator" content="Adobe GoLive 4">
+		<title>Digging Deeper -- Concurrent Processes</title>
+		<script language="JavaScript"><!--
+function closeWindow()
+{
+   top.window.close();
+}
+// -->
+		</script>
+	</head>
+
+	<body bgcolor="white">
+		<center>
+			<font size="6">Digging Deeper: Concurrent Processes</font></center>
+		<div align="left">
+			<p>Sequence diagrams, collaboration diagrams, activity diagrams, and statechart diagrams give dynamic views of a model. They let you look inside to the mechanism for action inside the model. Sequence diagrams and collaboration diagrams focus on the messages involved in completing a single process. Statechart diagrams focus attention on a single object. Activity diagrams focus on the flow of activities in performing a single task.</p>
+			<p>In this page, we will see how to how concurrent activities are modeled in sequence diagrams and state diagrams.</p>
+			<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+			<p><font size="5">Sequence diagrams with asynchronous messages</font></p>
+			<p>A message is <a name="asynchronous"></a><font color="#990000"><b>asynchronous</b></font> if it allows its sender to send additional messages while the original is being processed. The timing of an asynchronous message is independent of the timing of the intervening messages.</p>
+			<p>The following sequence diagram illustrates the action of a nurse requesting a diagnostic test at a medical lab. There are two asynchronous messages from the <b>Nurse</b>: 1) ask the <b>MedicalLab</b> to reserve a date for the test and 2) ask the <b>InsuranceCompany</b> to approve the test. The order in which these messages are sent or completed is irrelevant. If the <b>InsuranceCompany</b> approves the test, then the <b>Nurse</b> will schedule the test on the date supplied by the <b>MedicalLab</b>.</p>
+			<p><img height="336" width="420" src="asynsequence.gif" hspace="10" vspace="15" alt="Sequence diagram"></p>
+			<p>The UML uses the following message conventions.</p>
+			<ul>
+				<p>
+				<table border="1" cellpadding="0" cellspacing="2">
+					<tr>
+						<th bgcolor="#ffffcc">Symbol</th>
+						<th bgcolor="#ffffcc">Meaning</th>
+					</tr>
+					<tr>
+						<td><img height="18" width="70" src="simplemessage.gif" hspace="5" vspace="3" alt="Simple message arrow"></td>
+						<td>simple message which may be synchronous or asynchronous</td>
+					</tr>
+					<tr>
+						<td><img height="19" width="70" src="returnarrow.gif" hspace="5" vspace="3" alt="Simple message return"></td>
+						<td>simple message return (optional)</td>
+					</tr>
+					<tr>
+						<td><img height="13" width="70" src="synmessage.gif" hspace="5" vspace="3" alt="Asynchronous arrow"></td>
+						<td>a synchronous message</td>
+					</tr>
+					<tr>
+						<td><img height="54" width="70" src="asynchmessage.gif" hspace="5" vspace="3" alt="Asynchronous arrows"></td>
+						<td>an asynchronous message</td>
+					</tr>
+					<tr>
+						<td><img height="54" width="71" src="asynchreturn.gif" hspace="5" vspace="3" alt="Asynchronous return"></td>
+						<td>an asynchronous message return</td>
+					</tr>
+				</table>
+				<p></p>
+			</ul>
+			<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+			<p><a name="State"></a><font size="5">Concurrency and statechart diagrams</font></p>
+			<p>States in statechart diagrams can be nested. Related states can be grouped together into a single <a name="compositestate"></a><font color="#990000"><b>composite state</b></font>. Nesting states inside others is necessary when an activity involves concurrent subactivities.</p>
+			<p>The following statechart diagram models an auction with two concurrent substates: processing the bid and authorizing the payment limit.</p>
+			<p><img height="340" width="634" src="concurrentstate.gif" hspace="10" vspace="15" alt="State diagram with concurrent substates"></p>
+			<p>Entering the <b>Auction</b> requires a fork at the start into two separate start threads. Each substate has an exit state to mark the end of the thread. Unless there is an abnormal exit (<b>Canceled</b> or <b>Rejected</b>), the exit from the composite state occurs when both substates have exited.</p>
+			<p><a href="(Empty Reference!)" onclick="closeWindow( ); return false;"><img height="20" width="45" src="close.gif" alt="Close window" border="0"></a></p>
+		</div>
+		<p>
+		<hr>
+		<font size="2">Copyright &copy; 2000 TogetherSoft, Inc. All rights reserved.</font>
+	</body>
+
+</html>

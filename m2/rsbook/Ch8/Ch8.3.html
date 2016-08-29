@@ -1,0 +1,196 @@
+<HTML>
+<HEAD>
+<TITLE>8.3 High Level Access to Low Level Facilities in Modula-2</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="high, level, low, facilities, access, loc, address, storage, unit, system, module, pseudo-module, pseudo, module, pointer, addadr, subadr, difadr, adr, cast, safe, unsafe, conversion, conversions, makeadr, hexadecimal, octal, notation, unicode, ascii">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.3 High Level Access to Low Level Facilities in Modula-2</B></H2>
+<P>In common with the implementations of most other languages, all versions of  Modula-2 use words as units of data and one memory location of this size is employed to store a CARDINAL.  One of them is usually used to store an INTEGER as well, just by interpreting any binary number with a <!--"-->&quot;1<!--"-->&quot; in the highest bit place as a negative and with a <!--"-->&quot;0<!--"-->&quot; in that location as a positive. Thus the sixteen bit binary number</P>
+<P>1111 1111 1111 1111</P>
+<P>interpreted as a CARDINAL is typically 65535, but as an INTEGER is typically a representation of -1 (subtracting one from zero changes all the bits to ones).</P>
+<P>These details are not usually important to the programmer working at the high level, but when they are, it becomes necessary to access such low level features from the high level platform Modula-2 affords.  For such instances:</P>
+<BLOCKQUOTE><I><A NAME="Storage">A</A> Modula-2 data storage unit has the type <U>LOC</U>, and a Modula-2 storage location has the type <U>ADDRESS</U>.</I></BLOCKQUOTE>
+<P>Because the implementation of these two data types must always imply some knowledge of the machine on which they are implemented, neither is included in the language proper.  Rather, along with certain other low-level constructs, these items are segregated from the language and placed into the module SYSTEM, from whence they must be imported into any other module.  This means that the occurrence of the line</P>
+<PRE>
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  LOC, ADDRESS, <!--<-->&lt;anything else<!-->-->&gt;;</PRE>
+<P>immediately marks the module containing this import as low-level dependent, and therefore probably not portable to another environment.</P>
+<P>Strictly speaking, SYSTEM is not a separate library module at all, but a segregated part of the compiler.  By convention, its name and contents are all uppercase, but, SYSTEM is not a standard identifier, and neither are LOC or ADDRESS.</P>
+<BLOCKQUOTE><I><A NAME="System">The</A> Module SYSTEM, and any other low-level dependent module that is a segregated part of the compiler and not a separate library module is called a <U>system module</U> or a <U>pseudo-module</U>.</I></BLOCKQUOTE>
+<H3><B><A NAME="8.3.1">8.3.1</A> The Module SYSTEM</B></H3>
+<P>While not actually a separate library module, SYSTEM behaves as though it had the following definition module shown below.</P>
+<P><B>NOTE</B>:	Some of the contents of SYSTEM have been omitted and will be discussed later in the text.  The meaning of the standard identifier POINTER can be found in chapter 12, and its use will not be detailed here.  Some versions of SYSTEM may have additional items necessary for the implementation at hand.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SYSTEM;
+
+<B>CONST</B>
+  BITSPERLOC    = <!--<-->&lt;implementation-defined constant<!-->-->&gt; ;
+  LOCSPERWORD   = <!--<-->&lt;implementation-defined constant<!-->-->&gt; ;
+
+<B>TYPE</B>
+  LOC; 
+  ADDRESS = <B>POINTER</B> <B>TO</B> LOC; 
+  WORD = <B>ARRAY</B> [0 .. LOCSPERWORD-1] <B>OF</B> LOC;
+
+  (* BYTE and LOCSPERBYTE are provided if appropriate for machine *)
+  
+<B>CONST</B>
+  LOCSPERBYTE = <!--<-->&lt;implementation-defined constant<!-->-->&gt; ;
+
+<B>TYPE</B>
+  BYTE = <B>ARRAY</B> [0 .. LOCSPERBYTE-1] <B>OF</B> LOC;
+
+<B>PROCEDURE</B> ADDADR (addr: ADDRESS; offset: <B>CARDINAL</B>): ADDRESS;
+  (* Returns address given by (addr + offset), or may raise an exception if this address is not valid. *)
+
+<B>PROCEDURE</B> SUBADR (addr: ADDRESS; offset: <B>CARDINAL</B>):;
+  (* Returns address given by (addr - offset), or may raise an exception if this address is not valid. *)
+
+<B>PROCEDURE</B> DIFADR (addr1, addr2: ADDRESS): <B>INTEGER</B>;
+  (* Returns the difference between addresses (addr1 - addr2), or may raise an exception if the arguments are invalid or address space is non-contiguous. *)
+
+<B>PROCEDURE</B> MAKEADR (val: <!--<-->&lt;some type<!-->-->&gt;; ... ): ADDRESS;
+  (* Returns an address constructed from a list of values whose types are implementation-defined, or may raise an exception if this address is not valid. *)
+
+<B>PROCEDURE</B> ADR (<B>VAR</B> v: <!--<-->&lt;anytype<!-->-->&gt;): ADDRESS;
+  (* Returns the address of variable v. *)
+
+<B>PROCEDURE</B> CAST (<!--<-->&lt;targettype<!-->-->&gt;; val: <!--<-->&lt;anytype<!-->-->&gt;): <!--<-->&lt;targettype<!-->-->&gt;;
+  (* CAST is a type transfer function.  Given the expression denoted by val, it returns a value of the type <!--<-->&lt;targettype<!-->-->&gt;.  An invalid value for the target value or a physical address alignment problem may raise an exception. *)
+
+<B>END</B> SYSTEM.</PRE>
+<P>The procedures ADDADR, SUBADR, and DIFADR, are provided to allow arithmetic to be performed on items of the abstract data type ADDRESS.  The details of MAKEADR vary from one machine to another.  This procedure is intended to allow for the construction of a valid address from some other type of data.  The parameters will in most implementations be one or more CARDINALs.</P>
+<P>ADR is intended to allow a program to discover the address of one of its own variables.  When a module is loaded into memory, the variable declarations are resolved into addresses, and all references to them within the actual code from that point on are to these addresses.  ADR returns, in an item of the type ADDRESS the machine location of one of these variables.  One might write a fragment such as:</P>
+<PRE>
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  WORD, ADDRESS, ADR;
+  
+<B>VAR</B>
+  theWord : WORD;
+  theAdr : ADDRESS;
+  card : CARDINAL;
+ 
+<B>BEGIN</B>
+  theAdr := ADR (card);</PRE>
+<P>However, the useful purposes to which this can be put are not described in detail until Chapter 12.</P>
+<P>CAST plays a role related to, but different from the standard procedure VAL.  When it is necessary to safely convert a value of one type to a value of another type (so as to construct an expression)  VAL is always preferable.  When, on the other hand, it is desired to forcibly re-interpret the bit pattern of an item of one type as though it were of another type without any conversion, CAST is used instead.  Clearly, it is necessary for the programmer to know how the two data types are represented at the low level (bit pattern) or the result of the CAST operation is not usable.  Thus, if one has</P>
+<PRE>
+<B>VAR</B>
+  int : <B>INTEGER</B>;
+  card : <B>CARDINAL</B>;</PRE>
+<P>then, both</P>
+<PRE>
+  int := int + <B>VAL</B> (<B>INTEGER</B>, card);</PRE>
+<P>and</P>
+<PRE>  
+  int := int + <B>CAST</B> (<B>INTEGER</B>, card);</PRE>
+<P>are syntactically valid, but the latter assumes that the storage bit pattern of the INTEGER has some particular meaning when interpreted as a CARDINAL.  This may or may not be true.  If, for instance <I>int</I> were negative, CASTing it into a positive valued be meaningful only if the programmer also knew how many bits were used to store the INTEGER and how to interpret the sign bit after the CAST.</P>
+<BLOCKQUOTE><I><A NAME="Conversion">Type</A> changes made using VAL are called <U>safe conversions</U></I>.</BLOCKQUOTE>
+<BLOCKQUOTE><I>Type changes made using CAST are called <U>unsafe conversions</U>.</I></BLOCKQUOTE>
+<P>These low level facilities are detailed at this point not because the student is expected to make great use of them yet, but to illustrate that Modula-2 can be used at the low level.  This makes it a language in which operating systems and other software that uses intimate knowledge of the machine can be written.</P>
+<H3><B><A NAME="8.3.2">8.3.2</A> Variables at Fixed Addresses</B></H3>
+<P>Modula-2 provides the ability to declare a variable to reside at a fixed address (or, more accurately, to assign a variable name to the contents of the machine at a particular address).  This is done by giving a constant in brackets after the variable at the time it is declared.</P>
+<PRE>
+<B>VAR</B>
+  flag [768] : <B>INTEGER</B>;
+  bottom [0] : <B>CARDINAL</B>;
+  somewhere [16238] : <B>CHAR</B></PRE>
+<P>The variable can be of any type and will start at the specified address.  Its space extends for the number of storage locations normally taken by an integer, cardinal, char, etc.  This particular facility was not required by Wirth's definition of Modula-2, but his suggestion that it be provided was quite strong and most implementations had it.  It is required to be provided in ISO standard Modula-2.</P>
+<P><B>NOTES</B>: 1. This is a machine-dependent facility, and code written to take advantage of it is not portable to another system.</P>
+<P>	 2. For this reason, this syntax cannot be used in ISO standard Modula-2 unless the identifier MAKEADR has been imported from SYSTEM even if MAKEADR is not explicitly used.</P>
+<P>	 3. In some operating systems, user programs are not allowed to have low level access to addresses and some of these capabilities will not be present in any notation available to the programmer.</P>
+<P>One use of this facility for system programmers is to access single memory locations (LOCs).  Some such memory locations may serve the role of hardware switches on I/O locations (among many other uses).  Referencing one memory location (LOC) might control turning on, say, the high resolution graphics mode for the machine, and the one just before it might turn it off again.  Usually, any reference at all to such a <!--"-->&quot;switch<!--"-->&quot; will cause it to act.  An assignment to the variable declared to be there will do quite nicely.</P>
+<P>  Clearly, one must consult the manual of the computer before accessing the contents of specific addresses, as very undesirable side effects can easily (erasing a disk?) be caused if one acts without due care.</P>
+<H3><B><A NAME="8.3.3">8.3.3</A> Hexadecimal and Octal Notation in Modula-2</B></H3>
+<P>If one finds it useful, Modula-2 allows one to declare constants in Hexadecimal, provided they begin with a number and are followed by the letter <I>H</I>.  It will also allow one to declare them in Octal, by following them with the letter <I>B</I>.  As indicated briefly in Chapter 7, single character constants compatible with CHAR or the implied string type can be given by the ordinal value in Octal, followed by a <I>C</I>.  Here are some examples:</P>
+<PRE>
+<B>CONST</B>
+  a = 0A5H;    (* can't start with letter *)
+  b = 651B;
+  c = 177777B;
+  EOL = 15C;  (* common end of line character *)
+  d = 789H ;   (* starts with number *)
+<B>VAR</B>
+  somewhere [0FFFFH] : <B>CARDINAL</B>;
+  
+<B>PROCEDURE</B> Length (str : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : <B>CARDINAL</B>;
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  count := 0;
+  <B>WHILE</B> (count <!--<-->&lt;= <B>HIGH</B> (str)) <B>AND</B> (str [count] # 0C)
+    <B>DO</B>
+      <B>INC</B> (count)
+    <B>END</B>;
+  <B>RETURN</B> count;
+<B>END</B> Length;</PRE>
+<P>Note the handy use of <I>0C</I> instead of <I>CHR(0)</I> in this version of the procedure <I>Length</I> for a system where it was known that the string terminator was the null character.  If it were not known, the more portable character literal <!--"-->&quot;<!--"-->&quot; is preferable. This only matters because the one form takes six keystrokes to type, and the other only takes two.</P>
+<P><B>NOTES</B>:	 1. Only the numbers 0 through 127<sub>10</sub> define standard characters according to the ISO sequence that underlies Modula-2.  Since a LOC (usually byte) is used to store such a character, codes through CHR (255) or 377C (at least) are valid.  However, what such a <!--"-->&quot;character<!--"-->&quot; would look like if output to the screen or printer is very much hardware dependent.  On some machines it could be a regular ISO character in black/white inverse, and it others is could be a special graphics symbol, a Greek letter, accented character, or something else.  There is no Modula-2 standard for characters in the range 127 .. ORD ( MAX (CHAR)).</P>
+<P>	 2. Many machines are now using two byte character coding called <i>Unicode</i>, in order to code languages such as Chinese that have many thousands of characters.  In such machines, when the actual language employed is based on Roman script and only 128 characters are needed, the most significant byte of the character is usually set to zero and ignored.</P>
+<P>Hexadecimal numbers are convenient for expressing addresses as well as data.  Small computers once had sixteen bits with which to express an address, these could range from zero through hexadecimal 0FFFFH (65535<sub>10</sub>).</P>
+<P><B>NOTE</B>:  The number of bits available to the computer to make addresses is independent of the number of data bits.  While a computer with eight data bits generally had 16 address lines, a sixteen bit computer may have had sixteen, twenty, or twenty-four address lines.  The maximum amount of directly addressable memory in these three cases is therefore 64K, 1M and 16M bytes respectively.  A thirty-two data bit computer might have many more address lines.</P>
+<P>And now, a little example.  Here is a procedure that takes advantage of the fact that on its target machine, there is a fixed location in memory for keyboard data coming in. The keyboard location in this machine is 0C000H and the value at that location is less than 127 if no key has been pressed since the last time any reference was made to the location 0C010H. Whenever the latter location is accessed, the most significant bit in 0C000H is set back to zero, leaving a number below 128.</P>
+<P>This procedure waits for the user to press a key before going on, hits the keyboard strobe (0C010H) to reset the key location for the next routine checking this, and then exits with the character value of the key pressed in the type CHAR.</P>
+<PRE>
+<B>PROCEDURE</B> Keypress ( ):<B>CHAR</B>;
+<B>VAR</B>
+  Keyboard [0C000H] : <B>CHAR</B> ; (* single loc in this version *)
+  KbdStrobe [0C010H] :<B>CHAR</B>;
+<B>BEGIN</B>
+  <B>REPEAT</B>
+  <B>UNTIL</B> Keyboard <!-->-->&gt; <B>CHR</B> (127); (* A keypress--high bit is set *)
+  KbdStrobe := <B>CHR</B> (0);  (* reset *)
+  <B>RETURN</B> Keyboard;
+  (* High bit only is stripped to zero by strobe reset, so in correct ISO range *)
+<B>END</B> Keypress;</PRE>
+<P>As can be seen, writing a <I>Keypress</I> function procedure on this level always involves an intimate knowledge of the specific workings of the target hardware device.  However, with such knowledge, suitable low-level procedures can be coded directly in Modula-2, without resorting to separate machine language routines.  It should, in fact, be possible to modify this particular example for specific hard-wired memory locations on many computers, provided their function is well-documented.  Clearly, such code cannot be ported to another system than the original target.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,62 @@
+<HTML><HEAD><TITLE>14.6 An Introduction to Table Indexing Methods</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Table Indexing">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.6 An Introduction to Table Indexing Methods</B></H2>
+<P>A number of other topics related to tables are somewhat more advanced, and will not be considered here in any more detail than will assist the reader in consulting further references.  It should be noted, however, that as a table grows very large, the sequential access method implied by the linked structure becomes a hindrance.  If the table is sorted, possible solutions include:</P>
+<UL><!--€--><LI> If the maximum size of the table is known ahead of time, it could be implemented as an array to speed access.</LI>
+<!--€--><LI> In either case, the table could be indexed and a separate array or linked list contain the indices into the table.  For instance a table ordered alphabetically could have a separate index table by the first letter of the key so that a search for <!--"-->&quot;Xanadu<!--"-->&quot; would start at the beginning of the <!--"-->&quot;X<!--"-->&quot; entries.</LI>
+<!--€--><LI> One could go further than this and have a separate linked list for each letter of the alphabet.  Conceptually, one could regard the data structure as a linked list of linked lists (or of queues or stacks, if appropriate).  This could be done for any appropriate index.  For instance the employees of an organization could be organized by department.  Each department name provides an index to a linked list of the people in that department.</LI></UL>
+<BLOCKQUOTE><I><A NAME="Access">The</A> maintenance of a table of starting points of separate linked lists is called the <U>indexed sequential access method</U> (ISAM), although this term is most commonly used specifically for the indexing of sequential files.</I></BLOCKQUOTE>
+<UL>These linked lists could either be kept separate, or they could be chained together into one long list, with the indices being starting points for a logical grouping.  In either case, the entire collection is the table.
+<!--€--><LI> Sometimes the indexing into a table is done dynamically by performing some computation based on the key.  In the case of alphabetically sorted data, this could be an extension of the last two ideas.  For instance, if d is the distance in letters of a letter from <!--"-->&quot;A,<!--"-->&quot; then the formula </LI>
+<P>26 * d(first letter) + d(second letter) </P>
+which, if applied to <!--"-->&quot;Canada<!--"-->&quot; yields the value 52, could be used to compute a finer index into a table than just using the first letter alone.  Of course, <!--"-->&quot;Cambodia<!--"-->&quot; and <!--"-->&quot;Cameroun<!--"-->&quot; yield the same result, so the answer does not uniquely determine the position of an item in the table; it just provides a starting point to begin the search.</UL>
+<BLOCKQUOTE><I><A NAME="Hash">Any</A> method of computing directly from the search key at run time an index into a table of data is called <U>hashing</U>; a table indexed in this way is called a <U>hash table</U>; and the function employed for the calculation is called a <U>hash function</U>.</I></BLOCKQUOTE>
+<P>Alphabetically ordered items are not spread evenly through the letters; they are clustered heavily in some parts.  For instance, a telephone book may contain many last names <!--"-->&quot;Kim,<!--"-->&quot; <!--"-->&quot;Smith,<!--"-->&quot; <!--"-->&quot;Wong,<!--"-->&quot; and <!--"-->&quot;Friesen,<!--"-->&quot; but not very many <!--"-->&quot;Sutcliffe,<!--"-->&quot; <!--"-->&quot;Hacker,<!--"-->&quot; <!--"-->&quot;Zinzelmeyer,<!--"-->&quot; <!--"-->&quot;Szczepanczyk,<!--"-->&quot; or <!--"-->&quot;Herod.<!--"-->&quot;  Moreover, the nature of the clustering would not be the same in every country (not many named <!--"-->&quot;Smith<!--"-->&quot; in China; mostly <!--"-->&quot;Kim<!--"-->&quot; in Korea, and lots of <!--"-->&quot;Sutcliffe<!--"-->&quot; in Yorkshire).  Thus, the development of effective and efficient hash functions to index large tables depends very much on the data at hand, and may change over time as the data is maintained.  The reader is invited to consult an advanced work on these subjects.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

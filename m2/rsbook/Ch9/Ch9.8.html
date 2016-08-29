@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<TITLE>9.8 Using Records</TITLE>
+<meta NAME="keywords" CONTENT="use, using, record, records, unqualify, unqualified, with, designator, expression, expressions, import, imports, imported, qualify, qualified, identifier, identifiers, enumerated, type, types">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.8 Using Records</B></H2>
+<P>Most people come to the conclusion while working through reading the last section that writing <!--"-->&quot;<I>student</I>.<!--"-->&quot; in front of every record field identifier when doing assignments is a pain in the neck.  The obvious thing to wonder, in view of previous experience, is whether the qualified identifiers of record fields can be unqualified in some fashion similar to the unqualifying of identifiers from module imports (in a FROM statement).  They can, and this unqualifying is done as in the construction below:</P>
+<PRE>
+<B>WITH</B> student
+  <B>DO</B>
+    lastname := <!--"-->&quot;Hacker<!--"-->&quot;;
+    firstname := <!--"-->&quot;Nellie<!--"-->&quot;;
+    birth.year := 1965;
+    birth.month := Feb;
+    ...
+
+  <B>END</B>;</PRE>
+<P>Within the boundaries of the WITH statement, a new scope is created in which the record fields of the record named in the WITH can be used unqualified.  Here is the diagram of the WITH statement:</P>
+<P><CENTER><IMG SRC="Figure/Figure_9.5.GIF" BORDER="1"></CENTER><!----></P>
+<P>In a sense, the WITH statement serves a similar role in selecting the fields of a record (for assignment or otherwise) as does the FOR to select the indices of an array.  In another sense, its effect on the identifiers within its scope is to unqualify them in the same manner as does the FROM statement.  Naturally, one can nest these and further compact the above in this manner:</P>
+<PRE>
+<B>WITH</B> student
+  <B>DO</B>
+    lastname := <!--"-->&quot;Hacker<!--"-->&quot;;
+    firstname := <!--"-->&quot;Nellie<!--"-->&quot;;
+
+    <B>WITH</B> birth
+      <B>DO</B>
+        year := 1965;
+        month := Feb;
+        day := 12;
+      <B>END</B>;
+
+    male := <B>FALSE</B>;
+    idnumber := 46725;
+    married := <B>FALSE</B>;
+    status := freshman;
+  <B>END</B>;</PRE>
+<P><B>NOTES</B>: 1. Only one identifier can be named in each WITH statement.</P>
+<P>	2. Within a WITH statement, no assignment can be made to the identifier it names.  It will not work to try to  say</P>
+	<P>student := otherStudent</P>
+	<P>within this WITH statement, for the variable unqualified is evaluated only once, when the scope of WITH is entered, and this value is the one referenced throughout that scope.  This is similar (not the same as) to the rule that one cannot re-assign the index variable of a FOR within its loop.</P>
+<P>	3. Each WITH has its own END.</P>
+<P>	4. Any fields not assigned are indeterminate and could contain any random data.</P>
+<P>Naturally, one can read data from the keyboard and assign it directly to the variable parameters of the read statements from an appropriate library module:</P>
+<PRE>
+<B>WITH</B> student
+  <B>DO</B>
+    WriteString (<!--"-->&quot;Enter the last name please. <!--"-->&quot;);
+    ReadString (lastname);   (* assigns student.lastname *)
+    ...
+  <B>END</B>;</PRE>
+<P>Once data has been assigned to a field in a record, it can subsequently be manipulated in the same way as any other data.  Individual fields of a record can be used as part of numerical expressions in assignments (where appropriate) and whole records with all their fields can be assigned (provided they are of the same type).  Starting with:</P>
+<PRE>
+<B>TYPE</B> Employee =
+  <B>RECORD</B>
+    lastname, firstname : Name;
+    salary : <B>REAL</B>;
+  <B>END</B>;
+
+<B>VAR</B>
+  clerk, secretary : Employee;</PRE>
+<P>and assuming the appropriate assignments have been made to the fields and that the other identifiers used below were also defined, one could write assignments like:</P>
+<PRE>
+secretary := clerk;   (* someone was transferred *)</PRE>
+<P>but, one <I>cannot</I> write statements like:</P>
+<PRE>
+<B>IF</B> secretary = clerk
+  <B>THEN</B>   (* comparisons not allowed *)
+    pay := hours * clerk.salary
+  <B>END</B>;</PRE>
+<P><B>NOTE</B>:	If one of the fields were unassigned, or contained unassigned elements, such as the unused trailing portions of a string (or other array components), a comparison employing = or # would not give meaningful results, even if the data in the used fields and components is all equal.  For this reason, such comparisons are not allowed.</P>
+<P>Two points are worth considering when deciding whether or not to employ the WITH statement.  On the one hand, some people consider it to be more trouble than it is worth to unqualify using WITH for the purpose of making a single assignment.  On the other, there are those, including some teachers and language experts, who believe that WITH should <i>never</i> be used, on the grounds that a program is easier to read when all identifiers are employed in their qualified form.  (For consistency, such purists will also only import qualified identifiers.)</P>
+<P>Second, if one imports a record into a module, one automatically imports qualified all its field names along with it.  This means that the field identifiers need not be specifically mentioned in the import statement, only the type name or variable name under whose umbrella they are declared.  This is a similar rule to the one that was earlier applied to the import of enumerated types, which implied an automatic import of all the identifiers in the enumeration.  The difference is that field type names are only available in qualified form unless WITH is employed to open a new scope, whereas enumeration item names are available unqualified.</P>
+<H3><B>Example: </B></H3>
+<P>Supposing that in the module <I>Files</I> there were a variable <I>FilePos</I> defined whose structure was:</P>
+<PRE>
+<B>TYPE</B>
+  FilePos =
+    <B>RECORD</B>;
+      hi, lo : <B>CARDINAL</B>
+    <B>END</B></PRE>
+<P>and then, in some program module there was the code:</P>
+<PRE>
+<B>FROM</B> Files <B>IMPORT</B>
+  FilePos;</PRE>
+<P>then the following code would be correct:</P>
+<PRE>
+<B>PROCEDURE</B> WritePos;
+<B>BEGIN</B>
+  WriteCard (FilePos.hi, 6);
+  WriteCard (FilePos.lo, 6);
+<B>END</B> WritePos;</PRE>
+<P>Because the record name has been imported, its field names are also visible in the importing scope as qualified identifiers, and can also be unqualified with an appropriate WITH statement.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

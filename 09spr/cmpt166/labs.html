@@ -1,0 +1,215 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 166 Spring 2009 Assignments, Trinity Western University</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/09spr/cmpt166/">
+CMPT 166 Spring 2009</a> Lab Assignments</h1>
+
+<h2><a name="0">Lab 0: HelloWorld (due Wed 14 Jan) (5pts)</a></h2>
+
+Write a simple C++ program that prints "Hello, World!" (or some other
+greeting of your choice) on the command-line.
+No write-up is needed for this orientation lab; the main point is to make
+sure you are setup with a C++ development environment (editing, compiling,
+running).
+
+<p>
+If you are using Microsoft Visual Studio 2008, note that it is a very complex
+and powerful development environment; invest time to learn it, and it will 
+help you in the long term.  Visual Studio is available on the senior lab
+computers.  When it starts up for the first time, select "Visual C++" as
+the working profile.
+
+<p>
+You may find helpful Microsoft's 
+<a href="http://msdn.microsoft.com/en-us/library/ms235630.aspx">
+"Visual C++ Guided Tour"</a> (also available from online help within 
+Visual Studio).
+The first section, 
+<a href="http://msdn.microsoft.com/en-us/library/bb384847.aspx">
+"Introducing the Visual Studio IDE (C++)"</a>,
+and parts of the second section,
+<a href="http://msdn.microsoft.com/en-us/library/bb384834.aspx">
+"Creating Command-Line Applications (C++)"</a>,
+will be most pertinent to your Win32 command-line application.
+
+<p>
+Package up your whole project directory, including all source and header files,
+into one ZIP file, and upload it to myCourses.
+
+<h2><a name="1">Lab 1: Selection (due Wed 21 Jan) (20pts)</a></h2>
+
+Write a C++ program that uses the <tt>if</tt> or
+<tt>switch</tt> structures to print the song,
+"The Twelve Days of Christmas".  
+The user must be asked to enter a day from 1
+to 12, and the program must display the corresponding message for that day.
+The strings for each day should only appear in your code once each (e.g., the
+string "five golden rings" should only appear in your code once).
+Google for the lyrics, or make up your own (keep it clean, please).
+
+<h2><a name="2">Lab 2: File I/O (due Fri 30 Jan) (20pts)</a></h2>
+
+Choose one of the following options: <ol>
+  <li> Write a program that produces a histogram of the letters in a file.
+  A histogram is a bar-chart with the length of the bars representing the
+  frequency with which the corresponding letter appears in the file.
+
+  <li> Write a ROT13 encryption program that reads in a plaintext file and
+  outputs encrypted text to another file.
+
+  <li> Write a program that gives and takes advice on programming.  The 
+  program starts by displaying a piece of advice on the screen, then asks
+  the user to type in another piece of advice (can be multiple lines), 
+  ending with a blank line (press Return twice).  The program then ends.
+  The next person to run the program sees the piece of advice given by 
+  the last user to run the program.
+</ol>
+
+<h2><a name="3">Lab 3: OO Class Design (due Fri 13 Feb) (20pts)</a></h2>
+
+Write a class defining some new kind of mathematical entity not built-in to C++.
+Possible options are mentioned below.
+
+Your class must include at least the following functionality: <ul>
+  <li> Constructors that can take a variable number of arguments, and provide 
+  reasonable default values.
+  <li> A reasonable <a href="ticpp1/Chapter11.html">copy constructor</a>.
+  <li> <a href="ticpp1/Chapter12.html">Overload the operators</a> +, -, *, / 
+  to work the way they should.
+  <li> Overload the operators ==, !=, &lt;, &le;, &gt;, &ge; to work 
+  in a reasonable way.
+  <li> Also write a separate testbed program that shows off the functionality
+  of your class.
+</ul>
+
+Possible mathematical entities you may consider: <ol>
+  <li> Rational numbers (fraction of two integers).  Include a method to 
+  reduce the fraction to lowest terms.  Be sure to protect against zero 
+  denominator.
+  <li> Complex numbers (<em>a + bi</em>, a real and an imaginary part).
+  Make sure that multiplication works the proper way for complex numbers.
+  <li> 2x2 matrices.  Include a method to compute the determinant.  Come up
+  with a reasonable semantics for the operators.
+  <li> Come up with your own idea!  Just check with me first.
+</ol>
+
+<h2><a name="4">Lab 4: FLTK Program (due Wed  4 Mar) (20pts)</a></h2>
+
+Write a "reasonably useful" interactive program using FLTK for the GUI.
+Your application should be designed to make use of a GUI (i.e., not something
+that could easily be done in a command-line text interface).  You may find
+<a href="http://fltk.org/doc-1.1/toc.html">the FLTK docs</a> and
+<a href="http://seriss.com/people/erco/fltk/">Erco's FLTK Page</a> helpful.
+You do not have to use Fluid if you don't want to.
+
+<br><br>
+Be creative and have fun!
+
+<h2><a name="5">Lab 5: FLTK Program II (due Wed 18 Mar) (20pts)</a></h2>
+
+Both of these options require a nice user-friendly FLTK GUI: your program 
+should be reasonably easy-to-use and not unbearably ugly.  An average
+computer user (non-programmer) should be able to figure out the controls,
+even without the help text (which you should also provide).  You are not
+required to use Fluid, but you are asked to use FLTK.
+
+<ul><li><b>Option 1:</b>
+Write an FLTK GUI program to render a fractal 
+<a href="http://en.wikipedia.org/wiki/L-system">L-system</a> or
+Iterated Function System (IFS) using a recursive algorithm.
+The shape need not be a Sierpinski gasket.
+Most fractals have some parameters that can be tweaked (e.g., length of 
+each branch compared to its parent); provide some kind of interactive
+graphical interface to adjust those parameters.
+The fractal can be 2D.<br>
+<em>Extra credit (up to 5pts): make it 3D using OpenGL.</em>
+<p>
+
+<li><b>Option 2:</b>
+Write an FLTK GUI program to read in an image 
+(need not be colour), display it, and manipulate it
+(i.e., a rudimentary Photoshop).
+Provide an interactive graphical
+interface to adjust the brightness and contrast of the image.  
+
+<br><em>Hint: if the original shade (o) and final shade (f) are floats between
+0 and 1, and the brightness (b) is a float between -1 and +1, and the contrast
+is a float between 0 and infinity, then one simple way to define 
+brightness and contrast is by: f = (o+b)*c.  The final shade f will need to
+be clamped to [0,1].  This method has some bad limitations; you may want to
+research better ways to define contrast and brightness.</em>
+
+<br><em>Extra credit (up to 5pts): add another Photoshop image operation/filter
+  of your choosing.</em>
+
+</ul>
+
+<h2><a name="6">Lab 6: Client/Server Sockets (due Wed 8 Apr) (25pts)</a></h2>
+
+Design a networked <b>client/server</b> application and
+implement it in C++ using TCP sockets.
+
+<ul>
+
+  <li> You will need to write <b>two programs</b>, one for the client and one
+  for the server.  They may share some code; put all the shared code in 
+  separate .cpp files and have both client and server link in those files.
+
+  <p>
+  <li> <b>Sample code:</b>
+  <a href="examples/socket/">command-line client/server</a>.
+  You may use this code as a starting point -- but no guarantees about the
+  quality of my code; it's pretty rudimentary and might not work right!
+
+  <p>
+  <li> The sample code works with the BSD sockets libraries in <b>Cygwin</b>
+  and Linux.  Windows' own socket library, <b>Winsock2</b>, is slightly 
+  different; see
+  <a href="http://msdn.microsoft.com/en-us/library/ms738545(VS.85).aspx">
+    MSDN article on Winsock</a>, including
+  <a href="http://msdn.microsoft.com/en-us/library/ms740096(VS.85).aspx">
+    the chapter on differences between Winsock and standard BSD sockets</a>.
+
+  <p>
+  <li> This lab need not have an FLTK GUI; <b>command-line</b> is fine.
+  (But see the extra credit option!)
+
+  <p>
+  <li> For testing purposes, both client and server may be run on the same
+  machine.  The hostname '<b>localhost</b>' (IP 127.0.0.1) always refers to 
+  the same host the program is running on.
+
+  <p>
+  <li> If you want to try running client and server on two different machines,
+  the host running the server needs to have an exception in its <b>firewall</b>
+  for the port number the server uses.  The senior lab machines have had 
+  exceptions added for TCP ports <b>4410 and 4411</b>, so you can use either 
+  of those for your server port.
+
+  <p>
+  <li> You may use 'ipconfig' (Windows) or 'ifconfig' (Linux) to find the 
+  <b>IP address</b> of the current machine.  The senior lab machines are named,
+  e.g., SENIORLAB08; you may use this as input to <tt>gethostbyname()</tt>.
+
+  <p>
+  <li> This lab is more complex and worth more than the other labs.
+  5 of the points will be from a <b>demo presentation</b> you will give of 
+  your lab project, in class on Mon 6Apr in the senior lab.  This is a big lab,
+  and you want to have something nice to show, so make sure you allocate
+  enough time to work on it!
+
+  <p>
+  <li><em><b>Extra credit</b> (up to 5pts): 
+  Give it an FLTK GUI!  You'll need to use multithreading; see
+  <a href="examples/FlChat/">my FlChat sample program</a> and
+  <a href="examples/fl_threads.h">the <tt>fl_threads.h</tt> wrapper for
+    PThreads</a>.
+  Again, you may use my code as a starting point -- but no guarantees, and
+  your project obviously must be significantly different from mine!
+</em>
+
+</ul>
+
+</body></html>

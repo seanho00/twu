@@ -1,0 +1,157 @@
+<HTML>
+<HEAD>
+<TITLE>2.11 Interactive Programs</TITLE>
+<meta NAME="keywords" CONTENT="interactive, program, readchar, readln, readcard, readreal, batch, style, interactive, module, input, output, i/o">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.11 Interactive Programs</B></H2>
+<P>The sample programs given thus far all produced a single output.  Their data was right in the code, either as literals that were written out, or as constants that were operated on to produce an output.  It is all very well to have a program produce some answers, but communication ought to be a two-way street.   Programs are much more versatile if they can print out messages to the user asking for input data, read the answers typed into variables, and then act on this data.   The procedures to achieve the reading of data are also located in the modules <I>STextIO</I>, <I>SWholeIO</I>, and <I>SRealIO</I>.  (Or from  <I>InOut</I> and <I>RealInOut</I>) The following are among the entities available for IMPORT.</P>
+<P>From <I>STextIO</I> or <I>InOut</I></P>
+<P><I>ReadChar</I><!--‹-->--<I>takes</I> in one character and puts it into CHAR variable memory (If from <I>InOut</I>, called just <I>Read</I>)</P>
+<P>From <I>SWholeIO</I> or <I>InOut</I></P>
+<P> <I>ReadInt</I><!--‹-->--<I>accepts</I> and assigns an INTEGER</P>
+<P> <I>ReadCard</I><!--‹-->--<I>does</I> the same for a CARDINAL</P>
+<P>From <I>SRealIO</I> or <I>RealInOut</I> (or possibly from <I>InOut</I>)</P>
+<P> <I>ReadReal</I><!--‹-->--<I>ditto</I> for a REAL</P>
+<P>Before giving examples, two definitions are in order:</P>
+<BLOCKQUOTE><I><A NAME="ProgramStyle">A</A> program that operates on a set of fixed data obtained either from within the program itself or from a file is said to be a <U>batch style</U> program.</BLOCKQUOTE>
+<BLOCKQUOTE>A program that interacts with its user via prompts to obtain the data on which its execution depends is called <U>interactive</U>.</I></BLOCKQUOTE>
+<P>Here, for instance are two earlier batch style examples re-written in interactive style:</P>
+<H3><B>Example:</B></H3>
+<P>Write a module to convert user-supplied Fahrenheit temperatures to Celsius units.</P>
+<PRE>
+<B>MODULE</B> ConvertToCelsiusI;
+(* by R. Sutcliffe *)
+(* to illustrate interactive style *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString, WriteChar;
+  (* The latter is called simply <!--"-->&quot;Write<!--"-->&quot; when in InOut. *)
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteReal;
+
+<B>CONST</B>
+  conversion = 32.0;  (* difference between zero points *)
+  ratio = 5.0/9.0;    (* ratio between Celsius and Fahrenheit *)
+
+<B>VAR</B>
+  Fahrenheit, Celsius : <B>REAL</B>;
+
+<B>BEGIN</B>
+  (* ask user for data *)
+  WriteString (<!--"-->&quot;What is the Fahrenheit value to convert? <!--"-->&quot;);
+  ReadReal (Fahrenheit);
+  WriteLn;
+  (* do the calculation *)
+  Celsius := ratio * (Fahrenheit - conversion);
+  WriteReal (Fahrenheit, 12);
+  WriteChar ('F');
+  WriteString (<!--"-->&quot; degrees equals <!--"-->&quot;);
+  WriteReal (Celsius, 12);
+  WriteChar ('C');
+  WriteString (<!--"-->&quot; degrees.<!--"-->&quot;);
+
+<B>END</B> ConvertToCelsiusI.</PRE>
+
+<P>The output from this program module is as follows: (user input in boldface)</P>
+<PRE>
+What is the Fahrenheit value to convert? <B>14.0</B>
+14.0000000000F degrees equals -10.000000000C degrees.</PRE>
+
+<H3><B>Example:</B></H3>
+<P>Write a module to compute the area and circumference of a circle from a user-supplied radius.</P>
+<PRE>
+<B>MODULE</B> CircleAreaCircI;
+(* by R. Sutcliffe *)
+(* to illustrate interactive style *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteReal;
+
+<B>VAR</B>
+  radius, area, circumference : <B>REAL</B>;
+
+<B>CONST</B>
+   pi = 3.1415926;
+   twopi = 2.0 * pi;
+
+<B>BEGIN</B>
+(* ask user for data *)
+  WriteString (<!--"-->&quot;What is the radius of the circle? ==<!-->&gt;<!--"-->&quot;);
+       (* fancier prompt *)
+  ReadReal (radius);
+  WriteLn;
+(* calculation *)
+  area := pi * radius * radius;
+  circumference := twopi * radius;
+(* output *)
+  WriteString (<!--"-->&quot;A circle of radius <!--"-->&quot;);
+  WriteReal (radius, 0);
+  WriteString (<!--"-->&quot; units has a circumference of <!--"-->&quot;);
+  WriteReal (circumference, 0);
+  WriteString (<!--"-->&quot; units<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot; and an area of <!--"-->&quot;);
+  WriteReal (area, 0);
+  WriteString (<!--"-->&quot; square units.<!--"-->&quot;);
+<B>END</B> CircleAreaCircI.</PRE>
+
+<P>The output from this program module is as follows: (user input in boldface)</P>
+<PRE>
+What is the radius of the circle? ==<!-->&gt; <B>13.0</B>
+A circle of radius  1.3000000E+1 units has a circumference of  8.1681404E+1 units
+ and an area of  5.3092914E+2 square units.</PRE>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,251 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.5em; } 
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+--></style>
+
+<title>CMPT14x Fall2006 Final, Trinity Western.  9Dec2006</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>__________________</td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<br>Total points: 115
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b> <br>
+problem solving as described in the text.
+<br>(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[5]</u><br><br>
+
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li> Fill in the blank: <u>[22]</u> <ol class="subparts">
+  <li> "<b>Computers</b> are t________s, and computing scientists are t___________s."
+  <li> How many bits are in a <b>nibble</b>? __________
+  <li> 1011 0110 <b>shifted</b> two right, in binary, is ____________________
+  <li> Convert <b>0x1BE</b> to decimal: _____________
+  <li> Convert 1100 0110 from binary to <b>octal</b>:  _______________
+  <li> What word describes functions which <b>invoke</b> themselves?  ___________
+  <li> The Python command used to trigger a user-defined <b>exception</b> is
+  ________________ .
+  <li> True or False (circle one): The word <tt>Apples_For_Dr.Ho</tt> 
+    is a legal Python <b>identifier</b>.
+  <li> What is the <b>type</b> of the Python expression 5**2 ? _________
+  <li> What Python command is used to convert an integer into a <b>real</b> value?
+  __________
+  <li> Name the two optional reserved words used in the Python program control
+  construct which corresponds to <b>selection</b>: _____________ ________________
+  <li> The first <b>assignment</b> of a value to a variable is called 
+  ________________ it.
+  <li> A cable modem connection runs at <b>4Mb/s</b>.  Assuming full utilization of
+  the bandwidth (which never happens in reality), how long would it take to
+  download a <b>2GB</b> file?  Use binary units.  _______________________
+  <li> The standard Python function which produces a <b>pseudorandom</b> real number
+  between 0 and 1 is in the 
+  <br>_______________ standard library and is named _______________ .
+  <li> The Python function which counts the <b>number of characters</b> in a string
+  is named _____________ .
+  <li> What English part of speech should a <b>function</b> name be?  ___________
+  <li> What symbol is used to separate statements in a <b>sequence</b> in C or M2?
+  ______
+  <li> What symbol is used to indicate logical <b>negation</b> in Python? ______
+  <li> A <b>requirement</b> imposed by a function upon its parameters, such that
+    the correctness of the result is not guaranteed if the requirement is
+    not met, is called a _______________________ .
+</ol>
+
+<li class="break">
+Name the five computer <b>program flow</b> abstractions described in the text,
+and for the four which we covered in class, show how each is done in Python.
+<u>[9]</u><br><br><br><br><br><br><br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume the following initialization: <u>[14]</u>
+<pre>	myPear = "DAnjou"
+	from math import pi	</pre>
+  <ol class="subparts">
+  <li><tt> 'pi' + 2*'z' + 'a' </tt>
+  <li><tt> 2 + 1&gt;4 and (5/0 &lt; 1)	</tt>
+  <li><tt> 2.0 + 14 / 4	</tt>
+  <li><tt> 6 ^ 5 </tt>
+  <li><tt> "%03d%s" % (15.189, 'pears')	</tt>
+  <li><tt> string.upper(DAnjou)	</tt>
+  <li><tt> "%05.2f" % 2.7182818	</tt>
+  <li><tt> '%.2f' % (19 % 5) </tt>
+  <li><tt> range(myPear)	</tt>
+  <li><tt> myPear[1:4]	</tt>
+  <li><tt> 'd' + 'b' </tt>
+  <li><tt> ord('d') - ord('b') </tt>
+  <li><tt> 'd' - 'b' </tt>
+  <li><tt> 'b' + 3 == 'd'	</tt>
+</ol>
+<br>
+
+<li>
+What is a <b>namespace</b>?  Tell me everything you know about scope rules and
+namespaces in Python.
+<u>[5]</u>
+<br><br><br><br><br><br><br>
+
+<li class="break">
+An orchard grows five apple varieties:
+<br>Fuji, Gala, Spartan, Rome, and Melba.<br>
+The apples I like are Fuji, Gala, and Rome; let this <b>set</b> be denoted by
+<tt>myFav</tt>.  <br>Let <tt>yrFav</tt> be the set containing Fuji and Melba.
+
+<ol class="subparts">
+  <li> Consider the <b>intersection</b> of <tt>myFav</tt> and <tt>yrFav</tt>.
+  Express in words the <b>interpretation</b> of this intersection
+  in the context of apple preferences. <u>[2]</u> <br><br><br><br> 
+  <li> Consider the <b>set difference</b> <tt>yrFav - myFav</tt>.
+  Express in words the <b>interpretation</b> of this set difference
+  in the context of apple preferences. <u>[2]</u> <br><br><br><br>
+  
+  <li> We wish to implement some set operations using <b>bitsets</b> in Python.
+  Define five Python <b>variables</b> <tt>Fuji, Gala, Spartan, Rome, Melba</tt>
+  with appropriate integer values for use in a bitset.
+  <u>[2]</u> <br><br><br><br><br><br>
+  <li> Using the variables you just defined, define a Python <b>bitset</b>
+  for <tt>yrFav</tt>. <u>[2]</u> <br><br><br><br>
+
+  <li> Write a Python expression for the <b>intersection</b> of
+  <tt>myFav</tt> and <tt>yrFav</tt>. <u>[2]</u> <br><br><br>
+</ol>
+
+<li>
+What is <b>wrong</b> with the following Python loop?  Rewrite it from scratch
+in a better way. <u>[4]</u>
+<pre>
+counter = 0
+sum = 0.0
+numitems = 0
+while counter &lt; len(mylist):
+	sum = sum + mylist[counter]
+	numitems = numitems + 1
+average = sum / numitems
+</pre>
+
+<li class="break">
+The following Python function has at least eleven <b>errors</b>.  Find and fix all of
+them.  Points will be deducted for "fixing" what are not errors.
+<u>[6]</u>
+<pre>
+define round(float):
+	
+	""Round a float to the nearest integer (up or down)."""
+	
+	addhalf := (float++ 0 5)	// add 0.5 to float
+	
+	Return integer((addhalf);
+</pre>
+<br><br><br>
+<!-- float is a std ident, not reserved word, so technically not error.
+semicolon is okay at end of statement.  -->
+
+<li>
+Define or describe each of the following <b>object-oriented</b> terms:
+<u>[7]</u>
+<ol class="subparts">
+  <li> Class<br><br><br><br>
+  <li> Instance<br><br><br><br>
+  <li> Attribute<br><br><br><br>
+  <li> Method<br><br><br><br>
+  <li> Constructor<br><br><br><br>
+  <li> Interface<br><br><br><br>
+  <li> Overloading<br><br><br><br>
+</ol>
+
+<li>
+Modula-2 and C have no built-in <b>string</b> type.  What is a string
+in Modula-2 or C?
+<u>[3]</u>
+<br><br><br>
+
+<li class="break">
+Describe all the differences between Python <b>lists</b> and C <b>arrays</b>.
+<u>[4]</u>
+<br><br><br><br><br><br><br>
+
+<li>
+Explain all the differences between <b>atomic</b> and 
+<b>aggregate</b>/compound/container data types.  Give examples of each.
+<u>[4]</u>
+<br><br><br><br><br>
+
+<li>
+The file 'input.txt' contains a list of real numbers, one per line.
+Write a Python program to <b>read</b> in the numbers from the file and print
+their average to the screen.  Docstring is required; pseudocode is not.
+<u>[6]</u>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+A certain sequence is defined by t<sub>1</sub>=0, t<sub>2</sub>=3, and
+after that t<sub>i</sub>=t<sub>i-1</sub> + 2 t<sub>i-2</sub>, so that
+the first few terms of the sequence are 0, 3, 3, 9, 15, 33, 63, ....
+<br><br>
+On a separate paper, write a <b>recursive</b> Python function to compute 
+the n<sup>th</sup> term of this
+sequence.  Docstring and preconditions are required; pseudocode is not (but may
+be good for partial credit).
+<u>[8]</u>
+<br><br><br><br><br>
+
+<li>
+A dynamic system that is being accelerated at a constant acceleration
+<em>a</em> has its initial velocity <em>u</em>, final velocity <em>v</em>, and
+the distance travelled <em>d</em> related by the formula 
+<br><em>v<sup>2</sup> - u<sup>2</sup> = 2ad</em>.
+<br><br>
+On a separate paper,
+write an interactive Python program that can calculate <b>either</b>
+<em>d</em> or
+<em>a</em> in terms of the others.  Use at least one function.
+Docstrings are required for the program and all functions.
+Pseudocode is not required (but may be good for partial credit).
+<u>[8]</u>
+
+</ol>
+
+</body></html>
+
+

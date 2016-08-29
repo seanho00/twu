@@ -1,0 +1,361 @@
+<HTML>
+<HEAD>
+<TITLE>11.3 Selection Revisited--The CASE Statement<</TITLE>
+<meta NAME="keywords" CONTENT="selection, case, statement, if, elsif, else, delimiter, assign, assignment, vertical, bar, seperate, digit, selector, decision, decisions, range, ranges, enumerate, enumeration">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>11.3 Selection Revisited<!--</B>‹<B>-->--The CASE Statement</B></H2>
+<P>Sometimes when one has a number of selection alternatives, the multiple IF .. ELSIF .. ELSIF .. ELSE construction may be rather cumbersome, particularly when all the decisions are being made on the same variable and over a small range of values, as in the following outline:</P>
+<PRE>
+(* Suppose that digit is known to be in the range 0 .. 9. *)
+<B>IF</B> digit <!-->&gt; 1 <B>AND</B> digit <!--<-->&lt; 5
+  <B>THEN</B>
+    Statement Sequence 1;
+  <B>ELSIF</B> digit <!--<-->&lt; 7 <B>THEN</B>
+    Statement Sequence 2;
+  <B>ELSIF</B> digit <!--<-->&lt; 9 <B>THEN</B>
+    Statement Sequence 3;
+  <B>ELSE</B>
+    StatementSequence 4
+  <B>END</B>;</PRE>
+<P>This code takes one action when 1 <!--<-->&lt; digit <!--<-->&lt; 5, a second if 5 <!--<-->&lt; digit <!--<-->&lt; 7, a third if 7 <!--<-->&lt; digit <!--<-->&lt; 9, and a fourth otherwise.  In view of the fact that the same variable is used for each decision, it would be neater to compact this and write it in a way that mentions the variable only once.</P>
+<P>In Modula-2 this is achieved with the CASE statement, an alternative selection construction.  Here is the above code rewritten using CASE.</P>
+<PRE>
+<B>CASE</B> digit <B>OF</B>
+  2 .. 4 :
+     Statement Sequence 1 |
+  5, 6 :
+     Statement Sequence 2 |
+  7, 8 :
+     Statement Sequence 3 
+  <B>ELSE</B>
+     Statement Sequence 4
+  <B>END</B>;</PRE>
+<P>The syntax is further illustrated in figure 11.3:</P>
+<P><CENTER><IMG SRC="Figure/Figure_11.3.GIF" BORDER="1"></CENTER><!----></P>
+<P><B>NOTES</B>: 1. The colon is <I>not</I> part of an assignment := in this context.  Rather, it is a marker (or, <I>delimiter</I>) between the list of values for an individual case and the statements associated with that case.</P>
+<P>	2. The colons are required after the individual ordinal values or ranges that determine the cases.</P>
+<P>	3. The vertical bar ( | ) is a new punctuation sign and is used to <I>separate</I> the cases.  It does not need to appear before the ELSE or END.  If it is included in such places, Modula-2 treats such as empty cases, just as it allows empty statements, and in these positions, additional bars will not cause errors.</P>
+<P>	4. The range 2 .. 4 may be replaced by a list of single ordinals 2, 3, 4, but all possibilities listed must be expression compatible with the type of the variable name (here it is <I>digit</I>) after the CASE.</P>
+<P>	5. The ELSE clause is not required, but if it is left out and the value of <I>digit</I> does not match any of the listed possibilities, then an error will result at execution time.  It is therefore better to include it even when it does not govern any statement sequence (no action to be taken.)  Some Modula-2 compilers even generate compiler errors when the ELSE clause is left out, though this action is not, strictly speaking appropriate according to the ISO standard.  Wirth's initial definition was silent on this point, and non-standard compilers might exhibit almost any behaviour.</P>
+<P>	6. No selector constant may be used twice in the list of selectors, either singly, or as part of an overlapping range of selectors.</P>
+<P>Here is a sketch outline of a CASE statement.  Assume that the various procedures have been defined and that <I>DayName</I> can take the indicated values.</P>
+<PRE>
+<B>CASE</B> DayName <B>OF</B>
+  Sunday :
+    GetUp;
+    Goto (church);
+    Eat (lunch);
+    Rest;
+    Eat (supper);
+    Goto (church);
+    Sleep |
+  Monday .. Friday :
+    GetUp;
+    <B>REPEAT</B>
+      Goto (class);
+    <B>UNTIL</B> Learned;
+    Go (home);
+    Sleep |
+  Saturday :
+    GetUp;
+    Hoe (garden);    (* no bar here *)
+  <B>ELSE</B>
+    Writeln (<!--"-->&quot;Error in case lists, no selection made. <!--"-->&quot;);
+  <B>END</B>;</PRE>
+<P>As can be seen, the selector variable may be of any ordinal type whether predefined or user defined and any kind of statement sequence is allowed, as long as each selector list after the first is preceded by a vertical bar.</P>
+<P>The error in the ELSE part of the CASE statement above should never be able to be reported.  This means that it probably will be.</P>
+<P>Scalars that are not ordinals cannot be used for the case selector expression.  Neither can other types such as strings.  Both of the following are illegal:</P>
+<PRE>
+<B>CASE</B> theReal <B>OF</B>  (* illegal* )
+  1.5 : 
+    statement sequence |
+  2.7 :
+    statement sequence |
+  pi :
+    statement sequence |
+  <B>END</B>;
+
+<B>CASE</B> theString <B>OF</B>  (* illegal* )
+  <!--"-->&quot;Mon<!--"-->&quot; : 
+    statement sequence |
+  <!--"-->&quot;Tue<!--"-->&quot; :
+    statement sequence |
+  <!--"-->&quot;Wed<!--"-->&quot; :
+    statement sequence |
+  <B>END</B>;</PRE>
+<P>The individual cases may be singletons, lists, or ranges in any combination, as illustrated in the following: Suppose <I>theResult</I> has values in the range [0 .. 12].</P>
+<PRE>
+<B>CASE</B> theResult <B>OF</B>
+  1 :
+    action1 |
+  0, 2, 5 :
+    action2 |
+  3, 4, 6 :
+    action3 |
+  7 .. 9, 11 :
+    action4
+  <B>ELSE</B>
+    action5
+  <B>END</B>;</PRE>
+<P>However, the following will produce a compiler error, because of the overlap of items in the lists.</P>
+<PRE>
+<B>CASE</B> theResult <B>OF</B>
+  2..5 :
+    action1 |
+  3, 4, 6 :
+    action2 |
+  <B>ELSE</B>
+    action3
+  <B>END</B>;</PRE>
+<P>Selection should be performed with the CASE statement instead of an IF .. THEN statement when:</P>
+<P>1. the decision involves only the value of a single variable<BR>
+2. there are several (but not very many) adjacent alternative values<BR>
+3. the majority of the alternatives do NOT fall into the ELSE category.</P>
+<P>There is little to be gained in writing:</P>
+<PRE>
+<B>CASE</B> Done <B>OF</B>
+  <B>TRUE</B> :
+    WriteString (<!--"-->&quot;all okay<!--"-->&quot;) |
+  <B>FALSE</B> :
+    WriteString (<!--"-->&quot;Error in library module<!--"-->&quot;);
+  <B>END</B>;</PRE>
+<P>instead of using the more natural:</P>
+<PRE>
+<B>IF</B> Done
+  <B>THEN</B>
+    WriteSting (<!--"-->&quot;all okay<!--"-->&quot;)
+  <B>ELSE</B>
+    WriteString (<!--"-->&quot;Error in library module<!--"-->&quot;)
+  <B>END</B>;</PRE>
+<P>Assume the range of count is [1 .. 100].  Here is another bad example:</P>
+<PRE>
+<B>CASE</B> count <B>OF</B>
+   1 :
+     statement sequence 1 |
+   100 :
+     statement sequence 2 |
+   <B>ELSE</B> (* almost all cases end up here *)
+     statement sequence 3 |
+   <B>END</B>;</PRE>
+<P>This one should have been formulated with an IF statement.  Not only are the cases not adjacent in the range from which they are derived, but most of them are caught by the ELSE clause, that is not, therefore, the exception that its name implies, but the rule.  At the very least, this code does not look very professional.</P>
+<P>There is another problem with CASE selector variables covering large ranges that is more than simply aesthetic.  To understand this problem, it is necessary to know how a CASE statement is usually implemented when the compiler generates code.  Each statement sequence governed by a case selection is compiled and stored.  The location of these sequences are recorded.  A table is constructed with one entry for each possible case that can occur, and beside that the location of the sequence to be executed.  Assuming that statement sequence 1 causes code1 to be executed,  statement sequence 2 causes code2 to be executed, and statement sequence 3 causes code3 to be executed, the last example above generates a table that could be pictured as:</P>
+<P>Value  Code To Execute<BR>
+  1    location of code1<BR>
+  2    location of code3<BR>
+  3    location of code3<BR>
+  4    location of code3<BR>
+  5    location of code3<BR>
+  ...<BR>
+  99    location of code3<BR>
+  100    location of code2</P>
+<P>When the program is actually run, searching the table for a valid value of the selector variable looking up the appropriate code, and executing it will happen very quickly.  As the number of entries is increased to cover all the possible values for a variable with a larger range, the table that must be searched grows larger, but this does not add much, if anything to the run time. However, the larger the possible range, the more table space that must be reserved within the code that is generated.   In an example such as this one, much of that space is wasted, and the final program is unnecessarily bloated.  For the two considerations cited (logical, and space) variables governing CASE statements should be of an ordinal type that has a modest range.</P>
+<P><B>NOTES</B>:	1. Some versions of Modula-2 therefore restrict the total number of case labels (i.e. the size of the table) in one CASE statement to some arbitrary limit (often as small as 255<!--‹-->--the minimum restriction allowed by the ISO standard.)  An attempt to use a selector variable with a range larger than this generates a compiler error.</P>
+<P>	2. Many implementations also impose some upper limit on the ordinal size of CASE labels.  If the limit is, say, 32767 a variable whose type is a range [0 .. 10] would be allowed, but one whose type is a range [40000 .. 40010] would not.  Even though the number of cases is the same for both, the values of the second range exceeds the implementation defined limit.  The actual limit in a given implementation could be much smaller than this.</P>
+<P>	3. Contrary to the cautions here, some compilers work very hard to produce compact and optimal code even when the CASE selector is of type, say, CARDINAL, and only a few values are listed.  That is, they turn bad planning into good code via optimization.  This type of help should not be expected by the programmer.</P>
+<P>Indeed, to emphasize the above points, many teachers will require students to explicitly list all possible values of the selector variable in the range.  That is, if number is in the range [0 .. 8], then instead of including <!--"-->&quot;don't care<!--"-->&quot; values in an empty ELSE clause as:</P>
+<PRE>
+<B>CASE</B> number <B>OF</B>
+  0 :
+    action 1 |
+  2,3 :
+    action 2 |
+  5 .. 7 :
+    action 3
+  <B>ELSE</B>
+  <B>END</B>;</PRE>
+<P>some prefer:</P>
+<PRE>
+<B>CASE</B> number <B>OF</B>
+  0 :
+    action 1 |
+  1 :
+    |
+  2, 3 :
+    action 2 |
+  4 :
+   |
+  5 .. 7 :
+    action 3 |
+  8 :
+<B>END</B>;</PRE>
+<P>However, the latter construction is of little help when dealing with implementations of Modula-2 that over-zealously enforce good style and generate an error on a missing ELSE clause.</P>
+<P>What follows is the example of <A HREF="../Ch7/Ch7.4.html">Section 7.4</A> rewritten to use CASE instead of IF selection.</P>
+<PRE>
+<B>PROCEDURE</B> MonthEnum (mon : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : MonthName;
+
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+  
+<B>BEGIN</B>
+  (* check for unique characters in third position *)
+  <B>CASE</B> <B>CAP</B> (mon [2]) <B>OF</B>
+    <!--"-->&quot;B<!--"-->&quot; :
+      <B>RETURN</B> Feb |
+    <!--"-->&quot;C<!--"-->&quot; :
+      <B>RETURN</B> Dec |
+    <!--"-->&quot;G<!--"-->&quot; :
+      <B>RETURN</B> Aug |
+    <!--"-->&quot;L<!--"-->&quot; :
+      <B>RETURN</B> Jul |
+    <!--"-->&quot;P<!--"-->&quot; :
+      <B>RETURN</B> Sep |
+    <!--"-->&quot;T<!--"-->&quot; :
+      <B>RETURN</B> Oct |
+    <!--"-->&quot;V<!--"-->&quot; :
+      <B>RETURN</B> Nov |
+    <!--"-->&quot;Y<!--"-->&quot; :
+      <B>RETURN</B> May |
+    <B>ELSE</B>   (* any other third letter passes to next step. *)
+    <B>END</B>;
+    
+  (* check for unique characters in second position *)
+  <B>CASE</B> <B>CAP</B> (mon [1]) <B>OF</B>
+    <!--"-->&quot;P<!--"-->&quot; :
+      <B>RETURN</B> Apr |
+    <!--"-->&quot;U<!--"-->&quot; :
+      <B>RETURN</B> Jun | (* Jul and Aug are done already *)
+    <B>ELSE</B>   (* any other second letter passes to next step. *)
+    <B>END</B>;
+    
+  (* look at remaining first letters *)
+  <B>CASE</B> <B>CAP</B> (mon [0]) <B>OF</B>
+    <!--"-->&quot;J<!--"-->&quot; :
+      <B>RETURN</B> Jan |  (* Jun and Jul are done already *)
+    <!--"-->&quot;M<!--"-->&quot; :
+      <B>RETURN</B> Mar | (* May is done already *)
+    <B>ELSE</B>   (* any other second letter passes to next step. *)
+      <B>RETURN</B> Err;  (* anything else is an error *)
+    <B>END</B>;
+
+<B>END</B> MonthEnum;</PRE>
+
+<P>Here is an example of a little module that employs the CASE statement in the course of averaging three marks and then assigning a letter grade to a student.  This one also shows an alternate prettyprint for case statements that may be preferred by some<!--‹-->--putting the bar in front of the new cases at the beginning of the new line instead of at the end of the previous one.  Since there is no difference as far as the compiler is concerned (because carriage returns are ignored), the choice of style is up to those in control of the working environment of the programmer.</P>
+<PRE>
+<B>MODULE</B> Grader;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResults, ReadResult;
+
+<B>CONST</B>
+  numMarks = 3;
+<B>TYPE</B>
+  MarkArrayType = <B>ARRAY</B> [1 .. numMarks] <B>OF</B> <B>CARDINAL</B>;
+
+<B>VAR</B>
+  count, total : <B>CARDINAL</B>;
+  average : <B>REAL</B>;
+  marks : MarkArrayType;
+  letterGrade, ans : <B>CHAR</B>;
+  res: ReadResults;
+
+<B>BEGIN</B>      (* main program *)
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please give me the marks now<!--"-->&quot;);
+    WriteLn;
+    total := 0;
+    <B>FOR</B> count := 1 <B>TO</B> numMarks
+      <B>DO</B>
+        <B>REPEAT</B>
+        WriteString (<!--"-->&quot;Enter a whole number percentage, please <!--"-->&quot;);
+        WriteString (<!--"-->&quot;for mark number <!--"-->&quot;);
+        WriteCard (count, 4);
+        WriteString (<!--"-->&quot;==<!-->&gt; <!--"-->&quot;);
+        ReadCard (marks [count]);
+        res := ReadResult ();
+        SkipLine;
+        WriteLn;
+        <B>UNTIL</B> (res = allRight) <B>AND</B> (marks [count] <!--<-->&lt;= 100);
+        total := total + marks [count];
+      <B>END</B>;    (* for *)
+    average :=  <B>FLOAT</B> (total) / <B>FLOAT</B> (numMarks);
+    <B>IF</B> average <!--<-->&lt; 50.0
+      <B>THEN</B>
+        letterGrade := 'F'
+      <B>ELSIF</B> average <!--<-->&lt; 60.0 <B>THEN</B>
+        letterGrade := 'D'
+      <B>ELSIF</B> average <!--<-->&lt; 70.0 <B>THEN</B>
+        letterGrade := 'C'
+      <B>ELSIF</B> average <!--<-->&lt; 80.0 <B>THEN</B>
+        letterGrade := 'B'
+      <B>ELSE</B>
+        letterGrade := 'A';
+      <B>END</B>;    (* if *)
+  <B>CASE</B> letterGrade <B>OF</B>
+    'A' .. 'B':
+      WriteString (<!--"-->&quot;Congratulations, you got a <!--"-->&quot;);
+      WriteChar (letterGrade) 
+    | 'C':
+      WriteString (<!--"-->&quot;Well done, you earned a C.<!--"-->&quot;)
+    | 'D':
+      WriteString (<!--"-->&quot;You got credit for the course with a D.<!--"-->&quot;)
+    <B>ELSE</B>
+      WriteString (<!--"-->&quot;I regret to inform you that you <!--"-->&quot;);
+      WriteString (<!--"-->&quot;only received a <!--"-->&quot;);
+      WriteChar (letterGrade);
+      WriteLn;
+      WriteString (<!--"-->&quot;and will not obtain credit for the course.<!--"-->&quot;);
+    <B>END</B>;    (* case *)
+  WriteLn;
+  WriteString (<!--"-->&quot;Do Another? Y/N <!--"-->&quot;);
+  ReadChar (ans);
+  WriteLn;
+  SkipLine;
+  <B>UNTIL</B> <B>CAP</B> (ans) # <!--"-->&quot;Y<!--"-->&quot;;
+  
+<B>END</B> Grader.</PRE>
+<P>Notice that it was inappropriate  to use a CASE statement on the whole number values of the marks, because there were one hundred one of them, and only six distinguishable cases.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

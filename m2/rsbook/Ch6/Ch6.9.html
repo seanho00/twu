@@ -1,0 +1,340 @@
+<HTML>
+<HEAD>
+<TITLE>6.9 An Extended Example (Coordinate Geometry)</TITLE>
+<meta NAME="keywords" CONTENT="extend, extended, example, co-ordinate, coordinate, geometry, dimension, angle, computation, computations, transformation, transformations, reflect, reflection, reflections, symmetry, symmetries, scale, scales, factor, translation, assign, abscissa, ordinate, library, libraries, module, modules, law, of, cosines, sample, run">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.9 An Extended Example (Coordinate Geometry)</B></H2>
+<H3><B>Example:</B></H3>
+<P>Write a library module to implement support for planar point coordinate geometry.</P>
+<H3><B>Discussion:</B></H3>
+<P>Points are represented in the plane by their horizontal and vertical coordinates (x, y). This representation can be rendered in Modula-2 as a one-dimensional array of length two.</P>
+<PRE>
+  <B>TYPE</B>
+     Point = <B>ARRAY</B> [1 .. 2] <B>OF</B> <B>REAL</B>;</PRE>
+
+<P>Note that the word <I>dimension</I> in this context refers to the array, not to the geometry. There are several useful operations relating to single points. These fall into two main categories:</P>
+<P><I>Computations</I>:</P>
+<P>Three of these will be considered here; they arise in connection with the line segment joining the point with the origin.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.13.GIF" BORDER="1"></CENTER><!----></P>
+<P>Both the length <I>r</I> of this line segment, and also the angle <!--q--><IMG SRC="Figure/theta.GIF"> that it makes with the positive x-axis are of interest in various problems. It may also be necessary to construct the rectangular coordinates (x, y) of a point from a knowledge of the length <I>r</I> and the angle <!--q--><IMG SRC="Figure/theta.GIF"> (also called its polar coordinates). These are expressed as follows:</P>
+<IMG SRC="Figure/Eq6.4.10.GIF"><!---->         <IMG SRC="Figure/Eq6.4.11.GIF"><!---->
+<P><I>Transformations</I>:</P>
+<P>These involve moving the point P according to some determined pattern. The first such patterns involve various <i>reflections</i> or <i>symmetries</i>. These can be done in the x-axis to yield (x, -y), in the y-axis to yield (-x, y), across the origin yielding (-x, -y), or in the line y = x producing (y, x). The possibilities are indicated in the figure 6.14 below:</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.14.GIF" BORDER="1"></CENTER><!----></P>
+<P>The second type of transformation <I>scales</I> the point in such a way that the length of the line segment it defines is multiplied by some number, <I>s</I> called the <I>scale factor</I>. If this is done, the x-coordinate and y-coordinate of the new point Q are also multiplied by the same scale factor, but the angle <!--q--><IMG SRC="Figure/theta.GIF"> is unchanged.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.15.GIF" BORDER="1"></CENTER><!----></P>
+<P>A third type of transformation on the point is via the segment it defines and consists of a rotation through an angle ø. The new point obtained is at the same distance r from the origin as the original, but its segment subtends an angle q + ø from the positive x-axis.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.16.GIF" BORDER="1"></CENTER><!----></P>
+<P>The fourth and last transformation is a simple shift or <I>translation</I> of the point by <I>h</I> units horizontally, and <I>k</I> units vertically. That is, the point that starts at (x, y) is transformed to the point (x + h, y + k).</P>
+<P>Finally, in order to maintain the integrity of items of type <I>Point</I> as an abstract data type, it is necessary to make provision for client programs to assign values to (and obtain values from) the coordinates of a point without directly using the knowledge of its structure as an array. This concern for integrity of the ADT necessitates three more procedures: <I>assign</I>, <I>abscissa</I>, and <I>ordinate</I>.</P>
+<P>Thus the abstract data type <I>Point</I> and the operations and transformations on it may be defined in Modula-2 as follows:</P>
+<PRE>
+<A NAME="Points"></A><B>DEFINITION</B> <B>MODULE</B> Points;
+   (* angles are measured in radians counterclockwise from the positive x-axis *)
+
+<B>TYPE</B>
+   Point = <B>ARRAY</B> [1 .. 2] <B>OF</B> <B>REAL</B>;
+
+<B>PROCEDURE</B> assign (x, y : <B>REAL</B>) : Point;
+   (* returns the abstract point with coordinates x and y *)
+
+<B>PROCEDURE</B> abscissa (p : Point) : <B>REAL</B>;
+   (* returns the first, or x-coordinate of the point *)
+
+<B>PROCEDURE</B> ordinate (p : Point) : <B>REAL</B>;
+   (* returns the second, or y-coordinate of the point *)
+
+<B>PROCEDURE</B> abs (p : Point) : <B>REAL</B>;
+   (* returns the distance from the point to the origin *)
+
+<B>PROCEDURE</B> arg (p : Point) : <B>REAL</B>;
+   (* returns the angle to the positive x-axis subtended by a line segment from the origin to the point measured in the range 0 to 2<!--¼-->¼lt;¼gt;  radians *)
+
+<B>PROCEDURE</B> polarToRect (abs, arg : <B>REAL</B>) : Point;
+   (* returns the point with the given absolute value and argument *)
+
+<B>PROCEDURE</B>  reflectX (p : Point) : Point;
+   (* returns the reflection of the point in the x-axis *)
+
+<B>PROCEDURE</B>  reflectY (p: Point ) : Point;
+   (* returns the reflection of the point in the y-axis *)
+
+<B>PROCEDURE</B> reflect0 (p : Point) : Point;
+   (* returns the reflection of the point in the origin *)
+
+<B>PROCEDURE</B> reflect45 (p : Point) : Point;
+   (* returns the reflection of the point in the line y = x *)
+
+<B>PROCEDURE</B> scale (p : Point; scaleFactor : <B>REAL</B>) : Point;
+   (* returns the point with the same argument as p and its absolute value multiplied by the scale factor *)
+
+<B>PROCEDURE</B> rotate (p : Point; rotAngle : <B>REAL</B>) : Point;
+   (* returns the point with the same absolute value as p and with its argument increased by rotAngle *)
+
+<B>PROCEDURE</B> translate (p : Point; deltaX, deltaY : <B>REAL</B>) : Point;
+   (* returns the point obtained by shifting the given point deltaX horizontally and deltaY vertically *)
+
+<B>END</B> Points.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> Points;
+
+(* original by R. Sutcliffe
+corrections by G. Tischer 1995 05 09 *)
+
+<B>FROM</B> RealMath <B>IMPORT</B>
+  sqrt, arctan, sin, cos, pi;
+
+<B>PROCEDURE</B> assign (x, y : <B>REAL</B>) : Point;
+<B>VAR</B>
+  temp : Point;
+<B>BEGIN</B>
+  temp [1] := x;
+  temp [2] := y;
+  <B>RETURN</B> temp;
+<B>END</B> assign;
+
+<B>PROCEDURE</B> abscissa (p : Point) : <B>REAL</B>;
+<B>BEGIN</B>
+  <B>RETURN</B> p [1];
+<B>END</B> abscissa;
+
+<B>PROCEDURE</B> ordinate (p : Point) : <B>REAL</B>;
+<B>BEGIN</B>
+  <B>RETURN</B> p [2];
+<B>END</B> ordinate;
+
+<B>PROCEDURE</B> abs (p : Point ) : <B>REAL</B>;
+<B>BEGIN</B>
+  <B>RETURN</B> sqrt (p[1] * p[1] +  p[2] * p[2]);
+<B>END</B> abs;
+
+<B>PROCEDURE</B> arg (p : Point) : <B>REAL</B>;
+(* if both coordinates are zero, the angle is not defined, but this procedure will return zero. No errors are generated. *)
+<B>VAR</B>
+  temp : <B>REAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> p[1] = 0.0 
+    <B>THEN</B>
+      <B>IF</B> p[2] <!-->&gt; 0.0  (* case of point on positive y-axis *)
+        <B>THEN</B>
+          <B>RETURN</B>  pi / 2.0;
+        <B>ELSIF</B>  p[2] <!--<-->&lt; 0.0 <B>THEN</B>
+          <B>RETURN</B> 1.5* pi (* case of point on negative y-axis *)
+        <B>ELSE</B>
+          <B>RETURN</B> 0.0;
+        <B>END</B>;
+    <B>END</B>;
+  temp:=  arctan (p[2]/p[1]); (* returns first and fourth quadrants only *)
+  <B>IF</B> p[1] <!-->&gt; 0.0
+    <B>THEN</B>
+      <B>IF</B> p[2] <!-->&gt;= 0.0
+        <B>THEN</B>
+          <B>RETURN</B> temp;
+        <B>ELSE</B>
+          <B>RETURN</B> (2.0 * pi) + temp;
+        <B>END</B>; (* <B>IF</B> *)
+    <B>ELSE</B>
+      <B>RETURN</B> pi + temp (* adjust for second and third quadrants *)
+    <B>END</B>;
+<B>END</B> arg;
+
+<B>PROCEDURE</B> polarToRect (abs, arg : <B>REAL</B>) : Point;
+<B>VAR</B>
+  temp : Point;
+<B>BEGIN</B>
+  temp [1] := abs * (cos (arg));
+  temp [2] := abs * (sin (arg));
+  <B>RETURN</B> temp;
+<B>END</B> polarToRect;
+
+<B>PROCEDURE</B> reflectX (p : Point ) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> assign (p[1], -p[2]);
+<B>END</B> reflectX;
+
+<B>PROCEDURE</B>  reflectY (p: Point ) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> assign (-p[1], p[2]);
+<B>END</B> reflectY;
+
+<B>PROCEDURE</B> reflect0 (p : Point) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> assign (-p[1], -p[2]);
+<B>END</B> reflect0;
+
+<B>PROCEDURE</B> reflect45 (p : Point) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> assign (p[2], p[1]);
+<B>END</B> reflect45;
+
+<B>PROCEDURE</B>  scale (p : Point; scaleFactor : <B>REAL</B>) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> assign (scaleFactor * p[1], scaleFactor * p[2]);
+<B>END</B> scale;
+
+<B>PROCEDURE</B> rotate (p : Point; rotAngle : <B>REAL</B>) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> polarToRect (abs (p), arg (p) + rotAngle)
+<B>END</B> rotate;
+
+<B>PROCEDURE</B> translate (p : Point; deltaX, deltaY : <B>REAL</B>) : Point;
+<B>BEGIN</B>
+  <B>RETURN</B> assign (p [1] + deltaX, p [2] + deltaY);
+<B>END</B> translate;
+
+<B>END</B> Points.</PRE>
+
+<H3><B><A NAME="PointToPoint"></A>Problem:</B></H3>
+<P>Write a routine to compute the distance between two points.</P>
+<H3><B>Discussion:</B></H3>
+<P>This problem can be solved, as suggested in exercise 4.19 using the formula</P>
+<P><IMG SRC="Figure/Eq6.4.12.GIF"><!----></P>
+<P>and employing the coordinates of the points directly. In the context of this discussion, having imported the type <I>Point</I> and the procedure <I>sqrt</I> into the surrounding module, the requested routine could be expressed as:</P>
+<PRE>
+  <B>PROCEDURE</B> distance (p1, p2 : Point) : <B>REAL</B>; 
+
+  <B>VAR</B>
+    deltaX, deltaY : <B>REAL</B>;
+
+  <B>BEGIN</B>
+     deltaX := p2 [1] - p1 [1];
+     deltaY := p2 [2] - p1 [2];
+     <B>RETURN</B> sqrt (deltaX * deltaX + deltaY * deltaY);
+  <B>END</B> distance;</PRE>
+
+<P>A second approach is more complicated in some ways, but trades off some additional mathematical steps for a more abstract view of the type <I>Point</I> within the procedure. Rather than have the procedure made direct use of the structure of the type <I>Point</I> by basing its computations on the coordinates of the point, it can make the calculation by using facilities provided by the module <I>Points</I> alone. This approach is consistent with the inclusion in the module of procedures to extract the coordinates without directly using the data structure. In this particular instance the law of cosines is exploited. (A proof of the law of cosines is not presented here).</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.17.GIF" BORDER="1"></CENTER><!----></P>
+<BLOCKQUOTE><I>The Law of Cosines: In any triangle ABC with sides opposite the angles labelled a, b, and c, <!--c2 = a2 + b2 - 2ab cosC.--><IMG SRC="Figure/Eq6.9.13.GIF"></I></BLOCKQUOTE>
+<P>Here, the measure of angle C is <!--q--><IMG SRC="Figure/theta.GIF">- ø and the distance between the two points is the length of the third side in a triangle whose other sides are the segments from the origins to the points A and B. Thus one could write</P>
+<A NAME="PointToPoint"></A><PRE>
+<B>MODULE</B> PointToPoint;
+
+(* Written by R.J. Sutcliffe *)
+(* to test the module Points *)
+(* using ISO Modula-2 *)
+(* last revision 1993 03 01 *)
+
+<B>FROM</B> Points <B>IMPORT</B> 
+  Point, arg, abs;
+<B>FROM</B> RealMath <B>IMPORT</B>
+  cos, sqrt;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>PROCEDURE</B> GetReal (<B>VAR</B> numToGet : <B>REAL</B>);
+<B>VAR</B>
+  tempResult : ReadResults;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please type in a real number ===<!-->&gt; <!--"-->&quot;);
+    ReadReal (numToGet);
+    tempResult := ReadResult ();
+    SkipLine; (* swallow line marker *)
+    WriteLn;
+  <B>UNTIL</B> tempResult = allRight;
+<B>END</B> GetReal;
+
+<B>PROCEDURE</B> DistByCosines (side1, side2, angle : <B>REAL</B>) : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> sqrt (side1 * side1 + side2 * side2 -
+        2.0 * side1 * side2 * cos (angle));
+<B>END</B> DistByCosines;
+
+<B>VAR</B>
+  point1, point2 : Point;
+  a, b, c, C : <B>REAL</B>;
+  key : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program computes the distance <!--"-->&quot;);
+  WriteString (<!--"-->&quot;between two points<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;in the coordinate plane.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;First point,  X coordinate: <!--"-->&quot;);
+  GetReal (point1 [1]);
+  WriteString (<!--"-->&quot;              Y coordinate: <!--"-->&quot;);
+  GetReal (point1 [2]);
+  WriteString (<!--"-->&quot;Second point, X coordinate: <!--"-->&quot;);
+  GetReal (point2 [1]);
+  WriteString (<!--"-->&quot;              Y coordinate: <!--"-->&quot;);
+  GetReal (point2 [2]);
+  a := abs (point1);
+  b := abs (point2);
+  C := arg (point1) - arg (point2);
+  c := DistByCosines (a, b, C);
+  WriteString (<!--"-->&quot;The distance between the two points is <!--"-->&quot;);
+  WriteFixed (c, 5, 0);
+  WriteString (<!--"-->&quot; units.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->&gt;<!--"-->&quot;);
+  ReadChar (key);
+<B>END</B> PointToPoint.</PRE>
+
+<H3><B>Sample Run:</B></H3>
+<PRE>
+This program computes the distance between two points
+in the coordinate plane.
+
+First point,  X coordinate: Please type in a real number ===<!-->&gt; <B>1.0</B>
+              Y coordinate: Please type in a real number ===<!-->&gt; <B>5.5</B>
+Second point, X coordinate: Please type in a real number ===<!-->&gt; <B>21.0</B>
+              Y coordinate: Please type in a real number ===<!-->&gt; <B>26.5</B>
+The distance between the two points is 29.00000 units.</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,842 @@
+<HTML><HEAD><TITLE>15.2 Implementing and Testing a Semi-Generic B-tree</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Semi-Generic B-tree">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.2 Implementing and Testing a Semi-Generic B-tree </B></H2>
+<P>Rather than offer pseudocode for the algorithms, the actual code is presented with heavy commenting.  The reader should carefully match what is said below with the description given above.  Note that inserting and deleting procedures have to proceed recursively as whatever affects a given level may affect the one above it.  Thus, several of the procedures are recursive and return a flag to the level above to inform the calling version of the same (or another) procedure about the necessity of splitting or consolidating. Also observe that subsidiary procedures are included inside their main procedures rather than being allowed to be visible in the main module.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> BTrees;
+
+(******************
+  Design by R. Sutcliffe copyright 1995-1996
+  Initial Code by Gordon Tisher
+  June 9, 1995; last modified 1999 08 30
+  Modified and rewritten by R. Sutcliffe 1996 10 10
+    Bug in rearrange removed 1999 08 30; weren't checking case of no data to right
+      big thanks to Florenz Plassmann, Münster, Deutschland, who had the wit to try 
+      the test code with an order three tree and uncovered a huge flaw.
+    also added more and better comments in that section
+    deanonymized main data structure
+    and removed a redundant count variable in DelSpecial
+		
+  This module provides a B-Tree ADT.
+ ******************)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> DataADT <B>IMPORT</B>
+  Assign, GetKey, WriteData, ActionProc, Compare, CompareResults;
+
+<B>CONST</B>
+  maxIndex = 2 * order;
+  maxIndexPlus = maxIndex + 1;
+  
+<B>TYPE</B>
+  BTree = <B>POINTER</B> <B>TO</B> BNode;
+	ItemArray = <B>ARRAY</B>[1..maxIndexPlus] <B>OF</B> ItemType;
+	PointerArray = <B>ARRAY</B>[0..maxIndexPlus] <B>OF</B> BTree;
+  BNode =
+    <B>RECORD</B>
+      numItems : <B>CARDINAL</B>;
+      state    : BTreeState;
+      Items    : ItemArray;
+      Pointers : PointerArray;
+    <B>END</B>; (* record *)
+(* There is one extra position in the arrays to aid sorting a new item in.  This saves a lot of copying to and from temporaries. *)
+
+(*  BTreeState = (allRight, empty, entreeFailed) *)
+
+(************************************
+  Utility Procedures
+ ************************************)
+
+<B>PROCEDURE</B> FindPos (keyToSearchFor : KeyType; node : BTree; <B>VAR</B> pos : <B>CARDINAL</B>);
+(* find the position within a node of a data item by search key before or at which the item would go 
+Pre: node is a valid tree 
+Post: the position returned is that at or before keyToSearchFor belongs. If the keyToSearchFor is smaller than any of the data, returns 1; if keyToSearchFor is larger than any of the data, returns node^.numItems+1 *)
+<B>BEGIN</B>
+  pos := 1;
+  <B>WHILE</B> (pos <= node^.numItems)
+      <B>AND</B> (Compare(keyToSearchFor, GetKey (node^.Items[pos]) ) # less)
+    <B>DO</B>
+      <B>INC</B> (pos);
+    <B>END</B>; (* while *)
+<B>END</B> FindPos;
+
+(************************************
+  Exported Procedures
+ ************************************)
+
+<B>PROCEDURE</B> Status (tree : BTree) : BTreeState;
+(* Pre : t is a valid initialized BTree
+   Post : The State of the tree is returned *)
+<B>BEGIN</B>
+  <B>RETURN</B> tree^.state;
+<B>END</B> Status;
+
+<B>PROCEDURE</B> Init (<B>VAR</B> tree : BTree);
+(* Allocates memory for a new node and initializes it 
+Pre: none
+Post: if memory is found, sets up the tree structure with NIL pointers and zero items *)
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+  temp : BTree;
+<B>BEGIN</B>
+  <B>NEW</B> (temp);
+  <B>IF</B> (temp # <B>NIL</B>)
+    <B>THEN</B>
+      temp^.numItems := 0;
+      <B>FOR</B> count := 0 <B>TO</B> maxIndexPlus
+        <B>DO</B>
+          temp^.Pointers[count] := <B>NIL</B>;
+        <B>END</B>; (* for *)
+      temp^.state := allRight;
+      tree := temp;
+    <B>END</B>; (* if *)
+<B>END</B> Init;
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> tree : BTree);
+(* disposes the whole tree *)
+
+  <B>PROCEDURE</B> disp (node : BTree; level : <B>CARDINAL</B>);
+  (* recursively remove a node *)
+  <B>VAR</B>
+    count : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+    <B>IF</B> (node # <B>NIL</B>)
+      <B>THEN</B>
+        <B>FOR</B> count := 0 <B>TO</B> node^.numItems
+          <B>DO</B>
+            disp (node^.Pointers[count], level+1);
+          <B>END</B>; (* for *)
+        <B>DISPOSE</B> (node);
+      <B>END</B>; (* if *)
+  <B>END</B> disp;
+
+<B>BEGIN</B>
+  disp (tree, 0);
+<B>END</B> Destroy;
+
+<B>PROCEDURE</B> Add (<B>VAR</B> tree : BTree; data : ItemType);
+(* Adds a new item to the tree. *)
+  
+  <B>PROCEDURE</B> Insert (<B>VAR</B> data : ItemType; pos : <B>CARDINAL</B>; node : BTree;
+         <B>VAR</B> newNode : BTree) : <B>BOOLEAN</B>;
+  (* put the data item into the specified node position and the newNode pointer after it if one is generated. *)
+  (* returns true if inserting is finished, false as a flag to the next higher level to insert the new centre item up there after a split. *)
+
+  <B>VAR</B>
+    count     : <B>CARDINAL</B>;
+    temp      : BTree;
+  <B>BEGIN</B>
+   (* first move things over to make room for new item *)
+    <B>FOR</B> count := node^.numItems <B>TO</B> pos <B>BY</B> -1
+      <B>DO</B>
+        Assign (node^.Items[count], node^.Items[count+1]);
+        node^.Pointers[count+1]  := node^.Pointers[count];
+      <B>END</B>; (* for *)
+    
+    (* pop new one into place *)
+    Assign (data, node^.Items[pos]);
+    node^.Pointers[pos] := newNode;
+      
+    (* check to see if the resulting node needs to be split *)
+    <B>IF</B> (node^.numItems = maxIndex)  (* was at max before so split it! *)
+      <B>THEN</B>
+        Init (temp); (* make a new node *)
+        <B>IF</B> (temp # <B>NIL</B>)  
+          <B>THEN</B> (* split node *)
+            (* reset number of items in each to order *)
+            node^.numItems := order;
+            temp^.numItems := order;
+            
+            (* store new middle for upstairs to insert recursively *)
+            Assign (node^.Items[order+1], data);
+            
+            (* copy new zeroth pointer *)
+            temp^.Pointers[0] := node^.Pointers[order+1];
+            
+            (* copy data and rest of pointers into both *)
+            <B>FOR</B> count := 1 <B>TO</B> order
+              <B>DO</B> (* clean up the rest of the node *)
+                node^.Pointers[count+order] := <B>NIL</B>;
+                Assign (node^.Items[count+order+1], temp^.Items[count]);
+                temp^.Pointers[count] := node^.Pointers[count+order+1];
+              <B>END</B>; (* for *)
+            node^.Pointers[maxIndexPlus] := <B>NIL</B>; (* fix last pointer too; not in loop *)
+            tree^.state := allRight
+          <B>ELSE</B> (* did not work *)
+            tree^.state := entreeFailed;
+          <B>END</B>; (* if temp *)
+        newNode := temp;
+        <B>RETURN</B> <B>FALSE</B>; (* flag for split *)
+      <B>ELSE</B>  (* don't split it just adjust count *)
+        <B>INC</B> (node^.numItems);
+        newNode := <B>NIL</B>;
+        <B>RETURN</B> <B>TRUE</B>; (* flag for just did an insert *)
+      <B>END</B>; (* if node*)
+  <B>END</B> Insert;
+  
+  <B>PROCEDURE</B> AddItem (<B>VAR</B> data : ItemType; node : BTree;
+       <B>VAR</B> newNode : BTree): <B>BOOLEAN</B>;
+  (* returns true if added with no split, false if added with split *)
+  <B>VAR</B>
+    pos     : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+    (* look for correct position *)
+    FindPos (GetKey (data), node, pos);
+    
+    (* insert the item at or to the left of the position found *)
+    <B>IF</B> (node^.Pointers[pos-1] # <B>NIL</B>)  (* there is a node below *)
+      <B>THEN</B> (* go down there *)
+        <B>IF</B> ~AddItem (data, node^.Pointers[pos-1], newNode)  (* node below was split *)
+          <B>THEN</B> (* so find spot for dividing item that was passed up here *)
+            FindPos (GetKey (data), node, pos);
+            <B>RETURN</B> Insert (data, pos, node, newNode);
+          <B>ELSE</B>
+            <B>RETURN</B> <B>TRUE</B>; (* tell level up that no split *)
+          <B>END</B>; (* if ~AddItem *)
+      <B>ELSE</B> (* add the item to the current node *)
+        (* and send back the result of doing that *)
+        <B>RETURN</B> Insert (data, pos, node, newNode);
+      <B>END</B>; (* if node *)
+  <B>END</B> AddItem;
+  
+<B>VAR</B>
+  temp, newNode : BTree;
+<B>BEGIN</B> (* main for Add *)
+  newNode := <B>NIL</B>;
+  <B>IF</B> ~AddItem (data, tree, newNode) (* got a split on first level below *)
+    <B>THEN</B> (* so, must turn temp into a new root *)
+      Init (temp); (* set up a new node for it *)
+      <B>IF</B> (temp # <B>NIL</B>)
+        <B>THEN</B>
+          temp^.numItems := 1; (* it has only this item for now *)
+          temp^.Pointers[0] := tree;
+          Assign (data, temp^.Items[1]);
+          temp^.Pointers[1] := newNode;
+          tree := temp;
+        <B>END</B>; (* if temp *)
+    <B>END</B>; (* if ~AddItem *)
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> tree : BTree; key : KeyType);
+(* deletes an item whose key is equal to _key_ from the tree 
+If the item isn't there, nothing happens, but if the tree was empty and we tried to delete the state is set to empty. *)
+  
+  <B>PROCEDURE</B> Rearrange (node : BTree; pos : <B>CARDINAL</B>) : <B>BOOLEAN</B>;
+  (* this sub-procedure is called to rearrange a parent node with respect to its children when a deletion causes the number of items to become too small *)
+  (* pos is that of the data item 1..order in the parent node separating the two child nodes that need combining *)
+  (* returns true if node needs no further rearrangement above, false if it does *)
+
+  <B>VAR</B>
+    child, sibling : BTree;
+    count, num  : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+    child := node^.Pointers[pos-1]; (* look at the child node that's short on data *)
+    
+    (* check to see if we must combine with sibling having lesser data to its left *)
+    <B>IF</B> (* first case *) (node^.Pointers[pos] = <B>NIL</B>) (* no node available to the right *)
+      <B>OR</B> (* second case *) ((pos > 1) (* there is a sibling to the left *)
+        <B>AND</B> (node^.Pointers[pos]^.numItems = order)) 
+            (* no surplus among the greater to the right *)
+    (* The 'default' situation is that there is a node to the right and it can be used, 
+       else we stay here *)
+      <B>THEN</B>  (* must stay here and combine with node of the lesser data *)
+        <B>DEC</B> (pos);
+        sibling := node^.Pointers[pos-1]; (* node from the lesser data position *)
+
+        (* calculate num to move sibling ==> child *)
+        num := (sibling^.numItems  + 1  - order) <B>DIV</B> 2;
+        <B>IF</B> (num > 0)
+          <B>THEN</B>  (* move num items from sibling ==> child *)
+            <B>FOR</B> count := (order-1) <B>TO</B> 1 <B>BY</B> -1  (* shift right to make room *)
+              <B>DO</B>
+                Assign (child^.Items[count], child^.Items[count+num]);
+                child^.Pointers[count+num] := child^.Pointers[count];
+              <B>END</B>; (* for count *)
+ 
+            (* move old separator down to child *)
+            Assign (node^.Items[pos], child^.Items[num]);
+            child^.Pointers[num] := child^.Pointers[0];
+ 
+            (* now move stuff over *)
+            <B>FOR</B> count := (num-1) <B>TO</B> 1 <B>BY</B> -1  (* copy from adjacent node *)
+              <B>DO</B>
+                Assign (sibling^.Items[count+(sibling^.numItems+1-num)], 
+                     child^.Items[count]);
+                child^.Pointers[count] :=
+                    sibling^.Pointers[count+(sibling^.numItems+1-num)];
+                sibling^.Pointers[count+(sibling^.numItems+1-num)] := <B>NIL</B>;
+              <B>END</B>; (* for count *)
+            child^.Pointers[0] := sibling^.Pointers[sibling^.numItems+1-num];
+         
+        (* move last item in node with extras up to be new separator *)
+            Assign (sibling^.Items[sibling^.numItems+1-num], node^.Items[pos]);
+            node^.Pointers[pos] := child;
+         
+        (* adjust item numbers in both nodes *)
+            sibling^.numItems := sibling^.numItems - num;
+            child^.numItems := order - 1 + num;
+         
+        (* adjust last pointer in sibling node *)
+            sibling^.Pointers[sibling^.numItems+1] := <B>NIL</B>;
+            <B>RETURN</B> <B>TRUE</B>; (* tell upstairs all <B>OK</B> *)
+          <B>ELSE</B>  (* none avail to move, so just merge nodes *)
+            Assign (node^.Items[pos], sibling^.Items[sibling^.numItems + 1]);
+            sibling^.Pointers[sibling^.numItems + 1] := child^.Pointers[0];
+            <B>FOR</B> count := 1 <B>TO</B> (order-1)  (* copy child to sibling *)
+              <B>DO</B>
+                Assign (child^.Items[count], sibling^.Items[count+sibling^.numItems+1]);
+                sibling^.Pointers[count+sibling^.numItems+1] := child^.Pointers[count];
+              <B>END</B>; (* for count *)
+        
+        (* shift left node items *)
+            <B>FOR</B> count := pos <B>TO</B> (node^.numItems - 1)
+              <B>DO</B>
+                Assign (node^.Items[count+1], node^.Items[count]);
+                node^.Pointers[count] := node^.Pointers[count+1];
+              <B>END</B>; (* for count *)
+            sibling^.numItems := maxIndex; (* adjust num of items to max *)
+            node^.Pointers[node^.numItems] := <B>NIL</B>;  (* get rid of pointer *)
+            <B>DEC</B> (node^.numItems);
+            <B>DISPOSE</B> (child);
+            <B>RETURN</B> (node^.numItems >= order); (* flag up if consolidation needed *)
+          <B>END</B>; (* if num *)
+      
+      (* this section combines our child node with a sibling on its right *)
+      (* We get here always if the child is the first node, or, in the default, if there
+       is a node to the right of our problem child and it has a surplus available *)
+      <B>ELSE</B> 
+        sibling := node^.Pointers[pos]; 
+        (* the one after or having greater data, that is, to the child's right *)
+        num := (sibling^.numItems - order + 1) <B>DIV</B> 2;(* calculate num to move *)
+   
+        (* copy item from parent to orderth position first *)
+        Assign (node^.Items[pos], child^.Items[order]);
+        child^.Pointers[order] := sibling^.Pointers[0];
+        <B>IF</B> (num > 0)
+          <B>THEN</B>  (* move items from sibling to this child in next positions *)
+            <B>FOR</B> count := 1 <B>TO</B> (num-1)
+              <B>DO</B>
+                Assign (sibling^.Items[count], child^.Items[count+order]);
+                child^.Pointers[count+order] := sibling^.Pointers[count]
+              <B>END</B>; (* for count *)
+         
+            (* new separator mode from sibling *)
+            Assign (sibling^.Items[num], node^.Items[pos]);
+    
+            (* now, fix sibling up *)
+            sibling^.Pointers[0] := sibling^.Pointers[num];
+            <B>DEC</B> (sibling^.numItems, num);
+    
+          (* shift left remaining elements of that sibling *)
+            <B>FOR</B> count := 1 <B>TO</B> sibling^.numItems
+              <B>DO</B>
+                Assign (sibling^.Items[count+num], sibling^.Items[count]);
+                sibling^.Pointers[count] := sibling^.Pointers[count+num];
+                sibling^.Pointers[count+num] := <B>NIL</B>;
+              <B>END</B>; (* for count *)
+            child^.numItems := order - 1 + num;
+            <B>RETURN</B> <B>TRUE</B>;
+          <B>ELSE</B>  (* not enough on that side so merge nodes *)
+            <B>FOR</B> count := 1 <B>TO</B> order
+              <B>DO</B>
+                Assign (sibling^.Items[count], child^.Items[count+order]);
+                child^.Pointers[count+order] := sibling^.Pointers[count];
+              <B>END</B>; (* for count *)
+   
+            (* shift left node items *)
+            <B>FOR</B> count := pos <B>TO</B> (node^.numItems - 1)
+              <B>DO</B>
+                Assign (node^.Items[count+1], node^.Items[count]);
+                node^.Pointers[count] := node^.Pointers[count+1];
+              <B>END</B>; (* for *)
+            child^.numItems := maxIndex; (* adjust num of items to max *)
+            node^.Pointers[node^.numItems] := <B>NIL</B>;  (* get rid of pointer *)
+            <B>DEC</B> (node^.numItems);
+            <B>DISPOSE</B> (sibling);
+            <B>RETURN</B> (node^.numItems >= order);
+          <B>END</B>; (* if num *)
+      <B>END</B>; (* if pos *)
+  <B>END</B> Rearrange;
+  
+  <B>PROCEDURE</B> DelSpecial (node : BTree; <B>VAR</B> data : ItemType) : <B>BOOLEAN</B>;
+  (* after deleting from an interior node, find largest item less than it to remove from a node below and pass it up in "data" to become the new dividor *)
+  (* returns true if node is <B>OK</B>, false if too small & needs work from above *)
+  <B>BEGIN</B>
+    (* check for more nodes and do it recursively to the greater side to get the biggest *)
+    <B>IF</B> (node^.Pointers[node^.numItems] # <B>NIL</B>)
+      <B>THEN</B>
+         (* see if level below says rearrange needed *)
+         <B>IF</B> ~DelSpecial (node^.Pointers[node^.numItems], data)
+          <B>THEN</B> (* so, do it *)
+            <B>RETURN</B> Rearrange (node, node^.numItems+1);
+          <B>ELSE</B>
+            <B>RETURN</B> <B>TRUE</B>;
+          <B>END</B>; (* if *)
+      <B>ELSE</B>  (* remove the item *)
+        Assign (node^.Items[node^.numItems], data); (* save in data to send up top *)
+        <B>DEC</B> (node^.numItems); (* decrease this node size *)
+        <B>RETURN</B> (node^.numItems >= order); (* and return fla to next level up *)
+      <B>END</B>; (* if *)
+  <B>END</B> DelSpecial;
+  
+  <B>PROCEDURE</B> Del (node : BTree; key : KeyType) : <B>BOOLEAN</B>;
+  (* finds and delete the item with the key from the node; works recursively down 
+  returns true if node is OK now, false if next higher level must work on it as too small *)
+  <B>VAR</B>
+    count, pos : <B>CARDINAL</B>;
+    data   : ItemType;
+  <B>BEGIN</B>
+    FindPos (key, node, pos); (* key is at or left of position *)   
+    <B>IF</B> (pos > 1) <B>AND</B> (pos <= node^.numItems)
+       (* else, left of 1 or right of numItems means not in this node *)
+     <B>AND</B> (Compare (GetKey (node^.Items[pos-1]),key) = equal) (* check to see if bang on *)
+      <B>THEN</B>  (* item actually found in this node *)
+        <B>DEC</B> (pos);  (* now at the item to delete *)      
+        <B>IF</B> (node^.Pointers[pos-1] # <B>NIL</B>) (* stuff hanging below it & prior to it *)
+          <B>THEN</B>  (* use prior pointer to fish below for largest item for possible promotion *)
+             (* see if got it with rearranging needed *)
+             <B>IF</B> ~DelSpecial (node^.Pointers[pos-1], data)
+              <B>THEN</B> (* do a rearrange as node below has too few items *)
+                Assign (data, node^.Items[pos]); (* so put it in place *)
+                <B>RETURN</B> Rearrange (node, pos); (* and do the rearrange on this parent *)
+              <B>ELSE</B>  (* no rearrange, so just replace item with one from lower down *)
+                Assign (data, node^.Items[pos]);
+                <B>RETURN</B> <B>TRUE</B>; (* and tell upstairs we're happy *)
+              <B>END</B>; (* if *)
+          <B>ELSE</B>  (* nothing below so node of found item is a leaf *)
+            <B>FOR</B> count := pos <B>TO</B> (node^.numItems-1)
+              <B>DO</B> (* move everything over to the left *)
+                Assign (node^.Items[count+1], node^.Items[count]);
+                (* don't need to assign pointers, as the node is a leaf *)
+              <B>END</B>; (* for *)
+            <B>DEC</B> (node^.numItems);
+            <B>RETURN</B> (node^.numItems >= order); (* tell upstairs if rearrange needed *)
+          <B>END</B>; (* if *)
+      <B>ELSE</B>  
+      (* item is not in this node so try down below using pointer left of node position# *)
+        <B>IF</B> (node^.Pointers[pos-1] # <B>NIL</B>) (* there is a "below" before it *)
+          <B>AND</B> ~Del (node^.Pointers[pos-1], key) (* and we need to rearrange *)
+          <B>THEN</B>
+            <B>RETURN</B> Rearrange (node, pos); 
+            (* rearrange this node; provide position in parent to the left of which lies the 
+            node (pointer one less) below that has declined in population and send flag up *)
+          <B>ELSE</B>
+            <B>RETURN</B> <B>TRUE</B>; (* tell upstairs no rearrange *)
+          <B>END</B>; (* if node *)
+      <B>END</B>; (* if pos *)
+  <B>END</B> Del;
+
+<B>VAR</B>
+  oldTree : BTree;
+<B>BEGIN</B> (* main delete proc *)
+  <B>IF</B> tree^.numItems = 0 (* nothing to delete *)
+    <B>THEN</B>  (* this is an error; set flag so client can find out if it checks *)
+      tree^.state := empty;
+    <B>END</B>;
+  <B>IF</B> ~Del (tree, key) <B>AND</B> (tree^.numItems = 0) (* after del *)
+        <B>AND</B> (tree^.Pointers[0] # <B>NIL</B>)
+    <B>THEN</B>
+      oldTree := tree;
+      tree := oldTree^.Pointers[0];
+      <B>DISPOSE</B> (oldTree);
+      tree^.state := allRight;
+    <B>END</B>; (* if *)
+<B>END</B> Delete;
+
+<B>PROCEDURE</B> Depth (tree : BTree) : <B>CARDINAL</B>;
+(* returns the number of levels in the tree *)
+<B>BEGIN</B>
+  <B>IF</B> (tree # <B>NIL</B>)
+    <B>THEN</B>
+      <B>RETURN</B> Depth (tree^.Pointers[0]) + 1;
+    <B>ELSE</B>
+      <B>RETURN</B> 0;
+    <B>END</B>; (* if *)
+<B>END</B> Depth;
+
+<B>PROCEDURE</B> Search (tree : BTree; key : KeyType; <B>VAR</B> data : ItemType) : <B>BOOLEAN</B>;
+(* if found, returns <B>TRUE</B> and _data_ returns item at that point  *)
+<B>VAR</B>
+  pos : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> (tree = <B>NIL</B>)
+    <B>THEN</B>
+      <B>RETURN</B> <B>FALSE</B>;
+    <B>ELSE</B>
+      FindPos (key, tree, pos);
+      <B>IF</B> (pos > 1) <B>AND</B> (pos <= maxIndexPlus)
+           <B>AND</B> (Compare (GetKey (tree^.Items[pos-1]), key) = equal)
+        <B>THEN</B>
+          Assign (tree^.Items[pos-1], data);
+          <B>RETURN</B> <B>TRUE</B>;
+        <B>ELSE</B>
+          <B>RETURN</B> Search (tree^.Pointers[pos-1], key, data);
+        <B>END</B>; (* if pos *)
+    <B>END</B>; (* if tree *)
+<B>END</B> Search;
+
+<B>PROCEDURE</B> WriteTree (tree : BTree);
+(* writes out the tree *)
+  
+  <B>PROCEDURE</B> WriteInOrder (node : BTree);
+  <B>VAR</B>
+    count : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+    <B>IF</B> (node = <B>NIL</B>)
+      <B>THEN</B>
+        <B>RETURN</B>;
+      <B>END</B>; (* if *)
+    
+    WriteInOrder (node^.Pointers[0]);
+    <B>FOR</B> count := 1 <B>TO</B> node^.numItems
+      <B>DO</B>
+        WriteData (node^.Items[count]);
+        <B>INC</B> (gcount);
+        WriteString (", ");
+        <B>IF</B> (gcount > 10)
+          <B>THEN</B>
+            WriteLn;
+            gcount := 1;
+          <B>END</B>; (* if *)
+        WriteInOrder (node^.Pointers[count]);
+      <B>END</B>; (* for *)
+  <B>END</B> WriteInOrder;
+  
+  <B>PROCEDURE</B> WriteNodes (node : BTree; level : <B>CARDINAL</B>);
+  <B>VAR</B>
+    count : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+    <B>IF</B> (node = <B>NIL</B>)
+      <B>THEN</B>
+        <B>RETURN</B>;
+      <B>END</B>; (* if *)
+    
+    <B>FOR</B> count := 1 <B>TO</B> (level*2)
+      <B>DO</B>
+        WriteString (" ");
+      <B>END</B>; (* for *)
+    
+    <B>IF</B> node^.numItems > 0
+      <B>THEN</B>
+        WriteData (node^.Items[1]);
+      <B>END</B>; (* if *)
+    <B>FOR</B> count := 2 <B>TO</B> node^.numItems
+      <B>DO</B>
+        WriteString (", ");
+        WriteData (node^.Items[count]);
+      <B>END</B>; (* for *)
+    WriteLn;
+    <B>INC</B> (gcount);
+    <B>IF</B> (gcount > 33)
+      <B>THEN</B>
+        WriteString ("press return to continiue...");
+        SkipLine;
+        gcount := 1;
+      <B>END</B>; (* if *)
+    
+    <B>FOR</B> count := 0 <B>TO</B> maxIndex
+      <B>DO</B>
+        WriteNodes (node^.Pointers[count], level+1);
+      <B>END</B>; (* for *)
+  <B>END</B> WriteNodes;
+
+<B>VAR</B>
+  gcount : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  WriteString ("*************"); WriteLn;
+  WriteString ("Tree view:"); WriteLn;
+  gcount := 1;
+  WriteNodes (tree, 0);
+  WriteLn;
+  <B>IF</B> gcount > 34
+    <B>THEN</B>
+      WriteString ("press return to continue...");
+      SkipLine;
+    <B>END</B>; (* if *)
+  WriteString ("Inorder view:"); WriteLn;
+  gcount := 1;
+  WriteInOrder (tree);
+  WriteLn;
+  WriteString ("*************"); WriteLn;
+<B>END</B> WriteTree;
+
+<B>PROCEDURE</B> Traverse (tree : BTree; Proc : ActionProc);
+(* Pre : tree is a valid initialized BTree
+   Post : the nodes are traversed inorder and Proc is performed on each data item. *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> (tree = <B>NIL</B>)
+    <B>THEN</B>
+      <B>RETURN</B>;
+    <B>END</B>; (* if *)
+
+  Traverse (tree^.Pointers[0], Proc);
+  <B>FOR</B> count := 1 <B>TO</B> tree^.numItems
+    <B>DO</B>
+      Proc (tree^.Items[count]);
+      Traverse (tree^.Pointers[count], Proc);
+    <B>END</B>; (* for count *)
+<B>END</B> Traverse;
+
+<B>END</B> BTrees.
+</pre>
+<P>This module was given a brief workout using cardinals as the data type, and their own value as the key.  Observe that the data type to be entered could have been a complex record as long as some compare procedure was defined on a key field.  First, the data type to be imported and entreed is defined:</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> DataADT;
+
+<B>TYPE</B>
+  CompareResults = (less, equal, greater);
+  KeyFieldType = <B>CARDINAL</B>;
+  DataType = <B>CARDINAL</B>;
+  ActionProc = <B>PROCEDURE</B> (DataType);
+  
+<B>PROCEDURE</B> Assign (a : DataType; <B>VAR</B> b : DataType);
+<B>PROCEDURE</B> GetKey (a : DataType) : KeyFieldType;
+<B>PROCEDURE</B> WriteData (a : DataType);
+<B>PROCEDURE</B> Compare (a, b : KeyFieldType) : CompareResults;
+<B>END</B> DataADT.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> DataADT;
+<B>IMPORT</B> SWholeIO;
+
+<B>PROCEDURE</B> Assign (a : DataType; <B>VAR</B> b : DataType);<B>BEGIN</B>
+  b:= a;
+<B>END</B> Assign;
+
+<B>PROCEDURE</B> GetKey (a : DataType) : KeyFieldType;
+<B>BEGIN</B>
+  <B>RETURN</B> a;
+<B>END</B> GetKey;
+
+<B>PROCEDURE</B> WriteData (a : DataType);
+<B>BEGIN</B> 
+  SWholeIO.WriteCard (a,0);
+<B>END</B> WriteData;
+
+<B>PROCEDURE</B> Compare (a, b : KeyFieldType) : CompareResults;
+<B>BEGIN</B>
+  <B>IF</B> a = b
+    <B>THEN</B>
+      <B>RETURN</B> equal
+    <B>ELSIF</B> a <!--<-->&lt; b <B>THEN</B> 
+      <B>RETURN</B> less
+    <B>ELSE</B>
+      <B>RETURN</B> greater
+    <B>END</B>
+<B>END</B> Compare;
+<B>END</B> DataADT.
+</pre>
+
+<P>The actual test uses the same data as in the initial discussion.  A few additional insertions (same value as one already there) and deletions (a value not present) are also done.  At intervals, the tree is printed out, and at one point, a traverse is done adding all the key values.</P>
+
+<pre><B>
+MODULE</B> TestBTrees;
+(* A simple program to test the Binary tree library module.
+by R. Sutcliffe
+last modified 1996 10 15 *)
+<B>
+IMPORT</B> BTrees, DataADT, SWholeIO, STextIO;
+<B>
+VAR</B>
+  theTree : BTrees.BTree;
+  sum : <B>CARDINAL</B>;
+<B>
+PROCEDURE</B> Summit (item : DataADT.DataType);
+<B>BEGIN</B>
+  sum := sum + DataADT.GetKey (item)
+<B>END</B> Summit;
+
+<B>BEGIN</B>
+  BTrees.Init (theTree);
+  BTrees.Add (theTree, 15);
+  BTrees.Add (theTree, 4);
+  BTrees.Add (theTree, 6);
+  BTrees.Add (theTree, 12);
+  BTrees.WriteTree(theTree);
+
+  BTrees.Add (theTree, 11);
+  BTrees.WriteTree(theTree);
+
+  BTrees.Add (theTree, 17);
+  BTrees.Add (theTree, 20);
+  BTrees.Add (theTree, 30);
+  BTrees.Add (theTree, 31);
+  BTrees.Add (theTree, 5);
+  BTrees.Add (theTree, 16);
+  BTrees.Add (theTree, 37);
+  BTrees.WriteTree(theTree);
+
+  sum := 0;
+  BTrees.Traverse (theTree, Summit);
+  STextIO.WriteLn;
+  STextIO.WriteString ("Sum is ");
+  SWholeIO.WriteCard (sum, 10);
+  STextIO.WriteLn;
+  
+  BTrees.Delete (theTree, 15);
+  BTrees.WriteTree(theTree);
+  BTrees.Delete (theTree, 16);
+  BTrees.WriteTree(theTree);
+
+  BTrees.Delete (theTree, 37);
+  BTrees.Delete (theTree, 12);
+  BTrees.WriteTree(theTree);
+
+  BTrees.Delete (theTree, 17);
+  BTrees.WriteTree(theTree);
+  
+  BTrees.Delete (theTree, 42);
+  BTrees.WriteTree(theTree);
+
+  BTrees.Add (theTree, 4);
+  BTrees.WriteTree(theTree);
+
+<B>END</B> TestBTrees.</pre>
+
+<P>When this program was run, the output looked like this:</P>
+
+<pre>*************
+Tree view:
+ 4,  6,  12,  15
+
+Inorder view:
+ 4,  6,  12,  15, 
+*************
+*************
+Tree view:
+ 11
+   4,  6
+   12,  15
+
+Inorder view:
+ 4,  6,  11,  12,  15, 
+*************
+*************
+Tree view:
+ 11,  17
+   4,  5,  6
+   12,  15,  16
+   20,  30,  31,  37
+
+Inorder view:
+ 4,  5,  6,  11,  12,  15,  16,  17,  20,  30,  31,  37, 
+*************
+
+Sum is        204
+*************
+Tree view:
+ 11,  17
+   4,  5,  6
+   12,  16
+   20,  30,  31,  37
+
+Inorder view:
+ 4,  5,  6,  11,  12,  16,  17,  20,  30,  31,  37, 
+*************
+*************
+Tree view:
+ 11,  20
+   4,  5,  6
+   12,  17
+   30,  31,  37
+
+Inorder view:
+ 4,  5,  6,  11,  12,  17,  20,  30,  31,  37, 
+
+*************
+*************
+Tree view:
+ 6,  20
+   4,  5
+   11,  17
+   30,  31
+
+Inorder view:
+ 4,  5,  6,  11,  17,  20,  30,  31, 
+*************
+*************
+Tree view:
+ 20
+   4,  5,  6,  11
+   30,  31
+
+Inorder view:
+ 4,  5,  6,  11,  20,  30,  31, 
+*************
+*************
+Tree view:
+ 20
+   4,  5,  6,  11
+   30,  31
+
+Inorder view:
+ 4,  5,  6,  11,  20,  30,  31, 
+*************
+*************
+Tree view:
+ 5,  20
+   4,  4
+   6,  11
+   30,  31
+
+Inorder view:
+ 4,  4,  5,  6,  11,  20,  30,  31, 
+*************</pre>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,97 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 166 Spring 2008 Assignments, Trinity Western University</title>
+</head><body>
+
+<h1><a href=".">CMPT 166 Spring 2008</a>
+Lab Assignments</h1>
+
+<h2><a name="0">Lab 0: HelloWorld (due Wed 16 Jan) (0pts)</a></h2>
+
+Write a simple Java program that prints "Hello, World!" on the command-line.
+No write-up is needed for this orientation lab; the main point is to make
+sure you are setup with a Java development environment (editing, compiling,
+running).
+
+<h2><a name="1">Lab 1: Selection (due Wed 23 Jan) (20pts)</a></h2>
+
+Write a Java program that uses the <tt>if</tt> or
+<tt>switch</tt> structures to print the song,
+"The Twelve Days of Christmas".  
+The user must be asked to enter a day from 1
+to 12, and the program must display the corresponding message for that day.
+The strings for each day should only appear in your code once each (e.g., the
+string "five golden rings" should only appear in your code once).
+Google for the lyrics, or make up your own (keep it clean, please).
+
+<h2><a name="2">Lab 2: Flow of Control (due Wed 30 Jan) (20pts)</a></h2>
+
+Java text (Savitch), p.160-162: choose one of #2, #5, or #8.
+(#8: also generate or come up with your own cryparithmetic puzzle)
+
+<h2><a name="3">Lab 3: Classes (due Wed  6 Feb) (40pts)</a></h2>
+
+ch5 (p.328): #4 (use arrays), or #6 (parts one and two), or #7 (parts one and
+two).
+
+<h2><a name="4">Lab 4: Swing I (due Wed 20 Feb) (40pts)</a></h2>
+
+ch17 (p.999): #1, or #2, or #3.
+Feel free to use whatever layout managers you like, but make it reasonably
+easy-to-use and not unbearably ugly.
+
+<h2><a name="5">Lab 5: Swing II (due Wed 19 Mar) (40pts)</a></h2>
+
+Both of these options require a nice user-friendly Swing GUI: your program 
+should be reasonably easy-to-use and not unbearably ugly.  An average
+computer user (non-programmer) should be able to figure out the controls,
+even without the help text (which you should also provide).
+
+<ul><li><b>Option 1:</b>
+(p.1061 #1): Write a Swing GUI program to render a fractal 
+<a href="http://en.wikipedia.org/wiki/L-system">L-system</a> using a 
+recursive algorithm.  The shape need not be a Sierpinski gasket.
+Most fractals have some parameters that can be tweaked (e.g., length of 
+each branch compared to its parent); provide some kind of interactive
+graphical interface to adjust those parameters.
+<p>
+
+<li><b>Option 2:</b>
+(p.1063 #2): Write a Swing/Java2D GUI program to read in an image 
+(need not be colour) and display it.  Provide an interactive graphical
+interface to adjust the brightness and contrast of the image.  
+
+<br><em>Hint: if the original shade (o) and final shade (f) are floats between
+0 and 1, and the brightness (b) is a float between -1 and +1, and the contrast
+is a float between 0 and infinity, then one simple way to define 
+brightness and contrast is by: f = (o+b)*c.  The final shade f will need to
+be clamped to [0,1].  This method has some bad limitations; you may want to
+research better ways to define contrast and brightness.</em>
+
+</ul>
+
+<h2><a name="6">Lab 6: TCP Client-server (due Wed  9 Apr) (40+10pts)</a></h2>
+
+Come up with your own cool client-server network application (e.g., chat/IM,
+stock-ticker, sending pictures, web server)!
+
+<ul>
+<li> Your application should have
+(at least) two running programs, one for the server and one for the client.
+<li> Both should have Swing GUIs that use multithreading to keep the GUI
+responsive (non-blocking).
+<li> Your server should use multithreading to handle multiple clients simultaneously (demonstrate this).
+<li> Your application should send something more interesting than just plain-text over the network.
+(But it may be a good idea to start with just sending plain-text.)
+<b>The point of this is to give you practise working with serialization and ObjectOutputStream et al.</b>
+<li> Be creative!
+<li> The last day of class, Mon 14Apr, you will demonstrate your program
+in-class! (the last 10pts of the project)
+<li> To facilitate running the demo, please make it easy to change the server and port,
+on both the client and server (e.g., without recompiling).
+
+<li> <b>Update 4Apr: you can now try your applications on two different computers in the computer lab!  Use ports 4410 and/or 4411.</b>
+
+</ul>
+
+</body></html>

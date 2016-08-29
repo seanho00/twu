@@ -1,0 +1,138 @@
+<HTML>
+<HEAD>
+<TITLE>1.6 Data Representation Abstractions</TITLE>
+<meta NAME="keywods" CONTENT="data, represent, representation, representations, abstract, abstraction, abstractions, process, processing, collect, collecting, raw, organize, organizes, number, numbers, symbol, symbols, encode, encoding, represent, representing, external, internal, code, codes, atomic, entity, set, pair, complex, unstructured, structured, structure, compound, type, cardinals, cardinal, real, reals, integer, integers, character, characters, string, strings, boolean, booleans, operation, operations, group, groups, individual, individuals, abstract, adt, limit, limits, implementation, dependent, constant">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>1.6 Data Representation Abstractions</B></H2>
+<P>A great deal of human activity centres on the collection and processing of data. Sight, smell, touch, taste, and hearing provide personal data input for most of us. We also collect data about the stock market, the economy, budgets, financial institutions, population statistics, chromatography experiments, seismological surveys, the weather, baseball and hockey teams, library loans, and a host of other events and activities. Any such data collection is likely to contain too many individual facts to be comprehended, as a whole<!--‹-->--it must be processed in some fashion to become useful.</P>
+<H3><B><A NAME="1.6.1">1.6.1</A> Data and Information</B></H3>
+<P>Raw data, as it is initially collected, is of little value or use. The human brain organizes audio/visual (and other) inputs and the mind interprets these inputs and assigns meaning to them. Thus a pattern of vibrations in the air is interpreted as conversation or as music, and a pattern of retinal impulses is a rose or perhaps a lover. One sees and hears, but there is much more to this than just a few organized sensory inputs, for intelligent organization is required to give meaning to the stimuli. Likewise, economic and scientific data consists only of raw numbers (symbols) until it has been organized and interpreted. Once such higher levels of meaning have been attached to data, it is termed information. This intelligent act of attaching meaning to raw data is clearly an abstraction process. Indeed, assigning meaning may to some extent be thought of as a synonym for the whole abstraction forming activity.</P>
+<P>At a somewhat more concrete level, it is often possible to automate certain repetitious calculating tasks that are part of the process of placing meaning on data collections. These tasks are ideally suited to modern computing machinery and are driven by sets of instructions that achieve the mechanical aspects of the data organization. One can go farther than this and say that certain standard meanings are collected and tabulated, then automatically assigned to the items in the data collection by the computer program. The latter is then just a fast and reliable extension of human intelligence bent to the abstraction task </P>
+<H3><B><A NAME="1.6.2">1.6.2</A> Encoding (Representing) Data</B></H3>
+<P>However, there are practical issues to solve at a lower level than describing what data processing is. These centre on how data is communicated. Whenever one writes a symbol like <!--"-->&quot;4<!--"-->&quot; or 'four,<!--"-->&quot; a potential for communication exists, based on the fact that these symbols encode a certain idea. By convention, everyone encodes the same idea with these symbols, so communication is possible.</P>
+<P>Computation devices must also encode data in some consistent way. There are two categories of such codes:</P>
+<P>1. <I>External codes</I>. These are usually human-readable characters that are input into a computer or output from it using a keyboard, screen, printer, or other device. The most common form for this data is a character such as <!--"-->&quot;4,<!--"-->&quot; <!--"-->&quot;a,<!--"-->&quot; <!--"-->&quot;%,<!--"-->&quot; and so on.</P>
+<P>2. <I>Internal codes</I>. Because computer storage is based on electronic circuits that can be thought of as ON/OFF switches, internal storage is in a different format than that used for human interface with the machine. In this form, it is not directly accessible by a human user. The person using a computing machine does not usually need to know what kind of internal representation is employed for data, because there are input/output programs that translate the data between internal and external formats.</P>
+<P>There are some issues relating to data representation that do make a difference to programmers, however.</P>
+<H3><B><A NAME="1.6.3">1.6.3</A> Atomic and Compound Entities</B></H3>
+<P>One of these issues is the level at which a data abstraction operates. Consider the symbol 4.25<!--¥-->*10<sup>15</sup> for example. On one level, this symbol can be thought of as having nine parts or components, one for each character used. On a second (higher) level, it consists of a mantissa (4.25) and an exponent (15) with the rest just punctuation. On a third level, one could take the symbol as an organic whole<!--‹-->--a representation of a real number. This is what is usually done. Symbols like 27, -4.92, l6.3<!--¥-->*10<sup>12</sup>, and so on are normally thought of as atomic (indivisible) entities, and not in terms of the individual digits, signs, and decimal points.</P>
+<P>There is data that is not like this. Consider</P>
+<P>a set				A= {1, 6, 9, 15}</P>
+<P>an ordered pair 		P= (2,3)</P>
+<P>or a complex number 	z = 4 - 6i.</P>
+<P>Each of these is not only an entity in itself, but has also component parts that are sufficiently important to be referred to in their own right. One may use the individual elements of a set, the coordinates in an n-tuple, the parts of a complex number, and so on, in particular computations. In such cases, the structural parts of the data item become important in themselves. On the other hand, one may also refer to the entity as a whole, without making use of the knowledge of its constituent parts.</P>
+<P>Similar situations arise when a data item has an assortment of related components of various kinds.</P>
+<P>For instance, we might think of a student record as an aggregate (or a collective) consisting of:</P>
+<UL><!--€--><LI> name</LI>
+<!--€--><LI> address</LI>
+<!--€--><LI> phone number</LI>
+<!--€--><LI> marks</LI>
+<!--€--><LI> fees owed</LI></UL>
+<P>Each constituent part of such a student record is a data item in itself, and so is the aggregate as a whole. Depending on what one is doing at the time (revising the marks, or storing the whole record) one might handle the data as an aggregate (a high level of abstraction) or by constituent parts (a low level of abstraction.) Indeed, in this case, a still higher abstraction may be employed if one wishes to deal with several such students as a group. Such a group could in turn be given a structure in a variety of ways:</P>
+<UL><!--€--><LI> a number could be painted on the back of each</LI>
+<!--€--><LI> they could be organized alphabetically by their names</LI>
+<!--€--><LI> they could be seated in rows and columns in a classroom</LI></UL>
+<BLOCKQUOTE><I><A NAME="Data">Data </A>items that are normally handled as indivisible whole items are called <U>atomic</U> or <U>unstructured</U> and those that have component parts are called <U>structured</U> or <U>compound</U>.</I></BLOCKQUOTE>
+<H3><B><A NAME="1.6.4">1.6.4</A> The Concept of Type</B></H3>
+<P>It should be clear that data items like 4, 6, or 12 are of a different kind than those like "A," <!--"-->&quot;Henry<!--"-->&quot;, or {5,9,16}. It is also the case, though perhaps not quite so obvious that 4,6,12 are also of a different kind than, say, -3 or 7.6.</P>
+<P>The classification of data items into different kinds is done for one or more of three reasons:</P>
+<P>1. the underlying concepts being abstracted by the symbols are different.</P>
+<P>2. different kinds of data are stored by computing devices in different ways.</P>
+<P>3. different operations may be defined on different kinds of data</P>
+<P>These considerations are more evident in the case of atomic data on the one hand, and highly structured data on the other. However, mathematicians (and others) find it useful to distinguish among:</P>
+<P>a. <I>cardinals</I> (also called unsigned whole numbers<!---->)  0,1,2,3,.......</P><BLOCKQUOTE>(The strict mathematical convention is to use the term whole number only for what are called here unsigned whole numbers and not at all for the ones that might have negative values; the terminology here is looser, and conforms to the ISO standard vocabulary.)</BLOCKQUOTE>
+<P>b. <I>integers</I>  (also called signed whole numbers)......-3,-2,-1, 0, 1,2,3,.......</P>
+<P>c. reals  numbers like 4.7, -3.98, 2.5 x 10<sup>7</sup> , -6.3 x 10<sup>-5</SUP> </P>
+<P>d. <I>characters</I>  <!--"-->&quot;A<!--"-->&quot;, <!--"-->&quot;z<!--"-->&quot;, <!--"-->&quot;2<!--"-->&quot;, <!--"-->&quot; (whatever can be typed)</P>
+<P>e. <I>strings</I>  <!--"-->&quot;Hi There<!--"-->&quot; <!--"-->&quot;Fred<!--"-->&quot;</P>
+<P>f. <I>boolean</I>  false, true</P>
+<P>g. various structures or collections of these basic kinds.</P>
+<P>Note that one distinguishes a <!--"-->&quot;4<!--"-->&quot; (character) from a 4 (unsigned or signed whole number). One may often wish to distinguish a 4 from a 4.0 (real), or even between a 4 taken from the unsigned whole numbers and a 4 taken from the signed whole numbers. It may also be necessary to handle the character <!--"-->&quot;4<!--"-->&quot; differently from the one-character string <!--"-->&quot;4<!--"-->&quot;.</P>
+<P>Data that is of the numeric kinds (unsigned or signed whole number, and real) has certain operations defined for it. Indeed, without the operations of addition, subtraction, multiplication, division, and comparison, the numeric kinds would be incomplete. Anyone who uses such data assumes that the abstraction of numbers includes the ability to do such things.</P>
+<P>On the other hand, these four operations mean little on, say, the character and boolean kinds. We could imagine other operations such as capitalize (<!--"-->&quot;a<!--"-->&quot;) which produces <!--"-->&quot;A<!--"-->&quot; or possibly NOT (True) which produces False.</P>
+<P>If the data is structured instead of atomic, the level at which an operation is applied on an item is also an important consideration. A group of students might have:</P>
+<UL><!--€--><LI> operations on the whole group</LI>
+<UL>		assign the group to a different room</UL>
+<!--€--><LI> operations on individuals as part of the group</LI>
+<UL>		add student to the group
+		delete student from group
+		re-position student within the group</UL>
+<!--€--><LI> operations on the particular data associated with an individual</LI>
+<UL>		change the last name of a student
+		enter a mark for a student
+		update the fees owing for a student</UL></UL>
+<P>Thus, on any given level of the abstraction scale, the concept of the kind or type of data is incomplete without either implicitly or explicitly including the operations associated with the data at that level. Such considerations lead to the following definition:</P>
+<BLOCKQUOTE><I><A NAME="ADT">A </A>specified set of items with certain properties and operations in common is called an <U>abstract data type</U>, or ADT for short.</I></BLOCKQUOTE>
+<P>Some ADT's are easy to represent in a computer. BOOLEAN has only two possible values (True, False). These could be internally represented by, say, a zero and a one, respectively.</P>
+<P>However, the numeric ADTs present one with various representation difficulties. As one conceives of them in mathematical terms, both unsigned whole numbers and signed whole numbers have an infinite number of possible values. To allow for that, the computer's storage would have to be unlimited. Since this is not possible, every actual system restricts these two types to some specific range of values. On smaller machines, this is often -32768.. 32767 for signed whole number and 0.. 65535 for unsigned whole number. On larger ones, the usable range could reach the millions or billions<!--‹-->--but there is always a specific limit beyond which one cannot represent for the machine what are perfectly ordinary numbers. Users of a given system must simply know what this limit is, and be prepared to live within it.</P>
+<P>The Real ADT presents another problem. Not only must there be maximum and minimum limits as for whole number ADTs, but there also restrictions on the available precision. No computer can make provision for storing an indefinite number of significant figures (decimal places); there is always some limit. If this limit is, say, eight figures, then 0.0000000001 cannot be distinguished from 0.0, nor can the completeness property of reals always be followed. (That is, that between any two reals there is another real.)</P>
+<P>In the case of a data structure, different kinds of limitations may arise, for large numbers of similarly structured data items may not all fit in the memory of a computer at once, so a means must be found to store these on some external medium. It is then also necessary to have a method of reading from this external storage, altering some or all of the data, and writing it back again. Of course, if the collection becomes sufficiently large, even the external storage may be too small; it is then time to buy more disk or tape drives.</P>
+<P>For such reasons, actual instances of ADTs on specific computing systems are always approximations to the intellectual concept one is trying to represent. This situation does not differ appreciably from the <!--"-->&quot;real world<!--"-->&quot; wherein measuring instruments also have limited capacity and/or precision. The users of any machine (whether a computer or a tape measure) must live with its limitations.</P>
+<BLOCKQUOTE><I><A NAME="Implementation">An</A> instance of an ADT, complete with specified limits, is called an <U>implementation</U> of the ADT. One recognizes that such limitations vary from one computing platform to another by terming them <U>implementation dependent</U>.</I></BLOCKQUOTE>
+<P>It is also possible to distinguish three levels at which one could say that data exists:</P>
+<UL><!--€--><LI> as a 'pure' abstraction or idea</LI>
+<!--€--><LI> as a virtual implementation in some symbolic form (English description, mathematical or computing notation)</LI>
+<!--€--><LI> as an actual or physical implementation within a computing machine. (expressed, say, as voltages applied to certain electrical circuits)</LI></UL>
+<H3><B><A NAME="1.6.5">1.6.5</A> Variables and Constants</B></H3>
+<P>In performing computations, it is often convenient to refer to data or to a portion of its structure by a named place holder. In algebraic terms, such names abstractly represent some value in a calculation.</P>
+<P>One might write:</P>
+<P>x = 5</P>
+<P>y = 6</P>
+<P>z = x + y</P>
+<P>The first lines say to assign the name <I>x</I> to the value 5 and the name <I>y</I> to the value 6. The third line says to give the name <I>z</I> to the value obtained by adding the values represented by <I>x</I> and <I>y</I>.</P>
+<P>Such named quantities fall into two broad categories<!--‹-->--those understood to have a fixed value throughout the computation, and those whose value is subject to change during the course of the calculation. In writing: a formula like <I>area = pi * radius</I>^2 for instance, it is understood that the value of <I>pi</I> is fixed (approximately 3.14) whereas the values of the <I>radius</I> and <I>area</I> are subject to change depending on the particular instance of the problem. (See section 1.6)</P>
+<P>Moreover, the type associated with the numbers when written literally (5, 6, 3.14) also attaches to the names used for them, so we say that these names too have a type. These considerations produce the following definitions:</P>
+<BLOCKQUOTE><I><A NAME="Constant">A</A> <U>constant</U> is a name for a value that is understood to be fixed.</BLOCKQUOTE>
+<BLOCKQUOTE>A <U>variable</U> is a name whose value is subject to change during the course of a computation.</BLOCKQUOTE>
+<BLOCKQUOTE>The <U>type</U> of a constant or a variable is the same as that of the abstract data type of which it names a particular instance.</I></BLOCKQUOTE>
+This last definition may sound a little technical, but all it means in practice is that if the name pi is given the value 3.14159, then pi is of type real because its value is of type real.
+<P>Because such names are intended to abstract values, it is useful to employ descriptive names, so as to mirror function as part of doing the abstraction. Thus, one commonly employs names such as: <I>interest</I>, <I>rate</I>, <I>time</I>, <I>speed</I>, <I>distance</I>, <I>area</I>, <I>perimeter</I>, so on, rather than using <I>a</I>, <I>x</I>, <I>i</I>, <I>P</I>, <I>s</I>, <I>a</I>, <I>b</I>, and the like.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>
+

@@ -1,0 +1,208 @@
+<HTML>
+<HEAD>
+<TITLE>3.9 Qualified Import</TITLE>
+<meta NAME="keywords" CONTENT="qualified, qualify, import, module, identifier, name, entity, own, owns, unqualified, error, trapping">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.9 Qualified Import</B></H2>
+<P>To this point, examples have imported from no more than two or three modules.  Some programs import from  twenty or thirty, and some programmers get to know the contents of those modules very well as their programs grow longer.  In addition, there will occasionally be an identifier of the same name in two different library modules.  One cannot import both of these, as they have the same name.  That would amount to declaring two different variables with the same name<!--‹-->--something the compiler forbids, of course.  In order to use both these identifiers in a program, one must first include in the import section of the module the line: </P>
+<PRE>
+
+<B>IMPORT</B> aModuleName;</PRE>
+
+<P>This is a different kind of import and requires one to adopt a slightly different style of documenting and using imported items.  Instead of writing</P>
+<PRE>
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn;</PRE>
+
+<P>or</P>
+<PRE>
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteInt, WriteCard;</PRE>
+
+<P>and referring to the imported identifiers as WriteString, WriteLn, WriteInt, and WriteCard, one may instead write the imports as:</P>
+<PRE>
+<B>IMPORT</B> STextIO;
+<B>IMPORT</B> SWholeIO;</PRE>
+
+<P>If this is done, the program has access to the entire contents of the imported module, but must refer to the items in them by also using the module name, in the manner of the following code:</P>
+<PRE>
+STextIO.WriteString (<!--"-->&quot;The results are:<!--"-->&quot;);
+STextIO.WriteLn;
+SWholeIO.WriteInt (theInt,5)
+SWholeIO.WriteCard (theCard, 6)</PRE>
+
+<P>and likewise for any other items in these or other library modules.</P>
+<BLOCKQUOTE><I><A NAME="Qualified">An</A> identifier that is constructed from the name of the entity that owns it, followed by a period, followed by its own name, is called a <U>qualified identifier</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>An identifier that is referred to by its name alone is said to be <U>unqualified</U>.</I></BLOCKQUOTE>
+<P>Whenever this is done, any items belonging to the imported module become available for use in the importing module, provided their own names are qualified by their module name, as: <I>ModuleName.itemFromModule</I>.   Since it may not be necessary to refer to all the identifiers of such a library in a qualified manner, it is permitted to do both styles of importing from the same module in one program.</P>
+<P><B>NOTE:</B> Programming notations other than Modula-2 may not allow both qualified and unqualified imports from the same library.  They may not even have both in the language.</P>
+<P>This new syntax forces a revision to the diagram of the import as shown in figure 3.7:</P>
+<P><CENTER><IMG SRC="Figure/Figure_3.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>For example, the simple high level I/O libraries sketched by Wirth in Programming in Modula-2 and variously implemented by a number of manufacturers since, had a global variable <I>Done</I> in both <I>InOut</I> and <I>RealInOut</I> for checking the validity of <I>Readxx</I> operations.  As these traditional modules (in some variation) are usually provided, the following non-standard example may provide a useful illustration:</P>
+<H3><B>Example:</B></H3>
+<P>Write a program to raise a real number to a cardinal power.  Ensure that the data read from the user is correct before starting the calculations.</P>
+<H3><B>Discussion:</B></H3>
+<P>The <I>Done</I> variables will be used to check input validity, and the user will not be permitted to go on if the data is incorrect.  To achieve this, an error message will be given and a retry allowed.  However, only two tries will be allowed in each category.</P>
+<PRE>
+<B>MODULE</B> CardPowerOfReal;  (* non-ISO standard *)
+
+(*  Written by R.J. Sutcliffe *)
+(* to illustrate qualified import *)
+(* using Metrowerks Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 16 *)
+
+(* This non-standard program Module will request from its users a real and a cardinal and will raise the first number to the power of the second. Note that this is not a very efficient method of doing this; this topic will be returned to. *)
+
+<B>FROM</B> InOut <B>IMPORT</B>
+  ReadCard, WriteString, WriteLn, Done, Read;
+<B>IMPORT</B> RealInOut;
+<B>FROM</B> RealInOut <B>IMPORT</B>
+  ReadReal, WriteReal;
+
+<B>CONST</B>
+  maxTries = 2; (* typing errors not allowed to go on forever *)
+
+<B>VAR</B>
+  baseNumber, result : <B>REAL</B>;
+  exponent, count, retries : <B>CARDINAL</B>;
+  again, cardOK : <B>BOOLEAN</B>;
+  answer, cr : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program raises real numbers to cardinal powers.<!--"-->&quot;);
+  WriteLn;
+  <B>REPEAT</B> (* main program repeat loop *)
+    retries  := 0;
+    
+    <B>REPEAT</B> (* trying to get a valid real for the base *)
+      WriteString (<!--"-->&quot;Type in a Real ===<!-->&gt; <!--"-->&quot;);
+      ReadReal (baseNumber);
+      Read (cr); (* get carriage return too *)
+        <B>IF</B> <B>NOT</B> RealInOut.Done  (* note how this is referred to*)  
+          <B>THEN</B>
+             WriteString (<!--"-->&quot;Incorrectly typed real<!--"-->&quot;);
+             WriteLn;
+             retries  := retries + 1;
+           <B>END</B>;
+    <B>UNTIL</B> RealInOut.Done <B>OR</B> (retries = maxTries);
+
+    <B>IF</B> RealInOut.Done (* else, loop finishes; too much bad data *)
+      <B>THEN</B>
+        retries  := 0;
+
+        <B>REPEAT</B> (* trying to get valid cardinal for the exponent *)
+          WriteString (<!--"-->&quot;Type in a Cardinal ===<!-->&gt; <!--"-->&quot;);
+          ReadCard (exponent);
+          cardOK := Done;
+          Read (cr); (* get carriage return too *)
+          <B>IF</B> <B>NOT</B> cardOK  (* unqualified <B>IMPORT</B> reference *)
+            <B>THEN</B>
+               WriteString (<!--"-->&quot;Incorrectly typed cardinal<!--"-->&quot;);
+               WriteLn;
+               retries  := retries + 1;
+             <B>END</B>; (* if not cardOK *)
+        <B>UNTIL</B> cardOK <B>OR</B> (retries = maxTries);
+
+        <B>IF</B> cardOK (* else, loop finishes; too much bad data *)
+          <B>THEN</B>
+            result := 1.0;   (*initialize answer *)
+            count := 1;
+            <B>WHILE</B> count <!--<-->&lt;=  exponent
+              <B>DO</B> (* multiply base by itself enough times *)
+                result := result * baseNumber;
+                count := count + 1;
+              <B>END</B>;  (* while *)
+            WriteString (<!--"-->&quot;The answer is <!--"-->&quot;);
+            WriteReal (result, 10);
+            WriteLn;
+          <B>END</B>; (* if Done *)
+
+      <B>END</B>; (* if RealInOut.Done *)
+
+    WriteString (<!--"-->&quot;Do you want to do another one? <!--"-->&quot;);
+    Read (answer);
+    Read (cr); (* knock the carriage return after the char off *)
+    WriteLn;
+    again := <B>CAP</B> (answer) = 'Y';
+  <B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> CardPowerOfReal.</PRE>
+
+<P><B>NOTE</B>:  The variable <I>cardOK</I> was employed because the <I>Read</I> following the <I>ReadCard</I> also resets <I>Done</I>.  The behaviour of <I>Done</I> in such respects varies considerable from one version of non-ISO Modula-2 to another<!--‹-->--a good reason to read the documentation carefully, or use a standard (predictable) version.</P>
+<P>Here is a run from this program with user input indicated in bold.</P>
+<PRE>
+This program raises real numbers to cardinal powers.
+Type in a Real ===<!-->&gt; <B>2.5</B>
+Type in a Cardinal ===<!-->&gt; <B>4</B>
+The answer is   39.06250
+Do you want to do another one? <B>y</B>
+
+Type in a Real ===<!-->&gt; <B>a</B>
+Incorrectly typed real
+Type in a Real ===<!-->&gt; <B>a</B>
+Incorrectly typed real
+Do you want to do another one? <B>y</B>
+
+Type in a Real ===<!-->&gt; <B>3.75</B>
+Type in a Cardinal ===<!-->&gt; <B>t</B>
+Incorrectly typed cardinal
+Type in a Cardinal ===<!-->&gt; <B>y</B>
+Incorrectly typed cardinal
+Do you want to do another one? <B>y</B>
+
+Type in a Real ===<!-->&gt; <B>4.56</B>
+Type in a Cardinal ===<!-->&gt; <B>7</B>
+The answer is   40997.17
+Do you want to do another one? <B>n</B></PRE>
+
+<P>Notice how the various features of the program were all tested to ensure that the error trapping was operating as required.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

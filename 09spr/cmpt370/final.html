@@ -1,0 +1,401 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT370 Spr2009 Final Exam, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers on web ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 115
+
+<ol class="main">
+
+<li> Describe at least three of the innovations developed at
+<b>Xerox's PARC</b> in the 1970s.  <u>[3]</u>
+<br><i>
+  Alto, Star microcomputers; WIMP model; desktop paradigm; 
+  Smalltalk language+IDE+runtime
+</i>
+<br><br><br><br>
+
+<li> What are <b>events</b> and <b>callbacks</b>?  Describe an example.
+<u>[3]</u>
+<br><i>
+An event is an action, usually triggered by the user: e.g., clicking on a
+button, selecting a menu item, pressing Enter, moving the mouse.  A callback
+is a procedure/function
+invoked when a corresponding event happens.  For example, the exit() function
+might be run when the user clicks on a "Quit" button.
+</i>
+<br><br><br><br><br><br>
+
+<li> Describe <b>Fitt's law</b> in words.  What three quantities does it relate?
+<u>[3]</u>
+<br><br><i>The <b>time</b> to acquire a target is a (logarithmic) function
+  of (the ratio of) the <b>distance</b> and the <b>size</b> of the target.
+</i><br><br><br><br><br>
+
+<li> In light of Fitt's law, discuss the current application paradigm of
+<b>menus</b> (File-&gt;Open, etc.), and propose some ideas/replacements
+to make menus easier and faster to use.  Discuss why your idea would be
+better in light of Fitt's law.<u>[5]</u>
+<br><i>
+  MS auto-hide, auto-reordering by use frequency, variable-size menu items,
+  pie menus, etc.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+
+<li> Discuss your experience with programming in <b>OpenMP</b>.
+Would you recommend it to other programmers wishing to do parallelism?
+Why or why not? <u>[4]</u>
+<br><i>
+  Pros of OpenMP: ease of programming; compile w/o OpenMP and get a correct
+  uniprocessor program; pretty good compiler support.<br>
+  Cons of OpenMP: does not scale well to large systems: shared-memory
+  assumption fails to take into account communication/network costs.
+  Fine-grain control over threads and communication is
+  more difficult than in MPI.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<div class="break"></div>
+
+<li> Come up with your own non-computer-related analogy to explain
+each category of <b>Flynn's taxonomy</b> of parallel computing to
+a non-computer-scientist.
+<u>[5]</u>
+<br><i><dl>
+<dt>SISD:</dt><dd>one bank teller serving customers one at a time.</dd>
+<dt>SIMD:</dt><dd>several bank tellers serving multiple customers in parallel,
+but all doing the same tasks.</dd>
+<dt>MISD:</dt><dd>one customer with complex needs, so several bank employees
+are working on the customer's account together. </dd>
+<dt>MIMD:</dt><dd>many bank tellers and many customers; each customer's needs
+are different. </dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe the (1) <b>shared</b>, (2) <b>distributed</b>, 
+and (3) <b>hybrid</b>
+memory models of parallel computing.  Draw the diagrams illustrating how memory
+and processors are tied together.  What are the advantages/disadvantages of
+shared memory vs.  distributed memory models? <u>[6]</u>
+<br><i><dl>
+<dt>Shared:</dt><dd>All processors share same address space for main memory.
+The assumption is that memory access times are the same for all processors.
+Easier to program: threads communicate simply by sharing data structures
+directly.  For small numbers of processors, often faster due to less overhead.
+Does not scale well.</dd>
+<dt>Distributed:</dt><dd>Each processor has its own address space.  No data
+structures can be shared with other processors.  All communication must be
+explicit via networking, which makes programming more complicated due to
+synchronization and latency issues.  Scales to hundreds of thousands of
+processors.</dd>
+<dt>Hybrid:</dt><dd>Each node has a few (often 4-8) processors which share
+that node's memory.  Nodes cannot directly see the memory of other nodes.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe <b>Amdahl's law</b> of parallel computing.  What is the
+take-home message? <u>[4]</u>
+<br><br><i>
+  Speedup = 1 / ( P/N + (1-P) ), where P is the fraction of code that is
+  parallelizable, and N is the number of processors.<br>
+  Take-home message is that the important thing is not just the number
+  of processors we throw at a problem, but the fraction of code that can
+  be parallelized efficiently.
+</i><br><br><br><br>
+
+<li> Describe some reasons why parallelizing a problem across 1000 processors
+might not result in a 1000x speed-up.  Discuss issues that need to be
+considered in designing parallel programs.  <u>[5]</u>
+<br><i>
+  Not all the code is parallelizable: P in Amdahl's law.
+  Overhead in starting new threads/tasks.
+  Communication between processors: e.g., message-passing.
+  Data dependencies -- some threads must wait for other threads to finish.
+  Network may be a bottleneck.
+  Synchronization between threads -- locks, shared resources.
+  Load balancing -- some processors may sit idle.
+</i><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+What is <b>colour</b>?  Is an RGB triple (e.g., "#00FF77") a colour?  Discuss.
+<u>[3]</u>
+<br><i>
+Colour is a distribution of light energy across the visible spectrum ("frequency
+distribution").  An RGB triple is a point in a colour space, a 
+combination of three chromaticities.  Without specifying what those
+chromaticities are or how they are combined, an RGB triple is not a colour.
+</i>
+<br><br><br><br><br>
+
+<li>
+Describe the stages of the OpenGL rendering <b>pipeline</b>.  There is some
+flexibility in how to divide the stages, but describe the operations that
+must happen to get from geometry (GL primitives) to what we see on screen.
+<u>[6]</u>
+<br><i><dl>
+    <dt>(1) Vertex processing:</dt> <dd>Transform vertex and normal via
+    model-view matrix, per-vertex lighting calculation (for Gouraud),
+    projection matrix</dd>
+    <dt>(2) Assembly/clipping:</dt> <dd>Connect vertices into primitives,
+    view frustum culling, clip against view volume</dd>
+    <dt>(3) Rasterizer:</dt> <dd>Convert into pixel grid, interpolate
+    per-vertex values across the primitive</dd>
+    <dt>(4) Fragment processing:</dt> <dd>Per-fragment calculations,
+    textures</dd>
+    <dt>(5) Blending:</dt> <dd>Hidden-surface removal (depth buffer) and
+    blending, final output to framebuffer</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Describe <b>back-face culling</b>.  Why is it a good idea? 
+When might it be a bad idea?  <u>[3]</u>
+<br><i>
+Back-face culling removes polygons whose normal vectors point away from the
+camera.  The idea is that in a closed object, all polygons that point away from
+the camera are on the back side of an object and are occluded by front-facing
+polygons, so we won't see them, so they don't need to be rendered, so we can
+delete them from the graphics pipeline, which speeds up our rendering.
+</i><br><br><br><br>
+
+<li>
+Tell me everything you know about OpenGL <b>transform matrices</b>. <u>[4]</u>
+<br><i>
+  Represent rotations, translations, scaling, and affine projection transformations
+  applied to both points and vectors in 3D space.  Matrices are 4x4 so as to
+  apply to 4-vector homogeneous coordinates.
+  OpenGL uses two main matrices: the model-view matrix, which describes the
+  relationship between the world and the camera, and the projection matrix, which
+  describes how the 3D world is flattened onto a 2D image plane.
+</i>
+<br><br><br><br><br><br>
+
+<li> Recall that <tt>glutSolidTeapot(1.0)</tt> draws a teapot of size 1 centred
+at the origin.  Given the following sequence of OpenGL code, where is the 
+teapot centred, in world coordinates? <u>[2]</u>
+<pre>
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
+	glScalef( 3.0 );
+	glTranslatef( 3.0, -1.0, 5.0 );
+	glScalef( 0.5 );
+	glutSolidTeapot( 1.0 );
+</pre>
+<i>
+  The teapot is centred about (9.0, -3.0, 15.0).
+</i>
+
+<li> Continuing the previous problem, write out the 4x4 <b>model-view matrix</b>
+produced by this code.  (Do the math; your final answer should be only one
+matrix.) <u>[4]</u>
+<br><i>
+  <table border="1"><tr>
+      <td> 1.5 </td>
+      <td> 0 </td>
+      <td> 0 </td>
+      <td> 9 </td>
+      </tr><tr>
+      <td> 0 </td>
+      <td> 1.5 </td>
+      <td> 0 </td>
+      <td> -3 </td>
+      </tr><tr>
+      <td> 0 </td>
+      <td> 0 </td>
+      <td> 1.5 </td>
+      <td> 15 </td>
+      </tr><tr>
+      <td> 0 </td>
+      <td> 0 </td>
+      <td> 0 </td>
+      <td> 1 </td>
+  </tr></table>
+</i>
+<br><br><br><br><br><br>
+
+<div class="break"></div>
+
+<li>
+What are <b>quaternions</b> and how are they used in computer graphics?
+<u>[4]</u>
+<br><i>
+  Quaternions are a 4D Clifford algebra (extension of the complex numbers)
+  having one real part and three imaginary parts: a typical quaternion
+  might be, e.g., 3 + 6i - 5j + 0.2k.  Quaternion multiplication is
+  associative but not commutative.  The unit quaternions are used to represent
+  rotations in 3D; composition of rotations is simply multiplication of
+  the corresponding quaternions.
+</i>
+<br><br><br><br><br>
+
+<li>
+Describe the four types of <b>lights</b> offered by OpenGL.
+<em>(Hint: this is not talking about the Phong lighting model!)</em>
+What parameters are used to define each type of light?  <u>[5]</u>
+<br><i><dl>
+<dt>Point:</dt><dd>has a location and colours (ambient, diffuse, specular).
+Similar to a candle.</dd>
+<dt>Directional:</dt><dd>has a direction and colours, but no location.  Similar
+to the sun.  Specified in OpenGL the same way as point lights, but using
+homogeneous coordinates to specify a vector instead of a point.</dd>
+<dt>Spot:</dt><dd>has a location, direction, cutoff depth, falloff exponent, and
+colours.  Similar to a theatre spotlight.</dd>
+<dt>Global ambient:</dt><dd>We can specify an ambient light that uniformly
+illuminates the whole scene.  Similar to a very evenly lit scene like an open
+field on a cloudy day.</dd>
+<dt>(Area light):</dt><dd>(not offered by OpenGL, but we can model it using
+global illumination techniques like radiosity.)</dd>
+<dt>(Emissive):</dt><dd>(Emissive OpenGL objects don't count as lights because
+they don't cast light on other objects.)</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>Contrast <b>texture</b> maps, <b>bump</b> maps, and <b>environment</b>
+maps. <u>[6]</u>
+<br><i><dl>
+<dt>Texture map:</dt><dd>an image pasted on a surface in 3D.  Colours of the
+surface are taken from the image.</dd>
+<dt>Bump map:</dt><dd>the normal vectors on the surface are wobbled to
+simulate a perturbation of the surface (in/out) by an amount given in the bump
+map image.</dd>
+<dt>Environment map:</dt><dd>reflections in specular surfaces use colours taken
+from an image, to simulate the reflection of a complex scene in a shiny object.
+</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What is <b>mip-mapping</b>?  Why is it cool? <u>[3]</u>
+<br><i>
+Mip-maps are precalculated smaller versions of the texture at various levels of
+detail.  e.g., a version with half the length and half the width; another
+version with one-quarter the length and one-quarter the width, etc.  They are
+used in texture mapping to avoid aliasing: unsightly jagged edges and artifacts
+that would otherwise occur when the texture's projected fragment on the screen is
+very small.
+</i>
+<br><br><br><br>
+
+<li> Describe the tasks of <b>vertex shaders</b> and <b>fragment shaders</b>.
+What are the inputs to each?  What are the outputs from each? <u>[5]</u>
+<br><i>
+  <b>Vertex shaders</b>: per-vertex transform and lighting calculations.<br>
+  Input: vertex information: position, normal vector, texture coords, global
+  OpenGL state, etc.<br>
+  Output: transformed vertex in eye coordinates, transformed vectors,
+  any per-vertex colouring, etc.<br>
+  <b>Fragment shaders</b>: per-fragment (per-pixel) calculations.<br>
+  Input: interpolated per-fragment colour, vectors and other varying attributes
+  from the vertex shader; global OpenGL state.<br>
+  Output: final per-fragment colour, ready for blending.<br>
+</i><br><br><br><br><br><br><br><br>
+
+<div class="break"></div>
+
+<li> Describe and contrast the three types of global variables in <b>GLSL</b>: 
+<b>uniform</b>, <b>attribute</b>, and <b>varying</b>. 
+(GLSL also has a fourth option, <tt>const</tt>.) <u>[5]</u>
+<br><i><dl>
+    <dt><tt><b>uniform</b></tt>:</dt><dd> per-primitive.  Constant across whole
+    primitive, or world-wide.  Read-only for both vertex+fragment shaders. </dd>
+    <dt><tt><b>attribute</b></tt>:</dt><dd> per-vertex.  Read/write for
+    vertex shader; inaccessible by fragment shader.</dd>
+    <dt><tt><b>varying</b></tt>:</dt><dd> per-vertex/per-fragment.
+    Used to pass data from vertex shader to fragment shader.
+    Writable by vertex shader; values are then interpolated by the rasterizer
+    and made available read-only for the fragment shader.</dd>
+</dl></i><br><br><br><br><br><br><br><br>
+
+<li> Contrast <b>interpolating</b> cubic polynomial curves, <b>Hermite</b>
+curves, and <b>Bezier</b> curves.  For each type of cubic polynomial curve,
+what information is needed to uniquely specify a curve? <u>[6]</u>
+<br><i><dl>
+<dt>Interpolating:</dt><dd>Specify four points; the curve goes through all
+four.</dd>
+<dt>Hermite:</dt><dd>Specify positions and tangent/velocity vectors at the 
+start and end of the curve.</dd>
+<dt>Bezier:</dt><dd>Specify four Bezier control points.  Two are the start and
+end of the curve (interpolated).  The other two control points are used to
+derive the velocity vectors (3 times the difference vector) for the start and end
+points.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br>
+
+<li> Draw a non-trivial set of four control 
+points and use <b>deCasteljau's algorithm</b> to estimate the points
+at u=1/3 and u=2/3.  Show your work (you may want to draw two copies to work
+on).  Sketch the Bezier curve.  "Trivial" sets of control points include 
+all four points at the same location, all collinear, etc. <u>[4]</u>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What is the <b>convex hull property</b> of Bezier curves?  Demonstrate it
+on the sketch of your Bezier curve from the previous problem. <u>[2]</u>
+<br><i>
+  The convex hull property states that the entire Bezier curve segment lies
+  within the convex hull of its four control points.  (This property still
+  holds for 2D Bezier surface patches, and also in 3D!)
+</i><br><br><br><br>
+
+<div class="break"></div>
+
+<li> Describe and contrast <b>C<sup>0</sup>, C<sup>1</sup>, C<sup>2</sup>, and
+G<sup>1</sup></b> continuity for splines. <u>[4]</u>
+<br><i><dl>
+<dt>C<sup>0</sup>:</dt><dd> Curve segments touch; basic continuity.</dd>
+<dt>C<sup>1</sup>:</dt><dd> Curves touch and velocity vectors also match at the
+joins</dd>
+<dt>C<sup>2</sup>:</dt><dd> Curves touch, velocity vectors match, and even the
+curvatures match at the joins</dd>
+<dt>G<sup>1</sup>:</dt><dd> Curves touch, and velocity vectors point in the
+same direction (but might not be the same magnitude).  In between C<sup>0</sup>
+and C<sup>1</sup>.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What is a <b>NURBS</b>?  Explain each part of the acronym in detail.
+<u>[5]</u>
+<br><i><dl>
+<dt>NU (non-uniform):</dt><dd>the knots (joins between Bezier segments) need
+not be uniformly spaced in u (the parameter space).  For instance, this can be
+used to make the NURBS interpolate its endpoints, by repeating knots four times
+at the start (u=0) and end (u=1).</dd>
+<dt>R (rational):</dt><dd>Each control point has a relative weighting
+associated with it which biases its influence on the curve.</dd>
+<dt>BS (B-spline, Bezier spline):</dt><dd>A B-spline is a spline made up of
+cubic Bezier segments, joined in a particular way so as to get C<sup>2</sup>
+continuity.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe and contrast: <b>spatial grids</b>, <b>octrees</b>, <b>k-d</b>
+trees, and <b>BSP</b> trees. <u>[6]</u>
+<br><i><dl>
+<dt>Grids:</dt><dd>subdivide space into equal voxels, regularly spaced</dd>
+<dt>Octrees:</dt><dd>Adaptive subdivision: where needed, each cell is
+subdivided into eight equal subcells along the coordinate axes.</dd>
+<dt>k-d trees:</dt><dd>Also adaptive like octrees, but cells are subdivided
+along one axis at a time.  Cells need not be split into equal-size
+subcells.</dd>
+<dt>BSP trees:</dt><dd>Even more flexible than k-d trees: each time a cell is
+split using a (k-1)-dimensional hyperplane (a regular plane in 3D), oriented in
+any way (need not be along a coordinate axis).</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br>
+
+</ol>
+
+</body></html>
+
+

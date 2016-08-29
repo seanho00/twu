@@ -1,0 +1,138 @@
+<HTML>
+<HEAD>
+<TITLE>8.5 Files--Introduction and Terminology</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="input, outpu, file, files, introduction, terminology, batch, interactive, source, sink, logical, program, physical, file, abstract, abstraction, abstractions, manipulate, manipulated, recording, record, simple, program, interface, working, work, group, 13, thirteen, wg13, iso, statement, sequence, stream, streams, channel, channels, number, element, elements, origin, destination, default, window, pointer, mode, text, legible, binary, raw, medium, flow, flows, sequential, text, random, access, random-access, file, files, memory, ram, stextio, swoleio, srealio, slongio, inout, realinout, openinout, openoutput">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><CENTER><B>Part B<!--</B>‹<B>-->--Input, Output, and Files</CENTER><BR>
+8.5 Files<!--</B>‹<B>-->--Introduction and Terminology</B></H2>
+<P>Programs depend on data input in order to properly express the solution to a problem.  In the examples seen thus far in this text, programs have taken their data from:</P>
+<UL><!--€--><LI> within themselves, perhaps as constants (batch style,) or</LI>
+<!--€--><LI> dialogue with the user (interactive style)</LI></UL>
+<P>These two styles, used alone, have in common that both the data employed and the results produces do not survive the run of the program.  When the program is next run, the data must be obtained again (even if it is the same data, or only slightly changed), and the results cannot be fed forward to become the input for some other program.  In order to work around these obstacles, a means of storing data outside programs is required.  Files serve not only this purpose, but also provide a way of storing very large data collections, for which individual entry to every program would be impractical.  Indeed, it is often the case in such instances that the data is the central theme to an entire symphony of programs operating on it, and that no one of the programs in the collection is nearly as important as the data itself.</P>
+<P>A file resembles a book.  Its structure (plot) is created in the mind of an author and it must be written (encoded) on some medium.  Once this has been done, others can read it.  However, in order to read it intelligibly, they must follow the structure created by the author.</P>
+<BLOCKQUOTE><I><A NAME="File">A</A> <U>file</U> is a source or a sink for a collection of data.</I></BLOCKQUOTE>
+<P>Just as data must be structured or arranged in such a way as to represent some real life problem, so also files must be structured (the plot, again) so as to represent the data they are intended to store.  There are as many ways to do this as there are programmers, computers, operating systems, programs, and problems.  The definition of a <I>file</I> has been expressed in a broad and general form for this very reason<!--‹-->--the meaning must cover a lot of ground.  In fact, by this definition, the batched data within a program and the data input interactively at a keyboard by the user of a program are both files<!--‹-->--at least conceptually.</P>
+<P>At the highest and most abstract level, a book can be thought of in terms of its plot, character and events.  At a middle level, the book is perhaps structured by named chapters. On a more detailed level, the book is a collection of words on a page.  That is, there are degrees of abstraction to the concept <I>book</I> as there are  for many other commonly used ideas.  This observation leads to the first classification of files, by the degree of their abstraction:</P>
+<BLOCKQUOTE><I><A NAME="Logical">A</A> <U>logical file</U> is an abstract structuring of data storage as viewed by the programmer and/or user of the program.  This is the high level, or conceptual view of a file.</BLOCKQUOTE>
+<BLOCKQUOTE>A <U>program file</U> is a specific data collection as seen and manipulated by a program.   It is often (but not always) represented by a variable, perhaps of type <!--"-->&quot;file.<!--"-->&quot;  At this middle level of abstraction a file can be regarded as residing within the machine's memory, as existing only as long as the program that employs it is active.</BLOCKQUOTE>
+<BLOCKQUOTE>A <U>physical file</U> is a recording of a logical file.  This usually takes the form of a magnetic image on a disk or tape surface, in which form it exists independently of any particular program.  The details of this recording provide the lowest level view of a file.</I></BLOCKQUOTE>
+<P>The distinction between the latter two levels of abstraction is not always maintained, and the term <I>physical file</I> is used by some for both the memory image and the external storage. </P>
+<P>In order to write a useful program that employs files, some attention needs to be paid to all three levels of abstraction.  The contents of the file must be decided on abstractly and conceptually; a program must be written to render the abstractions into a solution; and the resulting data must actually be recorded externally to the program so that it survives when the program terminates.  Alternatively, an existing file may have to be read by a program, and this operation in turn can only be expressed if the original logical structure of the physical file is known.</P>
+<P>The relationships among the three views of a file are expressed in figure 8.6 below.  Observe that if the broadest possible view of  a file is used, <I>all</I> input to and output from a program uses files.</P>
+<P><CENTER><IMG SRC="Figure/Figure_8.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>Fortunately for programmers, the troublesome details of how files are to be physically stored can be left to the operating system, whose function it is to make such recordings, name them, keep track of them, ensure their integrity, and deliver them back to a program upon demand.  This observation might seem to indicate that a simple and universal file handling module could serve as the interface between programs and operating systems.</P>
+<P>Unfortunately there are many different operating systems, and widely differing views of what constitutes a simple program interface with any one of them.  Thus, there have been many attempts to provide universal file handling interfaces, and these differ widely.  Indeed, perhaps the most troublesome area for both the designers of a computing notation and for those who program using it is how to deal with input and output, as they are on the one hand essential to any substantial programming activity, and on the other closely tied to a particular system.</P>
+<P>The problem for a language designer is the necessity to find common ground ahead of time for all possible external devices and operating systems so that  I/O routines can be universally applicable.  In Modula-2, this problem has been partially avoided by placing such matters outside the purvey of the language proper, and by assuming instead that any device needing communications links with a program will have these facilities supplied in a particular implementation by appropriate library modules.</P>
+<P>This results in the Modula-2 notation itself being small and versatile, but causes somewhat more work for the programmer, who often had a large number of library routines to keep straight<!--‹-->--especially if using more than one version<!--‹-->--for then there was no guarantee that such libraries would correspond.</P>
+<P>In spite of this deliberate lack of pre-specification by Wirth (he required no particular I/O routines or modules, and only made a few suggestions of modules he had found generally useful), much can still be said about such functions.  Although operating systems differ widely, there are many things that they do have in common.  Moreover, there are not many kinds of logical file in common use, even though the recordings of such files may be very different.  As a result, many vendors of Modula-2 products produced very similar libraries for I/O and to some extent, this tended to create a <I>de facto</I> or marketplace standard.    One section of this chapter is devoted to outlining the most common I/O and file handling routines used by commercial vendors in the years when no official standards existed.</P>
+<P>Even the ubiquitous classical high level modules <I>InOut</I> and <I>RealInOut</I> have many variations however, and lower level modules often have more differences than similarities between implementations.  This was one of the major reasons for convening a working group (WG13) of the International Standards Organization (ISO) in April of 1987 to produce a standard definition of  both Modula-2 and its libraries.  This standard will be the focus for most of the rest of this chapter and will be used subsequently when a sample solution happens to call for the use of files.</P>
+<P>Before looking at the specifics of handling the program/logical file communication, however, some additional attention needs to be paid to the logical view of data storage.</P>
+<H3><B><A NAME="8.5.1">8.5.1</A> Sequences, Streams, and Channels</B></H3>
+<P>Sequences have been discussed before in sections 3.8, (arithmetic sequences) and section 4.9 (geometric sequences.)  The concept of a <I>statement sequence</I> is also important in Modula-2.  In general, a sequence is any collection of entities that can be numbered in some well-defined way using the cardinal numbers 1, 2, 3, 4, 5, ....</P>
+<P>More Mathematically, </P>
+<BLOCKQUOTE><I><A NAME="Sequence">A</A> <U>sequence</U> is a function from the positive whole numbers into some other collection of objects.</I></BLOCKQUOTE>
+<P>Here are some examples of sequences with commas between the elements for clarity:</P>
+<P>I, n,  ,t, h, e,  , b, e, g, i, n, n, i, n, g,  , G, o, d, ...<BR>
+1, 3, 5, 7, 9, ...<BR>
+1, 4, 9, 16, 25, 36, ...<BR>
+1, 1, 2, 3, 5, 8, 13, ...<BR>
+1, 1.1, 2, 2.2, 3, 3.3, 4, 4.4, ...</P>
+<P>From the point of view of computer input and output, the definition above is specialized as follows:</P>
+<BLOCKQUOTE><I><A NAME="Stream">A</A> <U>stream</U> is a sequence of data items of the same type. </I></BLOCKQUOTE>
+<P>All but the last of the sequences above could be streams if the items in them are considered as data being manipulated by a program.</P>
+<P>In general, streams all have some properties in common.  These are:</P>
+<P>1. The number of elements in the stream is not known ahead of time (i.e. by the writer of the stream handling module before the data type is ever used in a program).  In an actual instance of a particular stream, there is (eventually) a finite length associated with it that may be possible to compute.</P>
+<P>2. A stream has an origin and a destination, which are also not necessarily known ahead of time (again, when the stream handling module is designed), but which may default to some standard place or device.  It is usually possible to change these <I>default</I> connections to something else.</P>
+<P>3. It is possible to write only at the end of a stream (i.e. writing is always appending), and the only other way to modify a stream is to delete it entirely.</P>
+<P>4. Any element of a stream can be read, provided that reading starts at the beginning of the stream and proceeds through the elements one at a time in order until the desired one is reached (sequential reading).</P>
+<P>5. For some specialized streams, it may be possible to maintain a <I>window</I> or a <I>pointer</I> to the last element that was read so that the next one can be read at a later time without starting from the beginning again.  If this is done, the position pointer is usually advanced one place by the very act of performing the read operation.</P>
+<P>6. A stream has a <I>mode</I>.  It is either being read from or written to at any given time.  Some streams may have only one possible mode, and others may allow procedures to operate on their status to alter the mode.</P>
+<P>As can readily be seen, the high level modules <I>STextIO</I>, <I>SWholeIO</I>, <I>SRealIO</I>, and <I>SLongIO</I> operate on streams.  They employ a variety of <I>Read</I> and <I>Write</I> operations for the sake of convenience, but the actual streams being manipulated in this case consist of text characters, regardless of the formal type of data being read or written.</P>
+<P>That is, procedures like <I>WriteString</I> and <I>WriteCard</I> both write characters to the output device, and both <I>ReadChar</I> and <I>ReadInt</I> read characters.  It is the further duty of <I>SWholeIO</I> and <I>SRealIO</I> to then arrange for another module to convert the character strings to and from the correct type of program data (perhaps an integer), but that is a separate consideration.</P>
+<BLOCKQUOTE><I><A NAME="TextStream">A</A> stream whose items are of the character type is called a <U>text stream</U> (or a <U>legible stream</U>.)</I></BLOCKQUOTE>
+<P>On the other hand, an input or output stream could be thought of on a lower level of abstraction as a sequence of binary items, rather than as a sequence of text characters.  Indeed, not all streams are best abstracted as text; a binary abstraction might be the only practical way to think of a some streams.  </P>
+<BLOCKQUOTE><I><A NAME="Binary">A</A> stream whose elements are thought of as binary digits is called a <U>binary stream</U> (or a <U>raw stream</U>.)</I></BLOCKQUOTE>
+<P>Implicitly, there are exactly two default streams used by <I>STextIO</I>, <I>SWholeIO</I>, <I>SRealIO</I>, and <I>SLongIO</I><!--‹-->--one for input, and one for output.  However, it is also possible to have a program to maintain several (other) streams too, with various origins, destinations, modes, lengths, and position pointers.</P>
+<P>The analogy of observing flowing water (a real stream) is quite apt.   It is helpful to think of data streams as being contained by their banks and as consisting of a flow passing by some program aperture, and into which new data can be placed, or from which previously placed items can be plucked<!--‹-->--all under program control via routines imported from stream management modules.</P>
+<P>The ISO committee found it useful to assume that file management was a low level function that could be different in every implementation, and to standardize instead the containment (stream bed) abstraction at a somewhat higher level than that of file management.  This abstraction could also be thought of as the connection mechanism joining logical files to physical files.</P>
+<BLOCKQUOTE><I><A NAME="Channel">A</A> <U>channel</U> is an abstract medium through which a stream flows.</I></BLOCKQUOTE>
+<P>The role of a stream managing module is analogous to that of a plumber, whose task it is to connect and maintain the pipes or channels to the various sources and sinks in the system.  Using such a facility, a program may be connected to one or more of a variety of input streams and one or more of a variety of output streams at a given time. Figure 8.7 illustrates:</P>
+<P><CENTER><IMG SRC="Figure/Figure_8.7.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B><A NAME="8.5.2">8.5.2</A> Sequential and Random Access Files</B></H3>
+<P>Having examined flows of data, consider now where the data flows lead to and from.  On one end of a data stream is the program.  It is tempting to say that the other end is some physical device such as a disk drive, or a printer, but it is more accurate to view the destination as a physical file, and not as a location.</P>
+<P>The location of the physical file could be a recipe box, a disk drive, or the main memory of the computing device. The program deals with the file only on the logical level, and in practice, may do so just by writing to the stream in an appropriately connected channel.  The logical file and the stream are not identical, though the two do share in common that they only exist as the creatures of some running program, and are therefore both more abstract than the physical file.  In fact, a file <I>may</I> be organized by a program as the recording of a stream, or it may not be<!--‹-->--depending on the way that information is accessed in the file.  To distinguish, a new classification scheme for files is necessary:</P>
+<BLOCKQUOTE><I><A NAME="Sequential">A</A> file that is organized as a stream, with writing allowed only at the end, is called a <U>sequential</U> file.  If the underlying type of data in the stream is character, it is further known as a <U>text file</U>. </I></BLOCKQUOTE>
+<P>On the other hand, a file might be logically organized more like an array.  The elements of an array are numbered consecutively, and <I>may</I> be read consecutively.  However, and one element can be accessed by its own number in the sequence at any time (e.g. <i>element [1243]</i>) without reading all the ones that came before it first.</P>
+<BLOCKQUOTE><I><A NAME="Random">A</A> file that may have any of the data elements read or written directly by some indexing scheme without having to start at the beginning is called a <U>random-access</U> file.</I></BLOCKQUOTE>
+<P>If the elements making up a random access file are, say, integers, then they must <I>not</I> be stored as text, for in that form different integers take a different amount of storage.  For instance, the integer 123 would be expressed as the character stream <!--"-->&quot;1<!--"-->&quot;, <!--"-->&quot;2<!--"-->&quot;, <!--"-->&quot;3<!--"-->&quot; and take three storage positions in a text file, whereas the integer -46553 would require six storage positions for its characters.  In the memory of a computer, every integer takes the same amount of room, as a given integer storage location must be able to hold any valid integer value.  This is why the read/write memory is called RAM or <i>random access memory</i>.  The same storage considerations hold for a random access file.  Since there can only be a certain amount of room in the physical file for a given element, it follows that each numbered element of a random access file must be the same size as every other element. </P>
+<P>Thus, a random-access file-managing module may be similar to that for sequential files, but it must also have a means of calculating the correct position in the file at which to read or write a given data item. What one would expect to find in a well-developed library suite is modules that impose one of these models on I/O, perhaps overlaid on top of some lower level ones that are in turn manage the connections between programs and the physical files through the operating system.  The specifics of handling files using the random access model will be covered in chapter 9; sequential file models are of more immediate interest.</P>
+<H3><B><A NAME="8.5.3">8.5.3</A> Planning to Use Streams with Files</B></H3>
+<P>Consider first the stream model for a file.  Until now, this text has used only the high level modules <I>STextIO</I>, <I>SWholeIO</I>, <I>SRealIO</I>, and <I>SLongIO</I> or <I>InOut</I> and <I>RealInOut</I> to connect to input and output streams.  These connections could be diverted from their default source and sink via the non-standard procedures <I>OpenInput</I> and <I>OpenOutput</I> (where available).  While there is a certain convenience to using these, there are times when one would like the redirection of I/O to be handled automatically by the program, without the intervention of the operator at the console to answer the prompts (or fill in dialogue boxes) as required by these two high level procedures.  Moreover, these procedures allow only sequential files, and they do not allow one to append to a file.  Furthermore, they are not a part of the ISO standard, and therefore cannot be counted on to be present at all.</P>
+<P>Suppose, for instance, that one wanted to collect data from the keyboard and store it into a disk file.  Then later, (in this, or another program) one wanted to examine that disk file and manipulate the stored information further.  All this is to be done without any prompts being supplied or any file names being requested from the keyboard; those are to be contained in the program itself. To achieve this, one must pursue library routines at a lower level than the simple I/O modules used thus far.</P>
+<P>In general, one performs operations on sequential files with these steps (assuming that appropriate imports have been made):</P>
+<P>1. Declare a file variable to logically identify the file within the program<BR>
+  <i>or</i> declare a channel variable to identify the logical/physical connection<BR>
+2. Use the file's actual name (a string) to look it up (or create it) on the external device<!--‹-->--say, a disk<BR>
+3. Identify the logical file variable with the actual disk file (open the file)<BR>
+4. Connect a program I/O stream to the previously opened file, <BR>
+5. Read from or write to the stream, and hence the logical, and so the physical file<BR>
+6. When finished, disconnect the stream from the program and<BR>
+7. Close the file, ensuring that the data is secure on the disk.</P>
+<P>Depending on the version of Modula-2 involved, there may be from one to five modules in the library that contain the functions necessary to implement this model.  In classical versions, one was usually called <I>Files</I> (or <I>FileSystem</I>) and contained the data type <I>FILE</I> (or <I>File</I>), together with the functions to create new files on a disk (or other device), open them for I/O by identifying them with a logical file name, close them when finished, rename, or delete existing files, and handle errors.  Such a module is concerned with the manipulation of the physical data on the disk or other storage medium.  It usually has only rudimentary read/write procedures for text material and its functions may be specialized into two or more smaller modules each of which handles a different aspect of these tasks.</P>
+<P>On the other hand, the functions for establishing a stream of text characters, connecting this to the already opened file, and then performing the actual read/write operations might also be in <I>Files</I>, (in older versions) or they might be situated in a separate module, variously called <I>Texts</I>, <I>TextIO</I> or <I>Streams</I> (Wirth suggested the last of these, but did not require it).  This second module, whatever its name, manipulates streams through the logical stream name within the program, and its activities affect the contents of the physical (disk) files only indirectly through the connections that the program has established between the stream and the logical file, and between this and the physical file.  Note that in the fullest elaboration of this scheme, the logical stream is an entirely different entity from the logical file, which in turn is a different entity from the physical file.</P>
+<P>Some additional associated modules may be provided to ease the entering (and checking for validity) of valid file names, may specialize the directory lookup step, or may provide for separate encapsulation of the procedures for numeric I/O to files, as opposed to text I/O.  One must consult the documentation for the specific implementation on this point, as the details vary widely.</P>
+<P>Some early implementations actually used all the ideas presented so far and employed two data types to do so<!--‹-->--<I>FILE</I> and <I>TEXT</I> (or <I>STREAM</I>).  Many other classical versions of Modula-2 took a higher-level view of the matter, and employed only a single data type <I>File</I> that did double duty as both stream and file, for opening a file and for making the necessary connections between the physical file and the stream, or otherwise combined some of the distinct tasks on the list above into single steps.</P>
+<P>ISO standard Modula-2 also takes a high level view, but hides the concept of a logical file altogether, and uses the abstraction of a <I>Channel</I> as the means to connect program data with physical files.  Thus, in the ISO model, one has:</P>
+<UL><!--€--><LI> low level models to define and manipulate general channels</LI>
+<!--€--><LI> middle level modules to define and manipulate specific kinds of channels</LI>
+<!--€--><LI> modules to do the actual I/O once a channel has been opened</LI></UL>
+<P>There might also be a low level housekeeping module called <I>Files</I> or <I>Filer</I> or <I>FileSystem</I> on top of which the specific models for different kinds of channel are built.  This module and its contents are deliberately not standardized, as it is here that the differences between operating systems must be expressed.  Thus, portable programs should avoid calling on routines from such a module.  </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

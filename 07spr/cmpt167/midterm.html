@@ -1,0 +1,155 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT167 Spr2007 Midterm, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ Answers ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points:  45
+
+<ol class="main">
+
+<li> Explain what the <b>JDK</b> and <b>JRE</b> are and contrast them.
+<u>[3]</u>
+<br><br><i><dl>
+<dt> Java Runtime Environment
+<dd> what you need to run (other people's) Java programs: the Java
+virtual machine (command line: java).  
+<dt> Java Development Environment
+<dd> what you need to compile (make your own) Java programs: javac compiler.
+</dl></i><br><br>
+
+<li> Explain and contrast method <b>overloading</b> with method
+<b>overriding</b>. <u>[4]</u>
+<br><br><i><dl>
+<dt> overloading
+<dd> multiple versions of the same method (same name) but with
+different number/types of parameters.
+<dt> overriding
+<dd> a method defined in a subclass overrides a method of the same name
+in the superclass.
+</dl></i><br><br>
+
+<li> What is an <b>abstract</b> class? <u>[2]</u>
+<br><br> 
+<i>An abstract class is not meant to be instantiated directly, but rather
+subclassed.</i><br><br>
+
+<li> What is <b>jar</b>?  What is it used for? <u>[2]</u>
+<br><br><i>
+The Java Archiver utility packages one or more Java files (classes, source
+files, packages, etc.) into a single jar file, akin to ZIP/WinZIP or Unix tar.
+</i><br><br>
+
+<li> Describe and contrast the eight Java <b>primitive types</b>. <u>[8]</u>
+<br><br> <i> <dl>
+<dt> <tt>bool</tt> <dd> boolean type, just true and false
+<dt> <tt>char</tt> <dd> a Unicode character
+<dt> <tt>byte</tt> <dd> an integer represented with 1 byte
+<dt> <tt>short</tt> <dd> an integer represented with 2 bytes
+<dt> <tt>int</tt> <dd> an integer represented with 4 bytes
+<dt> <tt>long</tt> <dd> an integer represented with 8 bytes
+<dt> <tt>float</tt> <dd> a real value represented with 4 bytes
+<dt> <tt>double</tt> <dd> a real value represented with 8 bytes
+</dl></i><br><br>
+
+<li> Describe and contrast the four options we have in Java for 
+<b>access modifiers</b> on attributes/methods. <u>[8]</u>
+<br><br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> (no modifier) <dd> methods in this class and this package can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i><br><br>
+
+<li> Tell me everything you know about Java <b>packages</b>. <u>[5]</u>
+<br><br><i>
+Packages are a way to organize related Java classes.  By default, classes in
+the same directory are considered part of the same package.  In addition, you
+may specify that a class belongs to a certain package by using a
+<tt>package</tt> declaration at the top of the file.  All entities (variables,
+methods) that are not marked <tt>protected</tt> or <tt>private</tt> are visible
+to other classes in the same package.  Upon compilation of a Java package, the
+Java compiler (when run with the <tt>-d</tt> switch) creates subdirectories for
+the package; dots in the package name are translated into slashes.  E.g., the
+package <tt>ca.twu.cmpt167</tt> becomes the subdirectory
+<tt>ca/twu/cmpt167</tt>.
+</i><br><br>
+
+<li class="break"> Define simple Java classes and sketch a UML class diagram 
+that formalizes the following set of statements: <u>[8]</u>
+<ul>
+<li> A <tt>Student</tt> is a kind of <tt>Person</tt>.
+<li> An <tt>Employee</tt> is a kind of <tt>Person</tt>.
+<li> Every <tt>Person</tt> has a <tt>birthDate</tt>.
+<li> A <tt>birthDate</tt> is a <tt>Date</tt>.
+<li> Every <tt>Date</tt> has a <tt>Year</tt>, <tt>Month</tt>, and <tt>Day</tt>.
+<li> Every <tt>Person</tt> has a <tt>name</tt>.
+<li> Every <tt>Student</tt> has a <tt>GPA</tt>.
+</ul>
+<br><br><i><pre>
+class Date { int year, month, day; }
+class Person { Date birthDate; String name; }
+class Student extends Person { float GPA; }
+class Employee extends Person { }
+</pre></i><br><br>
+
+<li class="break"> Recall that the n-th <b>Fibonacci</b> number is defined as
+<tt>fib(n) = fib(n-2) + fib(n-1)</tt>.  We define
+<tt>fib(0) = fib(1) = 1</tt>.
+The traditional recursive solution is highly inefficient, as it recalculates
+<tt>fib(0)</tt> many times.
+Write a complete Java class to calculate Fibonacci numbers, using
+<b>hinting</b> (caching) -- record previously-calculated Fibonacci numbers in
+an array.  Docstrings and comments are not necessary but may garner partial
+credit.  <u>[10]</u>
+
+<br><br><i>
+See <a href="java/Fibonacci.java">the full Java source code</a>.
+<pre>
+public class Fibonacci {
+	long[] cache;			// pre-calculated Fibs
+	final int DEFAULT_SIZE = 100;	// default arg to constructor
+
+	private void clearCache() {
+		cache[0] = cache[1] = 1;
+		for (int i = 2; i lt; cache.length; i++) {
+			cache[i] = 0;
+		}
+	}
+
+	Fibonacci( int size) {
+		if (size lt; 2) size = 2;
+		cache = new long[size];  
+		clearCache();
+	}
+
+	long fib( int n ) {
+		if (n > cache.length) return 0;
+		if (cache[n] != 0) return cache[n];
+		cache[n] = fib(n-2) + fib(n-1);
+		return cache[n];
+	}
+
+	public static void main( String args[] ) {
+		Fibonacci f = new Fibonacci(51);
+		System.out.println("The 50th Fibonacci number is " + f.fib(50));
+	}
+}
+</pre></i>
+
+</ol>
+
+</body></html>
+
+

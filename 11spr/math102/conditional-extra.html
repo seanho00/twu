@@ -1,0 +1,166 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+  display: none;
+}
+h2 { border-top: 1px solid black; }
+--></style>
+
+<title>Extra Examples :: MATH101 11SP :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/11spr/math101/">MATH 102 Spring 2011</a>
+Extra Examples</h1>
+
+<p>Here are a few more sample problems with solutions, to supplement the
+examples in the textbook, the homework problems, and the examples shown in
+lecture.
+
+<div><a href="#" onClick="toggleAnswers()">
+		[ Click here to toggle showing the answers ]</a></div>
+
+<ol>
+
+<h2>Conditional Probability and Independence</h2>
+<li> Say that in a certain town 1/3 of the people vote Conservative, 
+and the probability that a townsperson drives a car more than ten years old 
+is 3/11.  If you pick a random townsperson, the probability that that person 
+is a Conservative driving a car more than ten years old is 12%.  In this town,
+is voting Conservative independent of driving a car more than ten years old?
+Why or why not?
+
+<br><i><br>
+No, not independent.<br>
+Let A= Conservative, B = old car.<br>
+P(A) = 1/3; P(B) = 3/(3+8) = 3/11.<br>
+P(A)P(B) = 1/11, but P(A and B) = 12%: not the same,
+so A and B are not independent.
+<p>
+In words, if voting Conservative were independent of driving an old car, then 
+we could calculate the chance that a random person is both Conservative and
+driving an old car (the intersection) by multiplying the probability of being
+Conservative (1/3) by the probability of driving an old car (3/11).  But this
+doesn't yield the right number, so the two are not independent.
+<p>
+A common confusion is to say, "Well, just because a townsperson is
+Conservative doesn't mean they can't drive an old car: hence the two are not
+independent.".  That is not a valid conclusion; that statement has more to 
+do with <em>overlap</em>
+(mutual exclusivity) than with independence.   But independence deals with 
+<em>probabilities</em>: does the probability of voting Conservative depend 
+on whether they drive an old car or not?
+</i><br>
+
+<li> Let A represent students with financial aid.  Let B represent students from BC.  Translate each of the following statements into P() notation and draw Venn diagrams in the boxes provided, shading in each region described:
+  <ol class="subparts">
+
+  <li> 39% of students are neither from BC nor have financial aid.
+  <br><i><br>
+  P( (A or B)<sup>C</sup> ) = 39% (complement of union)
+  <br></i><br>
+
+  <li> 12% of all students are from BC and also have financial aid.
+  <br><i><br>
+  P(A and B) = 12% (intersection)
+  <br></i><br>
+
+  <li> 25% of BC students have financial aid.  (No Venn diagram needed.)
+  <br><i><br>
+	  P(A | B) = 25%  (if you had to draw a Venn diagram, it'd be a fraction 
+	  with two Venn diagrams, one for 
+	  the numerator and one for the denominator.)
+  <br></i><br>
+
+<li> Given this information, what percentage of students are from BC?
+<br><i><br>
+P(B) = P(A and B) / P(A | B) = 12% / 25% = 4 * (12%) = 48%
+<br></i><br>
+
+<li>What fraction of students have financial aid?
+<br><i><br>
+P(A) = (1- P((A or B)<sup>C</sup>)) - P(B) + P(A and B)<br>
+= (1 - 39%) - 48% + 12%<br>
+= 25%
+<br></i><br>
+
+<li> Are the two events A and B independent?  Why or why not?
+<br><i><br>
+	Yes, independent:<br>
+	P(A) = 25% = P(A | B)
+<br></i><br>
+
+<li> Are the two events A and B mutually exclusive?  Why or why not?
+<br><i><br>
+No: P(A and B) = 12% is not zero.
+<br></i><br>
+
+  </ol>
+
+<li> Two researchers, Dr. Prudence and Dr. Folly, are often asked by
+pharmaceutical companies to evaluate new experimental cancer drugs.
+The pharmaceutical companies often invite the researchers to lavish
+conferences in exotic destinations.
+  <ol class="subparts">
+  <li> For companies which are extravagant,
+Dr. Folly approves the drugs 85% of the time.  If the company is not
+extravagant, Dr. Folly approves the drugs only 70% of the time.
+  <br><br>
+  Define the sample space and two events A and B, and translate the
+  preceding two sentences into probability notation using A and B.
+  <br><i><br>
+  Sample space: drugs evaluated by Dr. Folly.<br>
+  Event A: drugs approved by Dr. Folly<br>
+  Event B: drugs produced by an extravagant company<br>
+  P (A | B) = 0.85 (A conditioned on B)<br>
+  P (A | B<sup>C</sup>) = 0.70 (A conditioned on "not B")
+  <br></i><br>
+
+  <li> Are the two events A and B independent?  Why or why not?
+  <br><i><br>
+  Not independent: P(A|B) is not equal to P(A|B<sup>C</sup>), hence
+  P(A|B) cannot be equal to P(A).  P(A) is the probability that Dr. Folly 
+  will approve a drug, regardless of company.
+  <br></i><br>
+
+  <li> Dr. Prudence approves only 20% of the drugs evaluated.  Even if
+  the pharmaceutical company is extravagant, Dr. Prudence still only
+  approves the drugs 20% of the time.  Define a sample space and events
+  A and B, and translate the preceding two sentences into probability notation
+  using A and B.
+  <br><i><br>
+  Sample space: drugs evaluated by Dr. Prudence.<br>
+  Event A: drugs approved by Dr. Prudence<br>
+  Event B: drugs produced by an extravagant company<br>
+  P (A) = 0.20 <br>
+  P (A | B) = 0.20 (A conditioned on B)
+  <br></i><br>
+
+  <li> Are the two events A and B independent?  Why or why not?
+  <br><i><br>
+  Independent: P(A)=P(A|B).
+  <br></i><br>
+
+  <li> Interpret these results in the context of the moral ethics of the two
+  researchers.
+  <br><i><br>
+  Dr. Folly's approval of a drug depends on whether the drug company is 
+  extravagant.  The chance that Dr. Prudence approves a drug is independent
+  of whether the drug company is extravagant.
+  <br></i><br>
+
+  </ol>
+
+</ol>
+
+</body></html>

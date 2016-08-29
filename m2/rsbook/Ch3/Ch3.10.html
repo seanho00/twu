@@ -1,0 +1,214 @@
+<HTML>
+<HEAD>
+<TITLE>3.10 Insect Control Again--Some Common Errors</TITLE>
+<meta NAME="keywords" CONTENT="common, syntax, errors, repeat, while, do, until, expect, expected, infinite, loop, loops, ad nauseum, abs, identifier, identifiers, correct, internal, documentation, documentations, compile, run-time, error, errors, run, time, temporary, print, altenate, data, invalid, global, variable, variables, hand, check, results, large, small, roundoff, round, off, error, errors, efficiency, correctness, inc, standard, identifier, comments, comment, commenting, spelling, punctuation">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.10 Insect Control Again<!--</B>‹<B>-->--Some Common Errors</B></H2>
+<P>The most common syntax errors in writing repetition control structures (WHILE, REPEAT) in Modula-2 are caused by leaving out critical parts of the statements.  The compiler can notify one about some of these, or the programmer may see error messages like the following.  (Numbers may or may not be attached.)</P>
+<PRE>
+31  Error in REPEAT statement
+32  'UNTIL' expected
+33  Error in WHILE statement
+34  DO expected</PRE>
+
+<P>In such cases, as with incorrect use of <!--"-->&quot;:=<!--"-->&quot; or <!--"-->&quot;=<!--"-->&quot;, or missing semicolons, it is usually easy to find the error once the compiler points it out.  A missing END can be much trickier, however, because the compiler may not flag any error at all until it reaches the END of the Module and then discovers that it is short by one END.  Careful prettyprinting, particularly in blocking out DO .. END sections, should help to prevent this, but sometimes the programmer will need to ask someone else to read the code to discover the <!--"-->&quot;obvious<!--"-->&quot; error that has been stared at for an hour without being seen.</P>
+<P>Another potential problem is the never-ending or ad nauseam loop. This usually comes about by specifying a Boolean condition that may never actually happen.  These may be simple counting errors such as:</P>
+<PRE>
+cardNum = 5;
+<B>WHILE</B> cardNum # 0
+  <B>DO</B>
+    Statement Sequence;
+    card  := card - 2;
+  <B>END</B>;</PRE>
+
+<P>for which loop the flag value is passed by without being achieved.  On the other hand, they may be more subtle, as in the loop:</P>
+<PRE>
+realNumber := 10.7;
+<B>WHILE</B> realNumber # 0.0
+  <B>DO</B>
+    Statement Sequence;
+    realNumber  := realNumber - 0.1;
+  <B>END</B>;</PRE>
+
+<P>The problem here is that REAL values, are not necessarily represented exactly, and because of rounding-off errors, <I>realNumber</I> may never equal zero.  Its value may get very close to zero, but miss by a small fraction.  If possible, it would be better to use, say:</P>
+<PRE>
+realNumber := 10.7;
+<B>WHILE</B> realNumber <!-->&gt; 0.0
+  <B>DO</B>
+    Statement Sequence;
+    realNumber  := realNumber - 0.1;
+  <B>END</B>;</PRE>
+
+<P>Better still, one could use a built-in procedure that computes the absolute value of <I>realNumber</I>. </P>
+<PRE>
+realNumber := 10.7;
+goal := 0.0;
+<B>WHILE</B> <B>ABS</B> (realNumber - goal) <!--<-->&lt; .00001  (* Is it close to the goal? *)
+(* Is it close to zero? *)
+  <B>DO</B>
+    Statement Sequence;
+    realNumber  := realNumber - 0.1;
+  <B>END</B>;</PRE>
+
+<P>The case sensitivity of Modula-2 may also be a rich source of problems because of identifiers that the programmer believes match one another but that do not (<I>myVariable</I> is not the same as <I>MyVariable</I>, for instance).  Beginners get messages like <!--"-->&quot;Identifier not declared or incorrect class<!--"-->&quot; many times until they learn to take sufficient care ahead of time to avoid this problem.</P>
+<P>It is also important to ensure that the identifiers themselves convey information about their role in the program.  The statement <I>a</I> := <I>p</I> * <I>x</I> * <I>x</I> is much clearer when written as <I>area</I> := <I>pi</I> * <I>radius</I> * <I>radius</I>, for instance.  This applies to constants as well as variables, and to any other entities requiring identifiers.  The rare quality of common sense is recommended in such matters.</P>
+<BLOCKQUOTE><I>The names of identifiers are a part of the correct internal documentation of a program.  </I></BLOCKQUOTE>
+<P>While on the subject of constants, it is worth remembering that they are in fact constant.  Many programs are rejected by the compiler because the programmer attempts to reassign a constant.  Some people avoid this problem by using variables instead of constants, but it is far better to declare several constants and use them consistently than to attempt to make a variable serve for more than one of them.</P>
+<P>However, even if the program compiles and appears to run correctly the first time, it may still contain errors.  These are referred to as <!--"-->&quot;run-time<!--"-->&quot; or <!--"-->&quot;execution<!--"-->&quot; errors, and are caused by insufficient planning.  Here are a number of methods for detecting and eliminating<!--‹-->--or preventing<!--‹-->--run-time errors.</P>
+<H3><B>1.  Include temporary print statements in the code.</B></H3>
+<P>If a program has been having trouble with a statement like <I>WriteReal</I> <I>(a/b, n)</I> for instance, the programmer can place the temporary print statements <I>WriteReal (a, n)</I> and <I>WriteReal (b, n)</I> just before the line causing the error message.  Perhaps because of an earlier logical error the value of <I>b</I> is zero, and of course it cannot then be used as a divisor.  Likewise, it may be necessary to print out the value of some counter or boolean value before, during, or after a loop.  The temporary print statements can be removed when the program has been completely debugged.</P>
+<P>Once the error has been located the incorrect code is re-designed, but with the <!--"-->&quot;test prints<!--"-->&quot; retained.  It is then tested again.  Rewriting a program to eliminate one error could have the side effect of introducing another one, so this may have to be done several times.</P>
+<H3><B>2.  Test a program with alternate data.</B></H3>
+<P>If the first keyboard input tried is accepted by a program that obtains its raw data in that way, there is no guarantee that it will always work as expected.  If a positive number less than 10 is required, what happens if zero or a negative, or a larger number than 10 is supplied?  Will it still work?  Code may have to include a trap for invalid data, such as the following:</P>
+<PRE>
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;What is the number? <!--"-->&quot;);
+  WriteLn;
+  ReadCard (number);
+  allOK := (ReadResult() = allRight) <B>AND</B> (number <!-->&gt; 0) <B>AND</B> (number <!--<-->&lt; 10);
+  SkipLine;
+  <B>IF</B> <B>NOT</B> allOK
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;Number must be between 0 and 10. <!--"-->&quot;)
+      WriteString (<!--"-->&quot;Try again.<!--"-->&quot;);
+      WriteLn;
+    <B>END</B>;	(* if *)
+<B>UNTIL</B> allOK;</PRE>
+
+<P>As in previous examples, <I>ReadResult</I> is imported from <I>SIOResults</I> and can enquire about the result of the last invocation of the procedure <I>ReadCard</I>.  The value of <I>allOK</I> (declared in the program) is in this case set by checking to see if <I>n</I>  is greater than zero as well; if <I>allOK</I> is now <I>FALSE</I>, the input must be tried again.  A <I>ReadInt</I> could have been used instead of a <I>ReadCard</I>.  In that case, the value of <I>allOK</I> would not be <I>FALSE</I> due to a negative number being read, but would be caught afterward in the portion <I>allOK := (ReadResult() = allRight) AND (number <!-->&gt; 0) AND (number <!--<-->&lt; 10)</I>.</P>
+<P><B>NOTE</B>:   In programs like this one, as well as in non-standard versions employing the global variable(s) <I>Done</I>, care must be taken to examine or save the result of the read action before performing another <I>Readxx</I> for such action would leave the program with a mistaken view of the situation.  This could happen if another <I>Readxx</I> were inserted before the <I>IF NOT allOK</I> on some later revision of the program.  The value returned by <I>ReadResult</I> was therefore saved in another variable.  This is particularly important when using <I>InOut.Done</I>, for some versions of <I>InOut</I> will set <I>Done</I> on both input and output operations.  Others do not require a character read to remove the carriage return from the input stream after a <I>Readxx</I>.  However, some do, and it is best to plan for such behaviour.</P>
+<P>Some readers may be using other non-standard procedures such as <I>SimpleIO.ReadCard</I> whose syntax is indicated in the following revision of the above fragment:</P>
+<PRE>
+<B>REPEAT</B> (* not even classical standard *)
+  WriteString (<!--"-->&quot;What is the number? <!--"-->&quot;);
+  WriteLn;
+  ReadCard (number, done);  (* resets program variable done *)
+  allOK := done <B>AND</B> (number <!-->&gt; 0) <B>AND</B> (number <!--<-->&lt; 10);
+  Read (cr, done); (* read character after the number *)
+  <B>IF</B> <B>NOT</B> allOK
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;Number must be between 0 and 10.  Try again.<!--"-->&quot;);
+      WriteLn;
+    <B>END</B>;  	(* if *)
+<B>UNTIL</B> allOK;</PRE>
+
+<P>In such non-standard versions, all <I>Read</I> procedures take a second parameter that is a program-defined BOOLEAN.</P>
+<P>The point of all this is: Will a program work if supplied with inappropriate data or not?  If not, it must have traps for bad data so that there is some action it can take as an alternative to <!--"-->&quot;crashing.<!--"-->&quot;</P>
+<H3><B>3.  Hand check results for reasonability.</B></H3>
+<P>It is amazing how many silly answers are accepted just because they were given by a calculator or a computer (or an economist, a politician, or a teacher).  Even programmers press the wrong keys all too often.  What seems like a perfectly good program producing valid results may in fact be outputting utter nonsense.</P>
+<P>A programmer should watch for:</P>
+<P>1) Answers that are impossibly large or ridiculously small.  (Such as ending up with a million dollars in your bank account.... That's funny, I thought it was more like 74 cents.)</P>
+<P>2) Situations that might cause large roundoff errors.  The number of significant figures for a REAL is limited, so numbers close to zero may have a large percentage error.  A lengthy chain of computations involving such quantities could yield very inaccurate results.</P>
+<P>3) The computer prints the same result every time, regardless of the input data.  This probably means there is the wrong identifier in a <i>WriteCard</i> or <i>WriteReal</i> statement or the programmer forgot to write the code that computes the number it is supposed to output.</P>
+<P>4) Too many things on one line all run together.  Some <i>WriteLn</i> statements need to be inserted in appropriate places in order to make the output more readable.  One could object that poorly formatted output does not constitute a logical error, but such an objection is unlikely to impress a customer (or a teacher).</P>
+<P>There shall be more to say about insect control in later sections of the text.  As each new statement is considered, new possibilities for errors arise.  Meticulous attention to detail in design, coding, and testing is the only way that these can be avoided or detected.</P>
+<H3><B>4.  Check loops for efficiency and correctness.</B></H3>
+<P>A great deal of a computer's time is generally spent on the execution of repetitions or loops.  Such sections can often be improved (or corrected so that they work) if special care is given to the following points.</P>
+<P><i>First</i>, progress must be made toward some goal as the loop executes.  There is no point in writing such things as:</P>
+<PRE>
+<B>WHILE</B> count <!--<-->&lt; 2
+  <B>DO</B>
+    number := number + 1
+  <B>END</B></PRE>
+
+<P>or</P>
+<PRE>
+<B>WHILE</B> number1 # number2
+  <B>DO</B>
+    number1 := number2 + 1
+  <B>END</B></PRE>
+
+<P>because the required condition can never be reached (another ad nauseam loop like those earlier in the chapter).  The same kind of thing might happen through carelessness, as in the following example:</P>
+<PRE>
+<B>WHILE</B> count # 0
+  <B>DO</B>
+    count := count - 2
+  <B>END</B>;</PRE>
+
+<P>Here, unless count is both positive and even when the loop is entered, the condition <I>count = 0</I> can never be achieved.</P>
+<P>A reader might complain that these examples are trivial and their difficulties obvious.  This is correct on both counts, but spectacular and complex code may hide from sight just such follies as these.  Buried in a long section inside a loop may lurk the <I>ad infinitum</I> dragon which forces the code into an eternal purgatory of repetition until the user presses a reset button, or the central computer decides that the program has used too much CPU time and cuts the user off the line.</P>
+<P><i>Second</i>, to improve efficiency, a loop should not perform an identical calculation on each pass.  Such code should be executed before the loop begins.  Thus</P>
+<PRE>
+answer := 1;
+number := 1;
+<B>WHILE</B> number <!--<-->&lt; 10
+  <B>DO</B>
+    realNumber := x + y + z;
+    answer := answer * number;
+    WriteCard (answer, 6);
+    number := number + 1
+  <B>END</B>;</PRE>
+
+<P>should be written instead as:</P>
+<PRE>
+answer := 1;
+number := 1;
+realNumber := x + y + z
+<B>WHILE</B> number <!-->&gt; 10
+  <B>DO</B>
+    answer := answer * number;
+    WriteCard (answer, 6);
+    <B>INC</B> (number);
+  <B>END</B>;</PRE>
+
+<P>Note that the same kinds of considerations also apply to REPEAT loops, which have the same potential for problems as do the WHILE loops.</P>
+<P><B>NOTES</B>: 1.  <I>INC (count)</I> has the same effect as <I>count := count + 1</I>, but it executes faster (although an optimizing compiler will produce the same code in many cases.)  In any event, using INC takes fewer keystrokes and is less error prone.  Likewise, the statement <I>count := count + n</I> can be replaced by the (usually faster) equivalent <I>INC (count, n)</I>.  INC is a standard identifier.</P>
+	<P> 2.  <I>INC</I> works on numeric types like CARDINAL and INTEGER (whole number types) but not on REAL. There is a corresponding DEC procedure.
+<H3><B>5.  Use Comments Effectively.</B></H3>
+<P>The purpose of comments is to provide a road map of the programmer's reasoning in order to make the program easy to modify in the future.  They can serve another purpose.  While testing and debugging sections of code, a portion of the program that is troublesome can be surrounded with comment brackets and it will be effectively removed from the program at the next compilation.  When using this commenting out technique to isolate errors, one must ensure that what remains is at all times a valid program.  If a piece of code that is essential to the functioning of the intact portion is commented out, the test is useless.</P>
+<P>It is the fact that Modula-2 allows nested comments that makes this method possible.  If these were not allowed, <I>commenting out</I> sections of code that themselves contained comments (and most would) could only be achieved by extensive rewriting of the program.  The compiler keeps track of how many comment brackets are opened and requires them all to be closed before the end of the program.  It will report an error if this is not done.  This feature also prevents the programmer from accidentally commenting out portions of the program by failing to close a comment parenthesis correctly.</P>
+<P><IMG SRC="Figure/Eq3.10.1.GIF"><!----></P>
+<P>Here, the first comment is not closed off because the pair <!--"-->&quot;*)<!--"-->&quot; has a space.  If comments could not be nested (as in most Pascals), the <!--"-->&quot;*)<!--"-->&quot; on the fourth line would close the first one, thus neatly removing the <I>INC (count)</I>; from the program.  The Modula-2 compiler scans to the end of the program, if necessary, looking for the close of the comment and flags the error when the comment close is not found.  In such cases, the programmer is not informed until the error is verified to exist and it may therefore take some time to determine the correct location of the offending code.  If such a problem is reported, the editor's <I>search-and-replace</I> function ought to be employed to locate the <!--"-->&quot;* )<!--"-->&quot; typographical error.  Some good programming editors also have a <!--"-->&quot;balance parentheses<!--"-->&quot; function that can be employed to find and correct such errors.</P>
+<H3><B>6. Watch for spelling and punctuation errors.</B></H3>
+<P>When a program is coded and entered with the editor, careful attention must be paid to such things as the spelling, type, and appropriateness of identifiers, the positioning of commas and semicolons, ensuring that quotes on strings are all present and are the same kind of quote (both single, or both double), closing off parentheses correctly, and properly declaring all objects (and with the same spelling) before using them.</P>
+<P>Some notations allow Var instead of VAR, but Modula-2 does not.  On the other hand, a Modula-2 compiler does not care if one puts in extra semicolons where none are actually required (before ELSE, ELSIF and END).  It does complain if some are left out that are needed to separate statements, or if one is dropped into the middle of a statement, say, before the reserved word THEN.  Others to watch for include a missing period at the end of a program, failure to match the module name at the END with the one in the header, and an incorrect spelling of an imported identifier or a library module.  These are all errors that can be detected with a little proofreading before the first attempt at compiling.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

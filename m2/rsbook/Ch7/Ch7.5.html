@@ -1,0 +1,289 @@
+<HTML>
+<HEAD>
+<TITLE>7.5 An Application for Strings--Program Menus</TITLE>
+<meta NAME="keywords" CONTENT="application, applications, string, strings, program, menu, menus, screen, layout, macintosh, standard, abstract, abstraction, abstractions, example">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.5 An Application for Strings<!--</B>‹<B>-->--Program Menus</B></H2><P>
+Our major illustration on the use of strings is their application to the printing of menus for the users of various programs.  A programmer of text-based applications frequently wishes to present screens of information such as the following:</P>
+
+<P><IMG SRC="Figure/Screen7.5.1.GIF"><!----></P>
+<P>A pleasing screen layout like the one shown here gives the final product a professional look and feel, but takes time to achieve.  (Of course, there are more sophisticated menus available under graphical user interfaces such as the Macintosh operating system, but employing these is a more advanced topic.) Since such menus commonly appear even in short programs, and there may be many of them in a larger piece of work, it is worthwhile to attempt to automate the process of creating such screens and obtaining the user's response.</P>
+<P>Much of what is in the menu above is standard from one program to another or from one portion of a program to another.  The layout of the information on the screen and the code to accept and check the validity of the user's choice does not change from one instance of a menu to another.  Only the name of the program and the number and wording of the choices varies<!--‹-->--otherwise the menus are handled in a very similar manner in each instance.</P>
+<P>It is worthwhile, therefore to treat the printing of a menu as an abstract task in itself, encapsulating the necessary procedures in a utility module that takes the client programs' collection of menu strings, prints them in the form shown above, and then obtains and checks the user response.  For the sake of simplicity, the implementation below makes the following assumptions:</P>
+<P>a. The screen is eighty characters wide and twenty-four lines high.<BR>
+b. The material is to be centred on the screen in a field whose width is determined by the length of the longest menu string passed to the menu printer and whose height is determined by the number of choices to print.  The remaining space around all sides is to be blank.<BR>
+c. The user is required to keep trying if no valid input is given in response to the prompt.<BR>
+d. Data is fed to the main printing menu in the form of an appropriate array of strings, with the title of the menu first.<BR>
+e. The routine to accept the user's response and check it to ensure that it is correct is a separate procedure.</P>
+<P>With all this in mind, here is the definition for a menu handler module:</P>
+<PRE>
+<A NAME="MenuHandler"></A><B>DEFINITION</B> <B>MODULE</B> MenuHandler;
+
+(* by R. Sutcliffe
+revision date 1993 04 06 *)
+
+<B>CONST</B>
+	MaxMenuItems = 14;
+
+<B>TYPE</B>
+  MenuStringType = <B>ARRAY</B> [0 .. 76] <B>OF</B> <B>CHAR</B>;
+     (* ensure there is room on screen for longest possible one *)
+
+  MenuType = <B>ARRAY</B> [0 .. MaxMenuItems] <B>OF</B> MenuStringType;
+  (* leaves nine lines for the other material on the screen *)
+
+<B>PROCEDURE</B> PrintMenu (<B>VAR</B> menu : <B>ARRAY</B> <B>OF</B> MenuStringType);
+(* prints a menu on the screen
+pre: the parameter has been initialized with the title (first) and the items following.  If not all MaxMenuItems items after the title are used, the last one must be the empty string.
+post : the menu is printed *)
+
+<B>PROCEDURE</B> GetUserChoice ( ) : <B>CHAR</B>;
+(* pre: none
+post: a character corresponding to a menu choice is returned *)
+
+<B>END</B> MenuHandler.</PRE>
+<P>The user interface has been kept very simple.  Part of this simplicity is ensured by requiring that the user employ entities of the <I>MenuStringType</I> type.  This means that it will be easy for the code in the implementation to determine the number of items in the menu.</P>
+<P>Now, for the actual code.  It is written so that the screen format outlined in the initial example is followed.  That is, the sample menu illustrated above has been taken as specifying the behaviour of the procedures in this library module.  Notice also that certain simple tasks have been off-loaded from the main procedures and implemented using small local (non-exported) routines.</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> MenuHandler;
+
+(* by R. Sutcliffe
+revision date 1993 04 06 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+ ReadChar, WriteString, WriteLn, WriteChar, SkipLine;
+
+<B>CONST</B>
+  spc = <!--"-->&quot; <!--"-->&quot;;
+  cString1 = <!--"-->&quot;Please pick a letter (A .. <!--"-->&quot;;
+  cString2 = <!--"-->&quot;) here ==<!-->&gt;<!--"-->&quot;;
+  screenHeight = 24;
+  screenWidth = 80;
+
+<B>VAR</B>
+  numberOfItems: <B>CARDINAL</B>;
+  mString, dString, pString : <B>ARRAY</B> [0..42] <B>OF</B> <B>CHAR</B>;
+
+(* First,  a couple of local (non-exported) procedures. *)
+<B>PROCEDURE</B> WriteSpace (numOfSpaces: <B>CARDINAL</B>);
+(* This procedure writes the specified number of blank spaces. *)
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := 1 <B>TO</B> numOfSpaces
+    <B>DO</B>
+      WriteChar (spc)
+    <B>END</B>
+<B>END</B> WriteSpace;
+
+<B>PROCEDURE</B> WriteLines (numOfLines: <B>CARDINAL</B>);
+(* This procedure writes the specified number of blank Lines. *)
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := 1 <B>TO</B> numOfLines
+    <B>DO</B>
+      WriteLn
+    <B>END</B>
+<B>END</B> WriteLines;
+
+<B>PROCEDURE</B> FindFieldWidth (<B>VAR</B> menu: <B>ARRAY</B> <B>OF</B> MenuStringType): <B>CARDINAL</B>;
+(* examines all the strings in the menu set and determines which is the longest *)
+
+<B>VAR</B>
+  max, count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+(* first, set the maximum to the Length of the last or put away choice. *)
+  max := <B>LENGTH</B> (pString);
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (menu)
+    <B>DO</B>   (* Then see if one of the ones passed is longer. *)
+      <B>IF</B> <B>LENGTH</B> (menu [count]) <!-->&gt; max
+       <B>THEN</B>
+         max := <B>LENGTH</B> (menu [count])
+        <B>END</B>
+    <B>END</B>;
+  <B>RETURN</B> max + 3
+  (* Room also needed for the letter index at the left. *)
+<B>END</B> FindFieldWidth;
+
+<B>PROCEDURE</B> PrintCentred (<B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* print a string centered on an 80 column screen *)
+
+<B>VAR</B>
+  leftMargin : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  leftMargin := (screenWidth - <B>LENGTH</B> (str)) <B>DIV</B> 2;
+  WriteSpace (leftMargin);
+  WriteString (str);
+<B>END</B> PrintCentred;
+
+(* The main procedures for this module. *)
+
+<B>PROCEDURE</B> PrintMenu (<B>VAR</B> menu : <B>ARRAY</B> <B>OF</B> MenuStringType);
+
+<B>VAR</B>
+  count, fieldWidth, fieldHeight, spaceToLeave: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+     (* LENGTH is used here because HIGH will always give back MaxMenuItems
+        for menu because it is declared as an ARRAY [0 .. MaxMenuItems] *)
+  numberOfItems := 0;
+  <B>WHILE</B> (numberOfItems <!--<-->&lt;= MaxMenuItems) <B>AND</B> (<B>LENGTH</B> (menu [numberOfItems]) <!-->&gt; 0)
+    <B>DO</B>
+      <B>INC</B> (numberOfItems)
+    <B>END</B>;  (* while count the number of menu items to print out *)
+  <B>DEC</B> (numberOfItems);
+  (* to get the correct number {because we start at 0} *)
+  fieldHeight := numberOfItems + 9;
+
+(* It needs room for the last choice <!--"-->&quot;Quit<!--"-->&quot; plus headings, blank lines, and the line for the choice at the end. *)
+
+  fieldWidth := FindFieldWidth (menu);
+  spaceToLeave := (screenWidth - fieldWidth) <B>DIV</B> 2;
+
+  (* Print the headings *)
+
+  WriteLines ( (screenHeight - fieldHeight) <B>DIV</B> 2 );
+  PrintCentred (mString);
+  WriteLines (2);
+  PrintCentred (menu [0]);
+  WriteLines (2);
+  PrintCentred (dString);
+  WriteLines (2);
+
+  (* Now print the menu items *)
+
+  <B>FOR</B> count := 1 <B>TO</B> numberOfItems
+    <B>DO</B>
+      WriteSpace (spaceToLeave);
+      WriteChar (<B>CHR</B> (<B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;) + count - 1));
+            (* letter for this choice *)
+      WriteString (<!--"-->&quot;. <!--"-->&quot;);
+      WriteString (menu [count]);
+      WriteLn;
+    <B>END</B>;
+
+  count := numberOfItems + 1;
+  WriteSpace (spaceToLeave);
+  WriteChar (<B>CHR</B> (<B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;) + count - 1));
+  WriteString (<!--"-->&quot;. <!--"-->&quot;);
+  WriteString (pString);   (* quit choice *)
+  WriteLines (2);
+  WriteSpace (spaceToLeave + 4);
+  WriteString (cString1);
+  WriteChar (<B>CHR</B> (<B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;) + count - 1));
+  WriteString (cString2);
+<B>END</B> PrintMenu;
+
+<B>PROCEDURE</B> GetUserChoice ( ) : <B>CHAR</B>;
+
+<B>VAR</B>
+  answer: <B>CHAR</B>;
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    ReadChar (answer);
+    SkipLine;
+    answer := <B>CAP</B> (answer);
+  <B>UNTIL</B> (<B>ORD</B> (answer) <!-->&gt;= <B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;)) <B>AND</B>
+             (<B>ORD</B> (answer) <!--<-->&lt;= <B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;) + numberOfItems);
+  <B>RETURN</B> answer
+<B>END</B> GetUserChoice;
+
+<B>BEGIN</B>  (* main body to initialize variables *)
+      (* These are made variables because one cannot pass a 
+         constant as an array of char in a variable parameter *)
+  mString := <!--"-->&quot;MENU<!--"-->&quot;;
+  dString := <!--"-->&quot;Do you wish to:<!--"-->&quot;;
+  pString := <!--"-->&quot;Put everything away and quit this program.<!--"-->&quot;;
+<B>END</B> MenuHandler.</PRE>
+<P>Notice that in this version, if a letter choice is typed that is out of the range of the correct choices, it is ignored and no action is taken.  <I>GetUserChoice</I> will simply wait until a correct choice is typed.  This behaviour could be changed.</P>
+<P>The initial part of a suitable client program might include code like this:</P>
+<PRE>
+<B>MODULE</B> ClientTestMenu;
+
+<B>FROM</B> MenuHandler <B>IMPORT</B>
+  MenuType, PrintMenu, GetUserChoice;
+
+<B>VAR</B>
+  actionToDo: <B>CHAR</B>;
+  menu: MenuType;
+
+<B>BEGIN</B>
+  menu [0] := <!--"-->&quot;Arjay Enterprises Word Processor<!--"-->&quot;;
+  menu [1] := <!--"-->&quot;Enter the Editor<!--"-->&quot;;
+  menu [2] := <!--"-->&quot;Enter the Runoff/Formatting subprogram<!--"-->&quot;;
+  menu [3] := <!--"-->&quot;Enter the Communications Subprogram<!--"-->&quot;;
+  menu [4] := <!--"-->&quot;Configure the Runoff/Formatting Subprogram<!--"-->&quot;;
+  menu [5] := <!--"-->&quot;Configure the Communications Subprogram<!--"-->&quot;;
+  menu [6] := <!--"-->&quot;Print a Catalog of the Disk<!--"-->&quot;;
+  menu [7] := <!--"-->&quot;<!--"-->&quot;;
+
+ <B>REPEAT</B>
+   PrintMenu (menu);
+   actionToDo := GetUserChoice ( );
+   <B>CASE</B> actionToDo <B>OF</B>
+       'A': 
+       (* put all choices and actions here
+       ........  *)
+     | 'F':   (* last one for program *)
+     | 'G' :  (* corresponds to choice quit program *)
+          (* putEverythingAway; *)
+
+       <B>ELSE</B>
+       <B>END</B>;
+   <B>UNTIL</B> actionToDo = 'G'
+       (* goes forever unless last choice picked *)
+<B>END</B> ClientTestMenu.</PRE>
+<P>Observe that this test program <I>is</I> just a shell.  It does not (yet) do anything but run and put up the menu.  However, this is exactly the way one would proceed to write a large project.  The shell would be written and the user interface tested and perfected.  Then, the sections of the program corresponding to the individual menu choices would be implemented one at a time, with the unimplemented sections remaining as stubs until they were completed.  In this way, the programmer always has a working program on hand, and the highest level portions of it (the menu) are tested many times during the tests of the lower level parts.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

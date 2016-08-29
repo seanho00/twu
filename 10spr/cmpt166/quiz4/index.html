@@ -1,0 +1,69 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Quiz 4:: CMPT166 10SP :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">(answers in web view)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Time: 15min.  Total points: 20
+
+<ol class="main">
+
+<li> Consider the UML class diagram below (from
+  <a href="http://www.agiledata.org/essays/objectOrientation101.html">
+    AgileData.org</a>).
+  <br><img src="agiledata-class.gif" width="100%">
+  <ol class="subparts">
+    <li> Describe all the relationships involving the Seminar class
+    (top right) in the diagram.  Consider multiplicity.
+    <br><i>
+      Each Seminar has at least one SeminarEnrollment object (which
+      references a Student).  There can be any number of students
+      on the waitlist.  There can be either 0 or 1 professors instructing
+      the Seminar.  The Seminar is an offering of a Course (although
+      there can be multiple Seminars for one Course).
+    </i><br><br><br><br><br><br><br><br>
+    <li> What is the role of the SeminarEnrollment class?  Why not
+    just have a direct relationship between Student and Seminar?
+    <br><i>
+      The SeminarEnrollment object holds the info for a registered
+      Student in a Seminar: e.g., that Student's marks.
+      If the SeminarEnrollment class did not exist, the marks would
+      have to be stored either in the Student (disconnected from the
+      course) or in the Seminar (disconnected from the Student).
+    </i><br><br><br><br>
+    <li> What does the looping arrow below and to the right of the
+    Professor class mean?  Consider multiplicity.
+    <br><i>
+      Professors can mentor other Professors: one would be the advisor,
+      and the other would be the associate.  Each Professor can be
+      the advisor for any number of associates, but each associate may
+      have at most one advisor.
+    </i>
+  </ol>
+
+  <li class="break">
+  You want to meet up with your two friends, Alice and Bob, for
+lunch on Saturday.  You need to make sure they are both free and decide
+together on where to go eat.  Draw a UML sequence diagram for this.
+Consider synchronous vs. asynchronous messages.
+<br><i>
+  Many possible solutions:
+  <br><img src="sushi.png">
+</i>
+
+</ol>
+
+</body></html>
+
+

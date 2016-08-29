@@ -1,0 +1,101 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2009 Lab5, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+li { margin-top: 0.5em; }
+--></style>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/09spr/cmpt370/">CMPT 370 Spring 2009</a>
+	Lab5 (30 pts): GLSL</h1>
+
+      In this lab you will implement in GLSL an interesting vertex and/or 
+      fragment shader of your choosing.
+
+<ul>
+<h2>Basic requirements</h2>
+
+<li> Find or design an interesting use for vertex and/or fragment shaders
+and implement it in a compelling 3D OpenGL application.  You do not
+have to do both vertex and fragment shaders; you may choose one (but
+some applications benefit from the combination of both).
+
+<li> Suggestions for vertex shaders: particle systems, 
+flocking/<a href="http://www.red3d.com/cwr/boids/">boids</a>, 
+wave motion, <a href="http://linuz.sns.it/~monge/cloth/index.htm">cloth motion</a>,
+fractals
+
+<li> Suggestions for fragment shaders: 
+<a href="opengl/GLSL/phongshading/">Phong shading</a>,
+bump mapping,
+procedural texture, Gaussian blur / bloom
+
+<li> Your OpenGL application / virtual world need not be too complex, but
+the overall program should be cohesive (i.e., not just a demo of the
+shader program).  You can build on top of one of your prior labs if you
+wish.
+
+<h2>Notes</h2>
+
+<li> To make sure you have a working GLSL development environment, you
+may want to try recompiling and running the <a href="opengl/GLSL/particle/">
+  particle system demo</a>.  You need GLEW, and you'll probably need to
+compile it.  See the <a href="opengl/GLSL/particle/README.txt">README
+  for the particle system</a> for more details.
+If it runs and shows an animated burst of black squares, you've successfully
+run a vertex shader!
+
+<li> I've tested this with Cygwin on Windows on the senior lab machines.
+You are free to use other environments (as long as you use C/C++, GLSL, and
+preferably FLTK).  But you're on your own to get it setup, and I warn you,
+GLSL is still quite new, and support is spotty from hardware, OS, OpenGL,
+GLUT, GLEW, and compilers!
+
+<h2>Resources</h2>
+
+<li> <a href="http://www.opengl.org/documentation/glsl/">Official
+  GLSL docs</a>.  Not easy to read, but it's the official source.
+
+<li> <a href="http://glew.sourceforge.net/">GLEW</a>: manages OpenGL
+extensions for you.  Up until OpenGL 2.1, GLSL was an extension of
+OpenGL, so something like GLEW was needed.  Most Windows installations
+have old versions of OpenGL, so GLEW is generally needed.  Don't worry,
+it's small.
+
+<li> <a href="http://www.3dshaders.com/">The Orange Book (OpenGL Shading Language)</a>.
+  This is one of the most definitive books on GLSL.
+
+<li> <a href="http://nehe.gamedev.net/data/articles/article.asp?article=21">
+  NeHe Introduction to GLSL</a>.
+  A fairly short overview, with some sample code.
+
+<li> <a href="http://www.lighthouse3d.com/opengl/glsl/">Lighthouse3D tutorials</a>.
+Covers both ARB and OpenGL2.0 syntaxes; this is a bit outdated now with GLEW.
+
+<li> <a href="http://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/">
+  ClockworkCoders GLSL tutorials</a> at the official OpenGL SDK site.
+
+<li> <a href="opengl/GLSL/">Our directory of GLSL sample code</a>.
+We also have a local copy of TyphoonLab's GLSL tutorials (PDFs).
+
+<li> <a href="http://developer.amd.com/gpu/rendermonkey/Pages/default.aspx">
+  AMD's RenderMonkey</a> is a complex development environment for shaders.
+
+<h2>Lab write-up</h2>
+
+<li> Follow <a href="lab_template.html">the template lab write-up</a>
+to document your program.  Name your write-up:
+<br><tt>your_name_lab5_writeup.doc</tt> (or .txt, etc.)
+<br>Put it in the same project directory as your code so that it will be
+included in the tarball.
+
+<h2>Electronic turn-in</h2>
+
+<li> Put everything (C++ code, header files, executable, lab
+write-up) into a tarball/ZIP and upload it to myCourses under "Lab5":
+<br><tt>your_name_lab5.zip</tt>
+
+</ul>
+
+</body></html>

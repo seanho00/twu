@@ -1,0 +1,667 @@
+<HTML><HEAD><TITLE>14.5 Tables</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Tables">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.5 Tables</B></H2>
+<P>Data is commonly displayed in the form of a table with headings for the columns.  The first column can be thought of as an index into the table.</P>
+<H3><B>Example 1</B> (National Data)</H3>
+<TABLE>
+<TR><TD><u>Country</u></TD>	<TD><u>Gross National Product</u></TD></TR>
+<TR><TD>Samovia</TD>	<TD>$13 000 000</TD></TR>
+<TR><TD>Xanadu</TD>	<TD>$3 000</TD></TR>
+<TR><TD>Lundy</TD>	<TD>$42 000</TD></TR>
+<TR><TD>Pompey</TD>	<TD>$13 000</TD></TR></TABLE>
+<P>Here the names of the countries are used as an index to the table in order to find the gross national products of each.</P>
+<H3><B>Example 2</B> (Numerical function)</H3>
+<TABLE>
+<TR><TD>x</TD>	<TD>f(x)</TD></TR>
+<TR><TD>1</TD>	<TD>8.9</TD></TR>
+<TR><TD>2</TD>	<TD>4.5</TD></TR>
+<TR><TD>3</TD>	<TD>6.7</TD></TR>
+<TR><TD>4</TD>	<TD>5.1</TD></TR></TABLE>
+<BLOCKQUOTE><I><A NAME="Table">A</A> <U>lookup table</U> or, for short, a <U>table</U> is a finite set of ordered pairs {(x, f(x))}, that is, it is a function on a finite domain (the first column) to some range (the second column).</I></BLOCKQUOTE>
+<P>Lookup tables are very commonly used in a variety of applications in computing.  For instance:</P>
+<UL><!--€--><LI> The WITH statement is usually implemented as a table.  The values of the enumeration type are the domain, and the addresses of the statement sequence associated with each form the range of the function.</LI>
+<!--€--><LI> A compiler usually has a table with domain the various statements in the language, and range the code to output in order to execute that statement.</LI>
+<!--€--><LI> Mail servers and other accounting programs on network machines keep tables of user account names and their passwords.  They also have tables that relate the names of machines to their network addresses and to routes by which data packets can be sent to other machines.</LI></UL>
+<P>There is no particular reason to limit tables to two columns.  They could be n-tuples, and be thought of as functions from a finite domain to an (n-1)-tuple.  However, to keep the illustrations in this section simple, attention will be confined to the easiest case.  In a fashion similar to the one already in use throughout this chapter, first define the data type to be entabled.  Here, example 1 above is used.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Countries;
+
+(* define one data type in a generic way
+for use in semi-generic structures
+by R. Sutcliffe   last modified 1995 06 07 *)
+
+<B>FROM</B> Strings <B>IMPORT</B>
+  CompareResults;
+<B>CONST</B>
+  nameLength = 30;
+<B>TYPE</B>
+  Country;
+  KeyType = <B>ARRAY</B> [0..nameLength] <B>OF</B> <B>CHAR</B>;
+  FieldType = <B>CARDINAL</B>;
+  ActionProc = <B>PROCEDURE</B> (Country);
+
+<B>PROCEDURE</B> New (<B>VAR</B> c : Country);
+<B>PROCEDURE</B> Valid (c : Country) : <B>BOOLEAN</B>;
+  (* if new was never called for this country, this call is meaningless; if it was, returns true if variable is ok, false if either new failed or dispose has been called *)
+<B>PROCEDURE</B> Dispose (<B>VAR</B> c : Country);
+<B>PROCEDURE</B> Assign (source : Country; <B>VAR</B> dest : Country);
+  (* asignment with value semantics *)
+<B>PROCEDURE</B> WriteCountryData (c : Country);
+<B>PROCEDURE</B> Compare (key1, key2: KeyType) : CompareResults;
+<B>PROCEDURE</B> SetKey (c : Country; name : KeyType);
+<B>PROCEDURE</B> GetKey (c : Country): KeyType;
+<B>PROCEDURE</B> SetField (c : Country; gnp : FieldType);
+<B>PROCEDURE</B> GetField (c : Country) : FieldType;
+<B>END</B> Countries.</PRE>
+<P>Observe that an <I>Assign</I> procedure has been defined.  One could just write</P>
+<PRE>
+destCountry := sourceCountry;</PRE>
+<P>but that kind of assignment is an assignment of the opaque item itself, pointer to the data, so that <I>destCountry</I> now points to the same location as <I>sourceCountry</I> does.  The <I>Assign</I> in the module above is an assignment of the value of <I>source^</I> to the dereferenced location of the destination, so that the value of <I>dest^</I> is changed, but not the pointer itself.  Which kind of assignment is used in a program depends on whether the programmer wishes to move data or change the pointer.</P>
+<BLOCKQUOTE><I><A NAME="Semantics">Assignment</A> by changing the pointer is said to have <U>reference semantics</U> (meaning), and assignment by moving the values pointed to without changing the pointers is said to have <U>value semantics</U>.</I></BLOCKQUOTE>
+<P>These ideas can be examined closely in the implementation below. Observe also the definition of the procedure <I>WriteCountryData</I> to print out one data item.  This will be useful when it comes time to print out the entire table, for this procedure will do one line of such a printout.</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> Countries;
+
+(* define one data type in a generic way
+for use in semi-generic structures
+by R. Sutcliffe   last modified 1995 06 07 *)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  <B>ALLOCATE</B>, <B>DEALLOCATE</B>;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>IMPORT</B> Strings;
+<B>FROM</B> Strings <B>IMPORT</B>
+  CompareResults;
+  
+<B>TYPE</B>
+  Country = <B>POINTER</B> <B>TO</B> CountryDataNode;
+  CountryDataNode =
+    <B>RECORD</B>
+    name : KeyType;
+    gnp : FieldType;
+  <B>END</B>;
+
+<B>PROCEDURE</B> New (<B>VAR</B> c : Country);
+<B>BEGIN</B>
+  <B>NEW</B> (c);
+  c^.name := <!--"-->&quot;<!--"-->&quot;;
+  c^.gnp := 0;
+<B>END</B> New;
+
+<B>PROCEDURE</B> Valid (c : Country) : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>RETURN</B> (c # <B>NIL</B>)
+<B>END</B> Valid;
+
+<B>PROCEDURE</B> Dispose (<B>VAR</B> c : Country);
+<B>BEGIN</B>
+  <B>DISPOSE</B> (c);
+<B>END</B> Dispose;
+
+<B>PROCEDURE</B> Assign (source : Country; <B>VAR</B> dest : Country);
+  (* asignment with value semantics *)
+<B>BEGIN</B>
+  dest^ := source^;
+<B>END</B> Assign;
+
+<B>PROCEDURE</B> WriteCountryData (c : Country);
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+ WriteString (c^.name);
+ <B>FOR</B> count := 1 <B>TO</B> 2 + nameLength - <B>LENGTH</B> (c^.name)
+    <B>DO</B> (* pad to next field *)
+     WriteChar (<!--"-->&quot; <!--"-->&quot;);
+    <B>END</B>;
+  WriteCard (c^.gnp, 12);
+  WriteLn;
+<B>END</B> WriteCountryData;
+  
+<B>PROCEDURE</B> Compare (key1, key2: KeyType) : CompareResults;
+<B>BEGIN</B>
+  <B>RETURN</B> Strings.Compare (key1, key2);
+<B>END</B> Compare;
+
+<B>PROCEDURE</B> SetKey (c : Country; name : KeyType);
+<B>BEGIN</B>
+  c^.name := name;
+<B>END</B> SetKey;
+
+<B>PROCEDURE</B> GetKey (c : Country): KeyType;
+<B>BEGIN</B>
+  <B>RETURN</B> c^.name;
+<B>END</B> GetKey;
+
+<B>PROCEDURE</B> SetField (c : Country; gnp : FieldType);
+<B>BEGIN</B>
+  c^.gnp := gnp;
+<B>END</B> SetField;
+
+<B>PROCEDURE</B> GetField (c : Country) : FieldType;
+<B>BEGIN</B>
+  <B>RETURN</B> c^.gnp
+<B>END</B> GetField;
+
+<B>END</B> Countries.</PRE>
+<P>The next step is to define the table type.  Here, a module name of  <I>CountryTable</I> is employed, but the same semi-generic style as before is used.  If some other data type is to be entabled in this way, one need only define the type as above, then</P>
+<UL><!--€--><LI> change the definition below to have the name <!--<-->&lt;myADTs<!-->&gt;Table</LI>
+<!--€--><LI> change the import line to</LI></UL>
+<PRE><B>FROM</B> <!--<-->&lt;myADTs<!-->&gt; <B>IMPORT</B>
+  <!--<-->&lt;myADT<!-->&gt;, KeyType, DataType;</PRE>
+<UL><!--€--><LI> change the renaming line to</LI></UL>
+<PRE><B>TYPE</B>
+  DataType = <!--<-->&lt;myADT<!-->&gt;;</PRE>
+<P>All references to the entabled data type from that point on are done using the local name, so no other changes need to be made.  As usual, the allocation of memory for the data to be entabled is the responsibility of the table module rather than the calling program.  Memory deallocation at table destruction time is also done by the table module.</P>
+<P>Provision is made in the creation of a table to specify up to two strings to act as a title for the table and/or a set of headers for the columns.  When the routine <I>WriteTitle</I> is called, a line of dashes the length of the longest of these two strings is printed underneath them to delimit the table and give the text a more professional look.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> CountryTable;
+
+(* semi-generic table type
+by R. Sutcliffe   last modified 1995 06 07 *)
+
+<B>FROM</B> Countries <B>IMPORT</B>
+  Country, KeyType, ActionProc;
+
+<B>TYPE</B>
+  DataType = Country; (* change this line and import as needed *)
+  TitleString = <B>ARRAY</B> [0..80] <B>OF</B> <B>CHAR</B>;
+  TableState = (allRight, empty, entableFailed, notFound, bad);
+  Table;  (* opaque type *)
+  
+<B>PROCEDURE</B> TableStatus (t : Table) : TableState;
+(* Pre : t is a valid initialized table
+   Post :The State of the table is returned *)
+
+<B>PROCEDURE</B> Create (<B>VAR</B> t : Table; s1, s2 : TitleString);
+(* Pre : none
+   Post : t is a newly created empty table. s1 and s2 are stored for printing up to two lines of a table title *)
+
+<B>PROCEDURE</B> Find (t : Table; searchKey : KeyType; <B>VAR</B> data : DataType; <B>VAR</B> found : <B>BOOLEAN</B>);
+(* Pre : t is a valid initialized table
+   Post : searchKey has been found and the <B>ADT</B> item returned in data and found is <B>TRUE</B> or the searchKey has not been found and found is <B>FALSE</B>.  The State of the table is not affected by this operation. *)
+
+<B>PROCEDURE</B> Entable (t : Table; data : DataType);
+(* Pre : t is a valid initialized table
+   Post :memory for the data is obtained, data has been entabled and the state of the table is allRight
+   or the entabling failed and the state is entableFailed. *)
+
+<B>PROCEDURE</B> Remove (t : Table; key : KeyType; <B>VAR</B> data : DataType);
+(* Pre : t is a valid initialized table
+   Post : data matching key has been removed and returned in data (not disposed of) and the state of the table is allRight or the removal failed and the state is notFound. *)
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> t : Table);
+(* Pre : t is a valid initialized table
+   Post : the table memory is returned and the variable is invalid 
+   and the memory associated with the items in the table is removed by calling the <B>ADT</B> module dispose procedure. *)
+
+<B>PROCEDURE</B> WriteTitle (t : Table);
+(* Pre : t is a valid initialized table
+   Post : any non-empty strings stored for this table are written one to a line followed by a line of n-dashes equal in length to the longest of the supplied strings and another carriage return if this is non-zero. *)
+
+<B>PROCEDURE</B> Traverse (t : Table; Proc : ActionProc);
+(* Pre : t is a valid initialized table
+   Post : the table items are traversed and Proc is performed on each one. *)
+
+<B>END</B> CountryTable.
+
+<A NAME="CountryTable"></A><B>IMPLEMENTATION</B> <B>MODULE</B> CountryTable;
+
+(* semi-generic table type
+by R. Sutcliffe   last modified 1995 06 07 *)
+
+<B>FROM</B> Countries <B>IMPORT</B>
+  KeyType, ActionProc, Assign, Compare, GetKey, New, Valid, Dispose;
+<B>FROM</B> Storage <B>IMPORT</B>
+  <B>ALLOCATE</B>, <B>DEALLOCATE</B>;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar;
+<B>FROM</B> Strings <B>IMPORT</B>
+  CompareResults;
+
+<B>TYPE</B>
+  NodePointer = <B>POINTER</B> <B>TO</B> TableNode;
+  TableNode =
+    <B>RECORD</B>
+      item : DataType;
+    toPoint, fromPoint : NodePointer;
+    <B>END</B>;
+  Table = <B>POINTER</B> <B>TO</B> TableData;
+  TableData =
+    <B>RECORD</B>
+    top : NodePointer;
+    title1, title2 : TitleString;
+    state : TableState;
+  <B>END</B>;
+  
+<B>PROCEDURE</B> TableStatus (t : Table) : TableState;
+<B>BEGIN</B>
+  <B>IF</B> t # <B>NIL</B>
+    <B>THEN</B>
+    <B>RETURN</B> t^.state;
+  <B>ELSE</B>
+    <B>RETURN</B> bad;
+  <B>END</B>;
+<B>END</B> TableStatus;
+
+<B>PROCEDURE</B> Create (<B>VAR</B> t : Table; s1, s2 : TitleString);
+<B>BEGIN</B>
+  <B>NEW</B> (t);
+  t^.top := <B>NIL</B>;
+  t^.title1 := s1;
+  t^.title2 := s2;
+  t^.state := empty; 
+<B>END</B> Create;
+
+<B>PROCEDURE</B> Find (t : Table; searchKey : KeyType; <B>VAR</B> data : DataType; <B>VAR</B> found : <B>BOOLEAN</B>);
+<B>VAR</B>
+  point : NodePointer;
+<B>BEGIN</B>
+  found := <B>FALSE</B>;
+  point := t^.top;
+  <B>WHILE</B> point # <B>NIL</B>
+    <B>DO</B>
+      <B>IF</B> Compare (searchKey, GetKey (point^.item) ) = equal
+        <B>THEN</B>
+          data := point^.item;
+          found := <B>TRUE</B>;
+          <B>RETURN</B>;
+        <B>ELSE</B>
+          point := point^.toPoint
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> Find;
+
+<B>PROCEDURE</B> MakeNode () : NodePointer;
+<B>VAR</B>
+  temp : NodePointer;
+<B>BEGIN</B>
+  <B>NEW</B> (temp); (* get node memory *)
+  <B>IF</B> temp # <B>NIL</B>
+    <B>THEN</B>
+      New (temp^.item);  (* node <B>OK</B> so get data value memory *)
+      <B>IF</B> <B>NOT</B> Valid (temp^.item)
+        <B>THEN</B> (* failed so return <B>NIL</B> *)
+          <B>DISPOSE</B> (temp);
+        <B>END</B>;
+    <B>END</B>;
+  <B>RETURN</B> temp;
+<B>END</B> MakeNode;
+
+<B>PROCEDURE</B> Entable (t : Table; data : DataType);
+<B>VAR</B>
+  temp : NodePointer;
+  state : TableState;
+<B>BEGIN</B>
+  state := TableStatus (t);
+  <B>IF</B> (state # bad) <B>AND</B> (state # entableFailed)
+    <B>THEN</B>
+      temp := MakeNode ();
+      <B>IF</B> temp # <B>NIL</B>
+        <B>THEN</B>
+          Assign (data, temp^.item);
+          temp^.toPoint := t^.top; (* point to old top *)
+          temp^.fromPoint := <B>NIL</B>;
+          <B>IF</B> t^.top # <B>NIL</B>
+            <B>THEN</B>
+              t^.top^.fromPoint := temp;
+            <B>END</B>;
+          t^.top := temp;
+          t^.state := allRight;
+        <B>ELSE</B>
+          t^.state := entableFailed
+        <B>END</B>;
+    <B>ELSE</B>
+      t^.state := entableFailed
+    <B>END</B>;
+<B>END</B> Entable;
+
+<B>PROCEDURE</B> Remove (t : Table; key : KeyType; <B>VAR</B> data : DataType);
+<B>VAR</B>
+  point : NodePointer;
+<B>BEGIN</B>
+  point := t^.top;
+  <B>WHILE</B> point # <B>NIL</B>
+    <B>DO</B>
+    <B>IF</B> Compare (key, GetKey (point^.item) ) = equal
+      <B>THEN</B>
+        data := point^.item;
+        <B>IF</B> point^.fromPoint # <B>NIL</B>
+          <B>THEN</B>
+            point^.fromPoint^.toPoint := point^.toPoint;
+          <B>ELSE</B>
+            t^.top := point^.toPoint;
+          <B>END</B>;
+        <B>IF</B> point^.toPoint # <B>NIL</B>
+          <B>THEN</B>
+            point^.toPoint^.fromPoint := point^.fromPoint
+          <B>END</B>;
+        t^.state := allRight;
+        <B>RETURN</B>;
+      <B>ELSE</B>
+        point := point^.toPoint
+      <B>END</B>;
+    <B>END</B>;
+ t^.state := notFound; (* get here only if not found *)
+<B>END</B> Remove;
+
+<B>PROCEDURE</B> KillNode (<B>VAR</B> node : NodePointer);
+(* give back all memory associated with node *)
+<B>BEGIN</B>
+  <B>IF</B> node # <B>NIL</B>
+    <B>THEN</B>
+      Dispose (node^.item);
+      <B>DISPOSE</B> (node);
+    <B>END</B>;
+<B>END</B> KillNode;
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> t : Table);
+<B>VAR</B>
+  point, next : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> t = <B>NIL</B>
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  point := t^.top;
+  <B>WHILE</B> point # <B>NIL</B>
+    <B>DO</B> (* kill all nodes *)
+      next := point^.toPoint;
+      KillNode (point);
+      point := next;
+    <B>END</B>;
+  <B>DISPOSE</B> (t); (* and memory for table info *)
+<B>END</B> Destroy;
+
+<B>PROCEDURE</B> WriteTitle (t : Table);
+<B>VAR</B>
+  len, len2, count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  len := <B>LENGTH</B> (t^.title1);
+  len2 := <B>LENGTH</B> (t^.title2);
+  <B>IF</B> len2 <!-->&gt; len
+    <B>THEN</B>
+      len := len2  (* take the maximum of the two *)
+    <B>END</B>;
+  <B>IF</B> t^.title1 [0] # <!--"-->&quot;<!--"-->&quot;
+    <B>THEN</B>
+      WriteString (t^.title1);
+      WriteLn;
+    <B>END</B>;
+  <B>IF</B> t^.title2 [0] # <!--"-->&quot;<!--"-->&quot;
+    <B>THEN</B>
+      WriteString (t^.title2);
+      WriteLn;
+    <B>END</B>;
+  <B>IF</B> len # 0
+    <B>THEN</B>
+      <B>FOR</B> count := 1 <B>TO</B> len 
+        <B>DO</B>  (* write a bar below the title *)
+          WriteChar (<!--"-->&quot;-<!--"-->&quot;);
+        <B>END</B>;
+      WriteLn;
+    <B>END</B>;
+<B>END</B> WriteTitle;
+
+<B>PROCEDURE</B> Traverse (t : Table; Proc : ActionProc);
+<B>VAR</B>
+  point : NodePointer;
+<B>BEGIN</B>
+  point := t^.top;
+  <B>WHILE</B> point # <B>NIL</B>
+    <B>DO</B>
+      Proc ( point^.item);
+      point := point^.toPoint;
+    <B>END</B>;
+<B>END</B> Traverse;
+
+<B>END</B> CountryTable.</PRE>
+<P>In the test harness below, note that various aspects of the initial ADT module <I>Countries</I> are tested, and then the table module is checked extensively to see if the entabling, searching, and removal of items works correctly.  A data type such as <I>Table</I> should always be checked in this way, with simple data, so as to ensure that the logic is correct, before employing the library for larger types that are more difficult to test.  While the author is not so foolish as to guarantee that the libraries above are error free, it is notable that the testing of this carefully designed pair of library modules turned up only one minor logical error<!--‹-->--all other changes made during the testing process were of a purely cosmetic nature.</P>
+<PRE>
+<B>MODULE</B> TestCountryTable;
+
+(* program to test the logic of the table library with countries and their GNP 
+by R. Sutcliffe   modified 1995 06 07 *)
+
+<B>IMPORT</B>
+  Countries, CountryTable, STextIO, SWholeIO;
+  
+<B>VAR</B>
+  table : CountryTable.Table;
+  country : Countries.Country;
+  str : Countries.KeyType;
+  num : Countries.FieldType;
+  gotIt : <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> WriteTable;
+<B>BEGIN</B>
+  CountryTable.WriteTitle (table);
+  CountryTable.Traverse (table, Countries.WriteCountryData);
+<B>END</B> WriteTable;
+
+<B>BEGIN</B>
+  CountryTable.Create (table,
+    <!--"-->&quot;      Table of countries and their GNP<!--"-->&quot;, 
+    <!--"-->&quot;Country Name                           GNP   <!--"-->&quot;);
+  Countries.New (country); (* just do it once *)
+  Countries.SetKey (country, <!--"-->&quot;Samovia<!--"-->&quot;);
+  Countries.SetField (country, 13000000);
+  
+    (* test some stuff in Countries *)
+  str := Countries.GetKey (country);
+  STextIO.WriteString (str);
+  num := Countries.GetField (country);
+  SWholeIO.WriteCard (num,10);
+  STextIO.WriteLn; STextIO.WriteLn;
+  
+      (* now get the table filled up *)
+  CountryTable.Entable (table, country);
+  WriteTable;
+  STextIO.WriteLn;
+  Countries.SetKey (country, <!--"-->&quot;Xanadu<!--"-->&quot;);
+  Countries.SetField (country, 3000);
+  CountryTable.Entable (table, country);
+  WriteTable;
+  STextIO.WriteLn;
+  Countries.SetKey (country, <!--"-->&quot;Lundy<!--"-->&quot;);
+  Countries.SetField (country, 42000);
+  CountryTable.Entable (table, country);
+  WriteTable;
+  STextIO.WriteLn;
+  Countries.SetKey (country, <!--"-->&quot;Pompey<!--"-->&quot;);
+  Countries.SetField (country, 13000);
+  CountryTable.Entable (table, country);
+  WriteTable;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+     (* test finds *)
+  CountryTable.Find(table, <!--"-->&quot;Pompey<!--"-->&quot;, country, gotIt);
+  <B>IF</B> gotIt
+    <B>THEN</B>
+      str := Countries.GetKey (country);
+      STextIO.WriteString (<!--"-->&quot;Got  <!--"-->&quot;);
+      STextIO.WriteString (str);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;no got Pompey<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+  CountryTable.Find(table, <!--"-->&quot;Canada<!--"-->&quot;, country, gotIt);
+  <B>IF</B> gotIt
+    <B>THEN</B>
+      str := Countries.GetKey (country);
+      STextIO.WriteString (<!--"-->&quot;Got  <!--"-->&quot;);
+      STextIO.WriteString (str);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;no got Canada<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+     (* test removes *)
+  CountryTable.Remove(table, <!--"-->&quot;Pompey<!--"-->&quot;, country);
+  <B>IF</B> CountryTable.TableStatus (table) = CountryTable.allRight
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;removed  Pompey<!--"-->&quot;);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;could not remove Pompey<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+  
+     (* now check to ensure its gone *)
+  CountryTable.Find(table, <!--"-->&quot;Pompey<!--"-->&quot;, country, gotIt);
+  <B>IF</B> gotIt
+    <B>THEN</B>
+      str := Countries.GetKey (country);
+      STextIO.WriteString (<!--"-->&quot;Got  <!--"-->&quot;);
+      STextIO.WriteString (str);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;no got Pompey<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+  WriteTable;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+     (* now try to remove something not there *)
+  CountryTable.Remove(table, <!--"-->&quot;Canada<!--"-->&quot;, country);
+  <B>IF</B> CountryTable.TableStatus (table) = CountryTable.allRight
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;removed  Canada<!--"-->&quot;);
+    <B>ELSE</B>
+     STextIO.WriteString (<!--"-->&quot;could not remove Canada<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+     (* now remove one not at the start *)
+  CountryTable.Remove(table, <!--"-->&quot;Xanadu<!--"-->&quot;, country);
+  <B>IF</B> CountryTable.TableStatus (table) = CountryTable.allRight
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;removed  Xanadu<!--"-->&quot;);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;could not remove Xanadu<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+  WriteTable;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+       (* now see if destroy seems to work *)
+  CountryTable.Destroy (table);
+  <B>IF</B> CountryTable.TableStatus (table) = CountryTable.bad
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;table deleted<!--"-->&quot;);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;could not destroy<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+<B>END</B> TestCountryTable.</PRE>
+<P>When this test was run, the following results were obtained:</P>
+<PRE>
+** Run log starts here **
+Samovia  13000000
+
+      Table of countries and their GNP
+Country Name                           GNP   
+---------------------------------------------
+Samovia                             13000000
+
+      Table of countries and their GNP
+Country Name                           GNP   
+---------------------------------------------
+Xanadu                                  3000
+Samovia                             13000000
+
+      Table of countries and their GNP
+Country Name                           GNP   
+---------------------------------------------
+Lundy                                  42000
+Xanadu                                  3000
+Samovia                             13000000
+
+      Table of countries and their GNP
+Country Name                           GNP   
+---------------------------------------------
+Pompey                                 13000
+Lundy                                  42000
+Xanadu                                  3000
+Samovia                             13000000
+
+
+Got  Pompey
+
+no got Canada
+
+removed  Pompey
+
+no got Pompey
+
+      Table of countries and their GNP
+Country Name                           GNP   
+---------------------------------------------
+Lundy                                  42000
+Xanadu                                  3000
+Samovia                             13000000
+
+
+could not remove Canada
+
+removed  Xanadu
+
+      Table of countries and their GNP
+Country Name                           GNP   
+---------------------------------------------
+Lundy                                  42000
+Samovia                             13000000
+
+
+table deleted</PRE>
+<P>As the output from this test illustrates, this implementation of a table had the semantics of set membership<!--‹-->--a data item either was in the table or it was not.  No sorting was done.  If sorted tables are desired, the entabling routine would have to be written accordingly.  This is left as an exercise for the reader.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

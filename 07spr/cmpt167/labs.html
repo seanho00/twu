@@ -1,0 +1,198 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 167 Spring 2007 Assignments, Trinity Western University</title>
+</head><body>
+
+<h1><a href=".">CMPT 167 Spring 2007</a>
+Lab Assignments</h1>
+
+<h2><a name="1a">Lab 1a: Selection (due Wed 24 Jan) (20pts)</a></h2>
+Write a Java applet or Swing program that uses the <tt>if</tt> or
+<tt>switch</tt> structures to print the song,
+"The Twelve Days of Christmas".  
+The user must be asked to enter a day from 1
+to 12, and the program must display the corresponding message for that day.
+The strings for each day should only appear in your code once each (e.g., the
+string "five golden rings" should only appear in your code once).
+Google for the lyrics, or make up your own (keep it clean, please).
+
+<h2><a name="1b">Lab 1b: Repetition (due Wed 31 Jan) (20pts)</a></h2>
+The <em>proper divisors</em> of an integer n are the positive divisors less
+than n.  A positive integer is said to be <em>deficient</em>,
+<em>perfect</em>, or <em>abundant</em> if the
+sum of its proper divisors is less than, equal to, or greater than the number,
+respectively.  For example, 8 is deficient, because its proper divisors are 1,
+2 and 4, and 1+2+4 &lt; 8; 6 is perfect, because 1+2+3 = 6; and 12 is abundant,
+because 1+2+3+4+6 &gt; 12.  
+(The number 1 has no proper divisors and hence is deficient.)
+Write an application that classifies n as being
+deficient, perfect, or abundant for  n = 20 to 30, then for n = 490 to 500, and
+finally for n = 8120 to 8130.
+
+<h2><a name="2">Lab 2: Arrays (due Wed  7 Feb) (40pts)</a></h2>
+A magic square is an n x n matrix in which each of the integers 1, 2, 3, ....,
+n<sup>2</sup> appears exactly once and all column sums, row sums, and diagonal
+sums are equal.  For example, the following is a 5 x 5 magic square in which
+all the rows, columns, and diagonals add up to 65:
+
+<p><center><table border="1" cellpadding="10">
+<tr><td>17</td><td>24</td><td>1</td><td>8</td><td>15</td></tr>
+<tr><td>23</td><td>5</td><td>7</td><td>14</td><td>16</td></tr>
+<tr><td>4</td><td>6</td><td>13</td><td>20</td><td>22</td></tr>
+<tr><td>10</td><td>12</td><td>19</td><td>21</td><td>3</td></tr>
+<tr><td>11</td><td>18</td><td>25</td><td>2</td><td>9</td></tr>
+</table></center>
+
+<p>
+The following is a procedure for constructing an n x n magic square for any odd
+integer n.  Place 1 in the middle of the top row.  Then after integer k has
+been placed, move up one row and one column to the right to place the next k +
+1, unless one of the following occurs: <ol>
+<li> If a move takes you above the top row in the jth column, move to
+	the bottom of the jth column and place the integer there.
+<li> If a move takes you outside to the right of the square in
+	the ith row, place the integer in the ith row at the left side.
+<li> If a move take you to an already filled square or
+	if you move out of the square at the upper-right hand
+	corner, place k + 1 immediately below k.
+</ol>
+
+<p>
+Write a GUI program in JAVA (applet or standalone, AWT or Swing)
+to construct an n x n magic square for any odd value of n.
+
+<p>
+For this lab, it's okay to do the output as one big long string (e.g.,
+JOptionPane.showMessageDialog()), but do make sure that the rows and columns
+line up properly -- the non-fixed-width font makes this hard.  It's a better
+option (also for future labs) to learn a Swing layout manager and make each
+cell a separate widget.
+
+<h2><a name="3">Lab 3: Recursion (due Wed 21 Feb) (40pts)</a></h2>
+Write a GUI program in Java to render a fractal 
+<a href="http://en.wikipedia.org/wiki/L-system">L-system</a> using a 
+recursive algorithm.  The shape need not be a tree.
+
+<p>
+The <a href="java/FractalTree/">FractalTree</a> directory contains a small
+Swing application that demonstrates the
+<a href="http://java.sun.com/docs/books/tutorial/2d/">Java2D graphics API</a>,
+including applying transformations and drawing lines.  You may use this code as
+a starting point.
+The <a href="java/FractalTreeSoln/">solution</a> subdirectory
+contains a sample solution program demonstrating a fractal tree.
+
+Your program need not have the cool mouse interaction, but you may add
+something similar for up to 10% extra credit.
+
+<h2><a name="4">Lab 4: Object-Oriented Concepts (due Wed 14 Mar) (40pts)</a></h2>
+
+<h3>Part A: Sets</h3>
+Create a class <tt>IntegerSet</tt>.  Each object of the class can hold integers
+in the range 0 through 99.  Internally, represent the set as an array of
+booleans: the <em>i</em>-th element of the array is <tt>true</tt> iff the integer
+<em>i</em> is in the set.  The no-parameter constructor initializes the set to
+the empty set.  Provide public methods for each of the following:<ul>
+<li> A boolean method which returns true if a given integer <b>belongs</b> to the set.
+<li> A method which <b>inserts</b> an element into the set.
+<li> A method which <b>deletes</b> an element from the set.
+<li> A method which tests if the set is <b>equal</b> to another set.
+<li> A method which returns the <b>union</b> of two sets.
+<li> A method which returns the <b>intersection</b> of two sets.
+<li> A method which returns the <b>difference</b> of two sets.
+(A - B is all the elements of A which are not in B.)
+<li> A method which returns the <b>xor</b> (exclusive or) of two sets.
+<li> A <tt>toString()</tt> method which returns a string representation of the
+set: e.g., "<tt>{ 0, 15, 87 }</tt>".
+</ul>
+Write a small testbed class (either command-line or GUI) to show off your
+IntegerSet class and its methods.
+
+<h3>Part B: Vectors</h3>
+Create a class <tt>Vector</tt>.  Each object of the class has three members
+which represent components of the vector along the three coordinate axes.  The
+no-parameter constructor initializes the vector to the zero vector (all
+components zero).  Provide public methods for each of the following:<ul>
+<li> A method which returns the <b>length</b> of the vector as a double.
+<li> A method which returns the <b>sum</b> of two vectors.
+<li> A method which returns the <b>difference</b> between two vectors.
+<li> A method which returns a <b>scalar multiple</b> of the vector (multiplying
+each component by the given scalar).
+<li> A method which returns the <b>dot product</b> of two vectors.
+<li> A method which returns the <b>cross product</b> of two vectors:
+(a,b,c) x (x,y,z) = (bz-cy, cx-az, ay-bx)
+<li> A <tt>toString()</tt> method which returns a string representation of the
+vector in a form like, e.g., "<tt>2.3i - 0.5j + 17.25k</tt>".  If a component
+is zero, it should not print the corresponding term.  If the whole vector is
+zero, it should just print "<tt>0</tt>".
+</ul>
+Extend your <tt>Vector</tt> class to a subclass <tt>Vector2D</tt>, which sets
+the z-component to zero.  Provide an additional method to draw the vector on
+the screen.  Create a testbed program (AWT or Swing, applet or standalone) that
+graphically demonstrates Vector2D sum, difference, and scalar multiplication,
+using this method.
+
+<h2><a name="5">Lab 5: Files and I/O (due Wed 11 Apr) (60pts)</a></h2>
+
+In this lab you will be implementing an inventory and point-of-sale system for
+a fictional store.  Your store may sell whatever items you wish; be creative!
+
+<p>
+The objective of this lab is to gain experience in file I/O in Java.
+You are free to use any technique you like from ch14 for the databases
+(sequential, random-access, text, object-serialized, etc.), but think about
+what format would work best for each database.  Discuss the pros and cons
+of your file format choice in your lab write-up: how well would it work as the
+number of items/records scales up?  Is there a tradeoff of disk space,
+searching time (cash register), time to add/delete (inventory control), etc.?
+As this lab is fairly complex, it is worth more points.
+For the sake of our TA's time, no late labs will be accepted past Fri 13Apr.
+
+<p>
+There are two databases (files) that you will need to manipulate:<ul>
+<li> An <b>inventory</b> database: for each item, record<ul>
+  <li> A <b>description</b> of the item
+  <li> <b>Price</b> of the item
+  <li> Whether <b>GST</b> applies to the item
+  <li> Whether <b>PST</b> applies to the item
+  <li> <b>Quantity</b> in stock
+  </ul>
+<li> A <b>transaction</b> log that is appended to whenever a customer buys
+something.  Each transaction record consists of<ul>
+  <li> A transaction <b>ID</b> code (if a customer buys multiple items in one
+  transaction, there will be multiple records with the same ID code)
+  <li> The ID of the <b>item</b> (index into the inventory database)
+  <li> <b>Quantity</b> purchased
+  </ul>
+</ul>
+
+You will need to provide three end-user GUI applications:<ul>
+<li> An <b>inventory control</b> program to allow the user to<ul>
+  <li> <b>Edit</b> existing items
+  <li> <b>Delete</b> existing items
+  <li> <b>Add</b> a new item
+  <li> <b>Save</b> the inventory database
+  </ul>
+<li> A <b>checkout register</b> program that a cashier can use to record a
+customer's purchases:<ul>
+  <li> Select <b>items</b> to be purchased and quantity desired of each item
+  <li> Display a <b>receipt</b> showing<ul>
+    <li> For each item, its <b>description</b>, <b>price</b> per unit, and <b>quantity</b>,
+    <li> The <b>subtotal</b> for this transaction, and 
+    <li> The <b>grand total</b> including any GST/PST
+    </ul>
+  <li> Append to the <b>transaction database</b>
+  <li> Update the stock count in the <b>inventory database</b>
+  </ul>
+<li> A <b>book-keeping</b> program that allows the user to <ul>
+  <li> <b>View</b> the transaction database, and
+  <li> Generate a <b>report</b> summarizing all the transactions in the
+  database: <ul>
+    <li> A list of <b>items</b> sold (including <b>quantities</b>)
+    <li> Total <b>income</b> (including GST/PST) from all sales
+    </ul>
+</ul>
+
+You may wish to use some advanced Swing widgets to interact with the databases.
+
+</body></html>

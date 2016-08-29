@@ -1,0 +1,167 @@
+<HTML>
+<HEAD>
+<TITLE>9.9 Records and Arrays--Which, or Both?</TITLE>
+<meta NAME="keywords" CONTENT="record, records, array, arrays, structure, structured, structures, data, advantage, advantages, disadvantag, disadvantages, information, organization">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.9 Records and Arrays<!--</B>‹<B>-->--Which, or Both?</B></H2>
+<P>Each kind of structured data has its own advantages and disadvantages for specific purposes.  Referencing individual items in an array is fairly simple, and a FOR loop is compact, easy to write, and easy to understand.  However, the data entered in a single array must all be of the same type, and that makes grouping of different data types into related categories rather difficult.</P>
+<P>On the other hand, records can do this kind of grouping of diverse data types, and have great flexibility, but that data cannot be referred to by a numerical position; rather a field name must be employed.  Records are (potentially) more elaborate structures than arrays, and the mechanism for using them requires more work to set up, but may be worth it.</P>
+<P>In many cases, it is actually possible to use either kind of structure.</P>
+<P> Suppose one wanted to design a data structure to hold these class records, say student names, identity numbers, four percentages, and a final letter grade.</P>
+<P>One could arrange several arrays in a <!--"-->&quot;side-by-side<!--"-->&quot; fashion as follows:</P>
+<PRE>
+<B>MODULE</B> Markbook;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadString, SkipLine, WriteLn, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard, ReadCard;
+  
+<B>PROCEDURE</B> GetNum () : <B>REAL</B>;
+<B>BEGIN</B>
+  (* usual code here *)
+  SkipLine;
+  <B>RETURN</B> 0.0 (* dummy *)
+<B>END</B> GetNum;
+<B>TYPE</B>
+  Name = <B>ARRAY</B> [0 .. 20] <B>OF</B> <B>CHAR</B>;
+  ClassList = <B>ARRAY</B> [1 .. 30] <B>OF</B> Name;
+  Idnumber = <B>ARRAY</B> [1 .. 30] <B>OF</B> <B>CARDINAL</B>;
+  Marks = <B>ARRAY</B> [1 .. 30], [1 .. 4] <B>OF</B> <B>REAL</B>;
+  Grades = <B>ARRAY</B> [1 .. 30] <B>OF</B> <B>CHAR</B>;
+<B>VAR</B>
+  cmpt141 : ClassList;
+  num : Idnumber;
+  scores : Marks;
+  final : Grades;
+  classCount, markCount : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>FOR</B> classCount := 1 <B>TO</B> 30
+    <B>DO</B>
+      WriteCard (classCount,1);
+      WriteChar (<!--"-->&quot;)<!--"-->&quot;);
+      WriteString (<!--"-->&quot; What is the student's name? <!--"-->&quot;);
+      ReadString (cmpt141 [classCount]);
+      SkipLine;
+      WriteLn;
+      WriteString (<!--"-->&quot;and the i.d. number? <!--"-->&quot;);
+      ReadCard (num [classCount]);
+      SkipLine;
+      WriteLn;
+
+      <B>FOR</B> markCount := 1 <B>TO</B> 4
+        <B>DO</B>
+          WriteString (<!--"-->&quot;Give me the mark, with decimal, <!--"-->&quot;);
+          WriteString (<!--"-->&quot;for term number <!--"-->&quot;);
+          WriteCard (markCount, 10);
+          WriteString (<!--"-->&quot; please. <!--"-->&quot;);
+          scores [classCount, markCount] := GetNum ();
+          (* don't forget to include this procedure *)
+          WriteLn;
+        <B>END</B>;  (* for markCount *)
+
+    <B>END</B>;  (* for classCount *)
+
+  (* process marks and assign letter grade here *)
+<B>END</B> Markbook.</PRE>
+<P>In this approach, the index number <I>classCount</I> within the class effectively groups the data from the different types of arrays.  The class is a collection of arrays that are not formally gathered into a single structure, and the data pertinent to a single student must be extracted by knowing the number for that student and using it consistently through all the arrays.</P>
+<P>While this approach would work, it hides the real structure of the class, that is, a collection of students, each of whom has various associated data.  Consider the following (better) approach:</P>
+<PRE>
+<B>MODULE</B> Mark2Book;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadString, SkipLine, WriteLn;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard;  (* and the other usual imports *)
+
+<B>TYPE</B>
+  Name = <B>ARRAY</B> [0 .. 20] <B>OF</B> <B>CHAR</B>;
+  Marks = <B>ARRAY</B> [1 .. 4] <B>OF</B> <B>REAL</B>;
+  Student =
+    <B>RECORD</B>
+      moniker : Name;
+      idnumber : <B>CARDINAL</B>;
+      marks : Marks;
+      grade : <B>CHAR</B>;
+    <B>END</B>;  (* student *)
+  Class = <B>ARRAY</B> [1 .. 30] <B>OF</B> Student;
+<B>VAR</B>
+  cmpt141 : Class;
+  classCount : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> classCount := 1 <B>TO</B> 30
+    <B>DO</B>
+      <B>WITH</B> cmpt141 [classCount]
+        <B>DO</B>
+          WriteString (<!--"-->&quot;What is the student's name? <!--"-->&quot;);
+          WriteLn;
+          ReadString (moniker);
+          SkipLine;
+          WriteLn;
+          WriteString (<!--"-->&quot;and the i.d. number? <!--"-->&quot;);
+          ReadCard (idnumber);
+          SkipLine;
+          WriteLn;
+
+          (* etc *)
+      <B>END</B>; (* With *)
+
+  <B>END</B>;  (* For *)
+<B>END</B> Mark2Book.</PRE>
+<P><B>NOTE</B>:	Without the WITH statement, and assuming the declaration of a variable markCount to count through the small array of marks within the record, the correct qualified identifiers would be:</P>
+<Pre>	cmpt141 [classCount].moniker
+	cmpt141 [classCount].mark [markCount]
+	cmpt141 [classCount].grade
+	cmpt141 [classCount].idnumber
+	where: 1 <!--¾-->&lt;= markCount <!--¾-->&lt;= 4.</Pre>
+<P>Arrays of records such as this one are particularly useful for keeping track of individual people and the information about them when those people are also organized into a specific grouping of some kind.  Information about students, customers, clients, creditors, employees, and the like can all be arranged in such a fashion. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

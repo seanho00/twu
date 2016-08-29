@@ -1,0 +1,107 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT370 07SP Development Environment Policy, TWU</title>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a> Development Environment Policy</h1>
+
+<h2>Motivation</h2>
+<p>
+As this class is titled, "Advanced Programming", it is very
+programming-intensive, and the programming labs are really the heart of the 
+course.
+I understand that you all may be coming from different programming backgrounds
+and may have different integrated development environments (IDEs) that you
+are familiar with, for instance,
+Microsoft Visual Studio, Eclipse, CodeWarrior, etc.  The problem-solving
+concepts and the programming skills are what's important, not the IDE, however
+on the job, unfamiliarity with an IDE or unwillingness to learn a new IDE
+can slow things down.
+
+<p>
+As far as marking labs is concerned, the general principle is that I need to be
+able to read your code and run your program; I don't require that I can compile
+it.  Win32 programs I can run on the senior lab PCs.  I also have a Linux
+laptop (glibc-2.5) if you submit linux executables.  I don't have ready access
+to a Mac.  Other arrangements can be made; we're a small class, so things are
+flexible -- e.g., if you absolutely must work on OSX, we can make arrangements
+for you to demo your lab project for me.
+
+<h2>Policy for this course</h2>
+
+<p>
+For this course, there will be a mixture of lenience and rigid rules concerning
+use of different IDEs.  For the FLTK and OpenGL parts of the course (most of the
+semester), you may use a different IDE (but see the restrictions below).  For
+the OpenMP part of the course, you are required to use gcc-4 on carmel.
+
+<p>
+<h3>
+The officially supported development environment for this course is gcc/g++
+under Cygwin on the senior lab PCs, using 'make' and plain text editors like
+Notepad.
+</h3>
+No official support will be given of other development environments -- if you
+can't get FLTK compiling on your own PC under MSVC, that's your own problem.
+It's not as flashy as Visual Studio, but it
+gets the job done, and it's good for you to learn multiple environments!
+However, you are free to use a different (unsupported) environment if you wish,
+including on your own computer at home, however you do need
+to use FLTK-1.x and C++.
+
+<p>The portion of the class on shared-memory parallel
+processing will be done under gcc-4 on carmel, a quad-core, eight-hyperthreaded
+linux machine.
+If you have access to another machine with at least eight processors (HT is
+okay) and OpenMP, ask me.  OpenMP is available on gcc only post-4.1.0, and on
+MSVC++ only in VS 2005 (not VS .NET or earlier).
+
+<p>
+Again, we're a small class, so other arrangements can be made.  If you do
+choose to use an IDE other than the officially supported environment (gcc,
+cygwin, make on the senior lab PCs), please send me an email.
+
+<h2>Programming Language</h2>
+
+<p>
+So far this policy just talked about the development environment (compiler,
+editor, etc.).  What about the programming language?  For this I will lock down
+a bit tighter: we will use C/C++.   FLTK does have other bindings, but C++ is
+the standard one, and C++ is still pretty much the industry standard, for
+better or worse.  Again, there is a little flexibility; if you are really
+dead-set on using Python or Java, talk to me.  But I'm strongly steering
+everyone towards C++ for purposes of this class.
+
+<p>
+If you need a refresher in C++, try:<ul>
+<li> <a href="http://mindview.net/Books/TICPP/ThinkingInCPP2e.html">
+Eckel, Bruce, "Thinking in C++", 2nd ed.</a> (free online textbook)
+<li> <a href="http://www.cplusplus.com/doc/tutorial/">CPlusPlus.com
+tutorial</a>
+</ul>
+
+<h2>Installing Cygwin</h2>
+
+Cygwin is already installed on the senior lab PCs; you are free to install it
+on your own computers, but no official support will be provided.  Here are some
+tips:<ul>
+<li> <a href="http://www.cygwin.com/">Get Cygwin</a> and run
+<a href="http://www.cygwin.com/setup.exe">the setup.exe installer</a>.
+<li> In the "Select Packages" part of the wizard, in the "Devel" category,
+select at least the following packages:<ul>
+  <li> gcc-core
+  <li> gcc-g++
+  <li> fltk
+  <li> make
+  </ul>
+  In the "Graphics" category, select the following package:<ul>
+  <li> opengl
+  </ul>
+  Feel free to select whatever other packages you like.
+  You might, for instance, like a text editor like joe, nano, or nedit.
+<li> You should now be able to compile and run FLTK programs within Cygwin.
+Note that it is not necessary to download FLTK from fltk.org; the Cygwin
+package installs FLTK in locations accessible to gcc from within Cygwin.
+</ul>
+
+</body></html>

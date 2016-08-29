@@ -1,0 +1,122 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 122T Spring2006 Lecture Notes, Trinity Western University</title>
+</head><body>
+
+<h1>CMPT 122T Spring 2006 Lecture Notes</h1>
+
+<h2>Week 1</h2> <ul>
+	<li> Review: relational DB, Relationships, many-to-many
+	<li> <h3>Unit I:</h3> <ul>
+		<li> File / "Get External Data" / Import: <ul>
+			<li> FileType Excel
+			<li> Import into new table
+			<li> Or import into existing (same width)
+			<li> Mention XML Import
+		</ul>
+		<li> File / "Get External Data" / Link: <ul>
+			<li> Linking vs. importing
+			<li> Link to Excel spreadsheet
+			<li> Mention links to SQL db
+		</ul>
+		<li> File / Export: <ul>
+			<li> Mention XML Export
+			<li> Export table to Excel
+			<li> Report view, export to Word
+			<li> Mention Export to Word Mail Merge
+		</ul>
+	</ul>
+	<li> <h3>Unit K:</h3> <ul>
+		<li> Top Values: <ul>
+			<li> view Query in Design View
+			<li> Top Values pull-down in toolbar: top 5
+			<li> go to DataSheet View
+		</ul>
+		<li> Parameter Queries: <ul>
+			<li> view Query in Design View
+			<li> Add Criteria: "[Enter price:]"
+			<li> go to DataSheet View and observe popup dialog
+			<li> Change Criteria to "&gt;=[Price at least:]"
+			<li> go to DataSheet View
+		</ul>
+		<li> Query Properties: <ul>
+			<li> view Query in Design View
+			<li> right-click in top empty space with tables, select Properties
+			<li> Change Recordset Type to "SnapShot"
+			<li> go to DataSheet View and try to change a value
+		</ul>
+	</ul>
+</ul>
+
+<h2>Week 2</h2> <ul>
+	<li> <h3> Unit K: </h3> <ul>
+		<li> <h4> Action Queries: </h4> <ul>
+			<li> Make-Table Query: <ul>
+				<li> view a Query in Design View
+				<li> select Query Type list arrow in toolbar, select Make-Table Query
+				<li> enter a name for the new table
+				<li> Click Run button in toolbar
+			</ul>
+			<li> Append Query
+			<li> Delete Query: <ul>
+				<li> query design: only show table we want to delete from
+				<li> Add a column to query design that has "TableName.*" in "Field:"
+				<li> Add a column to query design indicating criteria to select records to delete
+				<li> Select Delete Query from Query Type toolbar button
+				<li> Observe new "Delete:" row of query design; "From" and "Where"
+				<li> Click Run button, observe fewer records left
+			</ul>
+			<li> Update Query: <ul>
+				<li> Query Type: Update Query
+				<li> Enter "[Cost]*1.05" in "Update To:" for Cost
+			</ul>
+		</ul>
+		<li> <h4> Join Properties </h4> <ul>
+			<li> Relationships: make/recall one-to-many link
+			<li> view a Query in Design View, select two linked tables, observe link
+			<li> Right-click the join line, Properties
+		</ul>
+		<li> <h4> Find Unmatched </h4> <ul>
+			<li> New Query dialog, select Find Unmatched Query Wizard
+			<li> Choose two tables with a relationship: First table is where results are taken from, second table is used to select
+			<li> Choose fields for display
+			<li> go to query Design View to see what the wizard did
+		</ul>
+	</ul>
+	<li> <h3> Unit L: Advanced Forms</h3> <ul>
+		<li> Toggle button: <ul>
+			<li> view form in Design View
+			<li> right-click a check-box widget
+			<li> "Change To" / "Toggle Button"
+			<li> Mention: Text box / List box / Combo box
+			<li> Mention: Check box / Toggle button / Option button
+		</ul>
+		<li> Form Widget Properties: <ul>
+			<li> Select a widget
+			<li> View / Properties / Other
+			<li> fill in help text in "ControlTip Text" property
+			<li> Also try "Status Bar Text" property
+		</ul>
+		<li> Conditional formatting: <ul>
+			<li> view form in Design View
+			<li> select widget(s), Format / "Conditional Formatting"
+			<li> try a "Field has Focus" Condition
+			<li> go to Form View and play with focus
+		</ul>
+		<li> Tabs <ul>
+			<li> view form in Design View
+			<li> Toolbox toolbar / Tab Control button
+			<li> two tabs by default; click tab to select
+			<li> Add widgets to each tab, view in Form View
+		</ul>
+		<li> Charts in Reports <ul>
+			<li> new Report, Chart Wizard
+			<li> double-click chart to edit
+			<li> double-click chart bbox for widget properties
+		</ul>
+	</ul>
+</ul>
+
+
+
+</body></html>

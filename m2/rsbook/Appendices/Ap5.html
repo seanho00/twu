@@ -1,0 +1,953 @@
+<HTML><HEAD><TITLE>Appendix 5--ISO I/O Library</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 5<!--‹-->--ISO I/O Library</B></H2>
+
+<P><!--revised 1995 06 08--></P>
+<H3><B><A NAME="A5.1">A5.1</A> An Overview of the ISO I/O Library</B></H3>
+<P>The modules in this section are taken from ISO/IEC IS 10514, the international standard for Modula-2.  See the copyright notice in the acknowledgements section. The chart below shows the modules in the collection and the level at which users employ them.</P>
+<P><CENTER><IMG SRC="Figure/Figure_A5.1.GIF" BORDER=1></CENTER><!----></P>
+<H3><B><A NAME="A5.2">A5.2</A> I/O On Standard Channels</B></H3>
+<H3><B>A5.2.1 STextIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> STextIO;
+
+  (* Input and output of character and string types over default channels. The read result is of the type IOConsts.ReadResults. *)
+
+  (* The following procedures do not read past line marks *)
+
+<B>PROCEDURE</B> ReadChar (<B>VAR</B> ch: <B>CHAR</B>);
+  (* If possible, removes a character from the default input stream, and assigns the corresponding value to ch.  The read result is set to allRight, endOfLine or endOfInput. *)
+
+<B>PROCEDURE</B> ReadRestLine (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Removes any remaining characters from the default input stream before the next line mark, copying to s as many as can be accommodated as a string value.  The read result is set to the value allRight, outOfRange, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> ReadString (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Removes only those characters from the default input stream before the next line mark that can be accommodated in s as a string value, and copies them to s.  The read result is set to the value allRight, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> ReadToken (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Skips leading spaces, and then removes characters from the default input stream before the next space or line mark, copying to s as many as can be accommodated as a string value.  The read result is set to the value allRight, outOfRange, endOfLine, or endOfInput. *)
+
+  (* The following procedure reads past the next line mark *)
+
+<B>PROCEDURE</B> SkipLine;
+  (* Removes successive items from the default input stream up to and including the next line mark or until the end of input is reached. The read result is set to the value allRight, or endOfInput. *)
+
+  (* Output procedures *)
+
+<B>PROCEDURE</B> WriteChar (ch: <B>CHAR</B>);
+  (* Writes the value of ch to the default output stream. *)
+
+<B>PROCEDURE</B> WriteLn;
+  (* Writes a line mark to the default output stream. *)
+
+<B>PROCEDURE</B> WriteString (s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Writes the string value of s to the default output stream. *)
+
+<B>END</B> STextIO.</PRE>
+<H3><B>A5.2.2 SWholeIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SWholeIO;
+
+(* Input and output of whole numbers in decimal text form over default channels.
+  The read result is of the type IOConsts.ReadResults. *)
+
+(* The text form of a signed whole number is [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+  The text form of an unsigned whole number is decimal digit, {decimal digit} *)
+
+<B>PROCEDURE</B> ReadInt (<B>VAR</B> int : <B>INTEGER</B>);
+(* Skips leading spaces, and removes any remaining characters from the default input channel that form part of a signed whole number.  The value of this number is assigned to int. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> WriteInt (int: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of int to the default output channel in text form, in a field of the given minimum width. *)
+
+<B>PROCEDURE</B> ReadCard (<B>VAR</B> card: <B>CARDINAL</B>);
+  (* Skips leading spaces, and removes any remaining characters from the default input channel that form part of an unsigned whole number.  The value of this  number is assigned to card.  The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> WriteCard (card: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of card to the default output channel in text form, in a field of the given minimum width. *)
+
+<B>END</B> SWholeIO.</PRE>
+<H3><B>A5.2.3 SRealIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SRealIO;
+
+  (* Input and output of real numbers in decimal text form over default
+     channels.  The read result is of the type IOConsts.ReadResults.
+  *)
+
+  (* The text form of a signed fixed-point real number is
+       [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit},
+       [<!--"-->&quot;.<!--"-->&quot;, {decimal digit}]
+ 
+     The text form of a signed floating-point real number is
+       signed fixed-point real number,
+       <!--"-->&quot;E<!--"-->&quot;, [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+  *)
+ 
+<B>PROCEDURE</B> ReadReal (<B>VAR</B> real: <B>REAL</B>);
+  (* Skips leading spaces, and removes any remaining characters from the default input channel that form part of a signed fixed or floating point number. The value of this number is assigned to real.  The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteFloat (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to the default output channel in floating-point text form, with sigFigs significant figures, in a field of the given minimum width.  *)
+ 
+<B>PROCEDURE</B> WriteEng (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three digits in the whole number part, and with an exponent that is a multiple of three.  *)
+ 
+<B>PROCEDURE</B> WriteFixed (real : <B>REAL</B>; place: <B>INTEGER</B>; width : <B>CARDINAL</B>);
+(* Writes the value of real to the default output channel in fixed-point text form, rounded to the given place relative to the decimal point, in a field of the given minimum width.  *)
+ 
+<B>PROCEDURE</B> WriteReal (real: <B>REAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to the default output channel, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> SRealIO.</PRE>
+<H3><B>A5.2.4 SLongIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SLongIO;
+
+  (* Input and output of real numbers in decimal text form over default
+     channels.  The read result is of the type IOConsts.ReadResults.
+  *)
+
+  (* The text form of a signed fixed-point real number is
+       [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit},
+       [<!--"-->&quot;.<!--"-->&quot;, {decimal digit}]
+ 
+     The text form of a signed floating-point real number is
+       signed fixed-point real number,
+       <!--"-->&quot;E<!--"-->&quot;, [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+  *)
+ 
+<B>PROCEDURE</B> ReadReal (<B>VAR</B> real: <B>LONGREAL</B>);
+  (* Skips leading spaces, and removes any remaining characters from the default input channel that form part of a signed fixed or floating point number. The value of this number is assigned to real.  The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput.
+  *)
+ 
+<B>PROCEDURE</B> WriteFloat (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to the default output channel in floating-point text form, with sigFigs significant figures, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteEng (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (real: <B>LONGREAL</B>; place : <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to the default output channel in fixed-point text form, rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteReal (real: <B>LONGREAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to the default output channel, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width. *)
+ 
+<B>END</B> SLongIO.</PRE>
+<H3><B>A5.2.5 SRawIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SRawIO;
+
+  (* Reading and writing data over default channels using raw operations, that is, with no conversion or interpretation. The read result is of the type IOConsts.ReadResults. *)
+
+<B>IMPORT</B> SYSTEM;
+ 
+<B>PROCEDURE</B> Read (<B>VAR</B> to: <B>ARRAY</B> <B>OF</B> SYSTEM.LOC);
+  (* Reads storage units from the default input channel, and assigns them to successive components of to. The read result is set to the value allRight, wrongFormat, or endOfInput. *)
+ 
+<B>PROCEDURE</B> Write (from: <B>ARRAY</B> <B>OF</B> SYSTEM.LOC);
+  (* Writes storage units to cid from successive components of from. *)
+
+<B>END</B> SRawIO.</PRE>
+<H3><B>A5.2.6 SIOResult</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SIOResult;
+
+(* Read results for the default input channel *)
+
+<B>IMPORT</B> IOConsts;
+
+<B>TYPE</B>
+  ReadResults = IOConsts.ReadResults;
+
+<B>PROCEDURE</B> ReadResult () : ReadResults;
+(* Returns the result for the last read operation on the default input channel *)
+
+<B>END</B> SIOResult.</PRE>
+<H3><B><A NAME="A5.3">A5.3</A> Supplied Channels</B></H3>
+<H3><B>A5.3.1 StdChans</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> StdChans;
+
+  (* Access to standard and default channels *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+    (* Values of this type are used to identify channels *)
+ 
+  (* The following functions return the standard channel values.
+     These channels cannot be closed. *)
+
+<B>PROCEDURE</B> StdInChan (): ChanId;
+  (* Returns the identity of the implementation-defined standard source for program input. *)
+ 
+<B>PROCEDURE</B> StdOutChan (): ChanId;
+  (* Returns the identity of the implementation-defined standard source for program output. *)
+ 
+<B>PROCEDURE</B> StdErrChan (): ChanId;
+  (* Returns the identity of the implementation-defined standard destination for program error messages. *)
+ 
+<B>PROCEDURE</B> NullChan (): ChanId;
+  (* Returns the identity of a channel open to the null device. *)
+ 
+  (* The following functions return the default channel values *)
+ 
+<B>PROCEDURE</B> InChan (): ChanId;
+  (* Returns the identity of the current default input channel. *)
+ 
+<B>PROCEDURE</B> OutChan (): ChanId;
+  (* Returns the identity of the current default output channel. *)
+ 
+<B>PROCEDURE</B> ErrChan (): ChanId;
+  (* Returns the identity of the current default error message channel. *)
+ 
+  (* The following procedures allow for redirection of the default channels *)
+ 
+<B>PROCEDURE</B> SetInChan (cid: ChanId);
+  (* Sets the current default input channel to that identified by cid. *)
+ 
+<B>PROCEDURE</B> SetOutChan (cid: ChanId);
+  (* Sets the current default output channel to that identified by cid. *)
+ 
+<B>PROCEDURE</B> SetErrChan (cid: ChanId);
+  (* Sets the current default error channel to that identified by cid. *)
+ 
+<B>END</B> StdChans.</PRE>
+<H3><B>A5.3.2 ProgramArgs</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ProgramArgs;
+ 
+  (* Access to program arguments *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+ 
+<B>PROCEDURE</B> ArgChan (): ChanId;
+  (* Returns a value that identifies a channel for reading program arguments *)
+ 
+<B>PROCEDURE</B> IsArgPresent (): <B>BOOLEAN</B>;
+  (* Tests if there is a current argument to read from. If not, read <!--<-->&lt;= IOChan.CurrentFlags() will be <B>FALSE</B>, and attempting to read from the argument channel will raise the exception notAvailable. *)
+ 
+<B>PROCEDURE</B> NextArg ();
+  (* If there is another argument, causes subsequent input from the argument device to come from the start of the next argument.  Otherwise there is no argument to read from, and a call of IsArgPresent will return <B>FALSE</B>. *)
+
+<B>END</B> ProgramArgs.</PRE>
+<H3><B><A NAME="A5.4">A5.4</A> Specified Channels</B></H3>
+<H3><B>A5.4.1 TextIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> TextIO;
+
+  (* Input and output of character and string types over specified channels.
+     The read result is of the type IOConsts.ReadResults.
+  *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The following procedures do not read past line marks *)
+ 
+<B>PROCEDURE</B> ReadChar (cid: IOChan.ChanId; <B>VAR</B> ch: <B>CHAR</B>);
+  (* If possible, removes a character from the input stream cid and assigns the corresponding value to ch.  The read result is set to the value allRight, endOfLine, or endOfInput.
+  *)
+ 
+<B>PROCEDURE</B> ReadRestLine (cid: IOChan.ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Removes any remaining characters from the input stream cid before the next line mark, copying to s as many as can be accommodated as a string value. The read result is set to the value allRight, outOfRange, endOfLine, or endOfInput.  *)
+ 
+<B>PROCEDURE</B> ReadString (cid: IOChan.ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Removes only those characters from the input stream cid before the next line mark that can be accommodated in s as a string value, and copies them to s.  The read result is set to the value allRight, endOfLine, or endOfInput.  *)
+ 
+<B>PROCEDURE</B> ReadToken (cid: IOChan.ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Skips leading spaces, and then removes characters from the input stream cid before the next space or line mark, copying to s as many as can be accommodated as a string value. The read result is set to the value allRight, outOfRange, endOfLine, or endOfInput. *)
+ 
+  (* The following procedure reads past the next line mark *)
+ 
+<B>PROCEDURE</B> SkipLine (cid: IOChan.ChanId);
+  (* Removes successive items from the input stream cid up to and including the next line  mark, or until the end of input is reached.  The read result is set to the value allRight, or endOfInput.  *)
+ 
+  (* Output procedures *)
+ 
+<B>PROCEDURE</B> WriteChar (cid: IOChan.ChanId; ch: <B>CHAR</B>);
+  (* Writes the value of ch to the output stream cid. *)
+ 
+<B>PROCEDURE</B> WriteLn (cid: IOChan.ChanId);
+  (* Writes a line mark to the output stream cid. *)
+ 
+<B>PROCEDURE</B> WriteString (cid: IOChan.ChanId; s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Writes the string value in s to the output stream cid. *)
+ 
+<B>END</B> TextIO.</PRE>
+<H3><B>A5.4.2 WholeIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> WholeIO;
+
+  (* Input and output of whole numbers in decimal text form over specified
+channels. The read result is of the type IOConsts.ReadResults.
+  *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a signed whole number is
+       [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+ 
+     The text form of an unsigned whole number is
+       decimal digit, {decimal digit}
+  *)
+ 
+<B>PROCEDURE</B> ReadInt (cid: IOChan.ChanId; <B>VAR</B> int: <B>INTEGER</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a signed whole number.  The value of this number is assigned to int.  The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteInt (cid: IOChan.ChanId; int: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of int to cid in text form, in a field of the given
+minimum width. *)
+ 
+<B>PROCEDURE</B> ReadCard (cid: IOChan.ChanId; <B>VAR</B> card: <B>CARDINAL</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of an unsigned whole number.  The value of this number is assigned to card.  The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteCard (cid: IOChan.ChanId; card: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of card to cid in text form, in a field of the given
+minimum width. *)
+ 
+<B>END</B> WholeIO.</PRE>
+<H3><B>A5.4.3 RealIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RealIO;
+
+  (* Input and output of real numbers in decimal text form over specified
+channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a signed fixed-point real number is
+       [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit},
+       [<!--"-->&quot;.<!--"-->&quot;, {decimal digit}]
+ 
+     The text form of a signed floating-point real number is
+       signed fixed-point real number,
+       <!--"-->&quot;E<!--"-->&quot;, [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+  *)
+ 
+<B>PROCEDURE</B> ReadReal (cid: IOChan.ChanId; <B>VAR</B> real: <B>REAL</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a signed fixed or floating point number.  The value of this number is assigned to real. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteFloat (cid: IOChan.ChanId; real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to cid in floating-point text form, with sigFigs significant figures, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteEng (cid: IOChan.ChanId; real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; real: <B>REAL</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to cid in fixed-point text form, rounded to the
+given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteReal (cid: IOChan.ChanId; real: <B>REAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> RealIO.</PRE>
+<H3><B>A5.4.4 LongIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> LongIO;
+
+  (* Input and output of real numbers in decimal text form over specified
+channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a signed fixed-point real number is
+       [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit},
+       [<!--"-->&quot;.<!--"-->&quot;, {decimal digit}]
+ 
+     The text form of a signed floating-point real number is
+       signed fixed-point real number,
+       <!--"-->&quot;E<!--"-->&quot;, [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+  *)
+ 
+<B>PROCEDURE</B> ReadReal (cid: IOChan.ChanId; <B>VAR</B> real: <B>LONGREAL</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a signed fixed or floating point number.  The value of this number is assigned to real. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput.
+  *)
+ 
+<B>PROCEDURE</B> WriteFloat (cid: IOChan.ChanId; real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to cid in floating-point text form, with sigFigs significant figures, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteEng (cid: IOChan.ChanId; real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; real: <B>LONGREAL</B>; place: <B>INTEGER</B>; width:
+<B>CARDINAL</B>);
+  (* Writes the value of real to cid in fixed-point text form, rounded to the
+given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteReal (cid: IOChan.ChanId; real: <B>LONGREAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of real to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> LongIO.</PRE>
+<H3><B>A5.4.5 RawIO</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RawIO;
+
+  (* Reading and writing data over specified channels using raw operations, that is, with no conversion or interpretation. The read result is of the type IOConsts.ReadResults. *)
+
+<B>IMPORT</B> IOChan, SYSTEM;
+ 
+<B>PROCEDURE</B> Read (cid: IOChan.ChanId; <B>VAR</B> to: <B>ARRAY</B> <B>OF</B> SYSTEM.LOC);
+  (* Reads storage units from cid, and assigns them to successive components of to. The read result is set to the value allRight, wrongFormat, or endOfInput. *)
+ 
+<B>PROCEDURE</B> Write (cid: IOChan.ChanId; from: <B>ARRAY</B> <B>OF</B> SYSTEM.LOC);
+  (* Writes storage units to cid from successive components of from. *)
+ 
+<B>END</B> RawIO.</PRE>
+<H3><B>A5.4.6 IOResult</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> IOResult;
+
+  (* Read results for specified channels *)
+ 
+<B>IMPORT</B> IOConsts, IOChan;
+
+<B>TYPE</B>
+  ReadResults = IOConsts.ReadResults;
+
+<B>PROCEDURE</B> ReadResult (cid: IOChan.ChanId): ReadResults;
+  (* Returns the result for the last read operation on the channel cid. *)
+
+<B>END</B> IOResult.</PRE>
+<H3><B><A NAME="A5.5">A5.5</A> Channel Constants<!--</B>‹<B>-->--IOConsts</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> IOConsts;
+
+(* Types and constants for input/output modules *)
+
+<B>TYPE</B>
+  ReadResults =
+  (* This type is used to classify the result of an input operation *)
+  (        notKnown,      (* no data read result is set *)
+    allRight,      (* data is as expected or as required *)
+    outOfRange,    (* data cannot be represented *)
+    wrongFormat,  (* data not in expected format *)
+    endOfLine,    (* end of line seen before expected data *)
+    endOfInput    (* end of input seen before expected data *)
+  );
+
+<B>END</B> IOConsts.</PRE>
+<H3><B><A NAME="A5.6">A5.6</A> Device Independent Channel I/O<!--</B>‹<B>-->--IOChan</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> IOChan;
+
+  (* Types and procedures forming the interface to channels for
+device-independent data transfer modules *)
+ 
+<B>IMPORT</B> IOConsts, ChanConsts, SYSTEM;
+ 
+<B>TYPE</B>
+  ChanId; (* Values of this type are used to identify channels *)
+ 
+  (* There is one pre-defined value identifying an invalid channel on which no data transfer operations are available.  It may be used to initialize variables of type ChanId. *)
+ 
+<B>PROCEDURE</B> InvalidChan (): ChanId;
+  (* Returns the value identifying the invalid channel. *)
+ 
+  (* For each of the following operations, if the device supports the operation on the channel, the behaviour of the procedure conforms with the description below.  The full behaviour is defined for each device module.  If the device does not support the operation on the channel, the behaviour of the procedure is to raise the exception notAvailable. *)
+  
+  (* Text operations - these perform any required translation between the internal and external representation of text. *)
+ 
+<B>PROCEDURE</B> Look (cid: ChanId; <B>VAR</B> ch: <B>CHAR</B>; <B>VAR</B> res: IOConsts.ReadResults);
+  (* If there is a character as the next item in the input stream cid, assigns its value to ch without removing it from the stream; otherwise the value of ch is not defined.  res (and the stored read result) are set to the value allRight, endOfLine, or endOfInput. *)
+ 
+<B>PROCEDURE</B> Skip (cid: ChanId);
+  (* If the input stream cid has ended, the exception skipAtEnd is raised; otherwise the next character or line mark in cid is removed, and the stored read result is set to the value allRight. *)
+ 
+<B>PROCEDURE</B> SkipLook (cid: ChanId; <B>VAR</B> ch: <B>CHAR</B>; <B>VAR</B> res: IOConsts.ReadResults);
+  (* If the input stream cid has ended, the exception skipAtEnd is raised; otherwise the next character or line mark in cid is removed.  If there is a character as the next item in cid stream, assigns its value to ch without removing it from the stream.
+     Otherwise, the value of ch is not defined.  res (and the stored read result) are set to the value allRight, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> WriteLn (cid: ChanId);
+  (* Writes a line mark over the channel cid. *)
+ 
+<B>PROCEDURE</B> TextRead (cid: ChanId; to: SYSTEM.ADDRESS; maxChars: <B>CARDINAL</B>; <B>VAR</B> charsRead: <B>CARDINAL</B>);
+  (* Reads at most maxChars characters from the current line in cid, and assigns corresponding values to successive components of an ARRAY OF CHAR variable for which the address of the first component is to. The number of characters read is assigned to charsRead. The stored read result is set to allRight, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> TextWrite (cid: ChanId; from: SYSTEM.ADDRESS; charsToWrite:
+<B>CARDINAL</B>);
+  (* Writes a number of characters given by the value of charsToWrite, from successive components of an ARRAY OF CHAR variable for which the address of the first component is from, to the channel cid. *)
+ 
+  (* Direct raw operations  - these do not effect translation between the internal and external representation of data  *)
+ 
+<B>PROCEDURE</B> RawRead (cid: ChanId; to: SYSTEM.ADDRESS; maxLocs: <B>CARDINAL</B>; <B>VAR</B> locsRead: <B>CARDINAL</B>);
+  (* Reads at most maxLocs items from cid, and assigns corresponding values to successive components of an ARRAY OF LOC variable for which the address of the first component is to. The number of characters read is assigned to charsRead. The stored read result is set to the value allRight, or endOfInput. *)
+ 
+<B>PROCEDURE</B> RawWrite (cid: ChanId; from: SYSTEM.ADDRESS; locsToWrite: <B>CARDINAL</B>);
+  (* Writes a number of items given by the value of charsToWrite, from successive components of an ARRAY OF LOC variable for which the address of the first component is from, to the channel cid. *)
+ 
+  (* Common operations *)
+ 
+<B>PROCEDURE</B> GetName (cid: ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies to s a name associated with the channel cid, possibly truncated (depending on the capacity of s).  *)
+ 
+<B>PROCEDURE</B> Reset (cid: ChanId);
+  (* Resets the channel cid to a state defined by the device module. *)
+ 
+<B>PROCEDURE</B> Flush (cid: ChanId);
+  (* Flushes any data buffered by the device module out to the channel cid. *)
+ 
+  (* Access to read results *)
+ 
+<B>PROCEDURE</B> SetReadResult (cid: ChanId; res: IOConsts.ReadResults);
+  (* Sets the read result value for the channel cid to the value res. *)
+ 
+<B>PROCEDURE</B> ReadResult (cid: ChanId): IOConsts.ReadResults;
+  (* Returns the stored read result value for the channel cid. (This is initially the value notKnown). *)
+
+  (* Users can discover which flags actually apply to a channel *)
+ 
+<B>PROCEDURE</B> CurrentFlags (cid: ChanId): ChanConsts.FlagSet;
+  (* Returns the set of flags that currently apply to the channel cid. *)
+
+  (* The following exceptions are defined for this module and its clients *)
+ 
+<B>TYPE</B>
+  ChanExceptions =
+    (wrongDevice,      (* device specific operation on wrong device *)
+     notAvailable,     (* operation attempted that is not available on that
+channel *)
+     skipAtEnd,        (* attempt to skip data from a stream that has ended *)
+     softDeviceError,  (* device specific recoverable error *)
+     hardDeviceError,  (* device specific non-recoverable error *)
+     textParseError,   (* input data does not correspond to a character or line mark - optional detection *)
+     notAChannel       (* given value does not identify a channel - optional detection *)
+    );
+ 
+<B>PROCEDURE</B> IsChanException (): <B>BOOLEAN</B>;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of an exception from ChanExceptions;
+     otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> ChanException (): ChanExceptions;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception from ChanExceptions, returns the corresponding enumeration value, and otherwise raises an exception. *)
+
+  (* When a device procedure detects a device error, it raises the exception softDeviceError or hardDeviceError.  If these exceptions are handled, the following facilities may be used to discover an implementation-defined error number for the channel. *)
+ 
+<B>TYPE</B>
+  DeviceErrNum = <B>INTEGER</B>;
+ 
+<B>PROCEDURE</B> DeviceError (cid: ChanId): DeviceErrNum;
+  (* If a device error exception has been raised for the channel cid, returns the error number stored by the device module. *)
+
+<B>END</B> IOChan.</PRE>
+<H3><B><A NAME="A5.7">A5.7</A> Device Drivers</B></H3>
+<H3><B>A5.7.1 StreamFile</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> StreamFile;
+
+  (* Independent sequential data streams *)
+ 
+<B>IMPORT</B> IOChan, ChanConsts;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+ 
+  (* Accepted singleton values of FlagSet *)
+ 
+<B>CONST</B>
+  read = FlagSet{ChanConsts.readFlag};   (* input operations are requested/available *)
+  write = FlagSet{ChanConsts.writeFlag}; (* output operations are requested/available *)
+  old = FlagSet{ChanConsts.oldFlag};     (* a file may/must/did exist before the channel is opened *)
+  text = FlagSet{ChanConsts.textFlag};   (* text operations are requested/available *)
+  raw = FlagSet{ChanConsts.rawFlag};     (* raw operations are requested/available *)
+
+<B>PROCEDURE</B> Open (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a sequential stream of the given name. The read flag implies old; without the raw flag, text is implied. If successful, assigns to cid the identity of the opened channel, and assigns the value opened to res. If a channel cannot be opened as required, the value of res indicates the reason, and cid identifies the invalid channel.   *)
+ 
+<B>PROCEDURE</B> IsStreamFile (cid: ChanId): <B>BOOLEAN</B>;
+  (* Tests if the channel identified by cid is open to a sequential stream. *)
+ 
+<B>PROCEDURE</B> Close (<B>VAR</B> cid: ChanId);
+  (* If the channel identified by cid is not open to a sequential stream, the exception wrongDevice is raised; otherwise closes the channel, and assigns the value identifying the invalid channel to cid.   *)
+ 
+<B>END</B> StreamFile.</PRE>
+<H3><B>A5.7.2 SeqFile</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SeqFile;
+
+  (* Rewindable sequential files *)
+
+<B>IMPORT</B> IOChan, ChanConsts;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+ 
+  (* Accepted singleton values of FlagSet *)
+ 
+<B>CONST</B>
+  read = FlagSet{ChanConsts.readFlag};   (* input operations are
+requested/available *)
+  write = FlagSet{ChanConsts.writeFlag}; (* output operations are
+requested/available *)
+  old = FlagSet{ChanConsts.oldFlag};     (* a file may/must/did exist before the channel is opened *)
+  text = FlagSet{ChanConsts.textFlag};   (* text operations are
+requested/available *)
+  raw = FlagSet{ChanConsts.rawFlag};     (* raw operations are
+requested/available *)
+ 
+<B>PROCEDURE</B> OpenWrite (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored rewindable file of the given name.
+     The write flag is implied; without the raw flag, text is implied.
+     If successful, assigns to cid the identity of the opened channel, assigns
+the value opened to res, and selects output mode, with the write position at the start of the file (i.e. the file is of zero length).
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel.
+  *)
+ 
+<B>PROCEDURE</B> OpenAppend (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored rewindable file of the given name.
+     The write and old flags are implied; without the raw flag, text is
+implied. If successful, assigns to cid the identity of the opened channel, assigns the value opened to res, and selects output mode, with the write position corresponding to the length of the file.
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel.
+  *)
+ 
+<B>PROCEDURE</B> OpenRead (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored rewindable file of the given name.
+     The read and old flags are implied; without the raw flag, text is implied.
+     If successful, assigns to cid the identity of the opened channel, assigns
+the value opened to res, and selects input mode, with the read position corresponding to the start of the file.
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel.
+  *)
+ 
+<B>PROCEDURE</B> IsSeqFile (cid: ChanId): <B>BOOLEAN</B>;
+  (* Tests if the channel identified by cid is open to a rewindable sequential
+file. *)
+ 
+<B>PROCEDURE</B> Reread (cid: ChanId);
+  (* If the channel identified by cid is not open to a rewindable sequential
+file, the exception wrongDevice is raised; otherwise attempts to set the read position to the start of the file, and to select input mode.
+     If the operation cannot be performed (perhaps because of insufficient
+permissions) neither input mode nor output mode is selected.
+  *)
+ 
+<B>PROCEDURE</B> Rewrite (cid: ChanId);
+  (* If the channel identified by cid is not open to a rewindable sequential
+file, the exception wrongDevice is raised; otherwise, attempts to truncate the file to zero length, and to select output mode.
+     If the operation cannot be performed (perhaps because of insufficient
+permissions) neither input mode nor output mode is selected.
+  *)
+ 
+<B>PROCEDURE</B> Close (<B>VAR</B> cid: ChanId);
+  (* If the channel identified by cid is not open to a rewindable sequential
+file, the exception wrongDevice is raised; otherwise closes the channel, and assigns the value identifying the invalid channel to cid.
+  *)
+ 
+<B>END</B> SeqFile.</PRE>
+<H3><B>A5.7.3 RndFile</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RndFile;
+
+  (* Random access files *)
+
+<B>IMPORT</B> IOChan, ChanConsts, SYSTEM;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+ 
+  (* Accepted singleton values of FlagSet *)
+ 
+<B>CONST</B>
+  read = FlagSet{ChanConsts.readFlag};   (* input operations are
+requested/available *)
+  write = FlagSet{ChanConsts.writeFlag}; (* output operations are
+requested/available *)
+  old = FlagSet{ChanConsts.oldFlag};     (* a file may/must/did exist before the channel is opened *)
+  text = FlagSet{ChanConsts.textFlag};   (* text operations are
+requested/available *)
+  raw = FlagSet{ChanConsts.rawFlag};     (* raw operations are
+requested/available *)
+
+<B>PROCEDURE</B> OpenOld (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored random access file of the given name.
+     The old flag is implied; without the write flag, read is implied; without the text flag, raw is implied.
+     If successful, assigns to cid the identity of the opened channel, assigns
+the value opened to res, and sets the read/write position to the start of the file.
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel.  *)
+ 
+<B>PROCEDURE</B> OpenClean (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored random access file of the given name.
+     The write flag is implied; without the text flag, raw is implied.
+     If successful, assigns to cid the identity of the opened channel, assigns
+the value opened to res, and truncates the file to zero length.
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel.  *)
+ 
+<B>PROCEDURE</B> IsRndFile (cid: ChanId): <B>BOOLEAN</B>;
+  (* Tests if the channel identified by cid is open to a random access file. *)
+
+<B>PROCEDURE</B> IsRndFileException (): <B>BOOLEAN</B>;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of a RndFile exception; otherwise returns FALSE.  *)
+ 
+<B>CONST</B>
+  FilePosSize = 4;  (***** version defined****)
+ 
+<B>TYPE</B>
+  FilePos = <B>ARRAY</B> [1 .. FilePosSize] <B>OF</B> SYSTEM.LOC;  
+ 
+<B>PROCEDURE</B> StartPos (cid: ChanId): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise returns the position of the start of the file.   *)
+ 
+<B>PROCEDURE</B> CurrentPos (cid: ChanId): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the
+exception wrongDevice is raised; otherwise returns the position of the current read/write position.  *)
+
+<B>PROCEDURE</B> EndPos (cid: ChanId): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the
+exception wrongDevice is raised; otherwise returns the first position after which there have been no writes.  *)
+
+<B>PROCEDURE</B> NewPos (cid: ChanId; chunks: <B>INTEGER</B>; chunkSize: <B>CARDINAL</B>; from: FilePos): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the
+exception wrongDevice is raised; otherwise returns the position (chunks * chunkSize) relative to the position given by from, or raises the exception posRange if the required position cannot be represented as a value of type FilePos.  *)
+
+<B>PROCEDURE</B> SetPos (cid: ChanId; pos: FilePos);
+  (* If the channel identified by cid is not open to a random access file, the
+exception wrongDevice is raised; otherwise sets the read/write position to the value given by pos.  *)
+
+<B>PROCEDURE</B> Close (<B>VAR</B> cid: ChanId);
+  (* If the channel identified by cid is not open to a random access file, the
+exception wrongDevice is raised; otherwise closes the channel, and assigns the value identifying the invalid channel to cid.  *)
+
+<B>END</B> RndFile.</PRE>
+<H3><B>A5.7.4 TermFile</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> TermFile;
+
+  (* Access to the terminal device *)
+
+  (* Channels opened by this module are connected to a single terminal device; typed characters are distributed between channels according to the sequence of read requests. *)
+
+<B>IMPORT</B> IOChan, ChanConsts;
+
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+
+  (* Accepted singleton values of FlagSet *)
+
+<B>CONST</B>
+  read = FlagSet{ChanConsts.readFlag};   (* input operations are
+requested/available *)
+  write = FlagSet{ChanConsts.writeFlag}; (* output operations are
+requested/available *)
+  text = FlagSet{ChanConsts.textFlag};   (* text operations are
+requested/available *)
+  raw = FlagSet{ChanConsts.rawFlag};     (* raw operations are
+requested/available *)
+  echo = FlagSet{ChanConsts.echoFlag};   (* echoing by interactive device on reading of characters from input stream requested/applies *)
+
+<B>PROCEDURE</B> Open (<B>VAR</B> cid: ChanId; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to the terminal.
+     Without the raw flag, text is implied.
+     Without the echo flag, line mode is requested, otherwise single character mode is requested.
+     If successful, assigns to cid the identity of the opened channel, and
+assigns the value opened to res.
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel. *)
+
+<B>PROCEDURE</B> IsTermFile (cid: ChanId): <B>BOOLEAN</B>;
+  (* Tests if the channel identified by cid is open to the terminal. *)
+
+<B>PROCEDURE</B> Close (<B>VAR</B> cid: ChanId);
+  (* If the channel identified by cid is not open to the terminal, the exception wrongDevice is raised; otherwise closes the channel and assigns the value identifying the invalid channel to cid. *)
+
+<B>END</B> TermFile.</PRE>
+<H3><B><A NAME="A5.8">A5.8</A> Device Module Constants<!--</B>‹<B>-->--ChanConsts</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ChanConsts;
+
+  (* Common types and values for channel open requests and results *)
+ 
+<B>TYPE</B>
+  ChanFlags =      (* Request flags possibly given when a channel is opened *)
+  ( readFlag,        (* input operations are requested/available *)
+    writeFlag,       (* output operations are requested/available *)
+    oldFlag,         (* a file may/must/did exist before the channel is opened *)
+    textFlag,        (* text operations are requested/available *)
+    rawFlag,         (* raw operations are requested/available *)
+    interactiveFlag, (* interactive use is requested/applies *)
+    echoFlag         (* echoing by interactive device on removal of characters from input stream requested/applies *)
+  );
+ 
+  FlagSet = <B>SET</B> <B>OF</B> ChanFlags;
+ 
+  (* Singleton values of FlagSet, to allow for example, read + write *)
+ 
+<B>CONST</B>
+  read = FlagSet{readFlag};   (* input operations are requested/available *)
+  write = FlagSet{writeFlag}; (* output operations are requested/available *)
+  old = FlagSet{oldFlag};     (* a file may/must/did exist before the channel is
+opened *)
+  text = FlagSet{textFlag};   (* text operations are requested/available *)
+  raw = FlagSet{rawFlag};     (* raw operations are requested/available *)
+  interactive = FlagSet{interactiveFlag}; (* interactive use is
+requested/applies *)
+  echo = FlagSet{echoFlag};   (* echoing by interactive device on removal of
+characters from input stream requested/applies *)
+ 
+<B>TYPE</B>
+  OpenResults =        (* Possible results of open requests *)
+    (opened,           (* the open succeeded as requested *)
+     wrongNameFormat,  (* given name is in the wrong format for the
+implementation *)
+     wrongFlags,       (* given flags include a value that does not apply to the device *)
+     tooManyOpen,      (* this device cannot support any more open channels *)
+     outOfChans,       (* no more channels can be allocated *)
+     wrongPermissions, (* file or directory permissions do not allow request *)
+     noRoomOnDevice,   (* storage limits on the device prevent the open *)
+     noSuchFile,       (* a needed file does not exist *)
+     fileExists,       (* a file of the given name already exists when a new one is required *)
+     wrongFileType,    (* the file is of the wrong type to support the required operations *)
+     noTextOperations, (* text operations have been requested, but are not supported *)
+     noRawOperations,  (* raw operations have been requested, but are not supported *)
+     noMixedOperations,(* text and raw operations have been requested, but they are not supported in combination *)
+     alreadyOpen,      (* the source/destination is already open for operations not supported in combination with the requested operations *)
+     otherProblem      (* open failed for some other reason *)
+    );
+ 
+<B>END</B> ChanConsts.</PRE>
+<H3><B><A NAME="A5.9">A5.9</A> Linking Drivers To Channels<!--</B>‹<B>-->--IOLink</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> IOLink;
+
+  (* Types and procedures for the standard implementation of channels *)
+ 
+<B>IMPORT</B> IOChan, IOConsts, ChanConsts, SYSTEM;
+ 
+<B>TYPE</B>
+  DeviceId;
+    (* Values of this type are used to identify new device modules, and are normally obtained by them during their initialization.
+    *)
+ 
+<B>PROCEDURE</B> AllocateDeviceId (<B>VAR</B> did: DeviceId);
+  (* Allocates a unique value of type DeviceId, and assigns this value to did. *)
+ 
+<B>PROCEDURE</B> MakeChan (did: DeviceId; <B>VAR</B> cid: IOChan.ChanId);
+  (* Attempts to make a new channel for the device module identified by did.  If no more channels can be made, the identity of the invalid channel is assigned to cid. Otherwise, the identity of a new channel is assigned to cid.  *)
+ 
+<B>PROCEDURE</B> UnMakeChan (did: DeviceId; <B>VAR</B> cid: IOChan.ChanId);
+  (* If the device module identified by did is not the module that made the channel identified by cid, the exception wrongDevice is raised; otherwise the channel is deallocated, and the value identifying the invalid channel is assigned to cid. *)
+ 
+<B>TYPE</B>
+  DeviceTablePtr = <B>POINTER</B> <B>TO</B> DeviceTable;
+    (* Values of this type are used to refer to device tables *)
+ 
+<B>TYPE</B>
+  LookProc =      <B>PROCEDURE</B> (DeviceTablePtr, <B>VAR</B> <B>CHAR</B>, <B>VAR</B> IOConsts.ReadResults);
+  SkipProc =      <B>PROCEDURE</B> (DeviceTablePtr);
+  SkipLookProc =  <B>PROCEDURE</B> (DeviceTablePtr, <B>VAR</B> <B>CHAR</B>, <B>VAR</B> IOConsts.ReadResults);
+  WriteLnProc =   <B>PROCEDURE</B> (DeviceTablePtr);
+  TextReadProc =  <B>PROCEDURE</B> (DeviceTablePtr, SYSTEM.ADDRESS, <B>CARDINAL</B>, <B>VAR</B> <B>CARDINAL</B>);
+  TextWriteProc = <B>PROCEDURE</B> (DeviceTablePtr, SYSTEM.ADDRESS, <B>CARDINAL</B>);
+  RawReadProc =   <B>PROCEDURE</B> (DeviceTablePtr, SYSTEM.ADDRESS, <B>CARDINAL</B>, <B>VAR</B> <B>CARDINAL</B>);
+  RawWriteProc =  <B>PROCEDURE</B> (DeviceTablePtr, SYSTEM.ADDRESS, <B>CARDINAL</B>);
+  GetNameProc =   <B>PROCEDURE</B> (DeviceTablePtr, <B>VAR</B> <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  ResetProc =     <B>PROCEDURE</B> (DeviceTablePtr);
+  FlushProc =     <B>PROCEDURE</B> (DeviceTablePtr);
+  FreeProc =      <B>PROCEDURE</B> (DeviceTablePtr);
+      (* Carry out the operations involved in closing the corresponding channel, including flushing buffers, but do not unmake the channel. *)
+ 
+<B>TYPE</B>
+  DeviceData = SYSTEM.ADDRESS;
+ 
+  DeviceTable =
+    <B>RECORD</B>                         (* Initialized by MakeChan to: *)
+      cd: DeviceData;              (* the value NIL *)
+      did: DeviceId;               (* the value given in the call of MakeChan *)
+      cid: IOChan.ChanId;          (* the identity of the channel *)
+      result: IOConsts.ReadResults;(* the value notKnown *)
+      errNum: IOChan.DeviceErrNum; (* undefined *)
+      flags: ChanConsts.FlagSet;   (* ChanConsts.FlagSet{} *)
+      doLook: LookProc;            (* raise exception notAvailable *)
+      doSkip: SkipProc;            (* raise exception notAvailable *)
+      doSkipLook: SkipLookProc;    (* raise exception notAvailable *)
+      doLnWrite: WriteLnProc;      (* raise exception notAvailable *)
+      doTextRead: TextReadProc;    (* raise exception notAvailable *)
+      doTextWrite: TextWriteProc;  (* raise exception notAvailable *)
+      doRawRead: RawReadProc;      (* raise exception notAvailable *)
+      doRawWrite: RawWriteProc;    (* raise exception notAvailable *)
+      doGetName: GetNameProc;      (* return the empty string *)
+      doReset: ResetProc;          (* do nothing *)
+      doFlush: FlushProc;          (* do nothing *)
+      doFree: FreeProc;            (* do nothing *)
+    <B>END</B>;
+ 
+  (* The pointer to the device table for a channel is obtained using the following procedure: *)
+ 
+<B>PROCEDURE</B> DeviceTablePtrValue (cid: IOChan.ChanId; did: DeviceId): DeviceTablePtr;
+  (* If the device module identified by did is not the module that made the channel identified by cid, the exception wrongDevice is raised; otherwise returns a pointer to the device table for the channel.  *)
+ 
+<B>PROCEDURE</B> IsDevice (cid: IOChan.ChanId; did: DeviceId): <B>BOOLEAN</B>;
+  (* Tests if the device module identified by did is the module that made the channel dentified by cid. *)
+ 
+<B>TYPE</B>
+  DevExceptionRange = [IOChan. notAvailable .. IOChan. textParseError];
+
+<B>PROCEDURE</B> RAISEdevException (cid: IOChan.ChanId; did: DeviceId;
+                             x: DevExceptionRange; s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* If the device module identified by did is not the module that made the channel identified by cid, the exception wrongDevice is raised; otherwise the given exception is raised, and the string value in s is included in the exception message. *)
+ 
+<B>PROCEDURE</B> IsIOException (): <B>BOOLEAN</B>;
+  (* If the current coroutine is in the exceptional execution state
+     because of the raising of an exception from ChanExceptions;
+   otherwise returns FALSE. *)
+ 
+<B>PROCEDURE</B> IOException (): IOChan.ChanExceptions;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of an exception from ChanExceptions, returns the corresponding enumeration value, and otherwise raises an exception. *)
+
+<B>END</B> IOLink.</PRE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

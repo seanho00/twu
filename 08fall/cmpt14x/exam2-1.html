@@ -1,0 +1,228 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT140 Fall 2008 Final Exam (part 1), Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 60
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[5]</u><br><br>
+<i>Write, Apprehend, Design, Execute, Scrutinize<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Describe the five software <b>control/flow</b> 
+abstractions mentioned in the text. 
+For each one, also name a corresponding Python language construct.
+<u>[5]</u><br><br>
+<i>Sequence (newlines in Python), Selection (if/elif/else),
+Repetition (while/for), Composition (def/functions), Parallelism<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+<br>
+
+<li>
+Show the contents of <tt>appleNames</tt>, <tt>myApples</tt>, and
+<tt>yourApples</tt> after the following Python code is executed:
+<u>[4]</u>
+<pre>
+	appleNames = [ "Fuji", "Gala", "Empire", "Jonagold" ]
+	myApples = appleNames
+	yourApples = appleNames[1:3]
+	myApples[2] = "Rome"
+</pre>
+<br><i><pre>
+	appleNames: [ "Fuji", "Gala", "Rome", "Jonagold" ]
+	myApples: [ "Fuji", "Gala", "Rome", "Jonagold" ]
+	yourApples: [ "Gala", "Empire" ]
+</pre></i>
+<br><br><br>
+
+<li>
+Recall that in Python int/float/bool parameters are essentially passed 
+by <b>value</b>, and lists/dictionary parameters are essentially
+passed by <b>reference</b>.  What is printed by the following block of Python
+code?
+<u>[4]</u>
+<pre>
+	def double_me(x):
+		x *= 2
+	y = 3
+	z = range(3)
+	double_me(y)
+	double_me(z)
+	print 'y =', y, ', z =', z
+</pre>
+
+<i><pre>
+y = 3, z = [0, 1, 2, 0, 1, 2]
+</pre>
+The variable y points to an immutable object (the float 3.0) and is
+roughly pass-by-value, so it is not affected by double_me().  
+The variable z points to a mutable object (the list range(3)) and is 
+roughly pass-by-reference, so it is changed by double_me().  
+The real scoop on Python parameter passing is 
+<a href="http://effbot.org/zone/call-by-object.htm">call-by-object</a>
+and is a bit more complicated; it has to do with Python's
+object-oriented roots.
+</i>
+<br><br>
+
+<li>
+Describe at least four kinds of documentation (internal or external) that you
+should have in your Python programs.  <u>[4]</u>
+<br><i>
+  Comments, docstrings, online help, good identifiers, user manual,
+  programmer's diary, etc....
+</i><br><br><br><br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+<u>[11]</u>
+<ol class="subparts">
+<li><tt> 2%2**2+2*2 </tt>		<i>6</i>
+<li><tt> 2 + 3&gt;4 and 2 == 14.0//4.0</tt>	<i>False</i>
+<li><tt> 'pi' + 2*'z' + 'a' </tt>	<i>'pizza'</i>
+<li><tt> not False or (12 % 0) </tt>	<i>True</i>
+<li><tt> range(len(range(-1, 2))) </tt>	<i>[ 0, 1, 2 ]</i>
+<li><tt> len(range(1, 5)) = len(range(4)) </tt>	<i>SyntaxError (assignment)</i>
+<li><tt> 3*range(2) </tt>		<i>[ 0, 1, 0, 1, 0, 1 ]</i>
+<li><tt> chr(ord('p') - 3) </tt>	<i>'m'</i>
+<li><tt> "%s%04d.jpg" % ('img-', 99.9)</tt>	<i>'img-0099.jpg'</i>
+<li><tt> '%05.1f' % (17.0 / 4)</tt>	<i>'004.2' (or '004.3' is also okay)</i>
+<li><tt> 0 in range(3) </tt>		<i>True</i>
+</ol>
+<br>
+
+<li>
+What is output by the following block of Python code? <u>[3]</u>
+<pre>
+myList = [ "Hi there", ("hi", "there"), range(10, 40, 5), [ range(5) * 2 ] ]
+for item in myList:
+	print len(item),
+</pre>
+<br><i>'8 2 6 1 '</i>
+<br>
+
+<li>
+Compare and contrast Python <b>lists</b> with C/M2 arrays <u>[4]</u>
+<br><i>
+         Python lists can change length (can insert/delete), can have items of
+       differing type, can have items which change type (due to Python's
+       dynamic typing), and have various operators/functions defined on them,
+       such as del, len(), negative indexing, list slicing, etc.
+</i><br><br><br><br><br><br><br>
+
+<li>Evaluate the following Python block: <u>[3]</u>
+<pre>
+	x = 10
+	while x &gt; 0:
+		if x%2 == 0:
+			continue
+		print x,
+		x -= 1
+	else:
+		print "Blastoff!"
+</pre>
+<br><i>
+  The loop doesn't finish!  Nothing is printed, and the loop spins forever.
+  The first 'if' is true, and x doesn't get decremented, so it keeps 
+  'continue'-ing forever.  (To fix it, consider moving the if statement to the
+  end of the loop, after the decrement.)
+</i><br><br>
+
+<li>
+Tell me everything you know about software <b>pseudo-random number generators</b>.
+<u>[4]</u>
+<br><br><i>
+  A software RNG is a function that yields a new random number every time it is
+  called.  Usually, no parameters are required, and the function returns a float
+  in the range [0,1).  A software RNG works by taking the output of the last
+  invocation of the function, performing a bunch of math to "randomize", and
+  returning a new number in the appropriate range.  As a result, it needs to
+  keep track of the last generated value.  The software RNG can be "seeded"
+  with a user-supplied value; given the same seed, the RNG will always
+  yield the same sequence of "random" numbers.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Describe and contrast a <b>header</b> (DEF) file with an <b>implementation</b>
+(IMP) file. <u>[3]</u>
+<br><br><i>
+  Header: public interface, doesn't define bodies of functions, like a car's
+  owner/user manual.<br>
+Implementation: contains bodies of the functions; like a car's shop manual.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Consider a Caesar <b>substitution cipher</b> on a reduced alphabet of just the
+letters A through J (ten letters).  Using the key '<tt>FCHDAJIEBG</tt>',
+encode the cleartext string "<tt>Jeff cached a big bag</tt>" <u>[3]</u>
+<br><i>"GAJJ HFHEAD F CBI CFI"</i>
+<br><br><br>
+
+<li>
+Using the same key and alphabet as the previous question, construct the
+<b>decode key</b>: <u>[3]</u>
+<br><i>"EIBDHAJCGF"</i>
+<br><br><br>
+
+<li>
+Write and document a simple Python function that returns a <b>factorial</b> (n!).
+The input should come from a parameter (not keyboard input), and the output should
+be via return value (not console output).  Include docstring and pre/post conditions.
+<u>[4]</u>
+<br>
+<i><pre>
+	def factorial(n):
+		"""Return n-factorial, n!
+
+		pre: n must be a positive integer.
+		post: returns a positive integer, n!
+		"""
+		if n &lt;= 1:
+			return 1
+		return n * factorial(n-1)
+</pre>
+
+</ol>
+
+</body></html>
+
+

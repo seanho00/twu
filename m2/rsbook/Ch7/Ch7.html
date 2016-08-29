@@ -1,0 +1,89 @@
+<HTML><HEAD><TITLE>Chapter 7: Solving Real World Problems in Modula-2</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<CENTER><H1><B>Chapter 7<BR>
+Solving Real World Problems in Modula-2</B></H1></CENTER>
+<BR><A class = navgrn HREF="Ch7.0.html">7.0 Chapter Goals</A><!--	276-->
+<BR><A class = navgrn HREF="Ch7.1.html">7.1 Introduction to Some Applications of Modula-2</A><!--	276-->
+<P><b>Part A<!--‹-->--Strings</b></P>
+<A class = navgrn HREF="Ch7.2.html">7.2 Communicating in English</A><!--	277-->
+<BR><A class = navgrn HREF="Ch7.3.html">7.3 Library String Functions</A><!--	281-->
+<BR><A class = navgrn HREF="Ch7.4.html">7.4 Comparing and Manipulating Strings</A><!--	286-->
+<BR><A class = navgrn HREF="Ch7.5.html">7.5 An Application for Strings<!--‹-->--Program Menus</A><!--	289-->
+<BR><A class = navgrn HREF="Ch7.6.html">7.6 Message Encoding and Cryptography</A><!--	294-->
+<P><b>Part B<!--‹-->--Other Applications</b></P>
+<A class = navgrn HREF="Ch7.7.html">7.7 Some Statistical Tools</A><!--	300-->
+<BR><A class = navgrn HREF="Ch7.8.html">7.8 Random Numbers</A><!--	307-->
+<BR><A class = navgrn HREF="Ch7.9.html">7.9 Longer Cardinals</A><!--	314-->
+<BR><A class = navgrn HREF="Ch7.10.html">7.10 Matrices</A><!--	319-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch7.10.html#7.10.1">  7.10.1 Matrix Operations</A><!--	319-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch7.10.html#7.10.2">  7.10.2 Matrices and Determinants</A><!--	320-->
+<BR><A class = navgrn HREF="Ch7.11.html">7.11 Applications from Physics</A><!--	328-->
+<BR><A class = navgrn HREF="Ch7.12.html">7.12 Further Applications From Business</A><!--	333-->
+<BR><A class = navgrn HREF="Ch7.13.html">7.13 Chapter Summary</A><!--	335-->
+<BR><A class = navgrn HREF="Ch7.14.html">7.14 Assignments</A><!--	335-->
+
+<!--Version History:
+Version 3.0 released to MS 1993 09 01
+Version 3.02a with character graphics for Deane 1994 02 03
+Version 3.02b added string concatination operator material from standard
+Version 3.03 with table of contents 1994 09 14 cleanup 1994 10 23
+Version 3.03b with corrected table of contents 1994 09 14 
+Version 3.03c cleanup 1994 10 23
+Version 4.0 with HTML markup by G. Tisher May 1995
+Version 4.0.2 corrected 1997 07 02 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch7.0.html»
+«INCLUDE Ch7.1.html»
+«INCLUDE Ch7.2.html»
+«INCLUDE Ch7.3.html»
+«INCLUDE Ch7.4.html»
+«INCLUDE Ch7.5.html»
+«INCLUDE Ch7.6.html»
+«INCLUDE Ch7.7.html»
+«INCLUDE Ch7.8.html»
+«INCLUDE Ch7.9.html»
+«INCLUDE Ch7.10.html»
+«INCLUDE Ch7.11.html»
+«INCLUDE Ch7.12.html»
+«INCLUDE Ch7.13.html»
+«INCLUDE Ch7.14.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

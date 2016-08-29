@@ -1,0 +1,320 @@
+<HTML><HEAD><TITLE>Appendix 4--Classical Library Modules</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 4<!--‹-->--Classical Library Modules</B></H2>
+
+<P><!--revised 1997 07 11--></P>
+<P>The main modules described by Niklaus Wirth and suggested for adoption in Modula-2 are described in this Appendix.  Although the detailed semantics varies widely in some cases, they can be assumed to be a part of all older (pre-ISO) versions, and are included alongside the ISO modules by some vendors as well.</P>
+<H3><B><A NAME="A4.1">A4.1</A>  High Level Input and Output</B></H3>
+<H3><B>A4.1.1  InOut</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> InOut; 
+<B>CONST</B>
+  <B>EOL</B> = 15C;   (* hardware dependant<!--‹-->--could also be 36C *)
+
+<B>VAR</B>
+  Done: <B>BOOLEAN</B>; 
+  termCH: <B>CHAR</B>; 
+<B>PROCEDURE</B> OpenInput (defext: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> OpenOutput (defext: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> CloseInput;
+<B>PROCEDURE</B> CloseOutput;
+<B>PROCEDURE</B> Read (<B>VAR</B> ch: <B>CHAR</B>);
+<B>PROCEDURE</B> ReadString (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> ReadInt (<B>VAR</B> x: <B>INTEGER</B>);
+<B>PROCEDURE</B> ReadCard (<B>VAR</B> x: <B>CARDINAL</B>);
+<B>PROCEDURE</B> Write (ch: <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn;
+<B>PROCEDURE</B> WriteString (s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> WriteInt (x: <B>INTEGER</B>; n: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteCard (x, n: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteOct (x, n: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteHex (x, n: <B>CARDINAL</B>);
+<B>END</B> InOut.</PRE>
+<P><B>NOTES</B>: 1. In some cases <I>InOut</I> may incorporate <I>RealInOut</I>.</P>
+<P>	2. Many implementations place <I>termCH</I> in <I>Terminal</I>.</P>
+<P>	3. Some include the procedure <I>ClearScreen</I>.</P>
+<P>	4. The syntax and semantics of <I>OpenInput</I> and <I>OpenOutput</I> vary widely from one classical implementation to another.</P>
+<H3><B>A4.1.2 RealInOut</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RealInOut; 
+<B>VAR</B> 
+  Done: <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> ReadReal (<B>VAR</B> x: <B>REAL</B>);
+<B>PROCEDURE</B> WriteReal (x: <B>REAL</B>; n: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteRealOct (x: <B>REAL</B>);
+<B>END</B> RealInOut.</PRE>
+<P><B>NOTE</B>:  The syntax and semantics of <I>WriteReal</I> widely from one classical implementation to another.</P>
+<H3><B>A4.1.3  Terminal</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Terminal; 
+<B>PROCEDURE</B> Read (<B>VAR</B> ch: <B>CHAR</B>);
+<B>PROCEDURE</B> ReadLn (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>); (* stops at end-of-line *) <B>PROCEDURE</B> BusyRead (<B>VAR</B> ch: <B>CHAR</B>);
+<B>PROCEDURE</B> ReadAgain;
+<B>PROCEDURE</B> Write (ch: <B>CHAR</B>);
+<B>PROCEDURE</B> WriteString (s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn; 
+<B>END</B> Terminal.</PRE>
+<P><B>NOTE</B>:  Where supplied, the contents of this module vary.  The following module may be included in <I>Terminal</I> or be separate.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Screen; 
+<B>PROCEDURE</B> HomeCursor;
+<B>PROCEDURE</B> ClearScreen;
+<B>PROCEDURE</B> EraseLine;
+<B>PROCEDURE</B> GotoXY (x, y: <B>CARDINAL</B>); 
+<B>END</B> Screen.</PRE>
+<H3><B><A NAME="A4.2">A4.2</A> Mathematical Functions</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> MathLib0; 
+<B>PROCEDURE</B> sqrt (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> exp (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> ln (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> sin (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> cos (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> arctan (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> real (x: <B>INTEGER</B>): <B>REAL</B>;
+<B>PROCEDURE</B> entier (x: <B>REAL</B>): <B>INTEGER</B>; 
+<B>END</B> MathLib0.</PRE>
+<P>Several versions add:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> MathLibLong;   (* may be called <!--"-->&quot;LongMath<!--"-->&quot; *) 
+<B>PROCEDURE</B> sqrt (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> exp (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> ln (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> sin (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> cos (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> arctan (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> real (x: <B>LONGINTEGER</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> entier (x: <B>LONGREAL</B>): <B>LONGINTEGER</B>; 
+<B>END</B> MathLibLong.</PRE>
+<P><B>NOTE</B>:  The contents of mathematical libraries vary widely in classival versions.  Some may include:</P>
+<PRE>
+<B>CONST</B>
+   pi = 3.1415926536;
+   e  = 2.7182818284;</PRE>
+<H3><B><A NAME="A4.3">A4.3</A> SYSTEM and Other Low Level and System Access Modules</B></H3>
+<P>The module SYSTEM is properly termed a <I>psuedo-Module</I> as it does not exist in the library, but is entirely contained inside the compiler.  Nonetheless, it behaves in most classical versions as though it had the definition given.</P>
+<PRE>
+<B>DEFINITION</B> pseudo-MODULE <B>SYSTEM</B>;
+<B>TYPE</B>
+  ADDRESS; WORD;
+<B>PROCEDURE</B> ADR (anyObject: <B>ARRAY</B> <B>OF</B> WORD): ADDRESS;
+<B>PROCEDURE</B> SIZE (anyObject: <B>ARRAY</B> <B>OF</B> WORD): <B>CARDINAL</B>; 
+   (* older versions<!--‹-->--newer ones have it as a built-in *) <B>PROCEDURE</B> TSIZE (anyType [,optional variant list] ): <B>CARDINAL</B>;
+<B>PROCEDURE</B> NEWPROCESS (nameOfProcess : <B>PROC</B>;
+          workspace  : ADDRESS;              
+          sizeOfSpace   : <B>CARDINAL</B>;
+          <B>VAR</B> newProc  : ADDRESS);
+<B>PROCEDURE</B> TRANSFER  (<B>VAR</B> oldProcess : ADDRESS; <B>VAR</B> newProcess : ADDRESS);
+<B>PROCEDURE</B> IOTRANSFER (<B>VAR</B> oldProcess : ADDRESS; <B>VAR</B> newProcess : ADDRESS);
+(* Not all implement the latter *)
+<B>END</B> SYSTEM.</PRE>
+<P><B>NOTE</B>:  The contents of this library vary widely in classical versions.  Many other entities may be included, such as:</P>
+<PRE>
+<B>TYPE</B>
+   BYTE;
+   SHORTWORD;
+   LONGWORD;
+   QUADWORD;
+   OCTWORD;
+   HEXWORD;</PRE>
+<H3><B><A NAME="A4.4">A4.4</A> Storage</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Storage; 
+<B>FROM</B> SYSTEM <B>IMPORT</B> 
+  ADDRESS; 
+<B>PROCEDURE</B> ALLOCATE (<B>VAR</B> p: ADDRESS; size: <B>CARDINAL</B>);
+<B>PROCEDURE</B> DEALLOCATE (<B>VAR</B> p: ADDRESS; size: <B>CARDINAL</B>);
+<B>PROCEDURE</B> Available (size: <B>CARDINAL</B>): <B>BOOLEAN</B>; 
+<B>END</B> Storage.</PRE>
+<H3><B><A NAME="A4.5">A4.5</A> String Handling</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Strings; 
+  <B>TYPE</B>
+    STRING = <B>ARRAY</B> [0..80] <B>OF</B> <B>CHAR</B>; 
+
+<B>PROCEDURE</B> Assign (<B>VAR</B> source, dest: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>); 
+<B>PROCEDURE</B> Insert (substr: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; <B>VAR</B> str: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; index: <B>CARDINAL</B>); 
+<B>PROCEDURE</B> Delete (<B>VAR</B> str: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; index: <B>CARDINAL</B>; len: <B>CARDINAL</B>); 
+<B>PROCEDURE</B> Pos (substr, str: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>; 
+<B>PROCEDURE</B> Copy (str: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; index: <B>CARDINAL</B>; len: <B>CARDINAL</B>; 
+          <B>VAR</B> result: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>); 
+<B>PROCEDURE</B> Concat (s1, s2: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; <B>VAR</B> result: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>); 
+<B>PROCEDURE</B> Length (<B>VAR</B> str: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>; 
+<B>PROCEDURE</B> CompareStr (s1, s2: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>INTEGER</B>; 
+           (* returns -1 if s1 <!--<-->&lt; s2  0 if s1 = s2  1 if s1 <!-->&gt; s2 *)
+<B>END</B> Strings.</PRE>
+<P>This module (or some other) may also contain facilities for conversions to another type of string employed by the operating system, such as the Macintosh (Pascal) strings that are used to call the file manager.  Some possible names and syntax are given below:</P>
+<PRE>
+<B>FROM</B> MacSystemTypes <B>IMPORT</B>
+  Str255;
+<B>PROCEDURE</B> StrModToPas (<B>VAR</B> dest: Str255; source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> StrPasToMod (<B>VAR</B> dest: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; source: Str255);
+<B>PROCEDURE</B> WritePasString (string: Str255);
+<B>PROCEDURE</B> StrPasCat (<B>VAR</B> source1AndResult: Str255; source2: Str255);</PRE>
+<P><B>NOTE</B>: Contents of string handling modules vary widely from one classical version to another.  Even where two versions have similarly named modules, the syntax (order of parameters) may be different.</P>
+<P>Some classical versions make available a variety of string/numeric conversion routines that are called by the high level I/O modules after they read a token (string) from the input stream.  Examples include:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Conversions; 
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+   WORD; 
+
+<B>PROCEDURE</B> IntToStr (i: <B>INTEGER</B>; <B>VAR</B> s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> StrToInt (s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; <B>VAR</B> i: <B>INTEGER</B>): <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> CardToStr (c: <B>CARDINAL</B>; <B>VAR</B> s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> StrToCard (s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; <B>VAR</B> c: <B>CARDINAL</B>): <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> HexToStr (w: WORD; <B>VAR</B> s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> StrToHex (s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; <B>VAR</B> w: WORD): <B>BOOLEAN</B>; 
+<B>PROCEDURE</B> RealToStr (r: <B>REAL</B>; width: <B>CARDINAL</B>; decPlaces: <B>INTEGER</B>; <B>VAR</B> s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>);
+<B>PROCEDURE</B> StrToReal (s: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; <B>VAR</B> r: <B>REAL</B>;) : <B>BOOLEAN</B>; 
+
+<B>END</B> Conversions.</PRE>
+<H3><B><A NAME="A4.6">A4.6</A> File I/O</B></H3>
+<P>In the early years of Modula-2, there were a very wide variety of file handling techniques, and earlier works by this author included pointers for writing a <!--"-->&quot;standard<!--"-->&quot; set of modules, so that readers could all use the same file interface.  Those suggestions were taken to heart by many vendors, and gradually a model similar to the one in this section became common in the classical versions, though still with numerous variations in style, syntax, and semantics.</P>
+<P>The general characteristics of this model are as follows:</P>
+<P>1. <I>File</I> (or <I>FILE</I>) may be either a transparant or an opaque type.  This is the type of the logical (program) variables which are associated with physical files through the procedure <I>Open</I>.</P>
+<P>2. Only minimal text writing facilities are provided in the module <I>Files</I>(or <I>FileSystem</I>, or <I>Filer</I>) , as it is designed more for random access files.</P>
+<P>3. Text I/O is generally handled by a separate module, but using the type <I>File</I> directly.</P>
+<P>4. The type <I>FilePos</I> is usually not an opaque type.</P>
+<P>5. Facilities are sometimes provided for looking up file names and for reading and parsing them from the terminal.</P>
+<P>6. The main file handling module includes some or all of:</P>
+<H3><B>A4.6.1 The File System Module</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> FileSystem; 
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  WORD, ADDRESS, BYTE; 
+
+<B>TYPE</B>
+  File; 
+  Response = (done, notdone, notsupported, callerror, unknownmedium, unknownfile, paramerror, toomanyfiles, eom, deviceoff, softparityerror, softprotected, softerror, hardparityerror, hardprotected, timeout, harderror);
+
+  (* File Management *)
+
+<B>PROCEDURE</B> FileState (f: File) : Response;
+<B>PROCEDURE</B> Lookup (<B>VAR</B> f: File; name: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>; new: <B>BOOLEAN</B>); 
+  (* new = permission to create if not found *)
+<B>PROCEDURE</B> Create (<B>VAR</B> f: File; mediumName: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>);
+  (* file created is temporary and nameless*) 
+<B>PROCEDURE</B> Rename (<B>VAR</B> f: File; filename: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>); 
+  (* needed to make a temporary file permanent.  The reverse happens if the name given is empty. *)
+<B>PROCEDURE</B> Close (<B>VAR</B> f: File); 
+  (* Only those with nonempty names will remain in the directory after being closed. *)
+<B>PROCEDURE</B> Delete (filename: <B>ARRAY</B>  <B>OF</B> <B>CHAR</B>); 
+<B>PROCEDURE</B> SetRead (<B>VAR</B> f: File);
+<B>PROCEDURE</B> SetWrite (<B>VAR</B> f: File);
+<B>PROCEDURE</B> SetModify (<B>VAR</B> f: File);
+<B>PROCEDURE</B> SetOpen (<B>VAR</B> f: File);  (* where present, cancels any of the last three *)
+
+   (* File Information *)
+<B>PROCEDURE</B> Eof (f: File): <B>BOOLEAN</B>; 
+
+    (* Sequential File Access -- Textual Material *)
+<B>PROCEDURE</B> ReadChar (f: File; <B>VAR</B> ch: <B>CHAR</B>); 
+<B>PROCEDURE</B> WriteChar (f: File; ch: <B>CHAR</B>); 
+
+    (* Binary File Access *)
+<B>PROCEDURE</B> ReadWord (f: File; w: WORD);
+<B>PROCEDURE</B> WriteWord (f: File; w: WORD);
+<B>PROCEDURE</B> Again (<B>VAR</B> f: File); 
+ (* sets position back to beginning or previously read WORD or <B>CHAR</B> *)
+<B>PROCEDURE</B> ReadByte (f: File; w: BYTE);
+<B>PROCEDURE</B> WriteByte (f: File; w: BYTE);
+<B>PROCEDURE</B> ReadNBytes (<B>VAR</B> f: File; buf: ADDRESS; numBytesRequested: <B>CARDINAL</B>; <B>VAR</B> numRead: <B>CARDINAL</B>); 
+<B>PROCEDURE</B> WriteNBytes (<B>VAR</B> f: File; buf: ADDRESS; numBytesToWrite: <B>CARDINAL</B>; <B>VAR</B> numWritten: <B>CARDINAL</B>); 
+
+    (* Random Access Files *)
+<B>PROCEDURE</B> GetPos (f: File; <B>VAR</B> highpos, lowpos: <B>CARDINAL</B>); 
+<B>PROCEDURE</B> SetPos (f: File; highpos, lowpos: <B>CARDINAL</B>); 
+<B>PROCEDURE</B> Length (f: File; highpos, lowpos: <B>CARDINAL</B>); 
+   (* last three use a single <B>LONGCARD</B> for position if this type is available *)
+<B>PROCEDURE</B> Reset (<B>VAR</B> f: File);
+  (* sets state to open and position to beginning of file *)
+
+<B>END</B> FileSystem.</PRE>
+
+<P>An alternate is the module <i>Filer</i>.  See <A HREF="Ap6.html#6.2">A6.2</A>.</P>
+<H3><B>A4.6.2 The Classical Module TextIO</B></H3>
+<P>In classical versions, the module in this section is commonly provided in conjunction with the above and used to provide all textual I/O using the type <I>File</I></P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> TextIO;
+
+<B>FROM</B> Files <B>IMPORT</B>
+  File;
+  
+<B>CONST</B>
+  <B>EOL</B> = 15C;
+  
+<B>VAR</B>
+  Done : <B>BOOLEAN</B>;
+  termCH : <B>CHAR</B>;
+
+<B>PROCEDURE</B> WriteString (f : File; s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn (f : File);
+<B>PROCEDURE</B> WriteInt (f : File; i : <B>INTEGER</B>; flen : <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteCard (f : File; c : <B>CARDINAL</B>; flen : <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteReal (f : File; r : <B>REAL</B>; flen : <B>CARDINAL</B>; digits: <B>INTEGER</B>);
+<B>PROCEDURE</B> ReadString (f : File; <B>VAR</B> s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> ReadInt (f : File; <B>VAR</B> i : <B>INTEGER</B>);
+<B>PROCEDURE</B> ReadCard (f : File; <B>VAR</B> c : <B>CARDINAL</B>);
+<B>PROCEDURE</B> ReadReal (f : File; <B>VAR</B> r : <B>REAL</B>);
+<B>END</B> TextIO.</PRE>
+<P><B>WARNING</B>: The least reliance can be placed on comments made here about the contents of file handling modules.  In classical versions, even the convergence on the common model found in this section never meant that there was much uniformity.  This was one of the principal reasons for the ISO standards effort.</P>
+<H3><B><A NAME="A4.7">A4.7</A> Character Information<!--</B>‹<B>-->--ASCII</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ASCII; 
+
+<B>CONST</B>
+  nul = 00C; soh = 01C; stx = 02C; etx = 03C; eot = 04C; enq = 05C;
+  ack = 06C; bel = 07C; bs  = 10C; ht  = 11C; lf  = 12C; vt  = 13C;
+  ff  = 14C; cr  = 15C; so  = 16C; si  = 17C; dle = 20C; dc1 = 21C;
+  dc2 = 22C; dc3 = 23C; dc4 = 24C; nak = 25C; syn = 26C; etb = 27C;
+  can = 30C; em  = 31C; sub = 32C; esc = 33C; fs  = 34C; gs  = 35C;
+  rs  = 36C; us  = 37C; del = 177C; 
+
+<B>END</B> ASCII.
+
+Some versions add:
+
+<B>CONST</B>
+  EOL = 36C;  space = 40C;</PRE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

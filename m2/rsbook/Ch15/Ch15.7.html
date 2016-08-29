@@ -1,0 +1,416 @@
+<HTML><HEAD><TITLE>15.7 A Generic List Type With Array of LOC</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Generic List Type With Array of LOC">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.7 A Generic List Type With ARRAY OF LOC </B></H2>
+<P>With the question of assignment out of the way, the Lists module of chapter 12 can be modified to be entirely generic, using ARRAY OF LOC for its parameters, and the above procedures for assignments.  However, there is a down side to the increased flexibility, and that is that ARRAY OF LOC parameters have no type checking whatsoever.  This means that anything could be passed to the procedure that adds an item to the list, and there would be no way of checking to ensure the data type is correct.  However, the approach shown here is a typical one in ISO Standard Modula-2.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> Lists;
+
+(* Generic implementation of lists (not safely type checked) *)
+(* copyright © 1995 by R. Sutcliffe *)
+(* last modification 1995 03 31 *)
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  LOC;
+
+<B>TYPE</B>
+  List;
+  Operation = (insert, delete, fetchup);
+
+<B>PROCEDURE</B> Create (itemSize : <B>CARDINAL</B>) : List;
+  (* Pre: itemSize is the size in storage units of the items to be listed
+    Post: a new list structure is initialized with length zero.
+      Insert, delete and fetch/update start out at the head of the list. *)
+
+<B>PROCEDURE</B> Discard (<B>VAR</B> list : List);
+  (* Pre: list is a validly created list
+    Post: list is undefined *)
+
+<B>PROCEDURE</B> Length (list : List) : <B>CARDINAL</B>;
+  (* Pre: list is a validly created list
+    Post: The number of items in the list is returned. *)
+
+<B>PROCEDURE</B> SetAtHead (<B>VAR</B> list : List; op : Operation);
+  (* Pre: list is a validly created list
+    Post: The position for the given insert, delete, or fetch/update
+      operation is the first item. *)
+
+<B>PROCEDURE</B> SetAtTail (<B>VAR</B> list : List; op : Operation);
+  (* Pre: list is a validly created list
+    Post: The position for the given insert, delete, or fetch/update
+      operation is the last item. *)
+
+<B>PROCEDURE</B> SetAtPos (<B>VAR</B> list : List; op : Operation; itemNum : <B>CARDINAL</B>);
+  (* Pre: list is a validly created
+    Post: The position for the given insert, delete, or fetch/update
+      operation is the itemNum item. If ItemNum <!-->&gt;= Length, it is set to the last item. 
+      If it is zero or one, it is set to the head. Note, however that a delete or 
+      fetch/update position set to one or greater moves forward with the item it previously designated if inserting is done before it.  Likewise, an Insert  or fetch/update position pulls back one numerically with the item it designated prior to a delete that occurs in front of it. *)
+
+<B>PROCEDURE</B> Insert (<B>VAR</B> list : List; item : <B>ARRAY</B> <B>OF</B> LOC);
+  (* Pre: list is a validly created list and item is the right size to be
+    placed in the list.
+    Post: the item is inserted before the currently set insert position.  The insert position is now before the item just inserted.  For example, if inserting was being done at the head, it still is. The length is updated. *)
+
+<B>PROCEDURE</B> Append (<B>VAR</B> list : List; item : <B>ARRAY</B> <B>OF</B> LOC);
+  (* Pre: list is a validly created list and item is the right size to be
+    placed in the list.
+    Post: the item is inserted after the last item in the list. Note that Insert cannot be used to do this. *)
+
+<B>PROCEDURE</B> Update (<B>VAR</B> list : List; item : <B>ARRAY</B> <B>OF</B> LOC);
+  (* Pre: list is a validly created list and item is the right size to be
+     placed in the list.
+     Post: The old item at the currently set position for fetch/update is updated to item. The fetch/update position is not changed. *)
+
+<B>PROCEDURE</B> Fetch (list : List; <B>VAR</B> item : <B>ARRAY</B> <B>OF</B> LOC);
+  (* Pre: list is a validly created list and item is the right size to 
+    receive data from the list.
+    Post: item gets the data at the current position for fetch/update. 
+       The fetch/update position is not changed. *)
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> list : List);
+  (* Pre: list is a validly created list
+    Post: the item at the current delete position is removed from the list
+       and the length is updated. The current delete position is now at
+       the item after the one deleted, or it if was the last, it points to
+       the new last. That is, if we were deleting at the head, we still are
+       and if we were deleting at the tail, we still are.  If we delete the
+       position for either insert or fetch/update, their new item will be the 
+       same as the new delete item.
+     Note: The initial or default delete position is at the head.  Should the 
+       list shrink to zero items and then grow again, deleting will continue 
+       from either the head or the tail, depending on which was being
+       conducted at the time the last item was deleted. -- see SetAtPos. *)
+
+<B>END</B> Lists.
+</pre>
+<P>This definition is almost the same as the previous version, except for the parameters.  The implementation differs more, however, for the low level copy routines must be employed to get data to and from the list.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> Lists;
+
+(* Generic implementation of lists (not safe) *)
+(* copyright © 1995 by R. Sutcliffe *)
+(* last modification 1995 03 31 *)
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  LOC, ADDRESS;
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+
+<B>FROM</B> CopyLocs <B>IMPORT</B>
+  CopyToAdr, CopyFromAdr;
+
+<B>TYPE</B>
+  NodePoint = <B>POINTER</B> <B>TO</B> Node;
+  Node = 
+    <B>RECORD</B>
+      dataLoc : ADDRESS;
+      next,
+      last : NodePoint;
+    <B>END</B>;
+
+  List = <B>POINTER</B> <B>TO</B> ListInfo;
+  ListInfo = 
+    <B>RECORD</B>
+      dataSize,
+      numItems : <B>CARDINAL</B>;
+      head,
+      tail,
+      curInsert,
+      curDelete,
+      curFetchup : NodePoint;
+      delAtHead : <B>BOOLEAN</B>;
+    <B>END</B>;
+
+<B>PROCEDURE</B> Create (itemSize : <B>CARDINAL</B>) : List;
+
+<B>VAR</B>
+  locList : List;
+
+<B>BEGIN</B>
+  ALLOCATE (locList, <B>SIZE</B>(ListInfo) );
+  <B>WITH</B> locList^
+    <B>DO</B>
+      dataSize := itemSize;
+      numItems := 0;
+      head := <B>NIL</B>;
+      tail := head;
+      curInsert := head;
+      curDelete := head;
+      curFetchup := head;
+      delAtHead := <B>TRUE</B>;
+
+    <B>END</B>;
+  <B>RETURN</B> locList;
+
+<B>END</B> Create;
+
+<B>PROCEDURE</B> Discard (<B>VAR</B> list : List);
+
+<B>BEGIN</B>
+  SetAtHead (list, delete);
+  <B>WHILE</B> list^.numItems <!-->&gt; 0
+    <B>DO</B>
+      Delete (list);
+    <B>END</B>;
+  DEALLOCATE (list, <B>SIZE</B>(ListInfo) );
+  list := <B>NIL</B>;
+<B>END</B> Discard;
+
+<B>PROCEDURE</B> Length (list : List) : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> list^.numItems;
+<B>END</B> Length;
+
+<B>PROCEDURE</B> SetAtHead (<B>VAR</B> list : List; op : Operation);
+
+<B>BEGIN</B>
+  <B>CASE</B> op <B>OF</B>
+    insert:
+      list^.curInsert := list^.head |
+    delete:
+      list^.curDelete := list^.head;
+      list^.delAtHead := <B>TRUE</B>; |
+    fetchup:
+      list^.curFetchup := list^.head;
+    <B>END</B>;
+<B>END</B> SetAtHead;
+
+<B>PROCEDURE</B> SetAtTail (<B>VAR</B> list : List; op : Operation);
+
+<B>BEGIN</B>
+  <B>CASE</B> op <B>OF</B>
+    insert:
+      list^.curInsert := list^.tail |
+    delete:
+      list^.curDelete := list^.tail;
+      list^.delAtHead := <B>FALSE</B>; |
+    fetchup:
+      list^.curFetchup := list^.tail;
+    <B>END</B>;
+<B>END</B> SetAtTail;
+
+<B>PROCEDURE</B> SetAtPos (<B>VAR</B> list : List; op : Operation; itemNum : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  tempPoint : NodePoint;
+
+<B>BEGIN</B>
+  <B>IF</B> itemNum = 0 
+    <B>THEN</B> 
+      SetAtHead (list, op);
+    <B>ELSIF</B> itemNum <!-->&gt;= list^.numItems <B>THEN</B>
+      SetAtTail (list, op)
+    <B>ELSE</B> (* not setting at head or tail *)
+      <B>IF</B> itemNum <!-->&gt; (list^.numItems <B>DIV</B> 2) <B>THEN</B> (* past middle? *)
+        count := list^.numItems;
+        tempPoint := list^.tail; (* start at the back *)
+        <B>WHILE</B> count <!-->&gt; itemNum   (* back up if necessary *)
+          <B>DO</B>
+            tempPoint := tempPoint^.last;
+            <B>DEC</B> (count);
+          <B>END</B>;
+      <B>ELSE</B> (* before middle but not at zero *)
+        count := 1;
+        tempPoint := list^.head; (* start at the front *)
+        <B>WHILE</B> count <!--<-->&lt; itemNum   (* go forward  if necessary *)
+          <B>DO</B>
+            tempPoint := tempPoint^.next;
+            <B>INC</B> (count);
+          <B>END</B>;
+      <B>END</B>;
+      <B>CASE</B> op <B>OF</B>
+        insert:
+          list^.curInsert := tempPoint |
+        delete:
+          list^.curDelete := tempPoint;
+          list^.delAtHead := <B>FALSE</B>; |
+        fetchup:
+          list^.curFetchup := tempPoint;
+        <B>END</B>;
+    <B>END</B>;
+
+<B>END</B> SetAtPos;
+
+<B>PROCEDURE</B> GetNode (list : List; item :<B>ARRAY</B> <B>OF</B> LOC) : NodePoint;
+
+(* This is a local procedure *)
+
+<B>VAR</B>
+  local : NodePoint;
+
+<B>BEGIN</B>
+  ALLOCATE (local, <B>SIZE</B>(Node) ); (* get a new node *)
+  ALLOCATE (local^.dataLoc, list^.dataSize); (* get space for actual data *)
+  CopyToAdr (item, local^.dataLoc); (* put data there *)
+  <B>RETURN</B> local;
+<B>END</B> GetNode;
+
+<B>PROCEDURE</B> Insert (<B>VAR</B> list : List; item : <B>ARRAY</B> <B>OF</B> LOC);
+
+<B>VAR</B>
+  local : NodePoint;
+
+<B>BEGIN</B>
+  local := GetNode (list, item);
+  local^.next := list^.curInsert;
+  <B>IF</B> list^.curInsert # list^.head (*inserting at head? *)
+    <B>THEN</B> (* no, so chain in new item *)
+      local^.last := list^.curInsert^.last; (* point back to previous node *)
+      list^.curInsert^.last^.next := local; (* and make it point to new one *)
+    <B>ELSE</B> 
+      local^.last := <B>NIL</B>; (* yes, so back pointer is <B>NIL</B> *)
+      <B>IF</B> (list^.curDelete = list^.head) <B>AND</B> list^.delAtHead
+       (* if delete is at head too, keep it there *)
+        <B>THEN</B>
+          list^.curDelete := local;
+        <B>END</B>;
+      <B>IF</B> list^.curFetchup = list^.head (* if fetchUp is at head too, keep it there *)
+        <B>THEN</B>
+          list^.curFetchup := local;
+        <B>END</B>;
+      <B>IF</B> list^.tail = <B>NIL</B> (* if this is the first item in *)
+        <B>THEN</B>
+          list^.tail := local;
+        <B>END</B>;
+      list^.head := local; (* revise the head *)
+    <B>END</B>;
+  <B>IF</B> list^.curInsert # <B>NIL</B>
+    <B>THEN</B>
+      list^.curInsert^.last := local;
+      <B>END</B>;
+    list^.curInsert := local; (* insert point becomes new item *)
+  <B>INC</B> (list^.numItems);
+
+<B>END</B> Insert;
+
+<B>PROCEDURE</B> Append (<B>VAR</B> list : List; item : <B>ARRAY</B> <B>OF</B> LOC);
+
+<B>VAR</B>
+  local : NodePoint;
+
+<B>BEGIN</B>
+  local := GetNode (list, item);
+  local^.last := list^.tail;
+  local^.next := <B>NIL</B>;
+  <B>IF</B> list^.tail = <B>NIL</B> (* list currently empty *)
+    <B>THEN</B>
+      <B>WITH</B> list^
+        <B>DO</B>
+          head := local;
+          curInsert := head;
+          curDelete := head;
+          curFetchup := head;
+      <B>END</B>;
+    <B>ELSE</B>
+      list^.tail^.next := local;
+    <B>END</B>;
+  list^.tail := local;
+  <B>INC</B> (list^.numItems);
+
+<B>END</B> Append;
+
+<B>PROCEDURE</B> Update (<B>VAR</B> list : List; item : <B>ARRAY</B> <B>OF</B> LOC);
+
+<B>BEGIN</B>
+  CopyToAdr (item, list^.curFetchup^.dataLoc);
+<B>END</B> Update;
+
+<B>PROCEDURE</B> Fetch (list : List; <B>VAR</B> item : <B>ARRAY</B> <B>OF</B> LOC);
+
+<B>BEGIN</B>
+  CopyFromAdr (list^.curFetchup^.dataLoc, item);
+<B>END</B> Fetch;
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> list : List);
+
+<B>VAR</B>
+  newCurDel : NodePoint;
+
+<B>BEGIN</B>
+  <B>IF</B> list^.numItems = 0
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  DEALLOCATE (list^.curDelete^.dataLoc, list^.dataSize);
+  <B>IF</B> list^.curDelete^.last # <B>NIL</B> (* if not at #1 *)
+    <B>THEN</B>
+      list^.curDelete^.last^.next := list^.curDelete^.next;
+    <B>ELSE</B>
+      list^.head := list^.curDelete^.next;
+    <B>END</B>;
+  <B>IF</B> list^.curDelete^.next # <B>NIL</B> (* if not at last item *)
+    <B>THEN</B>
+      list^.curDelete^.next^.last := list^.curDelete^.last;
+      newCurDel := list^.curDelete^.next;
+    <B>ELSE</B>
+      list^.tail := list^.curDelete^.last;
+      newCurDel := list^.curDelete^.last;
+    <B>END</B>;
+  <B>IF</B> list^.curDelete = list^.curInsert (* hammered off insert item? *)
+    <B>THEN</B>
+      list^.curInsert :=  newCurDel;
+    <B>END</B>;
+  <B>IF</B> list^.curFetchup = list^.curInsert (* hammered off fetchup item? *)
+    <B>THEN</B>
+      list^.curFetchup :=  newCurDel;
+    <B>END</B>;
+  <B>DEC</B> (list^.numItems);
+  list^.curDelete := newCurDel;
+<B>END</B> Delete;
+
+<B>END</B> Lists.
+</pre>
+<P>Observe that this version of <i>Create</i> tells the list module only the size of the items that are going to be enlisted.  Not only does the list module have no means to check the type of the items listed, it does not even have code to check that the correct size is indeed used.  The latter oversight however, is simple for the student to correct, and is left as an exercise.  The absence of type checking on the items being listed is more serious, however, and is a serious drawback to this method.  The very strength of Modula-2 (strong type checking) must be sacrificed here to achieve genericity. Because of this drawback, other methods will also be explored later in chapter 16.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,344 @@
+<HTML>
+<HEAD>
+<TITLE>7.6 Message Encoding and Cryptography</TITLE>
+<meta NAME="keywords" CONTENT="message, encoding, cryptography, cryptographic, encrypt, substitution, substitute, implementation, implement, security, secure">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.6 Message Encoding and Cryptography</B></H2><P>
+The encoding of messages into a form that a casual reader cannot decipher is more than just a schoolchildren's game.  Sensitive data is often protected in such a manner, either for storage or for transmission to other parties.  Intelligence gathering agents rely on such techniques to forward reports to their control authorities without the corresponding agencies of hostile nations having access to their contents.  Counter intelligence operations simultaneously work hard to break such codes and read the messages after all.  Lives and whole wars have been won or lost because of the quality of a nation's code making or code breaking techniques.</P>
+<P>One of the simplest types of ciphers (and one of the easiest to break) is based on a simple substitution.  Each letter in the original message is replaced by a corresponding letter in the coded version.  The decoder must apply the substitution in reverse to render the code in plain text.  The substitution could be a simple shift:</P>
+<PRE>
+<!--"-->&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ<!--"-->&quot;</PRE>
+<P>is coded by</P>
+<PRE>
+<!--"-->&quot;BCDEFGHIJKLMNOPQRSTUVWXYZA<!--"-->&quot;</PRE>
+<P>Or, it could be coded by a a less regular replacement:</P>
+<PRE>
+<!--"-->&quot;QAZXSWEDCVFRTGBNHYUJMKIOLP<!--"-->&quot;</PRE>
+<P>The means for doing this is rather easy to render in Modula-2.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Substitution;
+
+<B>TYPE</B>
+  CodeString = <B>ARRAY</B> [0 .. 25] <B>OF</B> <B>CHAR</B>;
+
+<B>PROCEDURE</B> Encode (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+       <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; key : CodeString);
+(* encode the source string with a substitution cipher defined by the key into the destination string *)
+
+<B>PROCEDURE</B> Decode (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+      <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; key : CodeString);
+(* decode the source string with a substitution cipher defined by the key into the destination string *)
+
+<B>END</B> Substitution.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> Substitution;
+
+(* several local procedures are useful *)
+
+<B>PROCEDURE</B> AlphaPos (ch : <B>CHAR</B>) : <B>CARDINAL</B>;
+(* returns the position of a character in the alphabet in the range 0 .. 25 *)
+
+<B>BEGIN</B>
+  <B>RETURN</B> <B>ORD</B> (<B>CAP</B> (ch)) - <B>ORD</B> ('A');
+<B>END</B> AlphaPos;
+
+<B>PROCEDURE</B> DecodeKey (skey : CodeString; <B>VAR</B> dKey : CodeString);
+(* construct an inverse coding key for use in decoding *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> 25
+    <B>DO</B>
+      ch := skey [count];
+      dKey [AlphaPos (ch)] := <B>CHR</B> (<B>ORD</B> ('A') + count);
+    <B>END</B>;
+<B>END</B> DecodeKey;
+
+<B>PROCEDURE</B> IsLetter (ch : <B>CHAR</B>) : <B>BOOLEAN</B>;
+(* determines if the character passed is a letter or some other char *)
+
+<B>BEGIN</B>
+  <B>IF</B> ((<B>ORD</B> (ch) <!-->&gt;= <B>ORD</B> ('a')) <B>AND</B> (<B>ORD</B> (ch) <!--<-->&lt;= <B>ORD</B> ('z')))
+      <B>OR</B> ((<B>ORD</B> (ch) <!-->&gt;= <B>ORD</B> ('A')) <B>AND</B> (<B>ORD</B> (ch) <!--<-->&lt;= <B>ORD</B> ('Z')))
+    <B>THEN</B>
+      <B>RETURN</B> <B>TRUE</B>
+    <B>ELSE</B>
+      <B>RETURN</B> <B>FALSE</B>
+    <B>END</B>;
+    
+  <B>END</B> IsLetter;
+
+(* now the exported procedures *)
+
+<B>PROCEDURE</B> Encode (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+         <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; key : CodeString);
+
+<B>VAR</B>
+  max, count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  count := 0;
+  max := <B>LENGTH</B> (source);
+  <B>IF</B> max <!-->&gt; 0 (* trap out any empty strings and skip this *)
+    <B>THEN</B>
+      <B>WHILE</B> (count <!--<-->&lt;=  max - 1) <B>AND</B> (count <!--<-->&lt;= <B>HIGH</B> (dest))
+        <B>DO</B>
+          <B>IF</B> IsLetter (source [count]) (* only encode letters *)
+            <B>THEN</B>
+              dest [count] := key [AlphaPos (source [count])];
+            <B>ELSE</B>
+              dest [count] := source [count];
+            <B>END</B>;  (* if *)
+          <B>INC</B> (count);
+        <B>END</B>; (* while *)
+    <B>END</B>; (* if *)
+  <B>IF</B> count <!--<-->&lt; <B>HIGH</B> (dest)
+    <B>THEN</B>
+      dest [count] := <!--"-->&quot;<!--"-->&quot;;
+    <B>END</B>;
+<B>END</B> Encode;
+
+
+<B>PROCEDURE</B> Decode (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+           <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; key : CodeString);
+
+<B>VAR</B>
+  theKey : CodeString;
+
+<B>BEGIN</B>
+  DecodeKey (key, theKey); (* create the decode key *)
+  Encode (source, dest, theKey );  (* and encode back with it *)
+<B>END</B> Decode;
+
+<B>END</B> Substitution.</PRE>
+<P>Here is a brief module designed to test the code above by encoding and then decoding a string.</P>
+<PRE>
+<B>MODULE</B> TestSubstitution;
+(* By R. Sutcliffe.  Revised 1993 04 06 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B> 
+  WriteString, WriteLn, ReadString, SkipLine;
+
+<B>FROM</B> Substitution <B>IMPORT</B>
+  Encode, Decode, CodeString;
+
+<B>TYPE</B>
+  String = <B>ARRAY</B> [0 .. 255] <B>OF</B> <B>CHAR</B>;
+
+<B>VAR</B>
+  inStr, outStr, dStr : String;
+  coder : CodeString;
+
+<B>BEGIN</B>
+  coder := <!--"-->&quot;PLMOKNIJBUHVYGCTFXRDZESWAQ<!--"-->&quot;;
+  WriteString (<!--"-->&quot;enter message to encode.<!--"-->&quot;);
+  WriteString (<!--"-->&quot; End with a carriage return <!--"-->&quot;);
+  WriteLn;
+  ReadString (inStr); (* get the message *)
+  SkipLine;
+  WriteString (<!--"-->&quot;Original String:<!--"-->&quot;);
+  WriteLn;
+  WriteString (inStr);  (* echo input *)
+  WriteLn;
+  Encode (inStr, outStr, coder);
+  WriteString (<!--"-->&quot;encoded string:<!--"-->&quot;); (* write it out encoded *)
+  WriteLn;
+  WriteString (outStr);
+  WriteLn;
+  Decode (outStr, dStr, coder);
+  WriteString (<!--"-->&quot;decoded string:<!--"-->&quot;);
+  (* write de-encoded message to check *)
+  WriteLn;
+  WriteString (dStr);
+  WriteLn;
+<B>END</B> TestSubstitution.</PRE>
+<P>Here is the output (except for the opening message) when this program was run.</P>
+<P>Original String:</P>
+<PRE>The quick brown fox jumped over the lazy dog's back.</PRE>
+<P>Encoded String:</P>
+<PRE>DJK FZBMH LXCSG NCW UZYTKO CEKX DJK VPQA OCI'R LPMH.</PRE>
+<P>Decoded String:</P>
+<PRE>THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG'S BACK.</PRE>
+<P>This method of encoding is quite inadequate for any security purposes, for it is too easy to construct the coding string from the pattern of the message.  The repeated triplet <I>DJK</I> can at once be guessed as <I>THE</I>, and the character after the apostrophe as an <I>S</I>.  The positioning of the letters <I>P</I>  and <I>C</I>  strongly suggests that both are encoded vowels.  From these clues, it would not take long to decode the message without the key.  A frequency analysis of the letters in a longer message would open up its key even more rapidly.</P>
+<P>Several more sophisticated methods are available and offer greater security.  In one, the letters in the original are shifted ahead (mod 26) in the alphabet by an amount equal to the position of some special letter in a code word.  When the letters of the code word are exhausted, they are used again.  To decode, the letters need to be shifted backwards by the same amount as derived from the original code word.  That is, for the message:</P>
+<PRE>
+Mother has died.  Bring the black lantern.</PRE>
+<P>the code word</P>
+<PRE>
+beaded</PRE>
+<P>produces the shifts</P>
+<PRE>
+1,4,0,3,4,3  derived from the alphabetic positions of b,e,a,d,e, and d.</PRE>
+<P>and this pattern of shifts is then applied in a repeating way to each block of six letters throughout the message, yielding</P>
+<PRE>
+Ostkiu lav gjid.  Cviqk ule fobgk pdoxeur.</PRE>
+<P>The result is that a given letter of the alphabet generally translates into a different letter every time it is encountered, making a frequency analysis of the letters worthless.  The resulting code is much more difficult to break.</P>
+<P>A secret agent would enter the field with a set of encoding words or phrases.  Each would be used only once, then discarded.  Even the number of letters in the encoding scheme would vary from one message to the next in a random fashion.  The people receiving the messages would progress through the same series of encoders to decrypt the messages as they arrived.  (This is called a one-pad system.)  The pad of encoders might, perhaps be taken from the first lines of a sequence of pages of a popular novel.  For even greater security, they might be a set of strings specially chosen to make decoding difficult.</P>
+<P>Another use for this system would be to encode data files on a user-entered password.  Any other password would produce nothing but gibberish when the file was read back.  To make the result even more difficult to decode, the entire ASCII set of characters (128 in all) could be included in the coding scheme.</P>
+<P>The code that follows merely re-implements the library module <I>Substitution</I>.  Even in this version, not all the possible characters are encoded.  The control characters, whose ASCII codes fall in the range 0..31 and 127, are skipped in the coding scheme so that only readable text is produced.  Punctuation and spaces are encoded, however.  Note that character coding and decoding are off-loaded into separate procedures.</P>
+<PRE>
+<A NAME="Substitution"></A><B>IMPLEMENTATION</B> <B>MODULE</B> Substitution;
+
+(* several local procedures are useful *)
+
+<B>PROCEDURE</B> CodeChar (<B>VAR</B> ch : <B>CHAR</B>; shifter : <B>CHAR</B>);
+
+<B>VAR</B>
+  temp : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>IF</B> (<B>ORD</B> (ch) <!-->&gt; 31) <B>AND</B> (<B>ORD</B> (ch) <!--<-->&lt; 127)
+    <B>THEN</B> (* does not alter control characters; just the rest *)
+      temp := <B>ORD</B> (ch) + <B>ORD</B> (shifter);
+      <B>IF</B> temp <!-->&gt; 126
+        <B>THEN</B>
+          <B>DEC</B> (temp, 95) (* subtract 127, add 32 *)
+        <B>END</B>;
+      ch := <B>CHR</B> (temp);
+    <B>END</B>;
+    
+<B>END</B> CodeChar;
+
+<B>PROCEDURE</B> DeCodeChar (<B>VAR</B> ch : <B>CHAR</B>; shifter : <B>CHAR</B>);
+
+<B>VAR</B>
+  temp : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>IF</B> (<B>ORD</B> (ch) <!-->&gt; 31) <B>AND</B> (<B>ORD</B> (ch) <!--<-->&lt; 127)
+    <B>THEN</B> (* does not alter control characters; just the rest *)
+      temp := <B>ORD</B> (ch);
+      (* Now, if ord (ch) - ord (shifter) <!--<-->&lt; 32, then 95 was subtracted *)
+      <B>IF</B> <B>ORD</B> (shifter) + 32 <!-->&gt; temp
+        <B>THEN</B>
+          <B>INC</B> (temp, 95) (* add 127, subtract 32 *)
+        <B>END</B>;
+      <B>DEC</B> (temp, <B>ORD</B> (shifter));
+      ch := <B>CHR</B> (temp);
+    <B>END</B>;
+    
+<B>END</B> DeCodeChar;
+
+(* now the exported procedures *)
+
+<B>PROCEDURE</B> Encode (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+         <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; key : CodeString);
+
+<B>VAR</B>
+  max, count, shiftCount, coderLen : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+  
+<B>BEGIN</B>
+  count := 0;
+  max := <B>LENGTH</B> (source);
+  <B>IF</B> max <!-->&gt; 0
+    <B>THEN</B>
+      shiftCount := 0;
+      coderLen := <B>LENGTH</B> (key);
+      <B>WHILE</B> (count <!--<-->&lt;= <B>HIGH</B> (dest)) <B>AND</B> (count <!--<-->&lt;=  max - 1)
+        <B>DO</B>  
+          ch := source [count];
+          CodeChar (ch, key [shiftCount]);
+          shiftCount := (shiftCount + 1) <B>MOD</B> coderLen;
+          dest [count] := ch;
+          <B>INC</B> (count);
+        <B>END</B>;
+      <B>END</B>;
+  <B>IF</B> count <!--<-->&lt;= <B>HIGH</B> (dest)
+    <B>THEN</B>
+      dest [count] := <!--"-->&quot;<!--"-->&quot;;  (* terminator character *)
+    <B>END</B>;
+<B>END</B> Encode;
+
+
+<B>PROCEDURE</B> Decode (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+         <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; key : CodeString);
+
+<B>VAR</B>
+  max, count, shiftCount, coderLen : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+  
+<B>BEGIN</B>
+  count := 0;
+  max := <B>LENGTH</B> (source);
+  <B>IF</B> max <!-->&gt; 0
+    <B>THEN</B>
+      shiftCount := 0;
+      coderLen := <B>LENGTH</B> (key);
+      <B>WHILE</B> (count <!--<-->&lt;= <B>HIGH</B> (dest)) <B>AND</B> (count <!--<-->&lt;=  max - 1) 
+        <B>DO</B>  
+          ch := source [count];
+          DeCodeChar (ch, key [shiftCount]);
+          shiftCount := (shiftCount + 1) <B>MOD</B> coderLen;
+          dest [count] := ch;
+          <B>INC</B> (count);
+        <B>END</B>;
+      <B>END</B>;
+  <B>IF</B> count <!--<-->&lt;= <B>HIGH</B> (dest)
+    <B>THEN</B>
+      dest [count] := <!--"-->&quot;<!--"-->&quot;;  (* terminator character *)
+    <B>END</B>;
+<B>END</B> Decode;
+
+<B>END</B> Substitution.</PRE>
+<P>The client module used with the first version was re-linked and another sample run conducted with the result below.  A better code string would result in an even more scrambled result.  Note that if the restriction on coding to and from control characters were removed, the implementation would be easier to  run faster (fewer computations) but the result would not be readable as plain text.</P>
+<P>Original String:</P>
+<PRE>The quick brown fox jumped over the lazy dog's back.</PRE>
+<P>Encoded String:</P>
+<PRE>EUSo]dSNNuKii_RtMhkde[ahGVp\dU^n^SHuUXtacYV`yXzHU[M </PRE>
+<P>Decoded String:</P>
+<PRE>The quick brown fox jumped over the lazy dog's back.</PRE>
+<P>There are much more sophisticated coding schemes than these, of course, and for very secure messages, enormous computing power is required to decode, and this can only be done by brute force trial-and-error.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+<TITLE>2.3 How to Solve a Problem</TITLE>
+<meta NAME="keywords" CONTENT="problem, solving, computer, strategy, technique, solution, solve, analysis, type, suitableness, suitable, caveat, computorael, murphy, murphy's, law, planny, refining, plan, refine, libraries, library, use, re-use, refinement, table, tables, data, i/o, satisfaction, compile, link, run, program, specification, specifications">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.3 How to Solve a Problem</B></H2>
+<P>With these remarks on the structure of simple Modula-2 programs, it is time to return to the theme of problem solving.  This was discussed at the start of chapter one; here that general discussion will be applied specifically to the kinds of problem for which a computer-assisted solution is anticipated.  During the course of the following discussion, a simple problem will be posed and a complete solution provided.  This will culminate in a program that embodies the solution in a coded form.</P>
+<P>Most problems appear insurmountable at first<!--‹-->--that seems to be their very nature.  Many students (and some teachers), on being presented with one, will scan it over lightly in an attempt to get the whole picture in their mind at once and then, after a few minutes, throw up their hands in despair and shout <!--"-->&quot;I don't know where to start!<!--"-->&quot;  Worse still, they may make dozens of trips to the professor or teaching assistants, each time with the same poignant question:  <!--"-->&quot;What's the next step?<!--"-->&quot;</P>
+<P>Note, however, that the way problem solving was defined in <A HREF="../Ch1/Ch1.1.html">section 1.1</A> presupposes that a problem is something that has a solution.  That which has no solution is not a problem in the sense used in this text.  Thus, the person faced with a problem is here assumed to be one who <I>can</I> solve it, given a suitable strategy or technique.  The task is to find such a technique, then to employ the computer to implement it.  That is, a computer programmer is a problem solver who uses a particular tool (the computer) as part of the solution process.</P>
+<P>In <A HREF="../Ch1/Ch1.3.html">section 1.3</A>, eight goals for a problem solver were detailed.  It is time to turn those goals into a specific strategy.  Thus, though the step-by-step problem solving system that follows still has enough generality to be modified for other types of problem, it has been formulated here with the assumption that computer assistance will be employed in the final process.</P>
+<A NAME="2.3.1"></A><H3><B>2.3.1 Analysis</B></H3>
+<P><I><B>Goals</B>:</P>
+<P>	Write Everything Down.</P>
+<P>	 1. Have a clear grasp of the existing state of affairs.</P>
+<P>	2. Have a clear conception of the goal.</P>
+<P>	3. Formulate the problem clearly.</I></P>
+<H3><B>Strategic Step 1  Write the problem out.</B></H3>
+<P>This forces the would-be problem solver to slow down an overheated mind long enough to read the problem carefully instead of trying to absorb it as a whole by staring at entire paragraphs at once.  If necessary, copy the whole thing word for word or highlight it in the book, or tap a pencil on each word while reading it.  Before beginning to consider what the solution might be, one must know what the problem means<!--‹-->--and that presupposes knowing what the words say.</P>
+<H3><B>Example problem:</B></H3>
+<P>Write a program that can raise a whole number (say 4) to a positive whole number power (say 6.)</P>
+<H3><B>Strategic Step 2  Ask whether a computer is appropriate.</B></H3>
+<P>There is no sense using a sledgehammer to crack a peanut or a chain saw to cut a toothpick.  Likewise, there is no point in using a computer for simple additions or multiplications.  They can be done mentally, or with a calculator, but it is a waste of both human and machine resources to write a computer program for such tasks.  True, some of the examples in this book are trivial, but this is necessary to make teaching points simply.  Students ought to remember that they have to walk before they can run.  It will take a while to begin to realize the true power of the machine, and to write substantial programs to take advantage of that power.</P>
+<H3><B>Example problem suitability:</B></H3>
+<P>The sample problem posed above is well within the reach of a simple calculator, and is therefore of marginal suitability for computer solution.  However, the solution does illustrate how a number of the programming ideas discussed in chapter one are actually implemented in Modula-2.</P>
+<P>Still, some problems may be too general, or too easy to be appropriate for computer solution.  On the other hand, they may be out of a machine's reach for other reasons, such as the requirement for some thinking process that is outside the domain of machines.  Here are examples of the kind of problem that might not at this time be appropriate for computer solution.</P>
+<P>1. How do we solve Canada's economic problems?</P>
+<P>2. What is the aesthetic value of that painting?</P>
+<P>3. Who will win the Stampeders vs. Lions game?</P>
+<P>4. Who is right<!--‹-->--the Evolutionists or the Creationists?</P>
+<P>Partial answers might be obtainable for the first problem by computer analysis of available data (provided that the meaning of the words <!--"-->&quot;economic<!--"-->&quot; and <!--"-->&quot;problem<!--"-->&quot; can be agreed upon).   Reference to some base of information also may give an answer to the second question, but only as a dollar value, and even then only if the painting had a previous sales history.  The third question can be responded to in terms of probabilities based on an analysis of the past (perhaps computer-assisted) but cannot be answered as stated here.  The fourth question is not answerable in any final sense that would be satisfying to all concerned, either via data analysis or the scientific method, since there is no evidence compelling enough to convince either side that its religious or philosophical beliefs are wrong.  Each will continue to <!--"-->&quot;keep the faith<!--"-->&quot; regardless of the other's interpretation of the data, and neither is likely to experience a conversion to the other view as a result of any computerized analysis.</P>
+<P>There is a third category of problem that may be inappropriate to tackle with the particular resources at hand.  These are the questions that could be analyzed by a machine, but not, say by a personal computer, for it may be too slow, or lack a suitable notation, peripherals, or storage space.  For instance, one cannot run Canada's income tax collection system or design aircraft frames on a personal computer.  One may also find that certain computing notations lack some facilities needed to solve a particular problem efficiently.  In this case, the programmer must learn how to work within a different programming environment in order to get the desired answers.</P>
+<P>Lack of knowledge about what the computer can do to solve a problem constitutes a fourth difficulty in this category.  Even this many years into the computer revolution, many people have a knowledge of computing limited to what they read in the gushy reviews typical of many trade magazines.  They often believe in such ephemeral enthusiasms and rush out to buy the latest brand-name computer solution for their accounting, inventory, or information flow troubles.  However, computerizing a badly organized business will not solve any of its existing problems; it will only ensure that they occur more rapidly, in greater numbers, and with more potential for harm.  An already efficient operation can be improved with carefully chosen machines and software, but an inefficient one will only become worse with the addition of a computer.</P>
+<BLOCKQUOTE><I>Caveat computorae!  To err is human.  To really foul things up requires a computer.</BLOCKQUOTE>
+<BLOCKQUOTE>Murphy's Law:  It only takes a millisecond for everything to go wrong using a computer.</I></BLOCKQUOTE>
+<H3><B>Strategic Step 3  Re-write the problem in your own words.</B></H3>
+<P>At this third stage, one is aiming for an understanding of what is being asked.  This is the stage where one begins to go from the general to specifics.  If one's conception of what is known and what is required for the solution are vague, there is no point in carrying on.  Use headings and point form, and concentrate on the given information and the desired result.  Try to be precise.  Write out any formulas that are stated or implied<!--‹-->--in the latter case, it may be necessary to look something up.</P>
+<H3><B>Example problem restatement:</B></H3>
+<P>Given:  Two whole numbers, one the base and the other the exponent</P>
+<P>To Do:  Compute base<SUP>exponent</SUP></P>
+<P>Desired Result: print the result</P>
+<P>Formula:  none.  Use a repeated multiplication</P>
+<H3><B><A NAME="2.3.2">2.3.2</A> Planning and Refining a Solution</B></H3>
+<P><I><B>Goals</B>:	1. Consider related tasks.</I></P>
+<P><I>	2. Break the main task into sub-tasks.</I></P>
+<H3><B>Strategic Step 4  Re-Use Previous Work Where Possible</B></H3>
+<P>If you have written any previous programs in Modula-2, there will likely be parts that one can copy into the new solution in order to avoid typing them again.  These should be noted now.  If this is a first program in Modula-2, one might think that there is nothing to be re-used.  However, that is far from the case.  Every implementation of Modula-2 comes with a substantial library of routines designed to solve certain problems commonly encountered in writing programs.  As noted in the discussion of the simple example earlier in this chapter, those library routines include code for input and output.  There are also pre-programmed mathematical functions, utilities for using other parts of the system (such as the computer's clock), and many others.  Almost all Modula-2 programs import from these libraries, so a note should be made at any stage of the planning process when it is observed that the library can be used.</P>
+<H3><B>Example problem library use:</B></H3>
+<P>This problem has  output requirements.  It will, therefore make use of the standard <I>STextIO</I> and <I>SWholeIO</I> Modula-2 libraries.  No other libraries are required.</P>
+<H3><B>Strategic Step 5  Break the problem into steps.</B></H3>
+<P>This is done first into larger tasks, then into smaller ones.  Simple programs may not have this distinction, but most do.  Ultimately, individual detailed program statements must be fed to the computer's editor one statement at a time for later compilation.  The place to decide how to do this is not at the terminal, as the programmer sits down to start typing.  Rather, the steps to solve the problem must be written out ahead of time in enough detail to allow a more or less direct translation into computer code.</P>
+<P>The amount of detail necessary varies with experience and familiarity with the question at hand, but most problems worth solving by computer require several refinements first into broad detail, then into finer steps.  If several restatements and refinements are necessary, they must be documented.  The time spent at this stage saves many hours later.  Sloppily designed and poorly thought out programs simply do not work.</P>
+<H3><B>Example problem refinement:</B></H3>
+<PRE>
+1. Input Section	 obtain base
+			 obtain exponent
+			(these will be stored in the program)
+2. Computation	 calculate base<SUP>exponent</SUP>
+3. Output		 print out final result</PRE>
+
+<H3><B>Second refinement of problem:  (same numbers as above)</B></H3>
+<PRE>
+1. Set up values of base and exponent
+	 Assign the value of the base to a cardinal variable
+	 Assign the value of the exponent to another cardinal variable
+
+2. Computation
+	 set the result initially to the base
+	 set a counter to one
+	 while the counter is less than the exponent
+		multiply the result by the base and increase the counter
+
+3. Print out the final answer</PRE>
+
+<H3><B><A NAME="2.3.3">2.3.3</A> Data Tables and Sample I/O</B></H3>
+<P><I><B>Goals</B>:	Write everything down.</I></P>
+<H3><B>Strategic Step 6  List all variables and imports.</B></H3>
+<P>Before actually beginning to code, write down the names of all variables that will be used and the names of all library items required.  This section serves as a quick reference when writing the code, so that a name is not inadvertently used for the wrong thing.</P>
+<H3><B>Example problem data table:</B></H3>
+<PRE>
+ Variables: base, exponent, counter, result<!--‹-->--all cardinals
+ Imports from STextIO: WriteString, WriteLn
+              from SWholeIO: WriteCard</PRE>
+
+<H3><B>Strategic Step 7  Show what input is required and what output is expected</B></H3>
+<P>Here, the exact form of everything that will appear on the computer screen is specified.  The final program is correct if it matches the specifications that were written for it in advance.  Note that this section does not contain a sample of the actual output produced after the program is run; it specifies what the output for a given input will be <I>before</I> the program is ever written.</P>
+<H3><B>Example problem sample I/O:</B></H3>
+<P>	<I><B>Input</B></I>:</P>
+<P>	Set the base to 5 and the exponent to 6 in the code.</P>
+<P>	<I><B>Output</B></I>:</P>
+<P>	5 raised to the power 6 equals 15625</P>
+<H3><B><A NAME="2.3.4">2.3.4</A> Refining the Solution</B></H3>
+<P><I><B>Goals</B>:	Refine the sub-tasks into individual steps.</I></P>
+<H3><B>Strategic Step 8  Sketch the solution using pseudocode</B></H3>
+<P>Writing the solution in pseudocode is just another refinement, this time into a shorter and less wordy form.  Pseudocode resembles the final program, but there is no need to pay attention to the exact syntax of the computing notation that will be used.</P>
+<H3><B>Example problem pseudocode:</B></H3>
+<PRE>
+  Write <!--"-->&quot;This program will raise a given base to a given exponent<!--"-->&quot;
+  Assign the base
+  Assign the exponent
+  result <!--¨-->&lt;-- base
+  counter <!--¨-->&lt;-- 1
+  while counter <!--¨-->&lt;-- exponent
+    result <!--¨-->&lt;-- result * base
+    counter <!--¨-->&lt;-- counter + 1
+  write base
+  write <!--"-->&quot;raised to the power<!--"-->&quot;
+  write exponent
+  write <!--"-->&quot;equals<!--"-->&quot;
+  write result</PRE>
+
+<H3><B>Strategic Step 9  Refine the code completely before entering it</B></H3>
+<P>Do not waste scarce computer resources by doing initial rough copies of code at the keyboard.  Ideally, what the programmer does type is so well thought out and so carefully written out (by hand) that it compiles and runs error free the first time.  Actually, the world may not always turn in this fashion, but it is nice to try.  In the case at hand, the final code looks like this:</P>
+<PRE>
+<B>MODULE</B> <A NAME="Powers">Powers</A>;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>VAR</B>
+  base, exponent, counter, result: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program raises a base to a power<!--"-->&quot;);
+  WriteLn;
+  base := 4;
+  exponent := 6;
+  result := base;
+  counter := 1;
+  <B>WHILE</B> counter <!--<-->&lt; exponent
+    <B>DO</B>
+      result  := result *  base;
+      counter := counter + 1
+    <B>END</B>;
+
+  WriteCard (base, 0);
+  WriteString ( <!--"-->&quot; raised to the power <!--"-->&quot;);
+  WriteCard (exponent, 0);
+  WriteString (<!--"-->&quot; equals <!--"-->&quot;);
+  WriteCard (result, 0);
+  WriteLn;
+
+<B>END</B> Powers.</PRE>
+
+<P><B>NOTES: </B>1. Observe the specific syntax for the listing of variables and giving their type  at the start of the program, for assignment and for the Modula-2 version of the WHILE loop.  The assignment operator := is a reserved symbol; WHILE and DO are reserved words, and the name CARDINAL is a built-in identifier (see section 2.5.2.)</P>
+<P>	 2. The purpose of the number 0 in the <I>WriteCard</I> statements will be given later.</P>
+<P>	 3. Observe the use of spaces in the <I>WriteString</I> statements in order to separate the words from the numbers.</P>
+<P>	 4. If using non standard-conforming Modula-2, <I>WriteCard</I> may be imported from <I>InOut</I>. Only one FROM..IMPORT line is needed instead of two.</P>
+<P>There you have it<!--‹-->--the top-down <I>design</I> of a small program in all its gory detail.  As mentioned earlier, the amount of detail may vary, as may the number of times one must refine the problem into steps, but the <I>kind</I> of planning outlined here is not optional.</P>
+<H3><B><A NAME="2.3.5">2.3.5</A> Execution and Satisfaction</B></H3>
+<P><I><B>Goals</B>:	1. Execute the completed process.</I></P>
+<P><I>	2. Re-develop the solution until the desired goal is reached.</I></P>
+<H3><B>Strategic Step 10   Compile, link and run the finished program</B></H3>
+<P>The task is not complete until the program has been run and the output checked against the specifications.  Output from a few sample runs should be recorded and made a part of the documentation for the project.</P>
+<H3><B>Example problem sample output:</B></H3>
+<P><I>First run</I>: (using the code above)</P>
+<PRE>
+This program raises a base to a power
+ 4 raised to the power  6 equals  4096</PRE>
+
+<P><I>Second run</I>: (with the base set to 3 and the exponent to 4)</P>
+<PRE>
+This program raises a base to a power
+ 3 raised to the power  4 equals  81</PRE>
+
+<H3><B>Strategic Step 11  Check actual output with specifications and correct errors</B></H3>
+<P>Only the final code was given above.  The first time it was compiled there were several punctuation errors, including some missing semicolons and a missing colon in an assignment operator.  The sample program could also use a little more work (not done here) in order to catch erroneous inputs such as incorrectly typed numbers.  It also produces an incorrect result if the exponent is zero (try it.)  That possibility was not allowed for in the original problem statement, so the solution is correct.  However, one could add additional code, either to give a correct result for this case, or to exclude it by printing an error message whenever zero is input for the exponent.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

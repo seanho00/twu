@@ -1,0 +1,101 @@
+<HTML>
+<HEAD>
+<TITLE>13.9 Exercises</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.9 Exercises</B></H2>
+<H3><B>Questions:</B></H3>
+<P>1.  What is the purpose of writing the more complicated code to do binary searches, when a linear one will not only find the item if it is there, but does not even require the data to be sorted in the first place?</P>
+<P>2.  What is the difference between a simple sort and an advanced sort?</P>
+<P>3.  What does the <B>O</B> notation (big-O notation) signify?</P>
+<P>4.  What is meant by the term <I>in-place</I> sorting?</P>
+<P>5.  (To look up in a suitable reference:)  Why is only one of the sorts (Shell) spelled with a capital letter?</P>
+<P>6.  (To look up in a suitable reference:)  List the names of the inventors (with approximate dates) of each of the sorting methods discussed in the chapter for which you can find the information.</P>
+<P>7.  From your own research and reading, list at least ten data processing situations in which it is necessary to sort data or to search for data in a list.</P>
+<P>8.  The second version of the in-place merge contained the line</P>
+<PRE>  <B>WHILE</B>  (countS2 <!--<-->&lt;= right) <B>AND</B> (temp <!-->&gt; source [countS2])</PRE>
+<P>	What is the first condition for?  To answer, hand-trace the routine with and without this condition.</P>
+<P>9.  Consider the two variations on the idea of merging two list in place.  Which is likely to be more efficient and why?</P>
+<P>10. In this chapter, all the sorting methods were presented with arrays of cardinals as the target or sorting.  Which methods would be more sensitive to performance changes if the size of the target data were to increase to that of a real or to that of some large record? Why?</P>
+<P>11. Construct (by hand) the KNP table for the target string <!--"-->&quot;notnothingnothingham<!--"-->&quot; and then use the code given in this chapter to check your work.</P>
+<P>12. Look up the Boyer-Moore algorithm and write out an explanation of it together with a trace of an actual search as was done in this chapter for the KNP algorithm.</P>
+<H3><B>Problems:</B></H3>
+<BLOCKQUOTE><I><B>NOTE</B>: Several of the problems below ask for tests of performance.  To answer these, you ought to have on hand a file of, say, 10 000 or more randomly generated cardinals to answer these questions.  Make tests for arrays of various sizes drawn from these numbers before drawing any conclusions.  You ought also in some cases to consider whether it makes any difference if the arrays to be sorted start out in random, sorted, or reverse sorted order. In order to ensure that the tines are properly torture tested, the arrays should contain several items each of which equals zero and several items each of which equals MAX(CARDINAL).</I></BLOCKQUOTE>
+<P>13.  Is there a break-even point in the number of items in a list below which a linear sort is faster than a binary search?</P>
+<P>14.  Rewrite the bubble sort and the merge sort to produce the list in reverse order (largest to smallest.)</P>
+<P>15.  Implement a Shell sort and a quicksort for the type cardinal (as in the text) and the type real.  By what factor are the performances different for the type real?  What conclusions can you draw?</P>
+<P>16.  Write a program module that will read an array of strings from a disk file, sort it, and write it back.  To demonstrate that you have done this, you will need to dump the file to the printer before and after sorting.  Of course, you will need to create the file in the first place.  You may use the module <i>Strings</i> if it is available, or if not, write such procedures as you happen to need.</P>
+<P>17.  Test and time a sort of the array generated above with the insertion and Shell sorts as they are presented in the text.  You might want to try both linear and binary searching methods in each.  Be sure to time only the sorting part of the routine, not the time spent reading it in from a file.  You may wish to have the program write the original and sorted arrays sent to the printer.</P>
+<P>18.  How much performance difference does it make to modify the insert sort to use a binary search?</P>
+<P>19  How much performance difference does it make to modify the Shell sort to use a binary search?</P>
+<P>20.  Modify the Shell sort as finally shown in the text to use a stored array for the k-sequence.  To begin with, have the program ask you for the sequence form the keyboard.  Test various sequences and try to find an optimum one.  Once you have this, organize your work in modules as with your k-sequence safely tucked away in the implementation part.</P>
+<P>21.  Write a sort routine for the type REAL.  Use this to add to your statistics module above a procedure to compute the Median (middle number) in an array of REAL.</P>
+<P>22.  On your system, for what list length is a binary search more time efficient than a linear search?</P>
+<P>23.  Encapsulate in a library module and test the first (linear search) style of Shell sort.  Compare it with the second style by sorting lists of various lengths and timing the performance.  Is the extra arithmetic needed to do a binary search on the k-lists worth it or not?</P>
+<P>24.  Test a comb sort with a variety of data, (sorted, random, and reverse sorted) and various sizes of data sets.  Are the claims made for performance of this sort justified?  Are there sizes for the data set for which a straight insert sort is better?</P>
+<P>25.  Test the quicksort with and without the modification that changes it into an insert sort below some cutoff point.  Find the cutoff point that gives the best overall performance, if possible.</P>
+<P>26.  Suppose instead of using the middle item for the pivot in a quick sort, one used the median of the left, middle, and right items instead.  Write and test this modification, determining whether or not there is a performance increase or decrease for random and already sorted arrays.</P>
+<P>27.  Implement a merge sort to combine the contents of two previously created files into a single file, without holding the entire sorted array in memory.  (Note that three files must be open at once).</P>
+<P>28.  Implement the merge sort as presented in the text, (either version) place suitable print statements at strategic places, and print out the kind of detailed traced that the text presents for other sorts.</P>
+<P>29.  Actually test the two methods of merging two lists in an array in place, and determine which gives the better performance of the two.  How do both compare with an ordinary insert sort, and with a quicksort?</P>
+<P>30. Modify one simple sort and one advanced sort to sort your favourite type of record and test the results to ensure you have not introduced any errors.</P>
+<P>31. Modify one simple sort and one advanced sort to sort strings and test the results to ensure you have not introduced any errors.</P>
+<P>32. Implement and test a version of the KNP algorithm that searches a file for a pattern.</P>
+<P>33. Implement and test for yourself the sorting of an array with auxiliary pointers shown in <A HREF="Ch13.6.html#AuxPointers">section 13.6.2</A>.  In order to make things more interesting, use a Quicksort routine.</P>
+<H3><B>Project:</B></H3>
+<P>34. Implement and test a version of the Boyer-Moore string search algorithm.</P>
+<P>35. Devise a routine to graph the time per item sorted (some scaling will be needed).  Run Quicksort successively on one through 4000 active items and graph the results.  Comment on the stability of Quicksort.  Does it take dramatically more time for certain sizes of data collections?</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

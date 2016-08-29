@@ -1,0 +1,454 @@
+<HTML>
+<HEAD>
+<TITLE>3.2 Simple Selection</TITLE>
+<meta NAME="keywords" CONTENT="simple, selection, statement, sequence, if, then, else, end, pseudocode, example, reserved, word, words, or, elsif, module, from, import">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.2 Simple Selection</B></H2>
+<P>A statement sequence requires the computer to step through a program precisely in the order in which the instructions in the original text file are written.</P>
+<P>But, what if the solution demands one of the following:</P>
+<P>1. That one or more steps be skipped if a variable has a certain value?</P>
+<P>2. That one of two or more possible actions be taken depending on, say, what the user responds at the keyboard?</P>
+<P>3. There be several alternative sections of code that could be executed depending, say, on the value of some variable?</P>
+<P>The abstract solution mechanism presented in chapter one to handle such situations was called <I>selection</I>.  Almost all computer languages implement actual selection statements that allow for changing the <!--"-->&quot;flow of control<!--"-->&quot; through the program in any of these situations.</P>
+<P>Here are the general forms which your code can follow to handle each of the above three:</P>
+<P>Situation 1</P>
+<P>One or more steps should be skipped whenever a variable equals a particular value.  Suppose a segment of code is calculating average marks, and is to print a congratulatory message for everyone who passes the course, but to print nothing otherwise.  This could be diagrammed as in figure 3.2: </P>
+<A NAME="Figure 3.2"></A><P><CENTER><IMG SRC="Figure/Figure_3.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>In Modula-2, the code might be written something like this:</P>
+<PRE>
+  (*common code executed prior to entering selection section*)
+  WriteString (<!--"-->&quot;Your mark is<!--"-->&quot;);
+  WriteReal (mark, 10);
+  WriteLn;
+  (*selection section*)
+  <B>IF</B> mark <!-->&gt; 50.0
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;congratulations, you passed the course<!--"-->&quot;);
+      WriteLn;  (* semicolon optional before an end *)
+    <B>END</B>;
+  WriteString (nextMessage);
+  WriteLn;
+  (* now, carry on with rest of program *)</PRE>
+
+<P><B>NOTES</B>: 1. The reserved word IF must be accompanied by both the THEN and the END.  These are also reserved words.  The END of an IF is not the END of a named block, so it is not followed by a period.</P>
+<P>	2. Observe the positioning of semicolons and the way in which the statements are blocked out for easy readability.  As mentioned above, the semicolon immediately before the END is optional.</P>
+<P>Here is a section of code that with some modifications might appear in many types of programs.  It arises whenever the user has been given a series of numbered choices (a menu) and then must respond.  The code will repeat until a correct choice has been made.</P>
+<PRE>
+choice := 8; (* a cardinal type, by the way *)
+<B>WHILE</B> choice <!-->&gt; 7
+  <B>DO</B>
+    WriteString (<!--"-->&quot; enter your choice (0 - 7) here ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (choice);
+    <B>IF</B> choice <!-->&gt; 7
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Your choice was invalid.  Try again.<!--"-->&quot;);
+        WriteLn;
+      <B>END</B>;  (* of the if *)
+  <B>END</B>;  (* of the while *)</PRE>
+
+<P>Situation 2 </P>
+<P>One of two or more possible actions is to be taken depending on, say, what the user responds at the keyboard.  Suppose the two choices depend on whether the user responds with a Y for yes or an N for no.  Figure 3.3 illustrates the desired flow of control.</P>
+<P><CENTER><IMG SRC="Figure/Figure_3.3.GIF" BORDER="1"></CENTER><!----></P>
+<P>Going beyond the specific illustration in figure 3.3, the idea behind this version of selection can be applied in a wide variety of circumstances.</P>
+<H3><B>Example 1:</B></H3>
+<P>This first example is a complete program designed to sort two  input numbers into increasing order and then print them.  It differs from the previous two in that two alternatives are present within the IF statement.</P>
+<PRE>
+<A NAME="SortTwo"></A><B>MODULE</B> SortTwo;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+
+<B>CONST</B>
+  fieldLength = 6;
+
+<B>VAR</B>
+  num1, num2 : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* information *)
+  WriteString (<!--"-->&quot;This program sorts two cardinal numbers from smallest to largest.<!--"-->&quot;);
+  WriteLn;
+  (* collect the numbers from the user *)
+  WriteString (<!--"-->&quot;Enter the first number please. ==<!-->&gt; <!--"-->&quot;);
+  ReadCard (num1);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;Enter the second number please. ==<!-->&gt; <!--"-->&quot;);
+  ReadCard (num2);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;From least to greatest, the numbers are: <!--"-->&quot;);
+(* decide which way to write them and do it *)
+<B>IF</B> num1 <!--<-->&lt; num2
+  <B>THEN</B>
+    WriteCard (num1, fieldLength);
+    WriteString (<!--"-->&quot;, <!--"-->&quot;);     (* comma between *)
+    WriteCard (num2, fieldLength);
+  <B>ELSE</B>
+    WriteCard (num2, fieldLength);
+    WriteString (<!--"-->&quot;, <!--"-->&quot;);
+    WriteCard (num1, fieldLength)
+  <B>END</B>; 	(* if *)
+
+WriteLn;
+
+<B>END</B> SortTwo.</PRE>
+
+<P>Here is a run from this program with the user input marked in bold:</P>
+<PRE>
+This program sorts two cardinal numbers from smallest to largest.
+Enter the first number please. ==<!-->&gt; <B>43</B>
+Enter the second number please. ==<!-->&gt; <B>21</B>
+From least to greatest, the numbers are:     21,     43</PRE>
+
+<P><B>NOTE</B>:   A new reserved word ELSE has been introduced to indicate an alternative action within the IF statement.  One of the two alternatives will always be followed.</P>
+<H3><B>Example 2:</B></H3>
+<P>A tin can is shaped like a cylinder, and may or may not have a top lid.  Write a program to compute the area and volume of the cylinder.</P>
+<H3><B>Discussion:</B></H3>
+<P>In order to save space, a complete plan for this program will not be provided.  However, the following (very rough) pseudocode serves to indicate how to implement such alternate paths through the program.</P>
+<PRE>
+  Print an introductory heading
+  Print a prompt asking for the radius of the can
+  Read the answer into the real variable radius
+  Print a prompt asking for the height of the can
+  Read the answer into the real variable height
+  Compute the area of one lid using A = <!--¼-->(pi)r^2
+  Compute the area around the side using B = 2<!--¼-->(pi)rh
+  Compute the volume using V = Ah
+  Set the initial total area to the side area
+  Print a prompt asking if the cylinder has a top lid
+  If the answer is Yes then
+    total area = side area plus twice lid area
+  Else if the answer is No then
+    total area = side area plus lid area
+  Print the results in an informative way</PRE>
+
+<P>Here is the code:</P>
+<PRE>
+<B>MODULE</B> CylVolArea;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate IF..THEN..ELSIF *)
+(* using P1 for the Macintosh computer *)
+(* last revision 1993 02 11 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteReal;
+  
+<B>CONST</B>
+  pi = 3.14159265;  (* or, inport it from RealMath *)
+  
+<B>VAR</B>
+  radius, height, lidArea, sideArea, totalArea, volume: <B>REAL</B>;
+  answer : <B>CHAR</B>;
+
+<B>BEGIN</B> 
+  (* information *)
+  WriteString (<!--"-->&quot;CylVolArea was written by R.J. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;as an example of IF .. THEN .. ELSE<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;This code computes cylinder volumes and areas.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+	
+(* Gather the information from the user *)
+  WriteString (<!--"-->&quot;Please enter the radius of the cylinder ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (radius);
+  SkipLine;  (* consume the carriage return after the real *)
+  WriteLn;
+  WriteString (<!--"-->&quot;Please enter the height of the cylinder ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (height);
+  SkipLine;  (* consume the carriage return after the real *)
+  WriteLn;
+	
+(* compute some results *)
+  lidArea := pi * radius * radius;
+  sideArea := 2.0 * pi * radius * height;
+  totalArea := sideArea; (* initialize; more to be added later *)
+  volume := lidArea * height;
+	
+(* Find out if cylinder has a top lid, and act accordingly *)
+  WriteString (<!--"-->&quot;Does this cylinder have a top lid? Y or N ==<!-->&gt; <!--"-->&quot;);
+  ReadChar (answer);
+  SkipLine;  (* skip to next line of input *)
+  WriteLn;
+	
+(* start to print out answer *)
+  WriteString (<!--"-->&quot;For a cylinder with these dimensions <!--"-->&quot;);
+	
+(* add appropriate lid area for one or two lids *)
+  <B>IF</B> (answer = <!--"-->&quot;Y<!--"-->&quot;) <B>OR</B> (answer = <!--"-->&quot;y<!--"-->&quot;)
+    <B>THEN</B>
+      totalArea := totalArea + 2.0 * lidArea;
+      WriteString (<!--"-->&quot;and two lids <!--"-->&quot;);
+    <B>ELSIF</B> (answer = <!--"-->&quot;N<!--"-->&quot;) <B>OR</B> (answer = <!--"-->&quot;n<!--"-->&quot;) <B>THEN</B>
+      totalArea := totalArea + lidArea;
+      WriteString (<!--"-->&quot;and one lid <!--"-->&quot;);
+    <B>END</B>;
+  WriteString (<!--"-->&quot;the volume is <!--"-->&quot;);
+  WriteReal (volume, 0);
+  WriteLn;
+  WriteString (<!--"-->&quot; cubic units, and the area is <!--"-->&quot;);
+  WriteReal (totalArea, 0);
+  WriteString (<!--"-->&quot; square units.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+	
+(* pause and wait for user to get a good look *)
+  WriteString ( <!--"-->&quot;Press any key to continue<!--"-->&quot;);
+  ReadChar (answer);
+  
+<B>END</B> CylVolArea.</PRE>
+
+<P>When this program was run twice with similar input (shown in bold) the following results were obtained:</P>
+<H3><B>Run#1</B></H3>
+<PRE>CylVolArea was written by R.J. Sutcliffe
+as an example of IF .. THEN .. ELSE
+
+This code computes cylinder volumes and areas.
+
+Please enter the radius of the cylinder ==<!-->&gt; <B>10</B>
+Please enter the height of the cylinder ==<!-->&gt; <B>20</B>
+Does this cylinder have a top lid? Y or N ==<!-->&gt; <B>Y</B>
+For a cylinder with these dimensions and two lids the volume is  6.2831855E+3
+ cubic units, and the area is  1.8849556E+3 square units.
+
+Press any key to continue</PRE>
+
+<H3><B>Run#2</B></H3>
+<PRE>CylVolArea was written by R.J. Sutcliffe
+as an example of IF .. THEN .. ELSE
+
+This code computes cylinder volumes and areas.
+
+Please enter the radius of the cylinder ==<!-->&gt; <B>10</B>
+Please enter the height of the cylinder ==<!-->&gt; <B>20</B>
+Does this cylinder have a top lid? Y or N ==<!-->&gt; <B>N</B>
+For a cylinder with these dimensions and one lid the volume is  6.2831855E+3
+ cubic units, and the area is  1.5707964E+3 square units.
+
+Press any key to continue</PRE>
+
+<P><B>NOTES</B>: 1. This code introduces two more reserved words, namely OR and ELSIF.  Some other computing languages use ELSE IF (two words) and may do so in a slightly different way.</P>
+<P>	 2. The logic here is as follows.  If the user responds with a <!--"-->&quot;Y<!--"-->&quot; (uppercase or lowercase<!--‹-->--they are different characters) then the area is calculated with two lids.  If the response is <!--"-->&quot;N<!--"-->&quot; then the area is calculated with one lid, and if it is neither then the control of the program passes beyond the END of the IF with none of the four statements under the control of the IF being executed.</P>
+<P>	 3. The last section (waiting for a keypress) may be necessary in some systems if their standard input/output erases the screen as soon as the program is finished.</P>
+<P>The effect of this code is to interpret any answer other than <!--"-->&quot;Y,<!--"-->&quot; <!--"-->&quot;y,<!--"-->&quot; <!--"-->&quot;N,<!--"-->&quot; or <!--"-->&quot;n<!--"-->&quot; as meaning that there are no lids at all.  As this may be a rather undesirable result, the code could be rewritten as:</P>
+<PRE>
+  <B>IF</B> (answer = <!--"-->&quot;Y<!--"-->&quot;) <B>OR</B> (answer = <!--"-->&quot;y<!--"-->&quot;)
+    <B>THEN</B>
+      totalArea := totalArea + 2.0 * lidArea;
+      WriteString (<!--"-->&quot;and two lids <!--"-->&quot;);
+    <B>ELSE</B>  (* assume a no answer if not yes *)
+      totalArea := totalArea + lidArea;
+      WriteString (<!--"-->&quot;and one lid <!--"-->&quot;);
+    <B>END</B>;</PRE>
+
+<BLOCKQUOTE><I><A NAME="Default">If</A> all values of  an answer other than one particular one cause  the same action, then that action is called the <U>default</U>.</I></BLOCKQUOTE>
+<P>In this case, the code has been modified to make <!--"-->&quot;No<!--"-->&quot; the default answer.  If it is desired to check the answer and allow only one of the four specified ones to have any effect, the IF statement can be surrounded by a WHILE loop in the following manner:</P>
+<PRE>
+answer := <!--"-->&quot;X<!--"-->&quot;; (* initialize it to none of the four *)
+<B>WHILE</B> (answer # <!--"-->&quot;Y<!--"-->&quot;) <B>AND</B> (answer # <!--"-->&quot;y<!--"-->&quot;)
+             <B>AND</B> (answer # <!--"-->&quot;N<!--"-->&quot;) <B>AND</B> (answer # <!--"-->&quot;n<!--"-->&quot;)
+  <B>DO</B>
+    ReadChar (answer);
+    <B>IF</B> (answer = <!--"-->&quot;Y<!--"-->&quot;) <B>OR</B> (answer = <!--"-->&quot;y<!--"-->&quot;)
+      <B>THEN</B>
+        totalArea := totalArea + 2.0 * lidArea;
+        WriteString (<!--"-->&quot;and two lids <!--"-->&quot;);
+      <B>ELSIF</B> (answer = <!--"-->&quot;N<!--"-->&quot;) <B>OR</B> (answer = <!--"-->&quot;n<!--"-->&quot;) <B>THEN</B>
+        totalArea := totalArea + lidArea;
+        WriteString (<!--"-->&quot;and one lid <!--"-->&quot;);
+      <B>ELSE</B>
+        WriteString (<!--"-->&quot;Invalid answer; please answer Y or N <!--"-->&quot;);
+        WriteLn;
+      <B>END</B>; (* if *)
+  <B>END</B>; (* while *)</PRE>
+
+<P>If this is done, the code will cycle endlessly through the WHILE loop until the user does indeed respond with one of the required answers.</P>
+<P><B>NOTE</B>: The new reserved word AND has been introduced here.</P>
+
+<P>Situation 3 </P>
+<P>There are several alternative sections of code that could be executed depending on the value of some variable.  In this case, the code may have several ELSIF sections, and may or may not have an ELSE.  What follows is a general framework for the IF..THEN..ELSIF..ELSE..END construction that can be used as a model for a variety of code.</P>
+<PRE>
+  <B>IF</B> variable = value1
+    <B>THEN</B>
+      Statement Sequence1;
+    <B>ELSIF</B> variable = value2 <B>THEN</B>
+      Statement Sequence2;
+    <B>ELSIF</B> variable = value3 <B>THEN</B>
+      Statement Sequence3;
+  ...
+
+    <B>ELSIF</B> variable = valueN <B>THEN</B>
+      Statement SequenceN;
+    <B>ELSE</B>
+      Default Statement Sequence;
+
+    <B>END</B>;</PRE>
+
+<H3><B>Example:</B></H3>
+<P>The Aldergrove Credit Union super saver plan pays interest to its depositors at the prime rate provided they have over $20 000 on deposit, half a percentage point less if over $15 000, another half a percent less if over $12 000, with similar steps down at $10 000, $8 000, $6 000 and each $1000 thereafter.  Write a program to compute the interest payable on any amount input by the user.</P>
+<H3><B>Discussion:</B></H3>
+<P>This program is a straightforward application of a multiple part IF statement, and is presented without any planning documents.  Note that the minimum rate is achieved below $1000, that is, after eleven reductions amounting to 5.5%.  Between this point and the $5000 threshold, the rate goes up in regular steps; after that in irregular ones.</P>
+<PRE>
+<B>MODULE</B> SuperSaverInterest;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate IF..THEN..ELSIF..ELSE *)
+(* using Metropolis Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 11 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+    
+<B>VAR</B>
+  deposit, basicRate, actualRate, interest: <B>REAL</B>;
+  answer : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Program written by R.J. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;as an example of IF .. THEN .. ELSIF .. ELSE<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;This program computes interest on deposits.<!--"-->&quot;);
+  WriteLn;
+
+(* Gather the information from the user *)
+  WriteString (<!--"-->&quot;What is the principal amount on deposit? ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (deposit);
+  SkipLine;  (* reset to start of next line *)
+  WriteLn;
+  WriteString (<!--"-->&quot;What is the prime interest rate? <!--"-->&quot;);
+  WriteString (<!--"-->&quot;Please enter in decimal form. (6% = 0.06) ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (basicRate);
+  SkipLine;   (* reset to start of next line *)
+  WriteLn;
+
+(* Now compute the actual rate from the basic rate and deposit. *)
+  <B>IF</B> deposit <!-->&gt; 20000.0
+    <B>THEN</B>
+      actualRate := basicRate
+    <B>ELSIF</B> deposit <!-->&gt; 15000.00 <B>THEN</B>
+      actualRate := basicRate - 0.005
+    <B>ELSIF</B> deposit <!-->&gt; 12000.00 <B>THEN</B>
+      actualRate := basicRate - 0.01
+    <B>ELSIF</B> deposit <!-->&gt; 10000.00 <B>THEN</B>
+      actualRate := basicRate - 0.015
+    <B>ELSIF</B> deposit <!-->&gt; 8000.00 <B>THEN</B>
+      actualRate := basicRate - 0.02
+    <B>ELSIF</B> deposit <!-->&gt; 6000.00 <B>THEN</B>
+      actualRate := basicRate - 0.025
+    <B>ELSE</B>
+      actualRate := basicRate - 0.025 - 0.005 * <B>FLOAT</B> (<B>TRUNC</B> (deposit) <B>DIV</B> 1000);
+    <B>END</B>;
+
+  (* Take into consideration a really low prime that might otherwise produce a negative interest *)
+  <B>IF</B> actualRate <!--<-->&lt; 0.0
+    <B>THEN</B>
+      actualRate := 0.0
+    <B>END</B>;
+
+(* make the computation of interest and print the result *)
+  interest :=  deposit * actualRate;
+  WriteString (<!--"-->&quot;The annual interest on $<!--"-->&quot;);
+  WriteFixed (deposit, 2, 0);
+  WriteString (<!--"-->&quot; at <!--"-->&quot;);
+  WriteFixed (100.0 * actualRate, 2, 0);
+  WriteString (<!--"-->&quot;% is $<!--"-->&quot;);
+  WriteFixed (interest, 2, 0);
+  WriteLn;
+  WriteLn;
+
+  WriteString ( <!--"-->&quot;Press any key to continue<!--"-->&quot;);
+  ReadChar (answer);
+
+<B>END</B> SuperSaverInterest.</PRE>
+
+<P>Once again, notice the use of semicolons.  As usual, placing them before such reserved words as END, ELSE, and ELSIF is optional.</P>
+<P>When this program was run twice with similar input (shown in bold) the following results were obtained:</P>
+<H3><B>Run#1</B></H3>
+<PRE>Program written by R.J. Sutcliffe
+as an example of IF .. THEN .. ELSIF .. ELSE
+
+This program computes interest on deposits.
+What is the principal amount on deposit? ==<!-->&gt; <B>1000.00</B>
+What is the prime interest rate? Please enter in decimal form. (6% = 0.06) ==<!-->&gt; <B>0.03</B>
+The annual interest on $ 1000.00 at  0.00% is $ 0.00
+
+Press any key to continue</PRE>
+
+<H3><B>Run#2</B></H3>
+<PRE>Program written by R.J. Sutcliffe
+as an example of IF .. THEN .. ELSIF .. ELSE
+
+This program computes interest on deposits.
+What is the principal amount on deposit? ==<!-->&gt; <B>10000.00</B>
+What is the prime interest rate? Please enter in decimal form. (6% = 0.06) ==<!-->&gt; <B>0.08</B>
+The annual interest on $ 10000.00 at  6.00% is $ 600.00
+
+Press any key to continue</PRE>
+
+<P>All the forms of the IF statement have now been used in the examples of this section.  The complete syntax diagram is given in figure 3.4:</P>
+<P><CENTER><IMG SRC="Figure/Figure_3.4.GIF" BORDER="1"></CENTER><!----></P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,142 @@
+<HTML><HEAD><TITLE>15.10 Addresses and Generic Sorting Techniques</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Addresses and Generic Sorting Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.10 Addresses and Generic Sorting Techniques</B></H2>
+<P>One of the techniques that made the generic approach to data structures work in the first place was taking care to have all operations such as comparisons located in the module that defined the ADT.  This works fairly well in the case of lists, where not much comparison work needs to be done.  However, the very warp and woof of inserting and deleting in some structures is ties up with the making of comparisons.  In the case of binary trees, B-trees, and heaps, this was accomplished by importing a compare procedure from the module defining the ADT.  However, if truly generic software is required, this will not quite do.</P>
+<P>It will also not quite do if the generic routine being considered is a sort.  Suppose one wanted to write a sort routine that could sort any kind of data.  It has already been shown that the only two routines that need to know about the data type are <I>Swap</I> and <I>Compare.</I> As shown in section 8.4.3, <I>Swap</I> can be made absolutely generic, because all that is involved is moving around a specified number of memory locations, and this can be achieved without the procedure having to know anything about the type‹though at the usual cost that the <I>Swap</I> is not able to check for type. One simply writes:</P>
+
+<pre><B>PROCEDURE</B> Swap (<B>VAR</B> a, b : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);</pre>
+
+<P>The question that remains is, can the comparison procedure be made generic in the same way, and then passed as a parameter to the module doing sorting.  One might like to have:</P>
+
+<pre><B>TYPE</B>
+  CompareResults = (less, equal, greater);
+  CompareProcs = <B>PROCEDURE</B> (<B>ARRAY</B> <B>OF</B> LOC, <B>ARRAY</B> <B>OF</B> LOC) : CompareResults;</pre>
+
+<P>and in the sorting module, a procedure like</P>
+
+<pre><B>PROCEDURE</B> SetSortingProc (theProc : CompareProcs);</pre>
+
+<P>One might be tempted to suppose that one could then write such a procedure as</P>
+
+<pre><B>PROCEDURE</B> CompareCards (a, b : <B>CARDINAL</B>) : CompareResults;</pre>
+
+<P>and issue a call</P>
+
+<pre>SetSortingProc (CompareCards);</pre>
+
+
+<P>Alas, an attempt to do this produces an error, because the parameters of a procedure assigned to a procedure variable must exactly match those in the type of the procedure variable, not just be assignment compatible as are CARDINAL and ARRAY OF LOC.</P>
+<P>What to do? Suppose, instead of the above, one defined:</P>
+
+<pre><B>TYPE</B>
+  CompareProcs = <B>PROCEDURE</B> (ADDRESS, ADDRESS) : CompareResults;</pre>
+
+<P>and</P>
+
+<pre><B>PROCEDURE</B> CompareCards (a, b : ADDRESS) : CompareResults;
+<B>VAR</B>
+  first, second : <B>POINTER</B> <B>TO</B> <B>CARDINAL</B>;
+<B>BEGIN</B>
+  first := a;
+  second := b;
+  <B>IF</B> first^ <!--<-->&lt; second^
+    <B>THEN</B> 
+      <B>RETURN</B> less;
+    <B>ELSIF</B> first^ <!-->&gt; second^  <B>THEN</B>
+      <B>RETURN</B> greater;
+    <B>ELSE</B>
+      <B>RETURN</B> equal;
+    <B>END</B>;
+<B>END</B> CompareCards;</pre>
+
+<P>Now, a call to </P>
+
+<pre>SetSortingProc (CompareCards);</pre>
+
+<P>would compile correctly, as the parameters would match as they are supposed to.  Of course, the sort would itself have to be, say</P>
+
+<pre><B>PROCEDURE</B> HeapSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> ADDRESS; lBound, uBound : <B>CARDINAL</B>);</pre>
+
+<B><h3><a name="15.10.1">15.10.1</a> Generic Sorts Defined</h3></B>
+<P>Here is a small definition module that summarizes the definitions needed thus far.  It includes a procedure type  for printing data and two sort definitions.  Others could be added.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> pSorting;
+(* by R. Sutcliffe
+   to demonstrate sorting using only addresses *)
+
+<B>FROM</B> <B>SYSTEM</B> <B>IMPORT</B>
+  ADDRESS;
+  
+(* The sorting procedures in this module take parameters that are arrays of pointers to the data.  These in turn must be already initialized to point to the actual data. *)
+
+<B>TYPE</B>
+  printProc = <B>PROCEDURE</B> (<B>ARRAY</B> <B>OF</B> ADDRESS, (* the array to print *)
+                <B>CARDINAL</B>, <B>CARDINAL</B>, (* starting and ending indices *)
+                <B>CARDINAL</B> (* field width information *));
+  compareResults = (less, equal, greater);
+  compareProc = <B>PROCEDURE</B> (ADDRESS, ADDRESS) : compareResults;
+  (* procedures of this type take two addresses of items to compare, not the data itself. *)
+
+<B>PROCEDURE</B> ShellSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> ADDRESS;
+        lBound, uBound : <B>CARDINAL</B>);
+
+<B>PROCEDURE</B> QuickSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> ADDRESS;
+        lBound, uBound : <B>CARDINAL</B>);
+
+<B>PROCEDURE</B> SetCompareProc (theProc : compareProc);
+(* must be set by caller *)
+
+<B>END</B> pSorting.</pre>
+
+<P>In principle this kind of definition suffices to develop generic sorting routines.  The same objections to this kind of genericity are present as for those of the generic list routines discussed above.  There is no longer any type checking whatsoever.  If the programmer is happy with that loss, such routines may suffice.  If all that is available is standard Modula-2, such routines <I>must</I> suffice. However, there is at least one other way of approaching the question of writing generic routines and data structures, and it will be presented in Chapter 16 in a discussion of Standard Generic Modula-2.
+
+</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

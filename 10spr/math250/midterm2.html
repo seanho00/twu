@@ -1,0 +1,123 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Midterm 2 :: MATH250 10SP :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">(answers in web view)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Please show all your work!  Total points: 40
+
+<ol class="main">
+
+  <li> Consider the linear transform on &real;<sup>3</sup> corresponding
+  to contraction in the x-axis by a factor of 1/2 followed by 
+  rotation of 30&deg;(=&pi;/6) counter-clockwise about the z-axis.
+  <ol class="subparts">
+
+    <li> Find the determinant of the standard matrix for this transform.
+    <u>[2]</u>
+    <br><i> 1/2 </i>
+
+    <li> Construct the matrix representing this transformation.  <u>[4]</u>
+    <br><i>
+      <table border="1" cellpadding="5">
+	<tr><td>&radic;3/4	</td><td>-1/2		</td><td>0</td></tr>
+	<tr><td>1/4		</td><td>&radic;3/2	</td><td>0</td></tr>
+	<tr><td>0		</td><td>0		</td><td>1</td></tr>
+      </table>
+      (the order of matrix multiplication is important!)
+    </i>
+
+  </ol>
+
+  <li> Consider the class of rotations about the origin in 
+  &real;<sup>2</sup>, by an angle of &theta;.  For every value of
+  &theta; between 0 and 2&pi;, find all eigenvalues and eigenvectors
+  of the rotation.  This question may be solved geometrically, without
+  explicitly constructing the transform matrices. <u>[8]</u>
+  <br><i>
+    Geometric reasoning is probably a better approach here than algebraic
+    manipulation using the characteristic equation (det(&lambda;I-A)=0):<br>
+    When &theta; = 0 or 2&pi;, all x in &real;<sup>2</sup> are eigenvectors,
+    with &lambda; = 1.<br>
+    When &theta; = &pi;, all x in &real;<sup>2</sup> are eigenvectors,
+    with &lambda; = -1.<br>
+    For all other &theta;, there are no eigenvectors.
+  </i>
+
+  <li> Consider the following 4x6 matrix A:
+  <table border="1" cellpadding="5">
+    <tr><td> 1</td><td>-2</td><td> 2</td><td>-1</td><td> 0</td><td> 2</td></tr>
+    <tr><td>-3</td><td> 6</td><td>-1</td><td> 0</td><td> 2</td><td> 2</td></tr>
+    <tr><td> 2</td><td>-4</td><td> 1</td><td> 0</td><td> 2</td><td> 0</td></tr>
+    <tr><td> 1</td><td> 2</td><td> 3</td><td> 0</td><td> 2</td><td>-2</td></tr>
+  </table>
+  <ol class="subparts">
+
+    <li> Find the rank of the matrix. <u>[4]</u>
+    <br><i> 4 </i>
+
+    <li> Find a basis for the rowspace of the matrix. <u>[2]</u>
+    <br><i> {R<sub>1</sub>, R<sub>2</sub>, R<sub>3</sub>, R<sub>4</sub>}
+      (i.e., all the rows; the matrix is full-rank.)</i>
+
+    <li> Find a basis for the columnspace of the matrix. <u>[2]</u>
+    <br><i> {C<sub>1</sub>, C<sub>2</sub>, C<sub>3</sub>, C<sub>4</sub>}
+    </i>
+
+    <li> What dimension is the nullspace? <u>[1]</u>
+    <br><i> 2 </i>
+
+    <li> Find all vectors x for which Ax = 0. <u>[2]</u>
+    <br><i> {C<sub>5</sub>, C<sub>6</sub>} form a basis for
+    the nullspace, so all linear combinations of those two columns. </i>
+
+  </ol>
+
+  <li> Using either the Vandermonde or Newton methods, find the
+  lowest-degree polynomial that interpolates through the points
+  (-1, 2), (0, -1), (1, 0), (2, 1).  Check your answer. <u>[6]</u>
+  <br><i>
+    -1 -(1/3) x +2 x<sup>2</sup> -(2/3) x<sup>3</sup>
+  </i>
+
+  <li> Consider the unit circle in &real;<sup>2</sup>, i.e., 
+  all vectors with unit length. <ol class="subparts">
+    <li> Using the standard operations on &real;<sup>2</sup>,
+    is the unit circle a vector space?
+    (If so, find the zero element (additive identity) and
+    negatives (additive inverses).
+    If not, it's sufficient to demonstrate one axiom that is false.) <u>[4]</u>
+    <br><i> No: (0,0) is not in the set. </i>
+
+    <li> Let's redefine vector addition on the unit circle as<br>
+    (cos(&theta;<sub>1</sub>), sin(&theta;<sub>1</sub>)) +
+    (cos(&theta;<sub>2</sub>), sin(&theta;<sub>2</sub>)) =
+    (cos(&theta;<sub>1</sub> + &theta;<sub>2</sub>),
+    sin(&theta;<sub>1</sub> + &theta;<sub>2</sub>)).<br>
+    Also, redefine scalar multiplication on the unit circle as<br>
+    k(cos(&theta;), sin(&theta;)) = (cos(k&theta;), sin(k&theta;)).<br>
+    With these new operations, is the unit circle in &real;<sup>2</sup>
+    a vector space? <u>[5]</u>
+    <br><i> Yes: <br>
+      e.g., zero element is (cos(0),sin(0)) = (1,0).<br>
+      Negative is -(cos(&theta;), sin(&theta;)) =
+      (cos(2&pi;-&theta;), sin(2&pi;-&theta;)).
+    </i>
+
+  </ol>
+
+</ol>
+</body></html>
+
+

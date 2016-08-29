@@ -1,0 +1,278 @@
+<HTML><HEAD><TITLE>16.2 Generic Separate Library Modules</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Generic Separate Library Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><b>16.2 Generic Separate Library Modules </b></H2>
+<P>The first step is the introduction of a new type of library module called a generic separate module. This is a new kind of module having formal parameters that may be either type parameters and/or constant value parameters. A generic separate module serves as a template for constructing specific refinements of itself that have been customized using actual types and/or actual constant expressions.</P>
+
+	<blockquote><i><A NAME="GenericSeparate"></A>A <u>generic separate module</u> consists of a generic definition module and a generic implementation module, each prefixed by the reserved word GENERIC. The generic definition module is a template from which a specific definition module may be refined. The generic implementation module is a template from which a specific implementation module may be refined.</i></blockquote>
+
+<P><b>NOTE</b>:  The process of refinement will be described in later sections of the chapter.</P>
+
+<P>The important thing to note about this is that generic modules have formal parameters, just as do procedure definitions and declarations.  The manner in which one substitutes actual parameters will be discussed in the next section. This one will concentrate on defining and declaring the generic modules.</P>
+<P>As hinted at by the definition above, a generic module is distinguished from any other module by two things:</P>
+<P>1. It starts with the reserved word GENERIC. This is how the module is flagged for the benefit of the compiler.</P>
+<P>2. It (optionally) has formal parameters. These allow it to be used for a variety of data types. The formal parameters of a generic module are restricted to types and constant values only.</P>
+<H3><b><A NAME="16.2.1">16.2.1</A> Generic Definition Modules</b></H3>
+<P>The definition part of a generic separate module is like any other definition module, except that it begins with the keyword GENERIC and it has a formal parameter list.  The complete syntax is shown in figure 16.1.</P>
+<P><CENTER><IMG SRC="Figure/Figure_16.1.GIF" WIDTH=513 HEIGHT=198 BORDER="1"></CENTER></P><!---->
+<P><b><A NAME="16.2.1Example1">Example 1</A></b>: Produce a generic definition of a stack</P>
+
+<P><b>Discussion</b>: In such applications, it is expected that the structure will be manipulated independent of the kind of element it contains, so this data type is provided as a formal type parameter at this stage of things. All the work of programming is in the structure manipulation; the provision of the items to enter into the structure is made when the actual parameters are supplied as shown in the next section.</P>
+
+<P><b>NOTE</b>:  This definition module is not complete; it is only an outline so as to show the syntax of a generic definition module.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Stacks (Element: <b>TYPE</b>);
+
+<b>CONST</b>
+   StackSize = 100;
+
+<b>PROCEDURE</b> Push (item : Element);
+
+<b>PROCEDURE</b> Pop (<b>VAR</b> item : Element);  
+
+<b>PROCEDURE</b> Empty () : <b>BOOLEAN</b>;
+
+<b>END</b> Stacks.</PRE>
+
+<P><b>NOTES</b>: 1. Specification of a constant such as StackSize in the manner of this example constrains all the refinements of this module. If that were not the intention, such an item could instead be made a constant value parameter and then specified by the actual parameter.</P>
+	<P> 2. Such a constant may be used in the corresponding generic implementation module, because as always implementation modules have access to such information in their corresponding definition modules.</P>
+	<P> 3. Observe that the reserved word TYPE is here being used as though it were a type itself. That is, the word TYPE is here employed in the manner a pervasive standard identifier. It is, however, still a reserved word because of the base language definition of it.</P>
+
+<P><b><A NAME="16.2.1Example2">Example</B> <B>2</A></b>:  (A matrix generic as to both size and elements.)</P>
+
+<P><b>Discussion</b>: In cases like this the data structure itself needs parameterization in order to make the size (of the matrix in this case) generic.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Matrix (Rows, Cols : <b>CARDINAL</b>; MatrixElement : <b>TYPE</b>);
+
+<b>TYPE</b>
+  TMatrix = <b>ARRAY</b> [0 .. Rows-1] <b>OF</B> <B>ARRAY</b> [0 .. Cols-1] <b>OF</b> MatrixElement;
+
+<b>PROCEDURE</b> Invert (<b>VAR</b> m : TMatrix);
+
+<b>END</b> Matrix.</PRE>
+
+<P><b><A NAME="16.2.1Example3">Example</B> <B>3</A></b>: Provide a generic definition of a module that defines a procedure type, and provides a procedure of this type that takes a generic parameter.</P>
+
+<P><b>Discussion</b>: This illustration defines a generic technique, as opposed to a generic Abstract Data Type (ADT). The definition below has <i>both</i> a parameter of the desired type and a procedure of the same type. This is unlikely in practice, as one would normally do one or the other in a given context. However, both approaches are allowed. Note that the type defined in the module can be used in the parameter list.  This is a new kind of forward reference and can be employed only in this context.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Validate (PType : <b>TYPE</b>; PValidProc : ValidProcType);
+
+<b>TYPE</b>
+  ValidProcType = <b>PROCEDURE</b> (item : PType) : <b>BOOLEAN</b>;
+
+<b>PROCEDURE</b> Valid (item : PType) : <b>BOOLEAN</b>;
+
+<b>END</b> Validate.</PRE>
+
+<P><b><A NAME="16.2.1Example4">Example</B> <B>4</A>:</b> (An outline of a generic sort)</P>
+
+<P><b>Discussion</b>: This example illustrates the abstraction of a generic technique applied to an existing kind of structure (an array), rather than to the manipulation of a user-defined structure.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Sorts (Item : <b>TYPE</b>; GenCompare : CompareProc);
+
+<b>FROM</b> Comparisons <b>IMPORT</b>
+  CompareResults;
+
+<b>TYPE</b>
+  CompareProc = <b>PROCEDURE</b> (Item, Item) : CompareResults;
+
+<b>PROCEDURE</b> Quick (<b>VAR</b> data : <b>ARRAY</B> <B>OF</b> Item);
+
+  (* Other procedures and functions would be included as well. *)
+<b>END</b> Sorts.</PRE>
+
+<P><b><A NAME="16.2.1Example5">Example</B> <B>5</A></b>: (Parameters are optional) </P>
+
+<P><b>Discussion</b>: This example illustrates that although in the majority of cases generic separate modules will be parameterized, this is not required, and non-parameterized instances are also useful. This module defines a <i>counter</i>, any number of instances of which may be refined under different names as shown in the next section.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Counter;
+
+<b>PROCEDURE</b> Inc;
+
+<b>PROCEDURE</b> Reset;
+
+<b>PROCEDURE</b> Count () : <b>CARDINAL</b>;
+
+<b>END</b> Counter.</PRE>
+
+<H3><b><A NAME="16.2.2">16.2.2</A> Generic Implementation Modules</b></H3>
+
+<P>Each of the generic definition parts shown in the previous subsection also needs a corresponding generic implementation. As usual, however, the order in which all this is done depends somewhat on the needs of the project.  It is possible to produce generic definition modules and the specific refinements with actual parameters as shown in the next section <i>before</i> writing the generic implementation parts (with their formal parameters) and then refining them with actual parameters.</P>
+<P>The implementation part of a generic separate module is also like any other implementation module, except that it begins with the keyword GENERIC and it has a formal parameter list.  The syntax is shown in figure 16.2.</P>
+<P><CENTER><IMG SRC="Figure/Figure_16.2.GIF" WIDTH=497 HEIGHT=198 BORDER="1"></CENTER></P><!---->
+<P>In order to ensure that the generic definition and generic implementation parts have the same contract with the user that is implied by having parameters in the first place, generic Modula-2 adopts the following rule:</P>
+
+	<blockquote><i>The parameters of the generic implementation module shall be identical to the parameters of the corresponding generic definition module.</i></blockquote>
+
+<P>This rule is similar to the rule that says that procedures defined as forward must have the same parameters when they are eventually declared and is also similar to the relationship between procedure definitions in a definition module and their declarations in the corresponding implementation module.</P>
+<P>In each case, observe how the code sketches (for that is all they are) are done in terms of the formal (generic) parameters.</P>
+<P>Shown below are the implementation parts that correspond to the definition parts of the generic modules in the last subsection.</P>
+
+<P>Example</B> <b>1:</b> What follows is a possible generic implementation of the <A HREF="#16.2.1Example1">first example</A> in section 16.2.1</P>
+ 
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> Stacks (Element : <b>TYPE</b>);
+
+<b>VAR</b>
+   stack    : <b>ARRAY</b> [0..StackSize] <b>OF</b> Element;
+   stackPtr : <b>CARDINAL</b>;
+(* One could also arrange for StackSize to be a parameter. *)
+
+<b>PROCEDURE</b> Push (item : Element);
+<b>BEGIN</b>
+  <b>INC</b> (stackPtr);
+  stack[stackPtr] := item;
+<b>END</b> Push;
+
+<b>PROCEDURE</b> Pop (<b>VAR</b> item : Element);   
+<b>BEGIN</b>
+  item := stack[stackPtr];
+  <b>DEC</b> (stackPtr)
+<b>END</b> Pop;
+
+<b>PROCEDURE</b> Empty () : <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> stackPtr = 0
+<b>END</b> Empty;
+
+<b>BEGIN</b> (* module body initialization *)
+  stackPtr := 0
+<b>END</b> Stacks.</PRE>
+
+<P>NOTE:  The constant <i>StackSize</i> is from the corresponding definition module. It may be used in this generic implementation module. However, the correctness of such use might not be checked until the refinement of that implementation is performed.</P>
+
+<P>Example</B> <b>2:</b> The next module is a corresponding implementation for the generic definition of <A HREF="#16.2.1Example2">example 2</A> in section 16.2.1.</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> Matrix (Rows, Cols : <b>CARDINAL</b>; MatrixElement : <b>TYPE</b>);
+
+(* Note that, as in any implementation module, the generic implementation module has access to the  types defined in the corresponding definition. *)
+
+<b>PROCEDURE</b> Invert (<b>VAR</b> m : TMatrix);
+<b>BEGIN</b>
+  (* your favourite technique *)
+<b>END</b> Invert;
+
+<b>END</b> Matrix.</PRE>
+
+<P>Example</B> <b>3:</b> The next module is a corresponding implementation for the generic definition of <A HREF="#16.2.1Example3">example 3</A> in section 16.2.1.</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> Validate (PType : <b>TYPE</b>; PValidProc : ValidProcType);
+
+<b>PROCEDURE</b> Valid (item : PType) : <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> PValidProc (item)
+<b>END</b> Valid;
+
+<b>END</b> Validate.</PRE>
+
+<P><b>Example</B> <B>4</b>:  Here is a sketch of a generic implementation of the Sorts module defined in <A HREF="#16.2.1Example4">example 4</A> of section 16.2.1.</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> Sorts (Item : <b>TYPE</b>; GenCompare : CompareProc);
+
+<b>FROM</b> Comparisons <b>IMPORT</b>
+  CompareResults;
+
+<b>PROCEDURE</b> Swap (<b>VAR</b> a, b : Item;)
+<b>VAR</b>
+  temp : Item;
+
+<b>BEGIN</b>
+  temp := a;
+  a := b;
+  b := temp;
+<b>END</b> Swap;
+
+<b>PROCEDURE</b> Quick (<b>VAR</b> data : <b>ARRAY</B> <B>OF</b> Item);
+<b>BEGIN</b>
+(* typical quicksort algorithm, except that compares are done by a procedure Compare  which returns values of type Comparisons.CompareResults. Swaps are done using the refinement of the generic swap above. *)
+
+<b>END</b> Quick;
+
+<b>END</b> Sorts.</PRE>
+
+<P><b>Example</B> <B>5</b>: (Parameters are optional)  This example implements the <A HREF="#16.2.1Example5">non-parameterized counter</A> found in section 16.2.1.</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> Counter;
+<b>VAR</b>
+  CurrentCount : <b>CARDINAL</b>;
+
+<b>PROCEDURE</b> Inc;
+<b>BEGIN</b>
+  <b>INC</b> (CurrentCount);
+<b>END</b> Inc;
+
+<b>PROCEDURE</b> Reset;
+<b>BEGIN</b> 
+  CurrentCount := 0;
+<b>END</b> Reset;
+
+<b>PROCEDURE</b> Count () : <b>CARDINAL</b>;
+<b>BEGIN</b> 
+  <b>RETURN</b> CurrentCount
+<b>END</b> Count;
+
+<b>BEGIN</b> (* main *)
+  Reset;
+<b>END</b> Counter.</PRE>
+
+<H3><b><A NAME="16.2.3">16.2.3</A> Formal Module Parameters</b></H3>
+<P>As an optional part of the definition and implementation modules of a generic separate module, a formal module parameter provides an explicit interface between the body of the generic separate module and the body of any module refined from it. If the generic separate module has formal parameters (the usual situation), any refiner of it must provide corresponding actual parameters as shown in <A HREF="Ch16.3.html">section 16.3</A>. As indicated above, the code in the implementation part of the module works with the formal names, in the same manner as the code of a procedure.</P>
+<P>There are two kinds of formal module parameters: constant value parameters and type parameters. The types of the former are specified by their formal type names; the latter are types, and this is specified by the keyword TYPE.</P>
+<P>Constant value parameters provide a means of passing a constant to the refinement of a generic separate module. Constant value parameters are value parameters in almost the same sense as the value parameters used with procedures.</P>
+<P>The type of a formal constant value parameter may be:
+<UL><LI><!--‹--> any pervasive type,</LI>
+<LI><!--‹--> any type previously named as a formal module type parameter in the same module parameter list,</LI>
+<LI><!--‹--> any type imported into the generic separate module in its import list, or</LI>
+<LI><!--‹--> any type defined in the generic separate module itself.</LI></UL></P>
+<P>In the latter two cases, the type must be imported into or defined in (respectively) the generic definition module because the parameter lists of the definition and implementation modules are required to be the same.</P>
+<P>Type parameters, on the other hand, provide a means of passing a type identifier to the refinement of a generic separate module.</P>
+
+<P><b>NOTE</b>:  The new use of the word <i>TYPE</i> as a name is confined to the specific context of generic module parameters and does not extend to procedure parameter lists or any other context.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

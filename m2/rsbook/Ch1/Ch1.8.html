@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<TITLE>1.8 Abstractions for Computing Machines</TITLE>
+<meta NAME="keywords" CONTENT="abstract, compute, compting, machine, machines, abstractions, hardware, input, output, memory, device, devices, rom, read, only, memory, ram, random, access, firmware, processing, machince, language, control, cpu, i/o, display, terminal, virtual, software, operating, system, program, programmer, programming, notation, lanuuage, computing, assembler, compiled, compiler, fortran, cobol, basic, interpreted, interpreter, pascal, iso, ansi, modula-2, ada, java, operon, modula-3, fourth, generation, 4gl, 3gl">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>1.8 Abstractions for Computing Machines</B></H2>
+<H3><B><A NAME="1.8.1">1.8.1</A> Computer Hardware Organization</B></H3>
+<P>Let's take a little closer look at the way computing machines operate, so that some of the terms taken for granted throughout this book will not be confusing.</P>
+<P>First, a definition of the <!--"-->&quot;nuts and bolts<!--"-->&quot;.</P>
+<BLOCKQUOTE><I><A NAME="Hardware">The </A>term <U>hardware</U> refers to the physical components, including the electronics, which make up the computer itself. That is, this word distinguishes the machine from the instructions it executes.</I></BLOCKQUOTE>
+<P>Every computer must have hardware that allows it to achieve the following tasks:</P>
+<P>1. <I>Input</I>. A computer must be able to accept information from the outside world.</P>
+<P>Early computers utilized punched paper cards or tape as their primary means of obtaining data. Later, magnetic media employed reels of tape, soft plastic <!--"-->&quot;diskettes<!--"-->&quot; of various sizes, or precision engineered metallic <!--"-->&quot;hard<!--"-->&quot; disks spinning at high speed. Other input devices include light pens, television cameras, <!--"-->&quot;joysticks<!--"-->&quot; for games, a mouse, page document reader, and even the human voice. However, while many people are predicting that one or more of these will replace the alphanumeric keyboard entirely over the next few years, the latter still remains the input device of choice for most people.</P>
+<P>2. <I>Memory</I>. A computer must be able to store data.</P>
+<P>One useful way of thinking about a computer is to view it as a collection of thousands of pigeon holes, much like those used in a post office to sort mail. Information can be stored in a specific location, and then it can later be retrieved for manipulation by the processor.</P>
+<P>For practical purposes, there are two types of computer memory, each having its distinct purpose. One type contains the programs used to start up the computer, perhaps to test the rest of memory for flaws, and to begin the operation of the disk drive so as to obtain some larger program from there. Since this program must be available every time the machine is turned on, it is permanently coded at the time of manufacture. For this reason, such memory is called Read Only Memory, or ROM for short. A computer may have anywhere from a few hundred to tens of thousands of units of its available memory locations dedicated to the built-in ROM programs.</P>
+<BLOCKQUOTE><I><A NAME="Firmware">The </A>programs coded into ROM at the time of manufacture are the <U>firmware</U> of the computer. This term is used to distinguish the programs from the ROM chips which contain them (hardware).</I></BLOCKQUOTE>
+<P>The majority of memory falls into the second category. This is read/write or <!--"-->&quot;Random Access Memory<!--"-->&quot; (RAM for short.) This is where user programs and data are stored. Turning off the power causes all the information in RAM to vanish, so it is important to ensure that programs and data are also stored on an external device before this is done. In fact, careful management of resources dictates that a programmer working on a large project should store the work periodically as a precaution against a power failure that would wipe everything out.</P>
+<P>3. <I>Processing</I>. A computer has a built-in ability to manipulate the stored data.</P>
+<P>The chip (or collection of chips and circuits) that actually moves the data around in memory and manipulates it in other ways, is called the Central Processing Unit (CPU). It contains the circuitry to allow some simple arithmetic operations to be performed, to test the memory for the presence of certain results, and to perform a variety of other operations. Instructions to do these things are given as special numeric codes.</P>
+<P>The limited capabilities represented by this <!--"-->&quot;machine language<!--"-->&quot; are not usually used directly by the person sitting in front of the computer console. Rather, other languages and programs are written in terms of the machine's language, and it is through these that the operator interacts with the machine.</P>
+<P>If the memory are the post office pigeonholes, the processor can be thought of as the postmaster, moving items from box to box, sorting them, and taking collections of items from the boxes for further processing elsewhere.</P>
+<P>4. <I>Control</I>. The various functions of the computer must be coordinated.</P>
+<P>Some of the functions that control the input, processing, and output of the data also may be located in the CPU section (or chip). However, there are usually other specialized circuits for this purpose, and in some computers, these actually make up most of the electronic hardware.</P>
+<P>Besides the routing of data to and from the correct memory locations and input or output devices, some of this circuitry is connected to certain hardware switch locations of the main memory, and interpret references to these by programs as signals to take action. (e.g. turn on the disk drive, invert the screen to white on black, etc.) This frees the CPU from much time-consuming and unnecessary activity, and allows it to be used more for processing than for control, speeding up the operation of the whole computer.</P>
+<P>5. <I>Output</I>. A computer has ways to send information back to the outside world.</P>
+<P>Many of the devices mentioned under the input section may simultaneously handle output. For this reason, the two functions are often grouped and referred to collectively as I/O. At one time, printers were the main devices dedicated strictly to output, but today a cathode-ray tube (such as is found in a television) is commonly used as a video display terminal for most purposes, with the printer being employed only at the last stages of a project when a final printed or <!--"-->&quot;hard<!--"-->&quot; copy of the results is desired.</P>
+<P>There have been many kinds of printers. Some printed hundreds of lines per minute, cost a small fortune, and were used only with mainframe installations. Others generated letter quality (typewriter style) output, but at only thirty characters per second (or less). Between these in speed, but at a much lower price were the dot matrix printers, which formed letters by making an array of dots on the page with pins, ink jets, or an electrical spark. Laser printers and other whole-sheet devices represent a newer technology that has moved rapidly from large networks to the individual small user. These are now available in colours and with large sheet sizes. A variety of other special purpose output devices also are available, particularly for graphics-oriented displays.</P>
+<P>The specific technology employed to implement the physical machine changes rapidly, and need not be detailed further here. Hardware design, and even the assembly of pieces out of a box are not the concern of most people who use or program computers. Rather, they are interested in the way that the total working environment <I>appears</I> to them as they use it.</P>
+<BLOCKQUOTE><I><A NAME="Virtual">The </A>total environment presented to the user by the combination of hardware and software that is being employed at the moment is called the <U>virtual machine</U>.</I></BLOCKQUOTE>
+<P>Note that the virtual machine to someone employing a word processor or spreadsheet is quite different from that presented to someone who is programming the same computer. Each has a different abstraction for the computer, a different virtual machine. The same user has a different virtual machine at different times of use, depending on the software currently available for the task at hand.</P>
+<H3><B><A NAME="1.8.2">1.8.2</A> Computer Software Organization</B></H3>
+<P>Thus, it is time to pay attention to the programs that actually run on a computer.</P>
+<BLOCKQUOTE><I><A NAME="Software">The </A>programs resident in the RAM memory of a computer are collectively referred to as its <U>software</U>.</I></BLOCKQUOTE>
+<P><I>Software</I> may refer to a purchased <!--"-->&quot;canned<!--"-->&quot; package used to operate an accounting or word processing system. It may also refer to a computer language together with some program written by the user in that language. </P>
+<BLOCKQUOTE><I><A NAME="OS">The</A> software that handles the disk drives and other I/O, and generally provides the environment in which the programmer works, is referred to as the <U>operating system</U> of the machine.</I></BLOCKQUOTE>
+<P>If the task is actually writing programs, it is important to realize that a computer can take action upon only a limited vocabulary of instructions<!--‹-->--usually fewer than one hundred words. However, once given the instructions to follow, the machine will do the set task so rapidly that the programmer saves time in the end, despite the work put into turning those instructions into code that the machine could follow. Here are a few basic definitions.</P>
+<BLOCKQUOTE><I><A NAME="Program">A</A> set of instructions to a computer that is intended to make it perform a task is called a <U>program</U>. The person devising the program is called a <U>programmer</U> and the collection of all the instructions available to a programmer at a given time is called a <U>programming notation</U> or <U>language</U>.</I></BLOCKQUOTE>
+<P>Because the vocabulary of a computer is limited, a programmer must give the program instructions in a manner carefully chosen for clarity, accuracy, and efficiency. Much of the purpose of this book is to teach the rudiments of strategies for creating such programs. Its students will spend a great deal of time sitting in front of a computer typing in and running sample programs, for computer science, like mathematics (and other worthwhile things), can be learned only through the fingertips. That is, the <!--"-->&quot;hands-on<!--"-->&quot; aspect of programming is not an optional part of the course, it is the course. The book, the professor and the lectures are teaching aides, but the theory they present is worthless unless it is used.</P>
+<H3><B><A NAME="1.8.3">1.8.3</A> Computing Notations</B></H3>
+<P>Since programming <I>is</I> the central issue here, it is worthwhile to consider programming languages in general terms.</P>
+<P>The central processing unit (CPU) of a computer can execute programs only through a limited number of instructions placed directly into the memory as numerical codes. These codes and their meanings are collectively referred to as the <I>machine language</I> for that particular processing system.</P>
+<P>It is possible to write programs in machine language employing a text editor (like a word processor, but somewhat specialized) for the writing, and then use a program called an <I>assembler</I> to generate the actual code by translating the text file. However, most languages are not machine languages, but are written in terms of these low level codes. The commands in the higher level languages (such as Modula-2) are more like English words than the cryptic abbreviations used in assemblers, or the meaningless (to us) numbers that are the actual machine codes. Once a higher level program has been written out, the machine can translate this notation into the appropriate machine codes so that it can be executed on the processor.</P>
+<P>Of course, higher level languages have developed gradually, as has the hardware on which they run. At one time, only the low level machine codes were used, and entering these was a laborious process indeed. As they developed, these languages or notations became somewhat specialized, reflecting the biases of their creators and principal users.</P>
+<P><CENTER>Two Early High-Level Notations</CENTER></P>
+<P>The first high level language to gain common acceptance was FORTRAN (FORmula TRANslation) which was developed in the 1950s for numerical computations and scientific research. This language exists today in many versions, the most common of which is FORTRAN 77. The newest standard version FORTRAN 90 has just become available.</P>
+<P>A second language from this early era in computing, which is still extensively used, is COBOL (Common Business Oriented Language). Again, there are many versions of this language, but they are all designed to make it easy to program the solution to business problems.</P>
+<P>Though the language definitions themselves do not demand it, actual implementations of both FORTRAN and COBOL require that programs be written out in one set of codes as a text file (using the language vocabulary) and then must be translated by another program into the code that the machine itself can run.</P>
+<BLOCKQUOTE><I><A NAME="Compile">An</A> implementation of a language that is translated once from the programmed form to the machine version, and thereafter run from the machine version, is said to be a <U>compiled</U> implementation. The program which performs the translation task is called a <U>compiler</U>.</I></BLOCKQUOTE>
+<P><CENTER>BASIC</CENTER></P>
+<P>BASIC (Beginner's All Purpose Symbolic Instruction Code) was developed as a teaching tool rather than as a major problem-solving notation. It also has many versions, some of them with almost as much power as the FORTRAN of which is it sometimes considered an abbreviation. BASIC is often called a <!--"-->&quot;quick-and-dirty<!--"-->&quot; language, because it allows the programmer to write code and get fast results, using the computer as a kind of giant calculator. Unfortunately, it is very <!--"-->&quot;loose<!--"-->&quot; (the dirty part) and its users easily develop rather sloppy ways of thinking and working that are detrimental to the planning of large programs. The following definition happens to apply to most (but not all) versions of this language.</P>
+<BLOCKQUOTE><I><A NAME="Interpreted">An </A>implementation of a language which is translated from the written code into the machine code as the program is run, and which must be translated this way every time it is run, is said to be an <U>interpreted</U> implementation.</I></BLOCKQUOTE>
+<P>BASIC, in most of its incarnations, is not suited for large programming projects because its design does not enforce good programming habits. Also, because it is frequently implemented as an interpreted language rather than as a compiled one, its programs are rather slow. </P>
+<P><CENTER>Pascal and Modula-2</CENTER></P>
+<P>In the early 1970s, the Swiss computer scientist Niklaus Wirth devised a new teaching language which he called Pascal. Eventually, Pascal became the mainstream language among university computer science faculties around the world. Because it was designed for teaching, Pascal had many shortcomings for programming commercial applications, and there have come to be several enhanced versions. Perhaps the best known was the P-system version developed at the University of California at San Diego. Here, the product of the compiler was not machine code, but an intermediate called P-code, which itself had to be interpreted when the program was executed.</P>
+<P>The advantage was that all that was needed to take the compiled program to another computer was the appropriate final stage interpreter for the target machine, because the P-Codes themselves were the same for all machines. Since much of the operating system (filer, editor, etc.) was also written in P-Code, the same virtual machine was presented to the operator or programmer, regardless of the type of hardware employed. Wirth, by the way, was also the one who devised the P-code; the UCSD version was merely the major commercial implementation of this, and provided what became the standard operating system to contain it.</P>
+<P>There were other contenders for the title of <!--"-->&quot;standard<!--"-->&quot; Pascal, however. The International Organisation for Standards (ISO) produced a version in 1978, and later the American National Standards Institute (ANSI) also published similar but not quite identical standards for the language. These standard versions of Pascal were widely implemented on minicomputers and mainframes and were commonly used in educational institutions, though these often developed local dialects of their own.</P>
+<P>Because of the wide experience with Pascal, and the many extensions of it which others created, Wirth decided to derive a new language of his own from this base. Apparently he believed that the many attempts to enhance Pascal confirmed the belief that it was fundamentally flawed, and that he should start again, rather than do a patch job of his own. He had already produced a language called Modula, whose principal feature was the <!--"-->&quot;module.<!--"-->&quot; This allowed programs to be compartmentalized for easier design and error detection.</P>
+<P>Borrowing much of the style from Pascal, and the module concept from Modula (which was never very widely used) Wirth developed in 1978 and published in 1980 his description of a new language which he called Modula-2.  Besides the language, he devised a new intermediate code which he called M-code, and designed and built a computer (the Lilith, which was an optimized workstation for the language, and whose native machine language was M-Code.) He also designed and distributed both M-Code and machine language compilers to implement the language.</P>
+<P>It is important to note that Modula-2 is specifically designed for programming large complex systems, and many comments later in this text will serve to point students toward such tasks, though the examples will, of necessity, be at an elementary level.</P>
+<P>Modula-2 gained wide acceptance in a short period of time, and wherever it was introduced it quickly replaced Pascal as a teaching language. It also came to be used for large production purposes in a way that Pascal never was. As a result, it too became the subject of a standardization process begun on the international level by ISO in 1987, and completed with the release of the final standard document in 1996. The results of that process are reflected in this revision of the text.</P>
+<P>More recently, generic programming extensions and object oriented extensions were added to the base standard by the ISO Modula-2 committee.</P>
+<P><CENTER>Some Other Modern Languages</CENTER></P>
+<P>Two other languages which are generally compiled and have been used in universities for teaching purposes are PL/1 (Programming Language one) and <!--"-->&quot;C<!--"-->&quot;. The former was a creation of IBM, and the latter was contributed by Bell labs. (Actually no predecessors <!--"-->&quot;A<!--"-->&quot; or <!--"-->&quot;B<!--"-->&quot; ever existed outside the lab, but there is reputed to have been a Canadian language whose name was pronounced like the former, but was spelled <!--"-->&quot;EH?<!--"-->&quot;.) In recent years, C has been extended to allow it to be <!--"-->&quot;object oriented,<!--"-->&quot; and the new variations are called C++ and Objective C.</P>
+<P>Still another, whose use has been mandated by the United States government as a standard for defence critical applications, is called Ada, in honour of the Countess of Lovelace (1815-1852), the first computer programmer. Ada is also a descendent of Pascal, but is an enormous language/programming environment. While it must be used for certain military contracts, it has not so far been found to be suitable for beginning instruction, nor does it have many implementations on microcomputers.</P>
+<P>A new language from Sun Microsystems called Java borrows notational style from C++ and programming style from Smalltalk. It is an interpreted language and its code can, in theory, be run on any platform. The idea and functionality of Java were also borrowed by Microsoft to create their proprietary language called C#.</P>
+<P>Wirth has also not been content to rest on his laurels, and has produced new notations in the Modula-2 style, called Oberon and Oberon-2. These are experiments in minimalism in computing notations, and may give rise to a new mainstream language at a later time. Others have also experimented with the Modula family of languages, producing Modula-3, object oriented Modula, and several other variations.</P>
+<P><CENTER>Other Notations for Problem Solving</CENTER></P>
+<P>In addition to those mentioned above, there are many other specialty languages with small but dedicated followings. There are also a number of very high level (so-called <!--"-->&quot;fourth generation or 4GL<!--"-->&quot;) computing environments available that are not so much languages as they are a means to solve problems without writing programs. These are often designed more for business purposes than for scientific ones, however, because in the latter case, it is virtually impossible to anticipate ahead of time even the general structure of problems, and scientists and mathematicians often need the flexibility that a high level notation such as Modula-2 supplies. Moreover, 4GL's are usually interpreted and can be exceedingly slow.</P>
+<P>In addition, such programming environments as databases and spreadsheet programs often serve more as languages than they do as applications, and there are even programmable word processing programs that also tend to fall into this category.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

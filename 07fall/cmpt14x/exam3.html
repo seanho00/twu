@@ -1,0 +1,212 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT145 Fall 2007 Midterm, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 57
+
+<ol class="main">
+
+<li> Define: <u>[4]</u>
+  <ol class="subparts">
+  <li> Bit: <i>smallest unit of information, either a 1 or a 0, true/false, high/low, etc.</i>
+  <li> Nibble: <i>4 bits, one hexadecimal digit</i>
+  <li> Byte: <i>8 bits, can represent an ASCII character</i>
+  <li> Word: <i>unit of data the CPU works on, often 32bits or 64bits</i>
+  <li> Megabyte: <i>either 2<sup>20</sup> bytes (binary units) 
+    or 10<sup>6</sup> bytes (SI units)</i>
+  </ol>
+
+<li> Convert 315 (decimal) to binary, octal, and hexadecimal. <u>[6]</u>
+<br><br><i>
+100111011, 0473, 0x13b
+</i><br><br><br><br>
+
+<li> Describe the cylinder/head/sector geometry of hard drives. <u>[4]</u>
+<br><br><i>
+Hard drives have one or more flat annular platters.
+The cylinder number refers to radius away from the centre of the platter.
+The position of the arm on which the read/write head is mounted determines
+the cylinder.
+The head number refers to which platter and which side of the platter (each
+    platter has two heads, one for each side).
+The sector number refers to an angular rotation of the platters.  As the platters
+spin, different sectors pass under the heads.
+</i><br><br><br><br><br><br><br>
+
+<li>
+In your own words, contrast the <b>procedural</b> vs.
+<b>object-oriented</b> programming paradigms.  <u>[4]</u>
+<br><i>Procedural programming is action-oriented: the code is a sequence of
+procedures, and the data structures are passed as parameters to the procedures.
+The focus is on the 'verbs'.  In contrast, object-oriented programming is
+data-oriented: code is organized into classes, centred around objects, and the
+procedures are treated as methods within each class.  The focus is on the
+'nouns'.
+</i><br><br><br><br><br><br><br><br>
+
+<li>
+An orchard grows five apple varieties:
+<br>Fuji, Gala, Spartan, Rome, and Melba.<br>
+The apples I like are Fuji, Gala, and Rome; let this <b>set</b> be denoted by
+<tt>myFav</tt>.  <br>Let <tt>yrFav</tt> be the set containing Fuji, Rome, and Melba.
+
+<ol class="subparts">
+
+  <li> Find the <b>intersection</b> of <tt>myFav</tt> and <tt>yrFav</tt>.
+  Express in words the <b>interpretation</b> of this 
+  in the context of apple preferences. <u>[2]</u>
+  <br><i>{ Fuji, Rome }.
+  Those varieties that <b>both</b> you and I like.</i><br><br><br>
+
+  <li> Find the <b>set difference</b> <tt>yrFav - myFav</tt>.
+  Express in words the <b>interpretation</b> of this 
+  in the context of apple preferences. <u>[2]</u>
+  <br><i>{ Melba }.
+  Those varieties that you like but I don't like</i><br><br><br>
+
+  <li> We wish to implement some set operations using <b>bitsets</b> in Python.
+  Define five Python <b>variables</b> <tt>Fuji, Gala, Spartan, Rome, Melba</tt>
+  with appropriate integer values for use in a bitset.
+  <u>[2]</u> <br>
+  <i><pre>
+fuji = 1 &lt;&lt; 0
+gala = 1 &lt;&lt; 1
+spartan = 1 &lt;&lt; 2
+rome = 1 &lt;&lt; 3
+melba = 1 &lt;&lt; 4
+</pre></i>
+
+  <li> Using the variables you just defined, define a Python <b>bitset</b>
+  for <tt>yrFav</tt>. <u>[2]</u> <br>
+  <i><pre>
+yrFav = fuji | rome | melba
+</pre></i>
+
+  <li> Write a Python expression for the <b>intersection</b> of
+  <tt>myFav</tt> and <tt>yrFav</tt>. <u>[2]</u> <br>
+  <i><tt>myFav &amp; yrFav</tt></i><br><br><br>
+
+</ol>
+
+<li>
+Define or describe each of the following <b>object-oriented</b> terms:
+<u>[8]</u>
+<ol class="subparts">
+  <li> Message: <i>communication between objects; how methods are called</i>
+  <li> Interface: <i>a set of messages that an object can receive</i>
+  <li> Class: <i>a user-defined container type</i>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+  types</i>
+  <li> Attribute: <i>a variable or method belonging to an object</i>
+  <li> Method: <i>a function/procedure belonging to an object</i>
+  <li> Constructor/Initializer: <i>the special method which is called when an object is
+  instantiated</i>
+  <li> Sub-class: <i>a class which inherits attributes/methods from a parent class</i>
+</ol>
+
+<li>
+Given the following block of Python code, consider the names <b>visible</b>
+to the print statement at the end.  For each of the expressions in the print
+statement, write what would be printed,
+or if the name is not visible, write 'NameError'. <u>[8]</u>
+<pre>
+a = 1
+def f(p):
+	global a
+	from math import sqrt
+	a = p
+class C:
+	a = 2
+	b = 3
+	def __init__(self, d=4):
+		f(5)
+		a = 6
+		b = 7
+		self.e = 8
+g = C()
+print a, b, d, e, g.a, g.b, g.d, g.e
+<i>a=5, b=NameError, d=NameError, e=NameError, g.a=2, g.b=3, g.d=AttributeError, g.e=8</i>
+</pre>
+
+<li class="break">
+Using <b>exceptions</b>, modify the following block of Python code to print,
+"Can't divide by zero; goodbye!" and exit the loop when the user inputs 0.
+<u>[4]</u>
+<pre>
+<i>
+try:
+</i>
+	while True:
+	
+		in = input("Type a number and I'll invert it! ")
+
+		recip = 1.0/in
+
+		print "The reciprocal is:", recip
+<i>
+except ZeroDivisionError:
+	print "Can't divide by zero; goodbye!"
+</i>
+	
+</pre>
+
+<li>
+An example application of <b>dictionaries</b> is 
+to implement "<b>sparse matrices</b>" -- where only the non-zero entries of a 
+matrix are stored.  The keys are (row,col) tuples, and the values are the
+corresponding non-zero entries of the matrix.  For example, a 2x2 sparse matrix
+with the value 5 in entry (1,0) and the value 3 in entry (1,1) would be
+represented by the dictionary <tt>{(1,0): 5, (1,1): 3}</tt>.
+	
+<ol class="subparts">
+  <li> Write a Python function that returns the number of <b>non-zero</b> 
+  entries in a sparse matrix.  (Hint: it should be a very short function!)
+  Include a short docstring. <u>[2]</u> <br>
+  <i><pre>
+def count_nonzero(matrix):
+	"""Count the number of non-zero entries in a sparse matrix.
+	Assumes that only non-zero entries are represented in the
+	dictionary."""
+	return len(matrix)
+</pre></i>
+
+  <li> Write a Python function that returns the number of non-zero entries in a
+  given <b>row</b> of a sparse matrix. 
+  You may assume the caller will pass in two additional parameters, 
+  <tt>nrows</tt> and <tt>ncols</tt>, specifying the number of 
+  rows and columns in the matrix.
+  Include a short docstring.
+  <u>[4]</u> <br><br><br><br><br><br><br><br><br><br><br><br>
+
+</ol>
+
+<li> Come up with your own application for dictionaries (different from the previous
+    problem).  What do the keys represent?  What do the values represent?
+Create a sample dictionary to illustrate your application. <u>[3]</u>
+
+<!--
+<li> We wish to demonstrate the differences between <b>alias</b>,
+<b>shallow copy</b>, and <b>deep copy</b>.
+Come up with your own situation using <b>records</b> that might illustrate
+this.  Define the record types in Python, create a sample record, then create an
+alias, a shallow copy, and a deep copy. <u>[6]</u>
+-->
+
+</ol>
+
+</body></html>
+

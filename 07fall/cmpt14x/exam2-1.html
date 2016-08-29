@@ -1,0 +1,224 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT140 Fall 2007 Final Exam (part 1), Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 60
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[5]</u><br><br>
+<i>Write, Apprehend, Design, Execute, Scrutinize<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Describe the five software <b>control/flow</b> 
+abstractions mentioned in the text. 
+For each one, also name a corresponding Python language construct.
+<u>[5]</u><br><br>
+<i>Sequence (newlines in Python), Selection (if/elif/else),
+Repetition (while/for), Composition (def/functions), Parallelism<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+<br><br><br>
+
+<li> Fill in the blank: <u>[13]</u><ol class="subparts">
+<li> "<b>Computers</b> are __________<i>tools</i>, and 
+  <b>computing scientists</b> are ______________<i>toolsmiths</i>."
+<li> In <b>statically-typed</b> languages, before we can use the value of a 
+  variable for the first time in <br> a program, we need to
+  ______________<i>declare</i> and ________________<i>initialize</i> it.
+<li> <b>True</b> or <b>False</b> (circle one): The word <tt>function</tt>
+  is a legal Python identifier. <i>True</i>
+<li> The Python method on <b>file handles</b> that ensures that all pending
+  <tt>write()</tt>s have been committed to disk is called 
+  ________________ <i>flush()</i>.
+<li> The Python function which <b>counts</b> the number of characters
+  in a string is ___________<i>len()</i>.
+<li> The standard function that converts strings to <b>ALL-CAPS</b> is found in 
+  the <br>___________<i>string</i> standard library and is named 
+  ____________<i>upper()</i>.
+<li> The <b>standard output</b> I/O channel is found in the 
+  <br>________<i>sys</i> standard library and is named ___________<i>stdout</i>.
+<li> A procedure that <b>invokes itself</b> is called a 
+  ___________________<i>recursive</i> procedure.
+<li> A requirement imposed by a function upon its parameters, such that
+    the correctness of the result is not guaranteed if the requirement is
+    not met, is called a __________________<i>precondition / predicate</i>.
+</ol>
+
+<li>
+Recall that in Python int/float/bool parameters are essentially passed 
+by <b>value</b>, and lists/dictionary parameters are essentially
+passed by <b>reference</b>.  What is printed by the following block of Python
+code?
+<u>[4]</u>
+<pre>
+	def double_me(x):
+		x *= 2
+	y = 3
+	z = range(3)
+	double_me(y)
+	double_me(z)
+	print 'y =', y, ', z =', z
+</pre>
+
+<i><pre>
+y = 3, z = [0, 1, 2, 0, 1, 2]
+</pre>
+The variable y points to an immutable object (the float 3.0) and is
+roughly pass-by-value, so it is not affected by double_me().  
+The variable z points to a mutable object (the list range(3)) and is 
+roughly pass-by-reference, so it is changed by double_me().  
+The real scoop on Python parameter passing is 
+<a href="http://effbot.org/zone/call-by-object.htm">call-by-object</a>
+and is a bit more complicated; it has to do with Python's
+object-oriented roots.
+</i>
+<br><br><br>
+
+<li>
+Name three out of the five possible <b>modes</b> in which one can open a file
+in Python, and give example Python code for each. <u>[5]</u>
+<br><i>
+<b>read</b>: <tt>open('file.txt', 'r')</tt><br>
+<b>write</b>: <tt>open('file.txt', 'w')</tt><br>
+<b>read+write</b>: <tt>open('file.txt', 'r+')</tt><br>
+<b>append</b>: <tt>open('file.txt', 'a')</tt><br>
+<b>binary</b>: <tt>open('file.txt', 'b')</tt>
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li>
+Use the Python <tt>range()</tt> function to create this list:
+<tt>[ 5, 3, 1, -1 ]</tt>. <u>[3]</u>
+<br><i>range(5, -2, -2) or range(5, -3, -2)</i>
+<br><br><br>
+
+<li>
+Assume that the variable <tt>numApples</tt> has integer type.
+Write a line of pseudocode that would work in a <b>dynamically</b>-typed
+language like Python but would fail in a <b>statically</b>-typed language
+like C or M2. <u>[2]</u>
+<br><br><i>
+<tt>numApples = "Hello, World!"</tt>, or
+<tt>numApples = 71.3</tt>, or
+<tt>numApples = False</tt>, etc.
+</i>
+<br><br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+<u>[9]</u>
+<ol class="subparts">
+<li><tt> (5 % 12 == 2) or False	</tt>	<i>False</i>
+<li><tt> 2+2*2**2 </tt>			<i>10</i>
+<li><tt> 3*'x' + 2*'y' + 'x' </tt>	<i>'xxxyyx'</i>
+<li><tt> not False or (12 % 0) </tt>	<i>True</i>
+<li><tt> (3 &gt; 2.9) and (15/3 = 5)</tt>	<i>SyntaxError (assign)</i>
+<li><tt> "%s%04d.jpg" % ('img-', 99.9)</tt>	<i>'img-0099.jpg'</i>
+<li><tt> '%01.3f' % (16 % 0)</tt>	<i>ZeroDivisionError</i>
+<li><tt> 2*range(3) </tt>		<i>[ 0, 1, 2, 0, 1, 2 ]</i>
+<li><tt> chr(ord('H') + 2) </tt>	<i>'J'</i>
+</ol>
+<br>
+
+<li>
+What is output by the following block of Python code? <u>[4]</u>
+<pre>
+myList = [ ('a', 'b'), range(5), 'xyz', [ [2, 3, 4], 5] ]
+for item in myList:
+	print len(item),
+</pre>
+<br><i>'2 5 3 2 '</i>
+<br>
+
+<li class="break">
+Tell me everything you know about <b>libraries</b> in the context of 
+programming. <u>[4]</u>
+<br><br><i>
+Libraries are containers/groups of functions and other entities
+provided for other programmers to use.  A well-designed library will
+have a clear public interface (header or definition file) which tells
+the programmer what functionality the library provides and how to
+invoke its functions.  The other component of the library is its
+implmentation, which is the code or bodies of its functions.  The
+implmentation will often be hidden from the user.
+Some examples of standard Python libraries include math, sys, string,
+random.  An example of a function provided by a library is
+math.sin().  An example of a non-function entity provided by a library
+is math.pi; it is a constant rather than a function.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Write a Python function <tt>transpose()</tt> which takes a matrix (2D list)
+as a parameter and returns a new matrix, where each entry <tt>(i,j)</tt>
+of the new matrix is taken from entry <tt>(j,i)</tt> in the old matrix.
+Docstrings/comments not necessary but helpful for partial credit.
+<u>[6]</u>
+<br>
+For example, the transpose of the matrix
+<table border="1">
+<tr><td>a</td><td>b</td></tr>
+<tr><td>c</td><td>d</td></tr>
+</table>
+is the matrix 
+<table border="1">
+<tr><td>a</td><td>c</td></tr>
+<tr><td>b</td><td>d</td></tr>
+</table>
+
+<br><i><pre>
+def transpose(matrix):
+	"""Return the transpose of a matrix (2D list).
+	pre: m must be a rectangular 2D list, all rows of same length."""
+	numRows = len(matrix[0])
+	numCols = len(matrix)
+
+	tpose = [0] * numRows
+	for row in range(numRows):
+		tpose[row] = [0] * numCols
+		for col in range(numCols):
+			tpose[row][col] = matrix[col][row]
+	return tpose
+</pre></i>
+
+</ol>
+
+</body></html>
+
+

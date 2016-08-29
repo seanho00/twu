@@ -1,0 +1,190 @@
+<HTML>
+<HEAD>
+<TITLE>3.4 Repetition (1) - the WHILE Statement</TITLE>
+<meta NAME="keywords" CONTENT="while, repetition, do, restatement, refinement, entities, variable, variables, problem, import, imports, readresults, readresults, sioresults, stextio, srealio, swholeio, space, newline, module">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.4 Repetition (1) <!--</B>‹<B>-->-- the WHILE Statement</B></H2>
+<P>A number of program examples thus far have employed repetition in the form of the WHILE loop, and there is very little more to say about this Modula-2 construction that the astute reader has not already gleaned from these examples.  The general form is:</P>
+<PRE>
+  <B>WHILE</B> Boolean Expression (* i.e. while <!--"-->&quot;Expression<!--"-->&quot; is <B>TRUE</B> *)
+    <B>DO</B>
+      Statement Sequence;
+    <B>END</B>;</PRE>
+
+<P>When the END of the loop is reached, program control cycles back to the WHILE and the Boolean expression is checked again.  If it is still TRUE, the loop executes once more.  If it is FALSE, control passes to the next statement after the END of the WHILE loop. </P>
+<P>If the expression happens to evaluate to FALSE when the WHILE is first encountered, the whole statement will be skipped.  In the terms used in section 1.9.1, the WHILE loop employs <I>top-of-loop testing</I>.  The syntax diagram is in figure 3.5:</P>
+<P><CENTER><IMG SRC="Figure/Figure_3.5.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B>Example:</B></H3>
+<P>Write a program to read in a sentence and find the average number of letters in each word.  (This could be used as one test for the reading level of textual material.)</P>
+<H3><B>Discussion:</B></H3>
+<P>A somewhat simplified plan will be given for this program, as the WHILE loop has already been well illustrated.</P>
+<H3><B>Problem restatement:</B></H3>
+<PRE>Given Input
+  a sequence of letters ending with a carriage return
+Processing to do
+  determine the number of letters
+  determine the number of words
+  compute the average word length
+Desired Output
+  inform user of computed average</PRE>
+
+<H3><B>Problem refinement:</B></H3>
+<PRE>1. Ask the user for a sentence.
+2. Read the response in, one character at a time.
+	Count the non-blank characters as letters.
+	Count blanks as words.
+	Add one word (the last word.)
+3. Divide letters/words for the average.
+4. Inform user of total.
+5. Give option of doing it again.
+	Recycle if yes.
+	End if no.</PRE>
+
+<H3><B>Entities required:</B></H3>
+<PRE><!--€-->o Variables:	  currentLetter, answer : CHAR
+		 letters, words  : CARDINAL
+		 again : BOOLEAN
+<!--€-->o Imports:	 WriteString, WriteLn, WriteReal, ReadChar, SkipLine,
+	ReadResults, ReadResult (latter two to determine whether at end of line)</PRE>
+
+<H3><B>Code:</B></H3>
+<PRE>
+<A NAME="AverageWordLength"></A><B>MODULE</B> AverageWordLength;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteFixed;
+
+<B>VAR</B>
+  currentLetter, answer : <B>CHAR</B>;
+  letters, words  : <B>CARDINAL</B>;
+  again : <B>BOOLEAN</B>;
+
+<B>CONST</B>
+  space = ' ';
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program computes the average <!--"-->&quot;);
+  WriteString (<!--"-->&quot;length of the words in a sentence.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  again := <B>TRUE</B>;    (* initialize boolean *)
+  <B>WHILE</B> again
+    <B>DO</B>
+      letters := 0;    (* initialize counters *)
+      words := 0;
+
+      (* get data *)
+      WriteString (<!--"-->&quot;Type a sentence ending in a return. <!--"-->&quot;);
+      WriteLn;
+      ReadChar (currentLetter);     (* process first char. *)
+
+      <B>WHILE</B> ReadResult() # endOfLine
+      (* continue until end of line *)
+        <B>DO</B>  (* process the line *)
+          <B>IF</B> currentLetter = space
+            <B>THEN</B>
+              words := words + 1;
+            <B>ELSE</B>
+              letters := letters + 1;
+            <B>END</B>;    (* if *)
+
+          ReadChar (currentLetter);     (* obtain next char *)
+        <B>END</B>;  (* while *)    (* and recycle loop *)
+  
+      SkipLine;
+      WriteLn;
+      words := words + 1;     (* add one for last word at end *)
+      WriteString (<!--"-->&quot;The average word length was <!--"-->&quot;);
+      WriteFixed (<B>FLOAT</B> (letters) / <B>FLOAT</B> (words), 2, 0);
+      WriteLn;
+      WriteString (<!--"-->&quot;Do you want to do another one? <!--"-->&quot;);
+      ReadChar (answer);
+      SkipLine;
+      WriteLn;
+      again := (answer = 'Y') <B>OR</B> (answer = 'y');
+
+    <B>END</B>;     (* first <B>WHILE</B> *)
+
+  (* here we either recycle or fall out to the next statement *)
+
+  WriteString (<!--"-->&quot;AverageWordLength processing concluded.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue.<!--"-->&quot;);
+  ReadChar (answer);
+
+<B>END</B> AverageWordLength.</PRE>
+
+<P><B>NOTE</B>:  The entities <I>ReadResults</I> and <I>ReadResult</I> are the only two items in the library module <I>SIOResults</I>.  The first is a variable type that may take on values such as <I>endOfLine</I> and <I>allRight</I> (among others).  The second makes an enquiry about the last performed read operation on the standard input/output channel used by such modules as <I>STextIO</I>, <I>SRealIO</I>, and <I>SWholeIO</I>.  It then returns a value of the type <I>ReadResults</I> that the main program may compare with the desired outcome.</P>
+<P>This program works, as far as it goes, but no output is provided here, for the reader will no doubt have noticed that there are a few flaws in the thinking.  One of these is that if two blanks are left after a word, the program will count two words.  This could be avoided by having another character variable called, say, <I>lastOne</I> and assigning this the value of <I>currentLetter</I> at the end of each pass through the inner WHILE loop.  Then the check for whether one has a word or not at the beginning of the loop could include a comparison of <I>lastOne</I> to <I>space</I>.  The code could look like this:</P>
+<PRE>
+      Read (currentLetter);     (* process first char. *)
+      lastOne := currentLetter;
+      <B>WHILE</B> ReadResult() # endOfLine
+        <B>DO</B>  (* process the line *)
+          <B>IF</B> (currentLetter = space) <B>AND</B> (lastOne # space)
+            <B>THEN</B>
+              words := words + 1;
+            <B>ELSE</B>
+              letters := letters + 1;
+            <B>END</B>;    (* if *)
+          lastOne := currentLetter;
+          ReadChar (currentLetter);     (* obtain next char *)
+        <B>END</B>;  (* while *)    (* and recycle loop *)</PRE>
+
+<P>Another flaw is that a real sentence ends with a mark like a period and may have quotes, apostrophes, commas, and other punctuation symbols that are not letters.  The calculation here counts these as letters.  Moreover, it would be nice not to be limited to a single sentence, but to have some means other than the end of line state to determine when processing is complete.  In one of the exercises, the reader is asked to rewrite this Module to correct some of these deficiencies.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

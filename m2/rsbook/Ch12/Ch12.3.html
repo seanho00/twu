@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<TITLE>12.3 Pointer Arithmetic</TITLE>
+<meta NAME="keywords" CONTENT="pointer, pointers, arithmetic, system, systems, addadr, subadr, difadr, manipulating, address, variable, variables, array, arrays, hardware, machine, code, instruction, instructions">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.3 Pointer Arithmetic</B></H2>
+<P>It was noted above that operations (other than assignment) on pointer variables are not allowed.  However, the pseudo-module SYSTEM contains the function procedures ADDADR, SUBADR and DIFADR for manipulating address variables.  Although these take parameters and return values of type ADDRESS, the parameters are value parameters, not variable parameters.  Thus, the assignment compatibility between pointer types and address types means that these function procedures can be applied to pointers and can return values to be assigned to pointers in expressions.  In addition, these items are in SYSTEM, and would not necessarily be limited by such considerations, in any case, as the routines of SYSTEM can almost be expected to behave by unique rules.  Here are some fragments of correct code:</P>
+<PRE>
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  ADDRESS, ADR, ADDADR, SUBADR, DIFADR;
+
+<B>VAR</B>
+  point, point2 : <B>POINTER</B> <B>TO</B> <B>INTEGER</B>;
+  addr : ADDRESS;
+  int : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  point := ADDADR (point,  10);    
+  point := SUBADR (point,  10); 
+  int := DIFADR (point, point2);</PRE>
+<P>It is important to note that manipulating pointers in this fashion requires a thorough knowledge of the specific machine being used and particularly the manner in which it uses addresses and pointers.  Because of potential portability problems it is therefore not likely that many programmers will have a great deal of use for this facility.  However, one could take advantage of the fact that the elements of an array are stored contiguously to set up the addresses in the example above as follows:</P>
+<PRE>
+  theStuffNumAdrs [1] := ADR (theStuff [1]);
+  <B>FOR</B> count := 2 <B>TO</B> 13 (* set up addresses *)
+    <B>DO</B>
+      theStuffNumAdrs [count] := ADDADR (theStuffNumAdrs [count - 1], <B>SIZE</B> (Data))
+    <B>END</B>;</PRE>
+<P>This facility can also be useful when a particular machine is known to have certain specific memory set aside for special purposes, and it is desired to access that memory via pointers.  Of course, such code is non-portable, as it makes assumptions about particular hardware.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

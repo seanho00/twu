@@ -1,0 +1,422 @@
+<BODY>
+
+<HEAD>
+<TITLE>Chapter 8 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 8</B></H2>
+
+
+<H3><B>Questions</B></H3>
+
+<P>1.	An implementation restriction is a numerical limitation on the user or complexity of data types or of programming structures.  For example, a manufacturer will specify a restriction like how deeply nested a loop, selection, parentheses or procedure can be.</P>
+
+<P>2.	Implementation defined refers to information the ISO standard requires the manufacturer to specify, for example, the maximum and minimum values of the built-in scalar type CHAR.  Implementation dependent refers to behaviour that depends on the underlying machine and is potentially different on different machines.  The code</P>
+
+<P>		MyProc(a, function(a))</P>
+
+<P>	where a is a variable parameter, depends for its meaning on the order of parameter evaluations and is therefore erroneous.</P>
+
+<P>3.	Computer languages or individual language constructions are called low level if they require for their correct use a knowledge of machine language, if they name or manipulate the machine's memory locations directly, or involve a knowledge or use of details of that machine's hardware construction or the operating system.  To the degree that the use of a language is independent of and isolated from any of these specific details, it is said to be high level.  Modula-2 is a high level language with some low level facilities.</P>
+
+<P>4.	High level constructs tend to use English or near English words for commands.  Low level constructs tend to have more cryptic abbreviations that have meaning only in the context of a particular machine, type of machine, or operating system.  Low level constructs also tend to be more detailed and usually accomplish a single step at a time unlike in a high level construct where they tend to be more general and many steps are accomplished in one command. Most language constructs in Modula-2 are high level. However, SYSTEM.LOC, and all procedures using this type, are low level.</P>
+
+<P>5.<pre>		Binary		<!--	-->Octal		<!--	--><!--	-->Hexadecimal
+	(a)	1111011			173		<!--	-->7B
+	(b)	11111111	<!--		-->377		<!--	-->F
+	(c)	10000000000	<!--	-->2000		<!--	-->400
+	(d)	1000000000000		10000		<!---->1000
+	(e)	10111011100	<!--	-->2734		<!--	-->5DC
+	(f)	1000001010011		10123		<!---->1053</pre></P>
+
+<P>6.<pre>		Decimal		Hexadecimal	<!--	-->Octal
+	(a)	181		<!--	-->B5		<!--	-->265
+	(b)	119		<!--	-->77		<!--	-->167
+	(c)	203		<!--	-->CB		<!--	-->313
+	(d)	240		<!--	-->F0		<!--	-->360
+	(e)	170		<!--	-->AA		<!--	-->252
+	(f)	109		<!--	-->6D		<!--	-->155</pre></P>
+
+<P>7.<pre>		Binary			<!--	-->Decimal
+	(a)	1010000010000001	<!--	-->41089
+	(b)	1111011100		<!--	-->988
+	(c)	1100000000000000	<!--	-->49152
+	(d)	1000000000000			4096
+	(e)	1100000000		<!--	-->768
+	(f)	111110001111			3983
+	(g)	1101000000000000	<!--	-->53248
+	(h)	1111100000000000	<!--	-->63488</pre></P>
+
+<P>8<pre>.		Binary			Hexadecimal
+	(a)	0000000000001010	<!--	-->A
+	(b)	0000000001100100	<!--	-->64
+	(c)	0000001111101000	<!--	-->3E8
+	(d)	0010011100010000	<!--	-->2710
+	(e)	0000000100000000	<!--	-->100
+	(f)	0000010000000000	<!--	-->400
+	(g)	1111111111111111	<!--	-->FFFF
+	(h)	0001100001011010	<!--	-->1472
+	(i)	0010100000001101	<!--	-->280D</pre></P>
+
+<P>9.	Bit:  a single memory component that stores a one or a zero.<BR>
+	Byte:  A sequence of eight bits as a single memory location that can store a number from zero through 255.<BR>
+	Nibble:  half a byte (four bits).  2 parts: high (upper four) <!--& -->&amp; low (lower four).<BR>
+	"K":  1024 bytes, or 1Kilobyte.</P>
+
+<P>10.	Answers may vary.</P>
+
+<P>11.	Answers may vary.  Generally, a page of memory is 256K.  A sector is 256K of data storage, and a block is 2 sectors.  However, the first two these terms have fallen into disuse, and allocation blocks commonly vary in sizes depending on the operating system and hard drive size.</P>
+
+<P>12.	A data location is a grouping of two or more adjacent bytes (memory locations) collectively employed as a single data storage unit.  It is abstracted as SYSTEM.LOC, and is best thought of as the smallest addressible storage unit.</P>
+
+<P>13.	An address is a unique value identifying a particular storage location.  ISO standard Modula-2 has procedures that manipulate addresses:  ADDADR, SUBADR,  and DIFADR.</P>
+
+<P>14.	PROCEDURE SYSTEM.ADR returns the address of a variable v.</P>
+
+<P>15.	someVariable[B7ED] : CARDINAL  (declared under the VAR heading).</P>
+
+<P>16.	The library import FROM SYSTEM IMPORT flags a program as non-portable.</P>
+
+<P>17.	A safe conversion converts a one type to another by using the standard identifier VAL and its shortcuts.  An unsafe conversion forcibly re-interprets the bit pattern of one type as though it were of  another without conversion and is done with the SYSTEM.CAST.</P>
+
+<P>18.	(a)  octal digits for the character value are followed by a C			e.g. 0C<BR>
+<P>	(b)  octal numeric literals are followed by a B				e.g. 177777B<BR>
+<P>	(c)  hexadecimal digits for the character value are followed by an H	e.g. 789H</P>
+
+<P>19.	A file is a source or a sink for data. <BR>
+
+<P>20.	A logical file is an abstract structuring of data storage as viewed by the programmer and/or user of the program.  It is the high level, or conceptual view of a file.  A program file is a specific data collection as seen and manipulated by a program.  It is often (but not always) represented by a variable, perhaps of type "file" or ChanId.  At this middle level of abstraction, a file can be regarded as residing within the machine's memory, and as existing only as long as the program that employs it is active.  A physical file is a recording of a logical file.  It takes the form of a magnetic image on a disk or tape surface, in which form it exists independently of any particular program.  The details of this recording provide the lowest level view of a file.</P>
+
+<P>21.	A sequential file is a file that is organized as a stream with writing allowed only at the end.  A random-access file is a file that may have any of the data elements read or written directly using an indexing scheme without having to start at the beginning of the file.</P>
+
+<P>22.	TextIO, WholeIO, RealIO, LongIO, RawIO, and IOResult are the high level Modula-2 I/O modules.  The S versions are specializations of these.</P>
+
+<P>23.	StreamFile, SeqFile, RndFile, and TermFile are the ISO Modula-2 drivers.  They are all considered as middle level.</P>
+
+<P>24.	SRawIO (high), RawIO, IOConsts, StreamFile, SeqFile, RndFile, and TermFile (middle) are used in the ISO suite to do input and output of binary data.  SRawIO is a high level module and the rest of the modules mentioned are middle level.</P>
+
+<P>25.	A sequence is  a function from the positive whole numbers into some other collection of objects.  A stream is a sequence of data items of the same type.</P>
+
+<P>26.	Streams have the following properties:  (i)  The number of elements in a stream is not known ahead of time.  (ii)  A stream has an origin and a destination, which are also not necessarily know ahead of time but which may default to some standard place or device.  (iii)  Writing is only done at the end of a stream, and deleting is the only way of modifying a stream entirely.  (iv)  Any element of a stream can be read, provided that reading starts at the beginning of the stream and proceeds through the elements one at a time in order until the desired one is reached.  (v)  A pointer or a window may be maintained which points to the last element read so that the next item can be read at a later time without starting from the beginning.  (vi)  Steams have modes which only allow them to be written to or read from, depending on the mode.  However, some streams may allow procedures to act on their status altering the mode.</P>
+
+<P>27.	Steams are all of the same type.  The sequence shown is a mixture of type CARDINAL/INTEGER and of type REAL.</P>
+
+<P>28.	A text stream is a steam whose items are of the type CHAR, and is also known as a legible stream.  A raw stream is a stream of binary items.</P>
+
+<P>29.	A channel is an abstract medium through which a stream flows.</P>
+
+<P>30.	A sequential file has all its items the same type.  A text file is a stream of type CHAR.</P>
+
+<P>31.	1. Declare a file variable to logically identify the file within the program<BR> <I>or </I> declare a channel variable to identify the logical/physical connection.*<BR>
+	2. Use the file's actual name (a string) to look it up (or create it) on the external device‹say, a disk*.<BR>
+	3. Identify the logical file variable with the actual disk file (open the file)*.<BR>
+	4. Connect a program I/O stream to the previously opened file.<BR>
+	5. Read from or write to the stream, and hence the logical, and so the physical file*.<BR>
+	6. When finished, disconnect the stream from the program.<BR>
+	7. Close the file, ensuring that the data is secure on the disk*.<BR>
+	* are needed in an ISO system.<BR>
+	Answers may vary on other systems.</P>
+
+<P>32.	A restricted stream reads only from the beginning and writes only to the current position.  A rewindable sequential stream has the properties of a restricted stream but has the capability of rewinding the read or write position back to the start of the file.  For the restricted stream, Modula-2 uses StreamFile and for the rewindable sequential stream it uses SeqFile.</P>
+
+<P>33.	Closing a file makes sure that it gets written to the disk and secured.  The writing that happens before the close command only writes to the memory location, not actually to the disk.  </P>
+
+<P>34.	A buffer is a temporary storage area that is used to store information being transmitted to or from an external location (including a physical file).</P>
+
+<P>35.	Answers may vary.  Some limit the characters that may be used, and all have limits on the length of the name.</P>
+
+<P>36.	The procedures InChan and OutChan return the current channel for standard I/O, possibly as redirected by the  a default channel that is specified by the programmer (i.e. a file).  StdInChan and StdOutChan on the other had specify the standard channel created on startup, normally the keyboard and screen.</P>
+
+<P>37.	StdInChan.NullChan can be used for testing purposes without employing (and possibly damaging) a file with a specified channel.  IOChan.InvalidChan is the channel returned by failed attempts to open a channel and serves as a flag to check such attempts.</P>
+
+<P>38.	ISO Modula-2 has the module IOChan for device independent I/O.</P>
+
+<P>39.	An echo is a copy of an input character to an output device.</P>
+
+<P>40.	Character mode input has the echo flag is set for input.  For line mode input, the channel is opened without the echo flag.</P>
+
+<P>41.	There can be any number of channels in character mode.</P>
+
+<P>42.	A generic procedure is a procedure that is capable of acting on any data regardless of type.</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note: Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*   Created
+    June 18 1999
+    Chapter 8 Question 43
+    ERROR TRAPPING INCLUDED *)
+
+MODULE CardToBin;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, WriteChar, SkipLine, ReadChar;
+FROM SWholeIO IMPORT
+  WriteCard, ReadCard;
+FROM Strings IMPORT
+  Length;
+FROM SIOResult IMPORT
+  ReadResult, ReadResults;
+
+TYPE
+  String = ARRAY [0..255] OF CHAR;
+
+VAR
+  binary : String;
+  ok : BOOLEAN;
+  input : CARDINAL;
+  quit : CHAR;
+
+PROCEDURE ConvertCard (card : CARDINAL; VAR binary : ARRAY OF CHAR);
+(*  pre: none
+   post: finds the binary equivalent and puts it in an arry of char *)
+
+VAR
+  quo, rem, count, alt: CARDINAL;
+
+BEGIN
+  alt := card;
+  quo := alt;
+  count := 0;
+
+  WHILE quo > 0 DO
+    card := quo;
+    quo := card DIV 2;
+    rem := card MOD 2;
+
+    IF rem = 0 THEN
+      binary[count] := '0';
+    ELSE
+      binary[count] := '1';
+    END;
+
+    INC (count);
+  END;  (* end WHILE *)
+
+  binary[count] := CHR(0);
+END ConvertCard;
+
+PROCEDURE WriteBinary (binary : ARRAY OF CHAR);
+(*  pre: string must contain the binary string
+   post: writes out the binary string *)
+
+VAR
+  count : INTEGER;
+
+BEGIN
+  count := Length (binary);
+
+  WHILE count >= 0 DO
+    WriteChar (binary[count]);
+    DEC (count);
+  END;  (* end WHILE *)
+
+END WriteBinary;
+
+(* Start main program *)
+
+BEGIN
+  REPEAT		(* do again *)
+    WriteString ("This program will convert a cardinal to a binary number.");
+    WriteLn;
+
+    REPEAT
+      WriteLn;
+      WriteString ("Enter the CARDINAL you want to convert: ");
+      ReadCard (input);
+      ok := ReadResult () = allRight;
+
+      IF NOT ok THEN
+        WriteLn;
+	WriteString ("Error in input");
+      END;
+
+      SkipLine;
+    UNTIL ok;
+
+    WriteLn;
+    WriteLn;
+
+    (* convert the cardinal *)
+    ConvertCard (input, binary);
+    WriteString ("The binary conversion is:");
+
+    (* write the binary *)
+    WriteBinary(binary);
+    WriteLn;
+    WriteLn;
+
+    (* ask to quit *)
+    WriteString ("Enter 'Q' to quit: ");
+    ReadChar (quit);
+    SkipLine;
+  UNTIL quit = 'Q';
+END CardToBin.</pre>
+
+
+<pre>(*   Created
+    June.18.1999
+    Chapter 8 Question 45
+    NO ERROR TRAPPING
+
+    This program uses SYSTEM.CAST to CAST the REAL into a CARDINAL
+    then the binary is found.  *)
+
+MODULE RealPrinter;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, WriteChar, SkipLine, ReadChar;
+FROM SRealIO IMPORT
+  WriteReal, ReadReal;
+FROM Strings IMPORT
+  Length;
+FROM SYSTEM IMPORT
+  CAST;
+FROM SIOResult IMPORT
+  ReadResult, ReadResults;
+
+TYPE
+  String = ARRAY [0..255] OF CHAR;
+
+VAR
+  binary : String;
+  ok : BOOLEAN;
+  realInput : REAL;
+  input : CARDINAL;
+  quit : CHAR;
+
+PROCEDURE ConvertCard (card : CARDINAL; VAR binary : ARRAY OF CHAR);
+(*  pre: none
+   post: finds the binary equivalent and puts it in an arry of char *)
+
+VAR
+  quo, rem, count, alt: CARDINAL;
+
+BEGIN
+  alt := card;
+  quo := alt;
+  count := 0;
+
+  WHILE quo > 0 DO
+    card := quo;
+    quo := card DIV 2;
+    rem := card MOD 2;
+
+    IF rem = 0 THEN
+      binary[count] := '0';
+    ELSE
+      binary[count] := '1';
+    END;
+
+    INC (count);
+  END;  (* end WHILE *)
+
+  binary[count] := CHR(0);
+END ConvertCard;
+
+PROCEDURE WriteBinary (binary : ARRAY OF CHAR);
+(*  pre: string must contain the binary string
+   post: writes out the binary string *)
+
+VAR
+  count : INTEGER;
+
+BEGIN
+  count := Length (binary);
+
+  WHILE count >= 0 DO
+    WriteChar (binary[count]);
+    DEC (count);
+  END;
+
+END WriteBinary;
+
+(* Start main program *)
+
+BEGIN
+  REPEAT		(* do again *)
+    WriteString ("This program will convert a REAL into a binary number.");
+    WriteLn;
+
+    REPEAT
+      WriteLn;
+      WriteString ("Enter the REAL you want to convert: ");
+      ReadReal (realInput);
+      ok := ReadResult () = allRight;
+
+      IF NOT ok THEN
+        WriteLn;
+	WriteString ("Error in input");
+      END;
+
+      SkipLine;
+    UNTIL ok;
+
+    WriteLn;
+    WriteLn;
+    (* do an unsafe conversion into a CARDINAL *)
+    input := CAST (CARDINAL, realInput);
+    (* convert the cardinal *)
+    ConvertCard (input, binary);
+    WriteString ("The binary conversion is:");
+    (* write the binary *)
+    WriteBinary(binary);
+    WriteLn;
+    WriteLn;
+
+    (* ask to quit *)
+    WriteString ("Enter 'Q' to quit: ");
+    ReadChar (quit);
+    SkipLine;
+  UNTIL quit = 'Q';
+END RealPrinter.</pre>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,243 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Midterm 2 :: CMPT140 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li> An HSDPA cell-phone connection runs at <b>7.2Mb/s</b> (mebibits per 
+second).  Assuming full utilization of the bandwidth (which never happens 
+in reality), how long would it take to download a <b>0.9GB</b> (gibibyte)
+file? <u>[4]</u>
+<br><i>
+  2<sup>10</sup> = 1024 sec = 17 min 4 sec
+</i><br><br>
+
+<li> Convert 95 (decimal) into <b>binary</b>, <b>octal</b>,
+and <b>hexadecimal</b>.  Express the octal and hex results in syntax 
+understandable to Python. <u>[5]</u>
+<br><i>
+  Binary: 1011111.  Octal: 0137.  Hex: 0x5f.
+</i><br><br>
+
+<li> Describe the <b>cylinder/head/sector</b> geometry of hard drives.
+<u>[4]</u>
+<br><i>
+  Hard drives have one or more flat annular platters. The cylinder number
+  refers to radius away from the centre of the platter. The position of the arm
+  on which the read/write head is mounted determines the cylinder. The head
+  number refers to which platter and which side of the platter (each platter
+  has two heads, one for each side). The sector number refers to an angular
+  rotation of the platters. As the platters spin, different sectors pass under
+  the heads.
+</i><br><br><br><br><br><br><br>
+
+<!--
+<li> What is Python <b>pickling</b>?  Why is it useful?
+(The general concept is called <b>serialization</b>.) <u>[5]</u>
+<br><i>
+  Python's <tt>pickle</tt> library is an implementation of serialization,
+  which converts Python objects to string representations and back.
+  These string representations can be stored in files, transferred to other
+  programs, or sent over a network.  I/O of complex data structures is
+  facilitated by serialization.  An object that has been pickled can be
+  unpickled and retain all its original structure, types, and values.
+</i>
+-->
+
+<li> What is a <b>stub function</b>, and why might such things be useful
+in software development?<u>[5]</u>
+<br><i>
+  In top-down design of a complex software system, it is helpful to build
+  the general framework first, and fill in the details later.  An analogy
+  is building the frame of a house first, then filling in the wiring,
+  plumbing, drywall, and appliances later.  A stub function is a placeholder
+  for a complete function; it does not perform the computations yet but
+  always returns a dummy value, e.g., 0.  An example is our ROT13 program,
+  when we had the framework of converting between letters and ASCII codes,
+  but did not actually do the ROT13 encryption arithmetic.
+</i><br><br><br><br><br><br>
+
+<li> Consider a Caesar substitution cipher on a reduced alphabet of just
+the letters A through L.  Using the key <tt>'KFHCLDAJEIBG'</tt>,
+<b>decode</b> this ciphertext: <tt>K HKFFKAL DLC KFEAKEG</tt>
+<u>[4]</u>
+<!-- egrep -i '^[a-l]+$' /usr/share/dict/cracklib-small -->
+<br><i><tt>
+    A CABBAGE FED ABIGAIL
+</tt></i><br><br>
+
+<li> What are <b>exceptions</b> used for?  What happens when one is raised?
+<u>[4]</u>
+<br><i>
+  Exceptions are used to signal an error or out-of-the-ordinary situation.
+  When one is raised, normal execution of the program terminates, and control
+  jumps to the nearest enclosing exception handler that can catch that
+  exception.  The exception handler typically would clean up and notify the
+  user of the error, before either exiting gracefully or continuing on.
+</i><br><br><br><br><br><br>
+
+<li> Name and describe at least three <b>standard exceptions</b> that we 
+learned.  For each, write a short snippet of Python code or a situation 
+that might raise that exception.  <u>[6]</u>
+<br><i>
+  <b>ZeroDivisionError</b>: math division by zero: e.g., <tt>5 / 0</tt><br>
+  <b>NameError</b>: no such variable exists: e.g., 
+  <tt>myApples</tt> if no variable named myApples has been declared<br>
+  <b>TypeError</b>: type of operands does not fit the operator: e.g.,
+  <tt>2 + "hello"</tt><br>
+  <b>SyntaxError</b>: invalid Python syntax: e.g., <tt>in for: if</tt><br>
+  <b>KeyboardInterrupt</b>: user pressed Control-C<br>
+  <b>IOError</b>: problem with opening a file: 
+  e.g., trying to read a file that doesn't exist
+</i><br><br><br><br><br>
+
+<li> What is <b>recursion</b>?  How is it different from looping (e.g.,
+<tt>for</tt> or <tt>while</tt> loops)?  What conditions are needed to 
+ensure that a recursive function will actually stop? <u>[5]</u>
+<br><i>
+  A recursive function <b>calls itself</b>; e.g., a function named "myFun()"
+  may include a call to myFun() within its code.  Recursion involves
+  new function calls (thereby creating new <b>stack frames</b>), whereas 
+  looping can be done entirely within one function call (possibly saving 
+  memory space and improving speed).  To prevent infinite recursion (where the
+  function keeps calling itself indefinitely), <b>progress</b> must be made
+  each time; e.g., if the parameter is n, the recursive call may be myFun(n-1).
+  Also, a <b>base case</b> is needed as a stopping point.
+</i><br><br><br><br><br><br><br><br>
+
+<li> Define or describe each of the following terms in object-oriented 
+programming: <u>[6]</u>
+<ol class="subparts">
+  <li> Class: <i>a user-defined container type</i>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+    types</i>
+  <li> Attribute: <i>a variable or method belonging to an object</i>
+  <li> Method: <i>a function/procedure belonging to an object</i>
+  <li> Constructor/initializer: <i>the special method which is called when
+    an object is instantiated</i>
+  <li> Interface: <i>a set of messages that an object can receive</i>
+</ol>
+
+<li> Tell me everything you know about <b>pseudo-random</b> number
+generators (PRNG).  How are they different from "true" random number
+generators?  Describe a situation in which a pseudo-random number
+generator might be preferable to a "true" random number generator.
+<u>[5]</u>
+<br><i>
+  A software RNG is a function that yields a new random number every
+  time it is called. Usually, no parameters are required, and the
+  function returns a float in the range [0,1). A software RNG works by
+  taking the output of the last invocation of the function, performing a
+  bunch of math to "randomize", and returning a new number in the
+  appropriate range. As a result, it needs to keep track of the last
+  generated value. The software RNG can be "seeded" with a user-supplied
+  value; given the same seed, the RNG will always yield the same
+  sequence of "random" numbers.
+  An example application is a card game, where supplying the same seed
+  results in exactly the same shuffle of the card deck; this can be
+  useful if the user wants to replay the same game.
+</i><br><br><br><br><br><br><br><br>
+
+<li> <em>(Do the remaining problems on separate paper.)</em><br>
+Design a <b>library</b> for a pseudo-random number generator.
+For this question, no code is needed; just design the interface to the library:
+what functions should your library provide?  Any global variables or constants?
+For each item, describe its role/purpose.  For each
+function, give its pre/post-conditions (i.e., what would be in its docstring).
+You are designing the <b>header</b> file for the library.
+<u>[5]</u>
+<br><i>
+  Provide a function <tt>random()</tt> that takes no parameters, and produces
+  a new pseudo-random number, say in the range [0,1).<br>
+  Provide a function <tt>seed(x)</tt> that takes one numeric parameter and
+  initializes the seed for the PRNG.  Nothing is returned.  Setting the seed
+  to the same number results in subsequent calls to random() producing the same
+  sequence of numbers.
+</i>
+
+<li> Design a <b>class</b> <tt>Driver</tt> that represents any person in BC 
+who has a driver's licence.  What <b>attributes</b> are needed?
+What <b>methods</b>?  No Python code is needed, just discussion. <u>[5]</u>
+<br><i>
+  Attributes: name, date of birth, address, photo, licence #, date licence 
+  was issued, date licence expires, insurance info, list of vehicles for
+  which they are primary driver, class of licence (e.g., truck, bus, 
+  motorcycle, etc.), stage of graduated licence (L, N), ...<br>
+  Methods: renew licence, check if insurance is up-to-date, change address,
+  upgrade class of licence (e.g., get motorcycle licence), ...
+</i>
+
+<li> Write a Python program to read in text from the file "input.txt",
+convert all text to uppercase, and write the result to the file "output.txt".
+<em>(Hint: use <tt>string.upper()</tt>)</em>
+Docstring, pseudocode, comments, etc. are not required, but may be helpful for 
+partial credit if your code isn't right. <u>[8]</u>
+<i><pre>
+import string
+iFile = open("input.txt")
+oFile = open("output.txt", "w")
+for line in iFile:
+	oFile.write(string.upper(line))
+iFile.close()
+oFile.close()
+</pre>
+Or the more "proper" Python way:<pre>
+import string
+with open("input.txt") as iFile:
+	with open("output.txt", "w") as oFile:
+		for line in iFile:
+			oFile.write( string.upper(line) )
+</pre>
+Actually, Python strings have a built-in <tt>upper()</tt> method, so a solution
+may be as short as:<pre>
+with open("input.txt") as iFile:
+	with open("output.txt", "w") as oFile:
+		oFile.write( iFile.read().upper() )
+</pre>
+</i>
+
+<li> Modify your program from the previous question so it doesn't <b>crash</b>
+if the file "input.txt" does not exist, or if "output.txt" cannot be created.
+Make sure the file handles are always closed in any case.
+(If your solution to the previous problem already does this, just note that,
+and you will get full credit for this problem.)
+<u>[4]</u>
+<br><i>
+Either use the more "proper" Python solution (using 'with'), or wrap
+all the code in a try/except block, catching IOError.
+Note that you should choose either to use 'with' or 'try/except', but
+not both.<pre>
+import string
+try:
+	ifile = open("input.txt")
+	ofile = open("output.txt", "w")
+	for line in ifile:
+		ofile.write(string.upper(line))
+except IOError:
+	print "Problem opening input.txt or output.txt!"
+finally:
+	ifile.close()
+	ofile.close()
+</pre><i>
+
+</ol>
+
+</body></html>
+
+

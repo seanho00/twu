@@ -1,0 +1,72 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Quiz 4 :: CMPT140 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 20
+
+<ol class="main">
+
+<li> Convert the decimal number <tt>79</tt> to
+<b>binary</b>, <b>octal</b>, and <b>hexadecimal</b>.
+Express the octal and hexadecimal results in Python form.
+<u>[5]</u>
+<br><i>
+Binary: 1001111.  Octal: 0117.  Hex: 0x4f
+</i><br><br><br><br>
+
+<li> A wireless internet connection runs at <b>8 mebibits/sec</b>.
+How long would it take to transfer a <b>4 gibibit</b> file?
+<u>[4]</u>
+<br><i>
+2<sup>9</sup> = 512 seconds, or 8 minutes and 32 seconds.
+</i><br><br><br>
+
+<li> What is a <b>pseudo-random number generator</b>?  What is the role of
+the <b>seed</b>?  Describe a situation in which a pseudo-random number
+generator might even be more useful than a "true" random number generator.
+<u>[5]</u>
+<br><i>
+A pseudo-random number generator is a deterministic function that takes
+a seed value as input, performs some mathematical operation on it, and
+produces a value within the desired range as output.  Usually, the desired
+range is floating-point between 0 and 1.  The next time the PRNG is called,
+it uses the last output value as input.  The intent is that the mathematical
+operations are sufficiently complex that it is difficult to predict what the
+next value in the sequence will be.  However, if one restarts the sequence
+with the same seed, the same sequence of "random" numbers will be generated.
+This can be useful, for instance, if one wants to guarantee that a card game
+shuffles its deck the same way.
+</i>
+<br><br><br><br><br><br>
+
+<li> Write a complete Python program that reads the 100th-120th bytes
+of the file "data.txt", and prints those bytes to the screen.
+Docstring and comments are not necessary, but you may receive partial
+credit for pseudocode if the code is not perfect.
+<u>[6]</u>
+<br><i><pre>
+	f = open("data.txt")
+	f.seek(99)
+	print f.read(20)
+	f.close()
+</pre></i>
+
+</ol>
+
+</body></html>
+
+

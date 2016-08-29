@@ -1,0 +1,29 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+Function {} {open
+} {
+  code {Clock* c = new Clock();
+c->win->show();} {selected
+  }
+} 
+
+class Clock {open
+} {
+  Function {Clock()} {open
+  } {
+    Fl_Window win {open
+      xywh {316 120 350 250} type Double hide
+    } {
+      Fl_Clock {} {
+        xywh {25 25 230 210}
+      }
+      Fl_Button {} {
+        label Quit
+        callback {o->window()->hide()}
+        xywh {265 120 70 20}
+      }
+    }
+  }
+} 

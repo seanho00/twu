@@ -1,0 +1,64 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2007 Lab2, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+--></style>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a>
+Lab2 (30 pts): Parallel Programming in OpenMP</h1>
+
+<p> In this lab, you will design and implement a parallel program of 
+your own choosing, to run on carmel.
+
+<ul>
+
+<li> Choose a task that is computationally intensive, not I/O intensive or
+network intensive.  E.g., computing pi via Monte Carlo, not encrypting a large
+file.
+
+<li> You should use an OpenMP parallel construct of some sort (duh!), such as
+<tt>#pragma omp parallel</tt> or <tt>#pragma omp for</tt>.
+
+<li> Your lab write-up should show a table of 
+timing results using 1, 2, 4, and 8 threads,
+and different numbers of iterations.
+Ideally, we'd see a speedup with more threads, but if your code is right, you
+won't lose marks if the speedup isn't dramatic.
+
+<h2>Suggested project ideas</h2>
+
+<li> Some suggestions to help you brainstorm: <ul>
+
+  <li> A numerical integration problem like the pi.c example shown in class
+  would be sufficient (choose your own different problem, though).
+
+  <li> Something cooler might be to compute 
+  <a href="http://en.wikipedia.org/wiki/Mandelbrot_set"</a>
+  the Mandelbrot fractal</a>.  Some
+  <a href="openmp/mandelbrot/">sample serial code</a> is available to help you
+  get started (it has an optional X-windows interface; you could try porting it
+  to FLTK or some other GUI).
+
+</ul>
+
+<li> Be creative; have fun!
+
+<h2>Lab write-up</h2>
+
+<li> Follow <a href="lab_template.html">the template lab write-up</a>
+to document your program.  Name your write-up:
+<br><tt>your_name_lab2_writeup.doc</tt> (or .txt, etc.)
+<br>Put it in the same project directory as your code so that it will be
+included in the tarball.
+
+<h2>Electronic turn-in</h2>
+
+<li> Put everything (C++ code, header files, executable, lab
+write-up) into a tarball/ZIP and upload it to eCourses under "Lab2":
+<br><tt>your_name_lab2.tar.gz</tt>
+
+</ul>
+
+</body></html>

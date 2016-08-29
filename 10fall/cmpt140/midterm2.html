@@ -1,0 +1,289 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<!--
+19 out
+3-4 done @T-30!  (gave up?)
+12 take full time
+-->
+<title>Midterm 2 :: CMPT140 10FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li> Fill in the blank: <u>[6]</u> <ol class="subparts">
+  <li> In software development, the document that describes the functionality
+  you intend to deliver to the client is called the 
+  <i>specifications</i>________________.
+  <li> When we wish to <tt>print()</tt> an object to the console, which method
+  of the object does Python invoke?  <i><tt>__str__()</tt></i>_______________.
+  <li> In a Python class, the <tt><b>__init__()</b></tt> method is the special
+  method called the <i>constructor or initializer</i>____________________.
+  <li> The Python method on file objects that sets the <b>file pointer</b>
+  (location within the file) is called <i>seek()</i>__________
+  <li> What English part of speech should a <b>method</b> name be?
+  <i>verb</i>___________
+  <li> Let <tt>myList = [ 9, 8, 7, 6 ]</tt>.  What is <tt>myList[1:3]</tt>?
+  <i>[8, 7]</i>_____________
+</ol>
+
+<li> What are <b>exceptions</b> used for?  What happens when one is raised?
+<u>[4]</u>
+<i><br>
+  Exceptions are used to signal an error or out-of-the-ordinary situation.
+  When one is raised, normal execution of the program terminates, and control
+  jumps to the nearest enclosing exception handler that can catch that
+  exception.  The exception handler typically would clean up and notify the
+  user of the error, before either exiting gracefully or continuing on.
+</i>
+<div class="answerbox" style="height:9em"></div>
+
+<li>
+Compare and contrast Python <b>lists</b> with C/M2 arrays <u>[4]</u>
+<i><br>
+  Python lists can change length (can insert/delete), can have items of
+  differing type, can have items which change type (due to Python's
+  dynamic typing), and have various operators/functions defined on them,
+  such as del, len(), negative indexing, list slicing, etc.
+</i>
+<div class="answerbox" style="height:9em"></div>
+
+<li>
+What is output by the following block of Python code? <u>[3]</u>
+<pre>
+myList = [ "Hey bub!", ("hey", "bub!"), range(10, 40, 5), [ range(5) * 2 ] ]
+for item in myList:
+	print( len(item), end=' ' )		# print all on one line
+</pre>
+<i><br>'8 2 6 1 '</i>
+<div class="answerbox" style="height:1em"></div>
+
+<li> What is <b>serialization</b>, and why is it useful?
+What does it look like in Python?  (Just describe the library and
+primary functions; no need for complete code.) <u>[5]</u>
+<i><br>
+  Python's <tt>pickle</tt> library is an implementation of serialization,
+  which converts Python objects to string representations and back.
+  These string representations can be stored in files, transferred to other
+  programs, or sent over a network.  I/O of complex data structures is
+  facilitated by serialization.  An object that has been pickled can be
+  unpickled and retain all its original structure, types, and values.
+</i>
+<div class="answerbox" style="height:8em"></div>
+
+<li> Describe all the various <b>file modes</b> in which Python 
+can open a file, as though you were writing a manual for the function
+<tt>open()</tt>.  Indicate any errors that might occur and anything that
+a Python programmer using <tt>open()</tt> might need to watch out for.
+<u>[5]</u>
+<i>
+  <br><b>'r'</b>: read-only (assumes file exists and is readable)
+  <br><b>'w'</b>: write-only (assumes file can be created/written;
+  if file already exists, its old contents are clobbered)
+  <br><b>'a'</b>: append (assumes file is writable; if file already exists,
+  it is appended to)
+  <br><b>'r+'</b>: read+write (overwrites bytes in-place)
+  <br><b>'rb', 'wb', etc.</b>: binary modes, for reading/writing
+  binary data instead of text data
+</i>
+<div class="answerbox" style="height:11em"></div>
+
+<li> What is a <b>stub function</b>, and why might such things be useful
+in software development?  Describe an example.<u>[5]</u>
+<i><br>
+  In top-down design of a complex software system, it is helpful to build
+  the general framework first, and fill in the details later.  An analogy
+  is building the frame of a house first, then filling in the wiring,
+  plumbing, drywall, and appliances later.  A stub function is a placeholder
+  for a complete function; it does not perform the computations yet but
+  always returns a dummy value, e.g., 0.  An example is our ROT13 program,
+  when we had the framework of converting between letters and ASCII codes,
+  but did not actually do the ROT13 encryption arithmetic.
+</i>
+<div class="answerbox" style="height:9em"></div>
+
+<li>
+Recall that in Python int/float/bool parameters are essentially passed 
+by <b>value</b>, and lists/object parameters are essentially
+passed by <b>reference</b>.  What is printed by the following block of Python
+code?
+<u>[4]</u>
+<pre>
+	def double_me(x):
+		x *= 2
+	y = 3
+	z = list(range(3))
+	double_me(y)
+	double_me(z)
+	print( 'y =', y, ', z =', z )
+</pre>
+<i><pre>
+y = 3, z = [0, 1, 2, 0, 1, 2]
+</pre>
+The variable y points to an immutable object (the float 3.0) and is
+roughly pass-by-value, so it is not affected by double_me().  
+The variable z points to a mutable object (the list range(3)) and is 
+roughly pass-by-reference, so it is changed by double_me().  
+The real scoop on Python parameter passing is 
+<a href="http://effbot.org/zone/call-by-object.htm">call-by-object</a>
+and is a bit more complicated; it has to do with Python's
+object-oriented roots.
+</i>
+
+<li> Define or describe each of the following terms in object-oriented 
+programming: <u>[5]</u>
+<ol class="subparts">
+  <li> Class: <i>a user-defined container type</i>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+    types</i>
+  <li> Attribute: <i>a variable or method belonging to an object</i>
+  <li> Method: <i>a function/procedure belonging to an object</i>
+  <li> Constructor/initializer: <i>the special method which is called when
+    an object is instantiated</i>
+</ol>
+
+<li> What are <b>set/get</b> (mutator/accessor) methods, and why are they
+a good idea?  Describe an example.<u>[5]</u>
+<i><br>
+  Allow controlled access to private attributes.  An objects' attributes
+  should be made private (in Python, name starts with '__') so that code
+  outside the class definition cannot directly access the attributes and
+  must use the provided set/get methods.
+  Benefits include error checking / input validation, user permissions,
+  transaction logging, etc.
+  For instance, the <tt>Fraction</tt> example had a denominator attribute;
+  it would be bad if external code could directly set the denominator to zero,
+  so the <tt>Fraction</tt> class provides a <tt>setDenom()</tt> method
+  which ensures that the new denominator is not zero.
+</i>
+<div class="answerbox" style="height:7em"></div>
+
+<li> Design a <b>class</b> <tt>Song</tt> that represents
+a single song (e.g., MP3) in your music collection (e.g., iTunes).
+What <b>attributes</b> are needed (and what types are they)?
+What <b>methods</b> are desirable?
+No Python code is needed, just discussion. <u>[6]</u>
+<i><br> Many possible answers; the point is to discuss possible
+  attributes (data stored with each song) and methods (actions to perform
+  involving a song).
+  <br>Attributes: Title, Artist, Album (all strings), Year (int),
+  audio stream (either directly as a big object, or as a string referring
+  to a filename on disk)
+  <br>Methods: set/get methods, play(), etc.
+</i>
+<div class="answerbox" style="height:14em"></div>
+
+<!--
+<li> Choose two attributes from the <tt>Song</tt> class you designed in the
+previous question, and write complete Python code implementing your
+<tt>Song</tt> class with just those two attributes.  Include all relevant
+methods, including a way for print() to get a string representation of your
+object.  Docstrings, pseudocode, comments, etc. are not required, but
+may be helpful for partial credit. <u>[8]</u>
+<i><br> Your implementation will depend on your design.
+<pre>class Song:
+	def __init__(self, title='', year=2000):
+		self.__title = str(title)
+		self.__year = int(year)
+	def __str__(self):
+		return 'Song: "%s" (%d)' % (self.__title, self.__year)
+	def getTitle(self):
+		return self.__title
+	def getYear(self):
+		return self.__year
+	def setTitle(self, newtitle):
+		self.__title = str(newtitle)
+	def setYear(self, newyear):
+		self.__year = int(newyear)
+</pre></i>
+
+<li> Using the class you implemented in the previous question, write
+Python code to create a list of 10 separate songs 
+(representing your music collection).
+It doesn't matter what you set the attributes to. <u>[4]</u>
+<i><pre>
+songList = []
+for i in range(10):
+	songList.append( Song("New Song", 2010) )
+</pre></i>
+-->
+
+<li> Write a Python function <tt>clicker(x,y,s)</tt> (taking 3 parameters)
+which uses Zelle's <tt>graphics.py</tt> library to draw a window with a 
+<b>button</b> in it, and waits for the user to click.
+The button should be <b>centred</b> around the coordinates
+(x,y) and have a text string <b>label</b> given by the parameter s.
+When the user clicks, the function should <b>return</b> a boolean value 
+indicating whether the user clicked the button or not.
+<u>[8]</u>
+<br><br>
+Docstring, pseudocode, comments, etc. are not required, but may be helpful for 
+partial credit if your code isn't right.  You may assume <tt>graphics</tt>
+has been imported, but do not assume a window has been made already.
+It's okay if you don't remember the exact names of the classes/functions
+in the <tt>graphics.py</tt> library; just use pseudocode or make a guess
+as to the name.
+Don't worry about whether the label will fit within the button; just choose
+some reasonable dimensions for the window and the button.
+<i><pre>
+def clicker(x,y,s):
+	from graphics import *
+	win = GraphWin("Clicker!", 400, 300)
+	left, right, top, bottom = x-100, x+100, y-20, y+20
+	Rectangle(Point(left,top), Point(right, bottom)).draw(win)
+	Text(Point(x,y), s).draw(win)
+	click = win.getMouse()		# wait for user
+	return (left &lt;= click.x &lt;= right) and \
+		(top &lt;= click.y &lt;= bottom)
+</pre></i>
+
+<li> Write a Python program to read in integers from the file "input.txt",
+one per line, square each number (i.e., multiply it by itself), and print
+the results (one per line) to the file "output.txt".  For example, "input.txt"
+might look like the following:
+<pre>13
+-5
+0
+100</pre>
+Lines in the input file which do not conform to this format should be skipped
+(don't assume that the input file will be formatted properly!).  Your program
+would output something like this:
+<pre>169
+25
+0
+10000</pre>
+You should also ensure your program doesn't crash if the input file is not
+found, or if file permissions are incorrect, etc.
+Docstring, pseudocode, comments, etc. are not required, but may be helpful for 
+partial credit if your code isn't right. <u>[10]</u>
+<i><pre>
+nums = []
+with open("input.txt") as inFile:
+	for line in inFile:
+		try:
+			nums.append( int(line) )
+		except ValueError:
+			print("not an int:", line)
+with open("output.txt", "w") as outFile:
+	for num in nums:
+		outFile.write("%d\n" % num)
+</pre>
+</i>
+
+</ol>
+
+</body></html>

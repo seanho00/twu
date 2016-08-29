@@ -1,0 +1,366 @@
+<HTML>
+<HEAD>
+<TITLE>8.9 Standard Channel I/O in ISO Modula-2</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="standard, channels, channel, i/o, iso, slongio, stextio, swholeio, srealio, stdchans, iochan, chanid, stdchan, stderrchan, nullchan, inchan, outchan, errchan, setinchan, setoutchan, seterrchan, stdchan, stdchans, streamfile, streasmsfile, streams, file, files, open, close">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.9 Standard Channel I/O in ISO Modula-2</B></H2>
+<P>As has already been observed, in ISO standard Modula-2, the modules <I>SWholeIO</I>, <I>SRealIO</I>, <I>SLongIO</I>, and <I>STextIO</I> operate on the standard channels.  These are defined in the Module <I>StdChans</I>:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> StdChans;
+ 
+<B>IMPORT</B> IOChan;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+    (* Values of this type are used to identify channels *)
+ 
+  (* The following functions return the standard channel values.
+     These channels cannot be closed. *)
+
+<B>PROCEDURE</B> StdInChan (): ChanId;
+  (* Returns the identity of the implementation-defined standard source for program input. *)
+ 
+<B>PROCEDURE</B> StdOutChan (): ChanId;
+  (* Returns the identity of the implementation-defined standard source for program output. *)
+ 
+<B>PROCEDURE</B> StdErrChan (): ChanId;
+  (* Returns the identity of the implementation-defined standard destination for program error messages. *)
+ 
+<B>PROCEDURE</B> NullChan (): ChanId;
+  (* Returns the identity of a channel open to the null device. *)
+ 
+  (* The following functions return the default channel values *)
+ 
+<B>PROCEDURE</B> InChan (): ChanId;
+  (* Returns the identity of the current default input channel. *)
+ 
+<B>PROCEDURE</B> OutChan (): ChanId;
+  (* Returns the identity of the current default output channel. *)
+ 
+<B>PROCEDURE</B> ErrChan (): ChanId;
+  (* Returns the identity of the current default error message channel. *)
+ 
+ (* The following procedures allow for redirection of default channels *)
+ 
+<B>PROCEDURE</B> SetInChan (cid: ChanId);
+  (* Sets the current default input channel to that identified by cid. *)
+ 
+<B>PROCEDURE</B> SetOutChan (cid: ChanId);
+  (* Sets the current default output channel to that identified by cid. *)
+ 
+<B>PROCEDURE</B> SetErrChan (cid: ChanId);
+  (* Sets the current default error channel to that identified by cid. *)
+ 
+<B>END</B> StdChans.</PRE>
+<P>Observe that there is a third channel besides that for input and output.  The error channel may be the same as the standard output, or it may be a file that logs errors.  This channel is available to the programmer as well:</P>
+<PRE>
+<B>IF</B> Error
+  <B>THEN</B>
+    TextIO.WriteString (StdChans.ErrChan(), theMessage)
+  <B>END</B>;</PRE>
+<P>It is also easy to see how the non-standard module <I>RedirStdIO</I> that was employed earlier in the text can be written on top of this standard one.  It is only necessary to open new channels through <I>StreamFile</I> and then employ the procedures of <I>StdChans</I> to redirect the current default channel.  The definition, and an implementation for the Macintosh operating system follow.  Of course, the specific details that relate to the manner in which the file name is obtained before being passed to be opened will differ on other operating systems.</P>
+<PRE><A NAME="RedirStdIO"></A>  
+ <b>DEFINITION MODULE</b> RedirStdIO;
+
+(* =========================================
+  Definition and Implementation © 1993-1997
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1997 07 02
+=========================================== *)
+
+<b>IMPORT</b> ChanConsts;
+
+<b>TYPE</b>
+  OpenResults = ChanConsts.OpenResults;
+	
+<b>PROCEDURE</b> OpenResult () : OpenResults;
+(* returns the result of the last attempt to open a file for redirection *)
+
+<b>PROCEDURE</b> OpenOutput;
+(* engages the user in a dialog to obtain a file for redirection of standard Output and attempts to open the file so obtained *)
+
+<b>PROCEDURE</b> OpenOutputFile (<b>VAR</b> fileName: <b>ARRAY OF CHAR</b>);
+(* opens the file specified by fileName for redirection of output.  If the name supplied is the empty string or the file could not be opened, control passes to OpenOutput and the filename eventually used is returned in the parameter. *)
+
+<b>PROCEDURE</b> CloseOutput;
+(* returns the standard output channel to the default value *)
+
+<b>PROCEDURE</b> OpenInput;
+(* engages the user in a dialog to obtain a file for redirection of standard Input and attempts to open the file so obtained *)
+
+<b>PROCEDURE</b> OpenInputFile (<b>VAR</b> fileName: <b>ARRAY OF CHAR</b>);
+(* Opens the file specified by fileName for redirection of input.  If the name supplied is the empty string or is not found, control passes to OpenInput and the filename eventually used is returned in the parameter. *)
+
+<b>PROCEDURE</b> CloseInput;
+(* returns the standard input channel to the default value *)
+
+<b>END</b> RedirStdIO.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> RedirStdIO;
+
+(* =========================================
+  Definition and Implementation © 1993-1997
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1999 07 22
+=========================================== *)
+
+(* First cut was October 1993
+1994 05 21 modified to p1 version 
+  change some type imports
+  use put get File rather than File0
+  change string handling accordingly 
+  change to proper name "Strings" 
+  1996 08 08 removed extraneous local var from OpenOutput
+  1997 07 08 added OpenOutputFile and OpenInputFile *)
+
+(* Mac Specific *)
+<B>FROM</B> StandardFile <B>IMPORT</B>
+  SFReply, SFTypeList, SFPutFile, SFGetFile;
+<B>FROM</B> MacTypes <B>IMPORT</B>
+  Str255, Str63, Point;
+<B>FROM</B> Strings <B>IMPORT</B>
+  Assign;
+<B>FROM</B> StdChans <B>IMPORT</B>
+  SetOutChan, StdOutChan, SetInChan, StdInChan;
+<B>IMPORT</B> ChanConsts;
+<B>FROM</B> ChanConsts <B>IMPORT</B>
+  read, write, old; 
+<B>FROM</B>  StreamFile <B>IMPORT</B>
+  ChanId, Open, Close;
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  TOSTR255, FROMSTR255;
+<B>FROM</B> MacString <B>IMPORT</B>
+  MacToModString;
+<B>TYPE</B>
+  ModStr255 = <B>ARRAY</B> [0..255] <B>OF</B> <B>CHAR</B>;
+  
+<B>VAR</B>
+  out, in : ChanId ;
+  count : <B>CARDINAL</B>;
+  lastOpenResult : OpenResults;
+  inRedir, outRedir : <B>BOOLEAN</B>;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> InternalOpenOutput (<B>VAR</B> fileName : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* engages the user in a dialog to obtain a file for redirection of standard Output and attempts to open the file so obtained *)
+
+<B>VAR</B>
+  result : OpenResults;
+  defFileName, thePrompt : Str255;
+  p : Point;
+  sfreply : SFReply;
+  mTempStr : ModStr255;
+  gottaAsk : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  gottaAsk:=<B>TRUE</B>;
+  <B>IF</B> fileName[0] <> "" (* file name non-empty? *)
+    <B>THEN</B> (* go try it *)
+      Open (out, fileName, write+old, result);
+      gottaAsk:= <B>NOT</B> (result = ChanConsts.opened)
+    <B>END</B>; (* if *)
+  <B>IF</B> gottaAsk (* true if filename was empty or not found *)
+    <B>THEN</B>
+      thePrompt := TOSTR255 ("Output File?"); (* get dialog box prompt ready *)
+      defFileName := TOSTR255 ("output"); (* and default file name *)
+      SFPutFile (p, thePrompt, defFileName, <B>NIL</B>,sfreply); (* and go try with dialog box *)
+      <B>IF</B> sfreply.good  (* got it OK *)
+        <B>THEN</B> (* convert filename returned to Modula string *)
+          MacToModString (sfreply.fName, mTempStr);
+          Assign (mTempStr,fileName);
+          Open (out, mTempStr, write+old, result);
+        <B>END</B>;
+    <B>END</B>;
+  lastOpenResult := result;
+  <B>IF</B> result = ChanConsts.opened
+    <B>THEN</B>
+      SetOutChan (out);
+      outRedir := <B>TRUE</B>;
+    <B>ELSE</B>
+      fileName[0]:= "";
+    <B>END</B>;  (* if didn't work, nothing is done *)
+<B>END</B> InternalOpenOutput;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> OpenResult () : OpenResults;
+(* returns the result of the last attempt to open a file for redirection *)
+
+<B>BEGIN</B>
+  <B>RETURN</B> lastOpenResult;
+<B>END</B> OpenResult;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> OpenOutput;
+(* engages the user in a dialog to obtain a file for redirection of standard Output and attempts to open the file so obtained *)
+  
+<B>VAR</B>
+  DummyFile : <B>ARRAY</B> [0..1] <B>OF</B> <B>CHAR</B>;
+
+<B>BEGIN</B>
+  DummyFile[0]:= "";
+  InternalOpenOutput (DummyFile);
+<B>END</B> OpenOutput;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> OpenOutputFile (<B>VAR</B> fileName : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* opens the file specified by FileName for redirection of output.  If the name supplied is the empty string or the file could not be opened, control passes to OpenOutput and the filename eventually used is returned in the parameter. *)
+  
+<B>BEGIN</B>
+  InternalOpenOutput (fileName);
+<B>END</B> OpenOutputFile;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> CloseOutput;
+(* returns the standard output channel to the default value *)
+
+<B>BEGIN</B>
+  <B>IF</B> outRedir
+    <B>THEN</B>
+      Close (out);
+      SetOutChan (StdOutChan () );
+      outRedir := <B>FALSE</B>;
+    <B>END</B>;
+<B>END</B> CloseOutput;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> InternalOpenInput (<B>VAR</B> fileName : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* This procedure is where all the work gets done.  Engages the user in a dialog to obtain a file for redirection of standard Output and attempts to open the file so obtained *)
+
+<B>VAR</B>
+  result : OpenResults;
+  p : Point;
+  sfreply : SFReply;
+  mTempStr : ModStr255;
+  gottaAsk : <B>BOOLEAN</B>;
+  SFt: SFTypeList;
+  
+<B>BEGIN</B>
+  gottaAsk:=<B>TRUE</B>;
+  <B>IF</B> fileName[0] <> ""  (* file name non-empty? *)
+    <B>THEN</B>  (* go try it *)
+      Open (in, fileName, old+read, result);
+      gottaAsk:= <B>NOT</B> (result = ChanConsts.opened)
+    <B>END</B>; (* if *)
+  <B>IF</B> gottaAsk  (* true if filename was empty or not found *)
+    <B>THEN</B>
+      SFGetFile (p, "", <B>NIL</B>, -1, SFt, <B>NIL</B>, sfreply);  (* go try with dialog box *)
+      <B>IF</B> sfreply.good (* got it <B>OK</B> *)
+        <B>THEN</B> (* convert filename returned to Modula string *)
+          MacToModString (sfreply.fName, mTempStr);
+          Assign (mTempStr,fileName);
+          Open (in, mTempStr, old+read, result);
+        <B>END</B>;
+    <B>END</B>;
+  lastOpenResult := result; (* from one or the other *)
+  <B>IF</B> result = ChanConsts.opened
+    <B>THEN</B>
+      SetInChan(in);
+      inRedir := <B>TRUE</B>;
+    <B>ELSE</B>
+      fileName[0]:= "";
+    <B>END</B>;  (* if didn't work, nothing is done *)
+<B>END</B> InternalOpenInput;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> OpenInput;
+(* engages the user in a dialog to obtain a file for redirection of standard Input and attempts to open the file so obtained *)
+  
+<B>VAR</B> DummyFile : <B>ARRAY</B> [0..1] <B>OF</B> <B>CHAR</B>;
+
+<B>BEGIN</B>
+  DummyFile[0]:= "";
+  InternalOpenInput (DummyFile);
+<B>END</B> OpenInput;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> OpenInputFile (<B>VAR</B> fileName : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* This is the procedure that does all the work. Opens the file specified by fileName for redirection of input.  If the name supplied is the empty string or is not found, control passes to OpenInput and the filename eventually used is returned in the parameter. *)
+  
+<B>BEGIN</B>
+  InternalOpenInput (fileName);
+<B>END</B> OpenInputFile;
+
+(*--------------------------------------------------------------------------------*)
+
+<B>PROCEDURE</B> CloseInput;
+(* returns the standard input channel to the default value *)
+
+<B>BEGIN</B>
+  <B>IF</B> inRedir
+    <B>THEN</B>
+      Close (in);
+      SetInChan (StdInChan () );
+      inRedir := <B>FALSE</B>;
+    <B>END</B>;
+<B>END</B> CloseInput;
+
+<B>BEGIN</B> (* main program *)
+  lastOpenResult := ChanConsts.otherProblem;
+  inRedir := <B>FALSE</B>;
+  outRedir := <B>FALSE</B>;
+<B>END</B> RedirStdIO.
+</PRE>
+<P>In this system, the dialog boxes that are standard to the Macintosh operating system are presented to the user so that folders can be navigated in the usual way to obtain the file name.  In a text based operating system, these sections would have to be replaced with a dialog to the interactive terminal where the user types in a file name.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

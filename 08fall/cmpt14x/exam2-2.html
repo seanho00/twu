@@ -1,0 +1,165 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+h2 { border-top: 1px solid black; }
+li { font-size: 10pt; }
+--></style>
+<title>CMPT140 Fall 2008 Final Exam (part 2), Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>In this part of the exam you will be designing and coding a Python program.
+<br>The sections of the exam correspond to the sections of a lab writeup.
+
+<br>Total points: 40
+
+<h2>Problem Statement:</h2>
+
+<p>
+Leibniz' formula for calculating pi is an infinite series:<br>
+<center><img src="leibniz.png" width=369 height=49></center>
+
+<p> 
+Write a function procedure that returns an estimate of pi using
+a partial sum with Leibniz' formula.  A parameter should be used 
+to tell the function the maximum value of n to use in the sum.
+
+<p>
+In the main body of your program, test out your function
+using different values of n (different numbers of terms in the partial sum).
+(You could also let the user interactively specify the number of terms.)
+Measure how close Leibniz' formula gets to the true value of pi.
+
+<u>[8]</u>
+
+
+<h2>Problem Suitability: <u>[2]</u> </h2>
+<i>
+Numerical calculations with complex numbers are doable by hand for short,
+simple problems, but a computer is designed to do these mathematical
+calculations much faster.
+</i>
+<br><br><br><br><br>
+<br><br><br><br>
+
+<h2>Problem Restatement: <u>[3]</u> </h2><ul>
+  <li> <b>Given:</b><br><i>
+    for <tt>leibniz()</tt>: a positive integer (num_terms) <br>
+    for the main program: user inputs a positive integer: highest
+    value of n to sum to
+    </i><br><br><br><br>
+  <li> <b>To Do:</b><br><i>
+    <tt>leibniz()</tt>: Calculate partial sum using Leibniz' formula<br>
+    </i><br><br><br><br><br><br><br>
+  <li> <b>Desired Result:</b><br><i>
+    for <tt>leibniz()</tt>: estimate of pi (float)<br>
+    for the main program: print difference between Leibniz' estimate
+    and the true value of pi.
+    </i><br><br><br><br><br>
+</ul>
+
+<h2>Libraries: <u>[2]</u> </h2>
+<br><i>
+Just the <tt>math</tt> standard library.
+</i><br><br>
+
+<h2>Problem Refinement (natural language): <u>[5]</u> </h2>
+<i>
+  <br><br><tt><b>leibniz()</b></tt>: takes one parameter,
+  the highest value of n to sum to (one more than the total number of
+  terms in the partial sum).  Calculates each term of Leibniz' series
+  up to the given value of n, and sums them together.  Returns the partial
+  sum (float).
+  <br><br><b>Main program</b>: User inputs a maximum value for n; this is 
+  one less than the total number of terms to be computed in the partial sum 
+  (the first term counts as n==0).  The <tt>leibniz()</tt> function is run
+  to compute the partial sum.  The result is printed, along with the
+  difference from the true value of pi.
+</i>
+
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+
+<h2>Data Tables: <u>[3]</u> </h2>
+<h3>Variables:</h3><br><i>
+  <br><br><tt><b>leibniz()</b></tt>: num_terms (parameter, positive integer)<br>
+  n (positive integer, counter to keep track of which term we're on)<br>
+  sum (float, cumulative partial sum -- our estimate of pi)
+
+  <br><br><b>Main program</b>: n (user input, positive integer)<br>
+  mypi (float, calculated estimate of pi)
+</i>
+
+<h3>Constants:</h3><br><i>
+  math.pi (float, the true value of pi)
+
+</i><br><br><br>
+
+<h2>Sample I/O: <u>[2]</u> </h2>
+<br><br><i><pre>
+  Let's estimate pi using Leibniz' formula!
+  How many terms should I use (>=0, enter -1 to quit)? 0
+  pi = 4.00
+  error = -0.85407
+  How many terms should I use (>=0, enter -1 to quit)? 1000
+  pi = 3.14125916
+  error = -0.000999
+  How many terms should I use (>=0, enter -1 to quit)? -1
+  Bye!
+</pre></i><br><br><br>
+<br><br><br><br><br>
+
+<h2 class="break">User Manual: <u>[5]</u> </h2>
+<i>
+  This program uses Leibniz' infinite series to approximate pi, the ratio
+  of a circle's circumference to its diametre.  The infinite sum is
+<center><img src="leibniz.png" width=369 height=49></center><br>
+  Enter the highest value of n you want the program to compute, and the
+  program will calculate the partial sum and print it out, along with
+  the error in the approximation (difference to the actual value of pi).
+  You must enter a positive integer for n.  To exit the program, just
+  input -1.  Enjoy the beauty of math!
+</i>
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+
+<h2>Pseudocode: <u>[10]</u> </h2>
+<i>
+<br><br><tt><b>leibniz(n)</b></tt>: <pre>
+	initialize sum at zero
+	for each index from zero up to n,
+		calculate the nth term of Lebniz' series
+		add it to sum
+	return sum
+</pre>
+<br><br><b>Main program</b>: <pre>
+	print welcome
+	Get the desired number of terms from the user
+	as long as the desired number of terms is positive,
+		calculate our estimate of pi using leibniz()
+		print it along with the approximation error
+		prompt user again for next go-around
+</pre>
+
+</i>
+
+<h2 class="break">Code: <u>[8]</u> </h2>
+
+<i><a href="leibniz.py">(See separate file: leibniz.py)</a></i>
+
+</body></html>
+

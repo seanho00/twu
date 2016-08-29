@@ -1,0 +1,745 @@
+<HTML><HEAD><TITLE>17.9 A Closer Look at Whole Number I/O</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Whole Number I/O">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>17.9 A Closer Look at Whole Number I/O</B></H2>
+<P>To date, this text has been concerned with ISO standard I/O only on the top level. For instance, the modules <I>SWholeIO</I> (and <I>WholeIO</I>) have been freely used, but little attention has been paid to the layer below these high level modules. The purpose of this section is to examine more closely what goes on in the process of reading and writing numeric data. </P>
+<P>For instance, in order to output a CARDINAL value, the internal representation must first be changed into a string of characters. Once this is complete, the string may simply be passed to <I>TextIO</I> for output to the screen.</P>
+<P>Likewise, for a CARDINAL to be read into memory, characters must be read and processed, interpreting the string of characters as a number and then constructing the numeric value in memory.</P>
+<P>In ISO Modula-2 these conversions are handled in two levels of modules. The module <I>WholeConv</I> (and others like it for real and longreal types) scan input strings to determine if they can legitimately be regarded as CARDINALs, INTEGERs, REALs, or LONGREALs (as the case may be.)  The module <I>WholeStr</I> (and others like it for Real and Long types) handles the actual conversions from numeric to string and vice-versa.</P>
+<P>In addition, there are some modules that provide common information to the conversion routines in the form of constants they all use, and in the form of routines designed to classify characters as numeric, alphabetic, control, or white space.</P>
+<P>To illustrate this activity, and a technique employed by the standard library that has not as yet been used in this text, the following subsections detail the modules <I>WholeConv</I> and <I>WholeStr</I>. The corresponding modules for the real types are similar though somewhat more complicated because there are several output forms in use (fixed, floating, and engineering.)  These will not be detailed here.</P>
+<h3><a name="17.9.1">17.9.1</a> Common Conversion Information Modules</h3>
+<P>The first of these provides two enumeration types and one procedure type that all the <I>xxConv</I> modules use when they scan input to check its validity.</P>
+
+<Pre><B>DEFINITION</B> <B>MODULE</B> ConvTypes;
+
+  (* Common types used in the string conversion modules *)
+
+<B>TYPE</B>
+  ConvResults =     (* Values of this type are used to express the format of a string *)
+  ( strAllRight,    (* the string format is correct for the corresponding conversion *)
+    strOutOfRange,  (* the string is well-formed but the value cannot be represented *)
+    strWrongFormat, (* the string is in the wrong format for the conversion *)
+    strEmpty        (* the given string is empty *) );
+
+  ScanClass =  (* Values of this type are used to classify input to finite state scanners *)
+  ( padding,   (* a leading or padding character at this point in the scan - ignore it *)
+    valid,     (* a valid character at this point in the scan - accept it *)
+    invalid,   (* an invalid character at this point in the scan - reject it *)
+    terminator (* a terminating character at this point in the scan (not part of token) *) );
+	
+  ScanState =  (* The type of lexical scanning control procedures *)
+  <B>PROCEDURE</B> (<B>CHAR</B>, <B>VAR</B> ScanClass, <B>VAR</B> ScanState); 
+
+<B>END</B> ConvTypes.</Pre>
+
+<P>Because only types are defined here, the implementation part of this module is empty.  The  values of the type <I>ConvResults</I> are for reporting the results of the scan of a string. If, for example the maximum CARDINAL value that can be stored were 10000, and the string "100000" were passed to the scanner checking for cardinal values, it should report the value <I>strOutOfRange</I>.  If the string "-M123" were passed to a scanner expecting an integer, it would correctly parse the sign at the beginning, but would then expect a digit.  Not finding one, it would return the value <I>strWrongFormat</I>.</P>
+<P>The values of the type <I>ScanClass</I> are for the purpose of classifying characters in the string being scanned.  For instance, spaces at the beginning are padding and can be ignored. After the padding has all been scanned, subsequent characters are either valid or invalid, depending on what was expected at that point in the scan. A determination that the scan of the string is finished is eventually made, and the character scanned to decide this is called the terminating character. In many cases, this is a space.  However, when scanning a numeric string, it could be a letter.</P>
+<P>The procedure type <I>ScanState</I> provides a standard type for scanning procedures. Each one will take a character to scan and produce a classification of the character. Moreover, the correct procedure to scan the next character will be returned.</P>
+<P>At any given point in the string, the scanner is in a particular <I>state</I>. If one is scanning for integer values for instance and presents the string "   -234" the scanner will first be in a starting state where it expects padding (skip and stay in the same state) or a sign or digit (read, store and go to a digit reading state). Once a sign or a digit has  been read, the scanner is in a digit reading state where it expects either a digit or a terminating character. There is a different procedure for each state, but one procedure variable can be used for the current one, and the procedure can set the next state through the variable parameter before exiting each time. The entire scanning machine (including all its procedures) has only a few states, and this idea is captured in the definition below. For more specific details on the operation of such a machine, study the <I>WholeConv</I> module below.</P>
+
+<P><A NAME="FiniteStateMachine"></A><I>A routine that operates at any given time in one of finitely many states, at least one of which is a terminal state, is called a <U>finite state machine</U>.</I></P>
+<P>Much more can be said about finite state machines, but such remarks are beyond the scope of this course. The reader is encouraged to further study of the theory of such computing machines as Turing machines and finite state machines.</P>
+<P>The second module that is used in common by all the conversion modules is <I>CharClass</I>.  This provides a general classification of characters that can be useful in a variety of contexts, not just the one here. Its definition is:</P>
+
+<Pre><B>DEFINITION</B> <B>MODULE</B> CharClass;
+
+  (* Classification of values of the type <B>CHAR</B> *)
+
+<B>PROCEDURE</B> IsNumeric (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a numeric character *)
+
+<B>PROCEDURE</B> IsLetter (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a letter *)
+
+<B>PROCEDURE</B> IsUpper (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as an upper case letter *)
+
+<B>PROCEDURE</B> IsLower (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a lower case letter *)
+
+<B>PROCEDURE</B> IsControl (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch represents a control function *)
+
+<B>PROCEDURE</B> IsWhiteSpace (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch represents a space character or a format effector *)
+
+<B>END</B> CharClass.</Pre>
+
+<P>If the ISO/IEEE character set for the Latin alphabet is employed, an implementation could be done as follows:</P>
+
+<Pre><B>IMPLEMENTATION</B> <B>MODULE</B> CharClass;
+
+(* =========================================
+            Definition Module from
+                  ISO Modula-2
+Draft Standard CD10515 by JTC1/SC22/WG13
+    Language and Module designs © 1992 by
+BSI, D.J. Andrews, B.J. Cornelius, R. B. Henry
+R. Sutcliffe, D.P. Ward, and M. Woodman
+
+          Implementation © 1993
+                by R. Sutcliffe
+       (Portions coded by G. Tischer)
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1993 10 20
+=========================================== *)
+
+  (* Classification of values of the type <B>CHAR</B> *)
+
+<B>PROCEDURE</B> IsNumeric (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a numeric character *)
+<B>BEGIN</B>
+  <B>RETURN</B> (ch <!-->&gt; 57C) <B>AND</B> (ch <!--<-->&lt; 72C);
+<B>END</B> IsNumeric;
+
+<B>PROCEDURE</B> IsLetter (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a letter *)
+<B>BEGIN</B>
+  <B>RETURN</B> ((ch <!-->&gt; 100C) <B>AND</B> (ch <!--<-->&lt; 133C)) <B>OR</B> ((ch <!-->&gt; 140C) <B>AND</B> (ch <!--<-->&lt; 173C));
+<B>END</B> IsLetter;
+
+<B>PROCEDURE</B> IsUpper (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as an upper case letter *)
+<B>BEGIN</B>
+  <B>RETURN</B> (ch <!-->&gt; 100C) <B>AND</B> (ch <!--<-->&lt; 133C);
+<B>END</B> IsUpper;
+
+<B>PROCEDURE</B> IsLower (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a lower case letter *)
+<B>BEGIN</B>
+  <B>RETURN</B> (ch <!-->&gt; 140C) <B>AND</B> (ch <!--<-->&lt; 173C);
+<B>END</B> IsLower;
+
+<B>PROCEDURE</B> IsControl (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch represents a control function *)
+<B>BEGIN</B>
+  <B>RETURN</B> (ch <!-->&gt; 0C) <B>AND</B> (ch <!--<-->&lt; 40C);
+<B>END</B> IsControl;
+
+<B>PROCEDURE</B> IsWhiteSpace (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch represents a space character or a format
+effector *)
+<B>BEGIN</B>
+  <B>RETURN</B> (ch = 11C) <B>OR</B> (ch = 15C) <B>OR</B> (ch = 40C);
+<B>END</B> IsWhiteSpace;
+
+<B>END</B> CharClass.
+</Pre>
+<h3><a name="17.9.2">17.9.2</a> Scanning For Whole Number Input</h3>
+<P>The module <I>WholeConv</I> (and corresponding ones for real and longreal types) is employed for this purpose.  Its definition is as follows:</P>
+
+<Pre><B>DEFINITION</B> <B>MODULE</B> WholeConv;
+
+  (* Low-level whole-number/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange,
+strWrongFormat, strEmpty *)
+
+<B>PROCEDURE</B> ScanInt (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                   <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for signed whole
+numbers -assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>PROCEDURE</B> FormatInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>INTEGER</B>. *)
+
+<B>PROCEDURE</B> ValueInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>INTEGER</B>;
+(* Returns the value corresponding to the signed whole number string value str if str is well-formed; otherwise raises the WholeConv exception. *)
+
+<B>PROCEDURE</B> LengthInt (int: <B>INTEGER</B>): <B>CARDINAL</B>;
+ (* Returns the number of characters in the string representation of int. *)
+
+<B>PROCEDURE</B> ScanCard (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                    <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for unsigned whole numbers -  assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>PROCEDURE</B> FormatCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>CARDINAL</B>. *)
+
+<B>PROCEDURE</B> ValueCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* Returns the value corresponding to the unsigned whole number string value str if str is well-formed; otherwise raises the WholeConv exception *)
+
+<B>PROCEDURE</B> LengthCard (card: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the string representation of card. *)
+
+<B>PROCEDURE</B> IsWholeConvException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>. *)
+
+<B>END</B> WholeConv.</Pre>
+
+<P>In a manner similar to the way in which device modules import and re-export the channel constants, these modules import and re-export the type <I>ConvResults</I>.  Notice that there is a starting state (procedure) for scanning  for an integer, and another one for starting the scan of a cardinal.  Subsequent scanners are hidden away in the implementation module. Observe too that one must know the results of a call to <I>FormatCard</I> before attempting to do the actual conversion to a cardinal with <I>ValueCard</I> because if the string turns out to be invalid, <I>ValueCard</I> will raise an exception. Here is an implementation of this module:</P>
+
+<Pre><B>IMPLEMENTATION</B> <B>MODULE</B> WholeConv;
+
+(* =========================================
+            Definition Module from
+                  ISO Modula-2
+Draft Standard CD10515 by JTC1/SC22/WG13
+    Language and Module designs © 1992 by
+BSI, D.J. Andrews, B.J. Cornelius, R. B. Henry
+R. Sutcliffe, D.P. Ward, and M. Woodman
+
+          Implementation © 1994
+                by R. Sutcliffe
+       (Portions coded by G. Tischer)
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1996 12 03
+=========================================== *)
+
+  (* Low-level whole-number/string conversions *)
+
+(*1994 06 14 First version by R. Sutcliffe
+   1996 11 12 revised by R. Sutcliffe not to use scanClass inputs. 
+   ideas considered include those of Norm Black and Keith Hopper *)
+
+<B>IMPORT</B>
+  ConvTypes;
+<B>FROM</B> ConvTypes <B>IMPORT</B>
+  ScanClass;
+<B>FROM</B> <B>EXCEPTIONS</B> <B>IMPORT</B>
+  ExceptionSource, AllocateSource, RAISE, IsExceptionalExecution, IsCurrentSource;
+
+<B>FROM</B> CharClass <B>IMPORT</B>
+  IsWhiteSpace, IsNumeric;
+
+(* two globals to hold last wholes checked by format; use if <B>OK</B> in value *)
+<B>VAR</B>  
+  theCard : <B>CARDINAL</B>;
+  theInt : <B>INTEGER</B>;
+
+<B>CONST</B>
+    zeroAsc = <B>ORD</B> ("0");
+    maxCardDiv10  = <B>MAX</B> (<B>CARDINAL</B>) / 10;
+    lastMaxCardDigitChar = <B>CHR</B>( (<B>MAX</B> (<B>CARDINAL</B>) <B>REM</B> 10) + zeroAsc );
+    maxIntDiv10  = <B>MAX</B> (<B>INTEGER</B>) / 10;
+    lastMaxIntDigitChar = <B>CHR</B>( (<B>MAX</B> (<B>INTEGER</B>) <B>REM</B> 10) + zeroAsc );
+    minIntDiv10  = <B>MIN</B> (<B>INTEGER</B>) / 10;
+    lastMinIntDigitChar = <B>CHR</B>( <B>ABS</B> ((<B>MIN</B> (<B>INTEGER</B>) <B>REM</B> 10)) + <B>VAL</B> (<B>INTEGER</B>, zeroAsc) );
+<B>VAR</B>
+    WholeConvExSource : ExceptionSource;
+
+(* local procs representing scan states after the initial one. These are named after the last input classified *)
+
+<B>PROCEDURE</B> Sign (inputCh : <B>CHAR</B>; <B>VAR</B> chClass : ConvTypes.ScanClass; <B>VAR</B> nextState : ConvTypes.ScanState);
+(* after sign must get digit *)
+<B>BEGIN</B>
+    <B>IF</B> IsNumeric (inputCh)
+      <B>THEN</B>
+        chClass := ConvTypes.valid;
+        nextState := WDigit;
+      <B>ELSE</B>
+        chClass := ConvTypes.invalid;
+        nextState := Sign;
+      <B>END</B>;
+<B>END</B> Sign;
+
+<B>PROCEDURE</B> WDigit (inputCh : <B>CHAR</B>; <B>VAR</B> chClass : ConvTypes.ScanClass; <B>VAR</B> nextState : ConvTypes.ScanState);
+(* after digit can have another digit; anything else terminates *)
+<B>BEGIN</B>
+    <B>IF</B> IsNumeric (inputCh)
+      <B>THEN</B>
+        chClass := ConvTypes.valid;
+        nextState := WDigit;
+      <B>ELSE</B>
+        chClass := ConvTypes.terminator;
+        (* no point in changing states *)
+     <B>END</B>;
+<B>END</B> WDigit;
+
+(* exported procs *)   
+<B>PROCEDURE</B> ScanInt (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                   <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for signed whole numbers-assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>BEGIN</B>
+    <B>IF</B> IsWhiteSpace (inputCh)
+       <B>THEN</B>
+         (* say got padding *)
+         chClass := ConvTypes.padding;
+         (* and next state is same as this one *)
+         nextState := ScanInt;
+      <B>ELSIF</B> IsNumeric (inputCh) <B>THEN</B> (* got digit *)
+         chClass := ConvTypes.valid;
+         (* switch to digit state *)
+         nextState := WDigit;
+      <B>ELSIF</B> (inputCh = '-') <B>OR</B> (inputCh = '+') <B>THEN</B>
+         chClass := ConvTypes.valid;
+         (* switch to sign state *)
+          nextState := Sign;
+      <B>ELSE</B> (* anything else is no good *)
+         chClass := ConvTypes.invalid;
+         nextState := ScanInt;
+      <B>END</B>;
+<B>END</B> ScanInt;
+
+<B>PROCEDURE</B> FormatInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : ConvResults;
+  (* Returns the format of the string value for conversion to <B>INTEGER</B>. *)
+
+<B>VAR</B>
+  count, len : <B>CARDINAL</B>;
+  class : ConvTypes.ScanClass;
+  Scan : ConvTypes.ScanState;
+  pos : <B>BOOLEAN</B>;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  pos := <B>TRUE</B>;
+  len := <B>LENGTH</B> (str);
+  <B>IF</B> len = 0
+    <B>THEN</B>
+      <B>RETURN</B> ConvTypes.strEmpty
+    <B>ELSE</B>
+      theInt := 0;
+      Scan := ScanInt;
+      count := 0;
+      <B>LOOP</B>
+        ch := str [count];
+        Scan (ch, class, Scan);
+        <B>CASE</B> class <B>OF</B>
+          padding:
+            (* leave it *) |
+          valid:
+            <B>IF</B> ch = "-" (* negative sign *)
+              <B>THEN</B>
+                pos := <B>FALSE</B>;
+              <B>ELSIF</B> pos <B>AND</B> (theInt <!--<-->&lt;= maxIntDiv10) <B>THEN</B>
+                theInt := theInt * 10; (* shift number over *)
+                <B>IF</B> (theInt <!--<-->&lt; maxIntDiv10) <B>OR</B> (ch <!--<-->&lt;= lastMaxIntDigitChar)
+                  <B>THEN</B>
+                    <B>INC</B> (theInt, <B>VAL</B> (<B>INTEGER</B>, (<B>ORD</B> (ch) - zeroAsc))) ; (* add digit *)
+                   <B>ELSE</B>
+                     <B>RETURN</B> ConvTypes.strOutOfRange
+                   <B>END</B> 
+                       (* consider the case when the last digit might cause an overflow. *)
+              <B>ELSIF</B> (<B>NOT</B> pos) <B>AND</B> (theInt <!-->&gt;= minIntDiv10) <B>THEN</B>
+                theInt := theInt * 10; (* shift *)
+                <B>IF</B>  ((theInt <!-->&gt; minIntDiv10) <B>OR</B> (ch <!--<-->&lt;= lastMinIntDigitChar))
+                  <B>THEN</B>
+                    <B>DEC</B> (theInt, <B>VAL</B> (<B>INTEGER</B>, (<B>ORD</B> (ch) - zeroAsc))); (* add digit *)
+                  <B>ELSE</B>
+                    <B>RETURN</B> ConvTypes.strOutOfRange
+                  <B>END</B>;
+              <B>ELSE</B>
+                  <B>RETURN</B> ConvTypes.strOutOfRange
+              <B>END</B>; |
+          invalid:
+             <B>RETURN</B> ConvTypes.strWrongFormat |
+          terminator: (* if get here, all <B>OK</B> so far *)
+             <B>RETURN</B> ConvTypes.strAllRight;
+         <B>END</B>; (* case *)
+      <B>INC</B> (count);
+     <B>IF</B> count = len (* end of string and still all ok -- haven't returned *)
+        <B>THEN</B>
+           <B>RETURN</B> ConvTypes.strAllRight;
+        <B>END</B>;
+     <B>END</B>; (* loop *)
+ <B>END</B>; (* if *)
+ 
+<B>END</B> FormatInt;
+
+<B>PROCEDURE</B> ValueInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>INTEGER</B>;
+(* Returns the value corresponding to the signed whole number string value str if str is well-formed; otherwise raises the WholeConv exception. *)
+ 
+<B>BEGIN</B>
+  <B>IF</B> FormatInt (str) # ConvTypes.strAllRight
+    <B>THEN</B>
+      <B>RAISE</B> (WholeConvExSource, 0, "Can't convert badly formatted string to integer.");
+    <B>ELSE</B>
+      <B>RETURN</B> theInt
+    <B>END</B>;
+<B>END</B> ValueInt;
+
+<B>PROCEDURE</B> LengthInt (int: <B>INTEGER</B>): <B>CARDINAL</B>;
+ (* Returns the number of characters in the string representation of int. *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  neg : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  <B>IF</B> int <!--<-->&lt; 0
+    <B>THEN</B>
+      neg := <B>TRUE</B>;
+    <B>ELSIF</B> int <!-->&gt; 0 <B>THEN</B>
+      neg := <B>FALSE</B>;
+    <B>ELSE</B> (* equals zero *)
+      <B>RETURN</B> 1;
+    <B>END</B>;
+  count := 0;
+  <B>WHILE</B> int # 0
+    <B>DO</B>
+      int := int / 10;
+      <B>INC</B> (count);
+    <B>END</B>;
+  <B>IF</B> neg 
+    <B>THEN</B>
+      <B>INC</B> (count)  (* need room for sign *)
+    <B>END</B>;
+  <B>RETURN</B> count;
+<B>END</B> LengthInt ;
+
+<B>PROCEDURE</B> ScanCard (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass; <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for unsigned whole numbers -  assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>BEGIN</B>
+  <B>IF</B> IsWhiteSpace (inputCh)
+    <B>THEN</B>
+      (* say got padding *)
+      chClass := ConvTypes.padding;
+       (* and next state is same as this one *)
+       nextState := ScanInt;
+    <B>ELSIF</B> IsNumeric (inputCh) <B>THEN</B> (* got digit *)
+       chClass := ConvTypes.valid;
+       (* switch to digit state *)
+       nextState := WDigit;
+    <B>ELSE</B> (* anything else is no good *)
+       chClass := ConvTypes.invalid;
+       (* No point in setting next state  *)
+    <B>END</B>;
+<B>END</B> ScanCard;
+
+<B>PROCEDURE</B> FormatCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>CARDINAL</B>. *)
+<B>VAR</B>
+  count, len : <B>CARDINAL</B>;
+  class : ConvTypes.ScanClass;
+  Scan : ConvTypes.ScanState;
+
+<B>BEGIN</B>
+  len := <B>LENGTH</B> (str);
+  <B>IF</B> len = 0
+    <B>THEN</B>
+      <B>RETURN</B> ConvTypes.strEmpty
+    <B>ELSE</B>
+      theCard := 0;
+      Scan := ScanCard;
+      count := 0;
+      <B>LOOP</B>
+        Scan (str [count], class, Scan);
+        <B>CASE</B> class <B>OF</B>
+          padding:
+            (* leave it *) |
+          valid:
+            <B>IF</B> theCard <!--<-->&lt;= maxCardDiv10 
+              <B>THEN</B>
+                theCard := theCard * 10; (* shift *)
+                <B>IF</B> (theCard <!--<-->&lt; maxCardDiv10) <B>OR</B> (str [count] <!--<-->&lt;= lastMaxCardDigitChar)
+                  <B>THEN</B> (* add digit *)
+                    theCard := theCard + (<B>ORD</B>(str [count]) - zeroAsc);
+                  <B>ELSE</B>
+                    <B>RETURN</B> ConvTypes.strOutOfRange
+                  <B>END</B>;
+                <B>ELSE</B>
+                  <B>RETURN</B> ConvTypes.strOutOfRange
+               <B>END</B>; |
+          invalid:
+             <B>RETURN</B> ConvTypes.strWrongFormat |
+          terminator: (* if get here, all <B>OK</B> so far *)
+             <B>RETURN</B> ConvTypes.strAllRight;
+         <B>END</B>; (* case *)
+      <B>INC</B> (count);
+      <B>IF</B> count = len (* end of string and still all ok -- haven't returned *)
+        <B>THEN</B>
+          <B>RETURN</B> ConvTypes.strAllRight;
+        <B>END</B>;
+    <B>END</B>; (* loop *)
+  <B>END</B>; (* if *)
+ 
+<B>END</B> FormatCard;
+
+<B>PROCEDURE</B> ValueCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* Returns the value corresponding to the unsigned whole number string value str if str is well-formed; otherwise raises the WholeConv exception    *)
+
+<B>BEGIN</B>
+ <B>IF</B> FormatCard (str) # ConvTypes.strAllRight
+    <B>THEN</B>
+       <B>RAISE</B> (WholeConvExSource, 0, "Can't convert badly formatted string to cardinal.");
+    <B>ELSE</B>
+       <B>RETURN</B> theCard; (* stashed globally for us *)
+    <B>END</B>;
+<B>END</B> ValueCard;
+
+<B>PROCEDURE</B> LengthCard (card: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the string representation of card. *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>IF</B> card = 0
+    <B>THEN</B>
+      <B>RETURN</B> 1;
+    <B>END</B>;
+  count := 0;
+  <B>WHILE</B> card # 0
+    <B>DO</B>
+      card := card <B>DIV</B> 10;
+      <B>INC</B> (count);
+    <B>END</B>;
+  <B>RETURN</B> count;
+<B>END</B> LengthCard;
+
+<B>PROCEDURE</B> IsWholeConvException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>. *)
+
+<B>BEGIN</B>
+   <B>RETURN</B> (IsExceptionalExecution() ) <B>AND</B> (IsCurrentSource (WholeConvExSource) )
+<B>END</B> IsWholeConvException ;
+
+<B>BEGIN</B> (* initialization of main module *)
+
+  AllocateSource (WholeConvExSource);
+
+<B>END</B> WholeConv.</Pre>
+
+<P>There are a few interesting things worth noting about this implementation.  Since the <I>Format</I> and <I>Value</I> procedure pairs are closely related, in this implementation a choice has been made to store the value constructed by <I>Format</I> in a global variable.  When <I>Value</I> calls <I>Format</I> it can then pick up the result at once. There is a design problem here, however, and that is that an outside client must call <I>Format</I> and then <I>Value</I> and so do all the work twice. If the outside routine has access to the source code of <I>WholeConv</I> some of it can be copied there to improve the speed. Other clients will just have to suffer a performance hit when using both routines.</P>
+<P>Another thing that a careful implementor has to worry about is the handling of values of type INTEGER.  Usually signed numbers are implemented in such a way that the expression ABS (MIN( INTEGER)) causes an overflow because the result is too big.  Thus, it is necessary in conversion code to handle the case of MIN(INTEGER) separately.  Note also that when one gets close to the MAX and MIN values of INTEGER and the MAX value of CARDINAL, it is necessary to look carefully at the last digit so as to ensure that an overflow does not take place.  For instance, if the largest cardinal that could be stored were <i>65535</i>, then <i>maxCardDiv10</i> is <i>6553</i> and <i>LastMaxCardDigitChan</i> is <i>5</i>.  If the scan thus far had 6553 as it added digits on the right and shifted left, the next digit must be looked at carefully to see if an overflow would take place if it were used.</P>
+<h3><a name="17.9.3">17.9.3</a> High Level String Conversion Routines</h3>
+<P>At the next higher level (the one that I/O modules will call to do conversions) the ISO library has such modules as <I>WholeStr</I>. Here is the definition:</P>
+
+<Pre><B>DEFINITION</B> <B>MODULE</B> WholeStr;
+
+  (* Whole-number/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange, strWrongFormat, strEmpty *)
+
+(* the string form of a signed whole number is
+     ["+" | "-"], decimal digit, {decimal digit}
+*)
+
+<B>PROCEDURE</B> StrToInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> int: <B>INTEGER</B>; <B>VAR</B> res: ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of a signed whole number, assigns a corresponding value to int. Assigns a value indicating the format of str to res.  *)
+
+<B>PROCEDURE</B> IntToStr (int: <B>INTEGER</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of int to string form and copies the possibly truncated result to str. *)
+
+(* the string form of an unsigned whole number is decimal digit, {decimal digit} *)
+
+<B>PROCEDURE</B> StrToCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> card: <B>CARDINAL</B>; <B>VAR</B> res:
+ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of an unsigned whole number, assigns a corresponding value to card. Assigns a value indicating the format of str to res.  *)
+
+<B>PROCEDURE</B> CardToStr (card: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of card to string form and copies the possibly truncated result to str. *)
+
+<B>END</B> WholeStr.</Pre>
+
+<P>Notice that if the string to which a whole number is to be converted is not long enough, then the result is supposed to be simply truncated.  In the implementation that follows, this is done by dividing the whole number by 10 until it will fit.</P>
+
+<Pre><B>IMPLEMENTATION</B> <B>MODULE</B> WholeStr;
+
+(* omit copyright notice from above to save space *)
+(* omit long version history *)
+(* Whole-number/string conversions *)
+
+<B>FROM</B> WholeConv <B>IMPORT</B>
+  ScanCard, ScanInt, LengthInt, LengthCard;
+<B>IMPORT</B>
+  ConvTypes;
+<B>FROM</B> ConvTypes <B>IMPORT</B>
+  ScanClass;
+  (* debug *)
+
+(* It makes no sense to call FormatInt and ValueInt from WholeConv because then the work is done twice.  So, we dump a copy of FormatInt and FormatCard here *)
+(* two globals to hold last wholes checked by format; use if <B>OK</B> in value *)
+<B>VAR</B>  
+  theCard : <B>CARDINAL</B>;
+  theInt : <B>INTEGER</B>;
+<B>CONST</B>
+  zeroAsc = <B>ORD</B> ("0");
+  maxCardDiv10  = <B>MAX</B> (<B>CARDINAL</B>) / 10;
+  lastMaxCardDigitChar = <B>CHR</B>( (<B>MAX</B> (<B>CARDINAL</B>) <B>REM</B> 10) + zeroAsc);
+  maxIntDiv10  = <B>MAX</B> (<B>INTEGER</B>) / 10;
+  lastMaxIntDigitChar = <B>CHR</B>( (<B>MAX</B> (<B>INTEGER</B>) <B>REM</B> 10) + zeroAsc);
+  minIntDiv10  = <B>MIN</B> (<B>INTEGER</B>) / 10;
+  lastMinIntDigitChar = <B>CHR</B> ((<B>ABS</B> (<B>MIN</B> (<B>INTEGER</B>) + 10)) <B>REM</B> 10 + <B>VAL</B> (<B>INTEGER</B>, zeroAsc));
+
+(* omit copies of FormatInt and FormatCard from above *)
+(* end copies of stuff from WholeConv *)
+
+<B>PROCEDURE</B> StrToInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> int: <B>INTEGER</B>; <B>VAR</B> res: ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of a signed whole number, assigns a corresponding value to int. Assigns a value indicating the format of str to res.  *)
+<B>BEGIN</B>
+  res := FormatInt (str);
+  <B>IF</B> res = ConvTypes.strAllRight
+     <B>THEN</B>
+      int := theInt; (* pick up the global *)
+    <B>END</B>;
+<B>END</B> StrToInt;
+
+<B>PROCEDURE</B> IntToStr (int: <B>INTEGER</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of int to string form and copies the possibly truncated result to str. *)
+
+(* the string form of an unsigned whole number is
+     decimal digit, {decimal digit} *)
+<B>VAR</B>
+  maxs, maxi, count, digit, stop : <B>CARDINAL</B>;
+  neg : <B>BOOLEAN</B>;
+
+<B>BEGIN</B>
+  neg := (int <!--<-->&lt; 0);
+  maxs := <B>HIGH</B> (str) + 1;
+  maxi := LengthInt (int); (* includes any neg *)
+  <B>IF</B> maxs <!-->&gt; maxi
+     <B>THEN</B>
+      count := maxi;
+      str [count] := "";
+    <B>ELSE</B>
+      count := maxs;
+      (* if string is too short, throw away some digits *)
+      <B>WHILE</B> maxi <!-->&gt; count
+         <B>DO</B>
+          int := int / 10;
+          <B>DEC</B> (maxi);
+        <B>END</B>;
+    <B>END</B>;
+  <B>IF</B> neg   
+    <B>THEN</B>
+      <B>IF</B> int = <B>MIN</B> (<B>INTEGER</B>) (* special case this one, cant do abs else *)
+        <B>THEN</B>
+          str [count - 1] := lastMinIntDigitChar;
+          <B>DEC</B> (count);
+          int := int / 10;
+        <B>END</B>;
+      stop := 1;
+      str [0] := "-";
+      int := <B>ABS</B> (int);
+    <B>ELSE</B>
+      stop := 0;
+    <B>END</B>;
+  <B>WHILE</B> count <!-->&gt; stop
+    <B>DO</B>
+      digit := int <B>REM</B> 10;
+      str [count - 1] := <B>CHR</B> (digit + zeroAsc);
+      int := int / 10;
+      <B>DEC</B> (count);
+    <B>END</B>;
+<B>END</B> IntToStr;
+
+<B>PROCEDURE</B> StrToCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> card: <B>CARDINAL</B>; <B>VAR</B> res:
+ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of an unsigned whole number, assigns a corresponding value to card. Assigns a value indicating the format of str to res.  *)
+<B>BEGIN</B>
+  res := FormatCard (str);
+  <B>IF</B> res = ConvTypes.strAllRight
+    <B>THEN</B>
+      card := theCard; (* pick up the global *)
+    <B>END</B>;
+
+<B>END</B> StrToCard;
+
+<B>PROCEDURE</B> CardToStr (card: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of card to string form and copies the possibly truncated result to str. *)
+<B>VAR</B>
+  maxs, maxi, count, digit : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  maxs := <B>HIGH</B> (str) + 1;
+  maxi := LengthCard (card);
+  <B>IF</B> maxs <!-->&gt; maxi
+    <B>THEN</B>
+      count := maxi;
+      str [count] := "";
+    <B>ELSE</B>
+      count := maxs;
+      (* if string is too short, throw away some digits *)
+      <B>WHILE</B> maxi <!-->&gt; count
+        <B>DO</B>
+          card := card / 10;
+          <B>DEC</B> (maxi);
+        <B>END</B>;
+    <B>END</B>;
+  <B>WHILE</B> count <!-->&gt; 0
+    <B>DO</B>
+      digit := card <B>REM</B> 10;
+      str [count - 1] := <B>CHR</B> (digit + zeroAsc);
+      card := card / 10;
+      <B>DEC</B> (count);
+    <B>END</B>;
+<B>END</B> CardToStr;
+
+<B>END</B> WholeStr.</Pre>
+
+<P>There are similar modules for  the conversion of reals and longreals, but the code is somewhat more complex because of the need to consider the exponent and the mantissa. There is also a lower level module for working with reals called <I>LoReal</I>, but that is beyond the scope of this section.</P>
+<B><h3><a name="17.9.4">17.9.4</a> High Level Whole Number I/O</h3></B>
+<P>The reader is familiar of course with the use of <I>WholeIO </I>and <I>SWholeIO</I> from long use throughout the text.  With the materials already developed here , it is now possible to produce  implementations for both. Rather than reproduce the entire contents of both, only a single procedure is given here to illustrate the calls to the conversion routines above.</P>
+
+<Pre><B>PROCEDURE</B> WriteInt (cid: IOChan.ChanId; int: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of int to cid in text form, in a field of the given
+minimum width. *)
+
+<B>VAR</B>
+  temp : String;
+  count, len    : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  IntToStr (int, temp);        (* convert the integer to a string *)
+  len := <B>LENGTH</B> (temp);
+  <B>IF</B> len <!--<-->&lt; width               (* write spaces *)
+    <B>THEN</B>
+       WriteString (cid, PadString (width-len));
+    <B>ELSIF</B> width = 0 <B>THEN</B>
+      WriteChar (cid, GetPadChar());
+    <B>END</B>;
+  WriteString (cid,temp);          (* write the string *)
+<B>END</B> WriteInt;</Pre>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

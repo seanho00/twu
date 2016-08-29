@@ -1,0 +1,46 @@
+* Elements of pre-production: concept, platform, genre, pitch, mission,
+  prototype, risk analysis, stakeholders, features, prioritization,
+  milestones/deliverables, schedule, game design / game play
+  * matching question, or multiple choice ("which of these is *not* an
+    element")
+
+* Elements of a closing kit: assets (art, music), code w/history,
+  tools, docs, localization kits
+  * What is the purpose of a closing kit?
+    [ so another team can continue production in the future ]
+
+* Describe and contrast the concept pitch vs. mission statement
+
+* Say you want to develop an independent game with a couple friends.
+  * If your team can only have three people on it, what roles would you
+    choose as most important?  Why?
+  * Brainstorm a list of stakeholders for your project, and reason why.
+  * Discuss some risk analysis for your project: threats and contingencies
+
+* What is a Gantt chart?  What is the critical path?
+
+* Describe a planned feature of our game (DyeWorks) that is considered a
+  "must have" feature.
+  Describe another one that is "should have".  
+  Describe another one that is "nice to have".  
+
+* A programmer needs to tell an illustrator to resize an art asset to a
+  different resolution.  Describe at least four different modes of
+  communication he/she could use.
+  [ ticket, meeting, email, phone, talk to team lead, etc. ]
+
+* Describe and contrast alpha and beta releases.
+
+* Describe and contrast postmortems and critical stage analyses.
+
+* Describe the components of a good bug report.
+
+* If a project is already behind schedule, what can a project manager do?
+  [ cut features, hire more people, reduce quality ]
+  * Or: Describe the three project variables in the "Project Triangle"
+  [ scope/features, cost/resources, time/schedule ]
+
+* Project Management methods:
+  * Contrast Scrum with Waterfall.  Describe two example projects
+  * What is a Scrum?  What distinguishing characteristics set it apart from
+    others?

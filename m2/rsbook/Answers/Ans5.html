@@ -1,0 +1,302 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 5 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 5</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	An ADT is a data type whose representation details are hidden from the user of entities of that type, whereas transparent data type have their representation details visible to the user of entities of that type.</P>
+
+<P>2.	The specification of types must include the allowable values and all valid operations.</P>
+
+<P>3.	Built-in ordinal types have many pre-specified operations (possibly including +, -, *, /) whereas user-defined ordinal types have only INC, DEC, MAX, MIN, VAL, and ORD.  Any other operators must be defined as procedures.</P>
+
+<P>4.	When WriteString is called, it expects a variable of the same type (array of char).  Here however, the item used is of type MonthNames and therefore will not work with WriteString.  The type MonthNames is an ADT of its own.</P>
+
+<P>5.	The value Saturday is needed to prevent a run time error when the value Friday is incremented.</P>
+
+<P>6.	Advantages:<BR>
+	(i)	The subrange is a different abstraction than the original type.  Use of the subrange may therefore make a program clearer.<BR>
+	(ii)	Some systems may store the values of a subrange more efficiently than those of the original type.<BR>
+	(iii)	Error trapping.  An error is generated if any attempt is made to assign something to a variable that is not in the subrange.</P>
+
+<P>7.	(a) is backwards (b) uses two different types‹a character and a number. The specification for (c) requires prior definition of an enumeration with values a and e.</P>
+
+<P>8.	An iterated repetition involves a pre-specified pattern in an arithmetic sequence whereas a more general repetition can use any sequence of numbers, even altering the sequencing on the fly.</P>
+
+<P>9.	The FOR loop can only count up or down in constant increments, whereas the WHILE construction places no limitations on manipulating the loop counter variable inside the loop or on using it afterwards.</P>
+
+<P>10.	(a)  the assignment  operator is incorrect.<BR>
+	(b)  the FOR loop increments by 1 by default. Therefore, the counter will never get to 1.<BR>
+	(c)  "count" should be a CHAR variable; perhaps it's name should be changed<BR>
+	(e)  watch out for a possible overflow.<BR>
+	(f)  1.5 is not an ORDINAL type.<BR>
+	(g)  1.5 is not an ORDINAL type.<BR>
+	(h)  OK, but misleading, as count is evaluated only of the start and so is one.</P>
+
+<P>11.	The reason is that the subrange has a maximum of 10 and when the count reaches 10, it increments one more because the condition on the WHILE has not yet been met.  At this point, the range will have been exceeded.</P>
+
+<P>12.	(a)  5<BR>
+	(b)  adding 2 different data types.<BR>
+	(c)  Thursday<BR>
+	(d)  may compile but cardValue will not be correct.  (cardVar will be taking in an integer).<BR>
+	(e)  only allowed to INC using variables.</P>
+
+<P>13.	Inside the loop, the control loop variable is being threatened.  Outside, it is undefined, so there is no point incrementing it (logical error).</P>
+
+<P>14.	The outer control loop variable is being threatened.</P>
+
+<P>15.	(a) 33	(b)  9	(c)  892 	<BR>
+	(d)  68	(e)  will not do anything because the start value is already beyond the stop value.<BR>
+
+<P>16.	Note: _ are used as spaces and cr is used as a carriage return.<BR>
+	(a)  cccchhhhoooorrrrdddd<BR>
+	(b)  _ _ _ _ _ _ _ _ _5 cr<BR>
+	(c)  _1_1_1_2_1_3_2_2_2_3_3_3</P>
+
+<P>17.	A two dimensional array is called a matrix.</P>
+
+<P>18.	(i)  matrix = ARRAY [1..m], [1..n] OF CARDINAL<BR>
+	(ii)<pre>
+	<!--	-->FOR outer := 1 TO m
+	<!--	-->  DO
+	<!--	-->    FOR inner := 1 TO n
+	<!--	-->      DO
+	<!--	-->        matrix [outer, inner] := 0;
+	<!--	-->      END;
+	<!--	-->  END;</pre></P>
+
+<H3><B>Problems</B></H3>
+
+<P>NOTE:  Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*  Modified
+    June.11.1999
+    Chapter 5 Question 19  *)
+
+MODULE LetterCount;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of the for loop *)
+(* using ISO Modula-2 *)
+(* last revision 1991 02 27 *)
+
+FROM STextIO IMPORT
+  ReadString, ReadChar, WriteChar, WriteString, WriteLn, SkipLine;
+FROM SWholeIO IMPORT
+  WriteCard;
+FROM SIOResult IMPORT
+  ReadResults, ReadResult;
+
+CONST
+  space = CHR (32);
+  alpha = CHR (65);
+  cr = CHR (13);
+  period = ".";
+  min = 33; (* Set limits of printable ASCII characters *)
+  max = 126;
+  maxOnLine = 5;
+
+TYPE
+  LetArray = ARRAY CHAR OF CARDINAL;
+
+VAR
+  letterCount, wordCount, numOnLine, avPerWord : CARDINAL;
+  lets : LetArray;    (* Examples:  lets ['A'], lets [","] *)
+  ch, last : CHAR;
+  lastResult : ReadResults;
+  userDone : BOOLEAN;
+
+BEGIN
+  FOR ch := CHR (min) TO CHR (max) (* initialize totals to zero *)
+    DO
+      lets [ch] := 0;
+    END;   (* for *)
+  userDone := FALSE;
+
+  WriteString ("Please type in text you want analyzed.");
+  WriteString (" End with period at start of line.");
+  WriteLn;
+
+  wordCount := 0;
+  letterCount := 0;
+  last := space; (* now leading space won't be seen as words *)
+
+  REPEAT   (* main loop to read text by characters *)
+    ReadChar (ch);     (* reads whatever is next *)
+    lastResult := ReadResult ();
+    IF lastResult = endOfLine  (* translate end of line state *)
+      THEN  (* into 'carriage return character read' *)
+        ch := cr;
+        SkipLine;
+      END;
+    IF (lastResult = allRight) AND (ch > space) AND (ch # period)
+      (* no control characters counted *)
+      THEN
+        (* see if it's in the alphabetic range *)
+        IF (ch > CHR(64)) AND (ch < CHR(91))
+           THEN
+             INC (lets [VAL(CHAR, ORD(ch) + 32)]);
+             INC (letterCount);
+           ELSIF (ch > CHR(96)) AND (ch < CHR(123)) THEN
+             INC (lets [ch]);
+             INC (letterCount);
+           END;
+      ELSIF ( (ch = space) AND (last # space) ) OR (ch = cr) AND (last # cr) THEN
+        (* two consec. is just one word *)
+        INC (wordCount);
+      ELSIF (ch = period) AND (last = cr) THEN
+        (* end of input *)
+        userDone := TRUE;
+        SkipLine;
+      END;
+    last := ch; (* reset last for next time *)
+  UNTIL (lastResult = endOfInput) OR userDone;
+
+(* now tell user the results, several to a line *)
+  numOnLine := 0;
+  WriteLn;
+  FOR ch := CHR (min) TO CHR (max)
+    DO
+      WriteChar (ch);     (* put out character *)
+      WriteCard (lets [ch], 5);    (* # of times it was there *)
+      WriteString ("     "); (* leave some space; make columns *)
+      INC (numOnLine );
+      IF numOnLine MOD maxOnLine = 0
+        THEN
+          WriteLn;
+        END;
+    END;    (* for *)
+  WriteLn;
+  WriteLn;
+  WriteString ("# of words = ");
+  WriteCard (wordCount, 0);
+  WriteLn;
+  WriteString ("# of letters = ");
+  WriteCard (letterCount, 0);
+  WriteLn;
+  IF wordCount # 0
+    THEN
+      avPerWord := TRUNC ((FLOAT (letterCount) / FLOAT (wordCount)) + 0.5);
+      WriteString ("# of letters/word (nearest whole number) = ");
+      WriteCard (avPerWord, 0);
+      WriteLn;
+    END;
+
+  WriteString ("Press a key to end ==>");
+  ReadChar (ch);
+END LetterCount.</pre>
+
+<pre>(* Created June 14, 1999
+   Chapter 5 Question 22
+   Canned Program *)
+
+MODULE PrintASCII;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, WriteChar, SkipLine;
+FROM SWholeIO IMPORT
+  WriteCard;
+
+CONST
+  start = 32;  (* start at CHR(32) *)
+  end = 127;   (* end at CHR(127) to see non used character *)
+VAR
+  count, colcount, howmany : CARDINAL;
+
+BEGIN
+  WriteString ("This program writes out the ASCII character values with its");
+  WriteLn;
+  WriteString ("corresponding ordinal values.");
+  WriteLn;
+  WriteLn;
+  WriteLn;
+
+  (* initialize vars *)
+  howmany := 0;
+  colcount := 1;
+  count := start;
+
+  (* print them out nicely in a table *)
+  WHILE count <= end DO
+    WriteChar(CHR(count));
+    WriteCard(count, 9);
+    WriteString ("        ");   (* 8 spaces for formatting *)
+
+    (* make a table of 2 rows *)
+    IF colcount = 2 THEN
+      colcount := 0;
+      DEC (count, 2*48);    (* go twice back because it incs later *)
+
+      IF (count # 31) THEN  (* make sure it doesn't write same *)
+        INC (count, 1);
+      ELSE
+        count := 128; (* make sure it gets out *)
+      END;
+
+      WriteLn;
+    END;
+
+    (* inc counters *)
+    INC (count, 48);
+    INC (colcount);
+    INC (howmany);
+  END;  (* end WHILE *)
+
+  WriteLn;
+  WriteLn;
+  WriteCard (howmany, 0);
+  SkipLine;
+END PrintASCII.</pre>
+
+</BODY>
+
+</HTML>

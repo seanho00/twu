@@ -1,0 +1,159 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>HW Assignments :: CMPT166 11SP :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/11spr/cmpt166/">
+    CMPT 166 Spring 2011</a> HW Assignments</h1>
+
+<small><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></small></p>
+
+<div>All homeworks should be turned in electronically to myCourses.
+Homeworks are due by the start of class (11:40) on the due date.</div>
+
+<h2><a name="1">HW1 (due Tue 18 Jan) (10pts)</a></h2><ol>
+  <li> Compare and contrast the <b>JDK</b> and the <b>JRE</b>.
+  <i><br>Java Development Kit: JRE plus compiler (javac) for writing your own Java programs.
+    <br>Java Runtime Environment: only the Java VM (java) for running precompiled Java programs.</i>
+
+  <li> Compare and contrast <b>compiled</b> vs. <b>interpreted</b> languages.
+  <i><br>Compiled: source code is compiled, linked, and assembled before being executed (run).
+    Examples include C/C++, Java, M2, etc.
+    <br>Interpreted: source code is compiled on-the-fly, allows for interactive sessions like
+    in IDLE.  Examples include Python, Perl, JavaScript, etc.</i>
+
+  <li> What do <b>comments</b> look like in Java?
+  <i><br>Either C-style: /* comment */, or C++-style: // comment</i>
+
+  <li> Write a minimal "Hello, World!" <b>program</b> in Java.
+  <i><pre>
+  	public class HelloWorld {
+		public static void main( String args[] ) {
+			System.out.println("Hello, World!");
+		}
+	}
+</pre></i>
+
+  <li> Describe the eight <b>primitive types</b> in Java, and say something about their
+  differences.
+  <i><br>boolean: either true or false (1byte).
+    <br>char: a single Unicode character (2bytes).
+    <br>byte, short, int, long: integers of various sizes (1, 2, 4, 8 bytes).
+    <br>float, double: floats of various precisions (4, 8 bytes).</i>
+
+  <li> What is the difference between an <b>expression</b> and a <b>statement</b>?
+  Give an example of each.
+  <i><br>Expression: returns a result for use in a larger expression or statement.
+    Example: 2 + 3
+    <br>Statement: stands alone as a command to be executed.
+    Example: x = 2 + 3</i>
+
+</ol>
+
+<h2><a name="3">HW3 (due Thu 17 Feb) (10pts)</a></h2><ol>
+  <li> A programming style that uses a <b>signal and response</b> approach to 
+  programming is called: <i>(c)</i> <u>[1]</u> <ol class="subparts">
+    <li>Object Oriented Programming
+    <li>Structured Programming
+    <li>Event-driven Programming
+    <li>Bottom-up Programming
+  </ol>
+  <li> A <b>button</b> component should have a registered 
+  _____________ associated with it. <i>(c)</i> <u>[1]</u> <ol class="subparts">
+    <li>pixel
+    <li>JFrame
+    <li>listener
+    <li>none of the above
+  </ol>
+  <li> The _____________ manager places components into <b>five regions</b>.
+  <i>(a)</i> <u>[1]</u> <ol class="subparts">
+    <li> BorderLayout
+    <li> FlowLayout
+    <li> GridLayout
+    <li> AbsoluteLayout
+  </ol>
+  <li> A _____________ is an object that is a simple <b>container</b> class 
+  that groups other objects. <i>(a)</i>  <u>[1]</u> <ol class="subparts">
+    <li> JPanel
+    <li> JMenu
+    <li> JButton
+    <li> JTextArea
+  </ol>
+  <li> Explain the <b>model-view-controller</b> pattern when applied to 
+  a typical GUI.  <u>[3]</u>
+  <i><br>The model-view-controller pattern when applied to the task of
+    designing a GUI allows the task to be divided into two main subtasks:  1)
+    Designing and coding the appearance of the GUI on the screen; 2) Designing
+    and coding the actions performed in response to button clicks and other
+    user actions.  This approach allows GUI components to send messages to
+    determine which actions should be taken.  </i>
+  <li> Name and describe all the <b>classes</b> involved with writing a
+  serializable object out to the file "output.txt". <u>[3]</u>
+  <i><br>File takes the string filename and looks it up in the filesystem.
+    <br>FileOutputStream takes the File object and opens the file for
+    writing binary data.
+    <br>ObjectOutputStream takes the FileOutputStream and prepares it for
+    writing out serialized objects.</i>
+</ol>
+
+<h2><a name="4">HW4 (due Thu 24 Mar) (20pts)</a></h2><ol>
+  <li> The method <tt>paint()</tt> has one parameter of type:
+  <u>[1]</u> <ol class="subparts">
+    <li> Shape
+    <li> Graphics <i>Answer</i>
+    <li> Image
+    <li> String
+  </ol>
+  <li> Any change to graphics being displayed on the screen requires a call to
+  the ____________ method to update the graphics. <u>[1]</u> <ol class="subparts">
+    <li> paint()
+    <li> repaint() <i>Answer</i>
+    <li> update()
+    <li> all of the above
+  </ol>
+  <li> The programming statements used to accomplish a thread's task should be
+  included in the method: <u>[1]</u> <ol class="subparts">
+    <li> start()
+    <li> init()
+    <li> run() <i>Answer</i>
+    <li> none of the above
+  </ol>
+  <li> When a server executes the <tt>accept()</tt> method it:
+  <u>[1]</u> <ol class="subparts">
+    <li> Blocks and waits for a connection <i>Answer</i>
+    <li> Checks for a connection and if there is none it exits
+    <li> Blocks but in a new thread
+    <li> Any of the above, depending on the input parameters to accept()
+  </ol>
+</ol>
+
+<h2><a name="5">HW5 (due Thu  7 Apr) (20pts)</a></h2><ol>
+  <li> What is an Android <b>Activity</b>?  Is it the same as an application?
+  Discuss the relationship between an Activity and an app. <u>[5]</u>
+  <i><br>An Activity presents the user interface for a single task; e.g.,
+    a single screen or dialog in an application.  Apps generally are composed
+    of several Activities, and/or BackgroundServices, ContentProviders, 
+    BroadcastListeners.</i>
+  <li> Name and describe the four states of an Activity's <b>lifecycle</b>.
+  <u>[6]</u>
+  <i><br>Active (running in foreground), paused (e.g., blocked by a pop-up 
+    dialog), stopped (no longer visible), dead (removed by OS)</i>
+  <li> Describe how to design an Android application which is 
+  <b>internationalization</b>-ready (i.e., its text can be easily translated).
+  <u>[5]</u>
+  <i><br>Put all user-visible strings in a separate strings.xml file and refer
+    to them in your code (or object properties) only via resource IDs.
+    To create a translation, make another version of the strings.xml which
+    contains the translated strings.  Then the system can select the appropriate
+    version of the strings at runtime.</i>
+  <li> Name and describe two <b>Creational</b> design patterns from the 
+  "Gang of Four" (GoF) book. <u>[4]</u>
+  <i><br>Factory Method (abstract constructor), Abstract Factory (hierarchy of
+    factory classes to create objects), Builder (director delegates construction
+    to a set of builders), Prototype (clone an existing object to make more),
+    and Singleton (only one instance of the class is allowed).</i>
+</ol>
+
+</body></html>

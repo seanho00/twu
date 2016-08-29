@@ -1,0 +1,279 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Midterm 2 :: CMPT370 09FA (DS) :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers on web ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li>
+What does it mean for a set of vectors to be <b>linearly independent</b>?
+<u>[3]</u>
+<br><i>
+  A set of vectors is linearly independent if no one vector in the set can be
+  expressed as a linear combination of the other vectors.  If we were to remove
+  any vector from the set, then the vector space spanned by the set would
+  collapse by a dimension.
+</i>
+
+<li>
+What are <b>homogeneous coordinates</b>, and how are they used in 3D computer
+graphics?  <u>[3]</u>
+<br><i>
+  A consistent representation of both points and vectors.
+  We add a fourth component, w, which is 0 for vectors and
+  non-zero for points.  Every (x,y,z,w), with w != 0, represents
+  the 3D point (x/w, y/w, z/w).
+  We apply transforms in homogeneous coordinates via 4x4 matrices;
+  e.g., the model-view matrix.
+</i>
+
+<li>
+Describe the stages of the OpenGL rendering <b>pipeline</b>.  There is some
+flexibility in how to divide the stages, but describe the operations that
+must happen to get from geometry (GL primitives) to what we see on screen.
+<u>[6]</u>
+<br><i><dl>
+    <dt>(1) Vertex processing:</dt> <dd>Transform vertex and normal via
+    model-view matrix, per-vertex lighting calculation (for Gouraud),
+    projection matrix</dd>
+    <dt>(2) Assembly/clipping:</dt> <dd>Connect vertices into primitives,
+    view frustum culling, clip against view volume</dd>
+    <dt>(3) Rasterizer:</dt> <dd>Convert into pixel grid, interpolate
+    per-vertex values across the primitive</dd>
+    <dt>(4) Fragment processing:</dt> <dd>Per-fragment calculations,
+    textures</dd>
+    <dt>(5) Blending:</dt> <dd>Hidden-surface removal (depth buffer) and
+    blending, final output to framebuffer</dd>
+</dl></i>
+
+<li>
+The two most important transform matrices in OpenGL are 
+the <b>model-view</b> matrix and the <b>projection</b> matrix.
+Contrast the roles of these two matrices. <u>[4]</u>
+<br><i>
+  The <b>model-view</b> matrix transforms from world coordinates to camera 
+  coordinates: it specifies the location of objects in the virtual world 
+  relative to the camera.  It is also what we use to position objects relative
+  to each other.
+  The <b>projection</b> matrix transforms from camera coordinates to screen 
+  coordinates: it converts from 3D points to 2D points.
+</i>
+
+<li>
+Contrast <b>orthographic</b> projection with <b>perspective</b> projection.
+<u>[3]</u>
+<br><i>
+  The projector lines in orthographic projection are all parallel, whereas the
+  projector lines in perspective projection converge to a single point, the
+  center of projection.  Orthographic projection is equivalent to perspective
+  projection with a center of projection infinitely far away.  Perspective
+  results in foreshortening: closer objects appear larger, farther objects
+  appear smaller.
+</i>
+
+<li>
+Contrast <b>clipping</b> with <b>culling</b>.  Why are they important? <u>[4]</u>
+<br><i><dl>
+    <dt>Clipping:</dt> <dd>Removes primitives which are outside the clipping
+    volume and the viewport, the rendered portion of the image plane.  This may
+    introduce new vertices for primitives which intersect the clipping planes.
+    </dd>
+    <dt>Culling:</dt> <dd>Removes primitives which are not visible, even though
+    they may be within the viewport.  For instance, back-face culling removes
+    primitives that face away from the camera, which are generally not visible.
+    </dd>
+</dl></i>
+
+<li>
+The GLUT function <tt>glutSolidTeapot(1.0)</tt> renders a
+<a href="http://www.sjbaker.org/wiki/index.php?title=The_History_of_The_Teapot">Utah Teapot</a> with size 1, centred at the origin.
+We want to render the teapot with size 5.0,
+centred at the point (-1, 0, 2),
+and rotated counter-clockwise about its own y-axis by 30 degrees.
+<ol class="subparts">
+  <li>
+  Without changing the call to <tt>glutSolidTeapot()</tt>,
+  write a block of <b>C/C++ OpenGL code</b> to accomplish this. 
+  (The parameter to <tt>glutSolidTeapot()</tt> is actually a size
+  parameter, but I'm asking you not to use that for this question.)
+  The exact naming/syntax of the functions is not as important as the 
+  ordering.  <u>[3]</u>
+  <br><i><pre>
+  glTranslate3f( -1., 0., 2. );
+  glRotatef( 30., 0.0, 1.0, 0.0 );
+  glScalef( 5., 5., 5. );
+  glutSolidTeapot(1.0);
+  </pre></i>
+
+  <li>
+  Write a single <b>4x4 matrix</b> that converts from the coordinate system 
+  of the teapot (object coords) to the coordinate system of the world
+  (world coords).  Assume left multiplication; i.e., a point p in
+  homogeneous object coords will be multiplied by this matrix M to get
+  the world coords <tt>p' = M p</tt>.
+  (Hint: construct 4x4s for each of the transforms,
+  and multiply the matrices in the correct order.  I will be lenient
+  on minor mathematical errors as long as you show your work.)
+  <u>[4]</u>
+  <br><i>
+    <table border="1"><tr>
+	<td> 5. * cos(30.) </td>
+	<td> -sin(30.) </td>
+	<td> 0 </td>
+	<td> -1. </td>
+	</tr><tr>
+	<td>  sin(30.) </td>
+	<td> - 5. * cos(30.) </td>
+	<td> 0 </td>
+	<td> 0. </td>
+	</tr><tr>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 5. </td>
+	<td> 2. </td>
+	</tr><tr>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 1 </td>
+    </tr></table>
+  </i>
+</ol>
+
+<li>
+Describe three representations of rotations in 3D that we talked about in class.
+What are pros/cons of each?  <u>[4]</u>
+<br><i><dl>
+    <dt>Euler angles:</dt> <dd>Three angles indicating amount of rotation about the
+    x, y, and z axes, respectively.  Order is important.  Problems with gimbal lock.
+    </dd>
+    <dt>Axis-angle:</dt> <dd>Three numbers indicating a unit vector about which to 
+    rotate, and one number indicating angle of rotation about that axis.  This is 
+    the format expected by <tt>glRotatef()</tt>.</dd>
+    <dt>Unit quaternion:</dt> <dd>Four numbers (as described in previous problem).
+    Easy to derive from axis-angle representation.  Easy to compose multiple 
+    rotations via quaternion multiplication.</dd>
+</dl></i>
+
+<li>
+Name and describe the four terms in the OpenGL local <b>illumination model</b>.
+For each term, list what <b>vectors</b>, if any, are required to compute the
+term. <u>[5]</u>
+<br><i><dl>
+    <dt>Ambient:</dt> <dd>Uniform light that shines everywhere.
+    No vectors needed.  </dd>
+    <dt>Diffuse:</dt> <dd>Light that shines on a dull, non-shiny object.
+    Need normal vector and vector to the light source.</dd>
+    <dt>Specular:</dt> <dd>Highlights reflecting off a shiny object.
+    Need view vector to camera and reflection vector.</dd>
+    <dt>Emissive:</dt> <dd>Simulates a glowing object.  No vectors needed.</dd>
+</dl></i>
+
+<li>
+How many numbers are needed to specify completely all the material properties
+provided by OpenGL for an object?  Describe them. <u>[3]</u>
+<br><i>
+  17 numbers: RGBA for each of ambient, diffuse, specular, and emissive colours,
+  plus the shininess coefficient.
+</i>
+
+<li>
+Contrast <b>Gouraud</b> shading with <b>Phong</b> shading.  Which is better and
+why?  Describe a situation where the difference might be very pronounced.
+Which one is supported by the regular fixed-function OpenGL pipeline? <u>[4]</u>
+<br><i><dl>
+    <dt>Gouraud:</dt> <dd>Lighting calculations done <b>per-vertex</b>;
+    shaded vertex colours are then interpolated (rasterized) across the face of
+    the polygon.</dd>
+    <dt>Phong:</dt> <dd>Lighting calculations done <b>per-fragment</b>
+    (per-pixel): more work, but more accurate.</dd>
+  </dl>
+  The default OpenGL pipeline only does Gouraud.
+  On a large polygon with high shininess, the small specular highlight may
+  lie in the middle of the polygon, missing all the vertices.  In that case,
+  Gouraud shading would miss the highlight altogether, whereas Phong shading
+  would capture it.
+</i>
+
+<li>
+Describe <b>bump mapping</b>: what is its purpose and how does it achieve it?
+Describe an example situation where it might be useful.<u>[4]</u>
+<br><i>
+  Emulating bumpy surfaces without actually creating more geometry (more
+  vertices).  Uses a bump map texture to indicate displacement of the surface
+  (in or out).  Calculates how that displacement would perturb the normal
+  vectors.  Per-fragment Phong shading then calculates the shaded colour of
+  each fragment using the perturbed normals.  Example: orange.
+</i>
+
+<li> Describe the two kinds of <b>shaders</b> defined in GLSL.
+What is the purpose of each?  What are their inputs and outputs? <u>[5]</u>
+<br><i>
+  <b>Vertex</b> shaders do per-vertex processing: coordinate transformation
+  through model-view matrix; transform normals, generate per-vertex colours,
+  generate texture coordinates, etc.<br>
+  <b>Fragment</b> shaders work after the rasterizer and do per-fragment
+  (per-pixel or more) processing: in the default pipeline, fragment processors
+  don't do anything (pass-through), but they can be used for bump-mapping,
+  Phong shading, etc.
+</i>
+
+<li> In GLSL shader programs, global variables may be marked as
+<b>uniform, attribute</b>, or <b>varying</b>.  What does each of these mean?
+For each kind of variable, describe whether it is <em>read-only, writable, or
+  inaccessible</em> by each of the two kinds of shader programs.  <u>[6]</u>
+<br><i>
+  <b>uniform</b>: constant over the primitive; e.g., texture object.
+  Set by host application; read-only for shaders<br>
+  <b>attribute</b>: may be different for each vertex; e.g., normal vector.
+  Read-only for vertex shader.<br>
+  <b>varying</b>: set by vertex shader and interpolated by rasterizer;
+  read-only for fragment shader.  e.g., normal (N) and light (L) vectors
+  interpolated across fragment for Phong shading.
+</i>
+
+<li> What does it mean for a curve in 3D to be a <b>cubic polynomial</b>?
+How many floating-point numbers are needed to uniquely define a cubic
+polynomial in 3D? <u>[5]</u>
+<br><i>
+  A curve is parameterized by a single parameter, u.
+  A curve in 3D is described parametrically by three functions, x(u), y(u),
+  z(u).
+  For a polynomial curve, these three functions are linear combinations of
+  polynomials in u (i.e.: 1, u, u<sup>2</sup>, u<sup>3</sup>, ...).
+  A cubic polynomial curve uses only polynomials up to and including 
+  u<sup>3</sup>.  Each coordinate function uses four polynomial terms; hence
+  the whole 3D cubic polynomial curve can be defined uniquely with just 12 
+  numbers.
+</i>
+
+<li> What are <b>blending</b> functions for curves in 3D? <u>[4]</u>
+<br><i>
+  Many 3D curves can be defined as linear combinations of their control points.
+  The blending functions describe how much each control point contributes to
+  each point along the curve, running from one end of the curve to the other.
+  The horizontal axis is the parameter u; the vertical axis is the relative
+  weight of the control point.  There is one blending function for each control
+  point.  [Bezier curves have the nice property that the blending functions are
+  all between 0 and 1.]
+</i>
+
+</ol>
+
+</body></html>
+
+

@@ -1,0 +1,100 @@
+<HTML><HEAD><TITLE>Chapter 15: Advanced Data Types and Techniques</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Advanced Data Types and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter 15<BR>
+<P>Advanced Data Types and Techniques</B></H1></CENTER>
+
+
+
+<BR><A class = navgrn HREF="Ch15.0.html">15.0 Chapter Goals</a><!--	656
+<BR><A class = navgrn HREF="Ch15.1.html">15.1 B-trees</a><!--	656-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.1.html#15.1.1">  15.1.1 B-trees Defined</a><!--	656
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.1.html#15.1.2">  15.1.2 Defining A Semi-Generic B-tree</a><!--	658-->
+<BR><A class = navgrn HREF="Ch15.2.html">15.2 Implementing and Testing a Semi-Generic B-tree</a><!--	659-->
+<BR><A class = navgrn HREF="Ch15.3.html">15.3 Heaps</a><!--	673-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.3.html#15.3.1">  15.3.1 Heaps Defined</a><!--	673-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.3.html#15.3.2">  15.3.2 Heaps as Binary Trees</a><!--	673-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.3.html#15.3.3">  15.3.3 Defining the Heap</a><!--	676-->
+<BR><A class = navgrn HREF="Ch15.4.html">15.4 Implementing and Testing a Semi-Generic Heap</a><!--	677-->
+<BR><A class = navgrn HREF="Ch15.5.html">15.5 Array Implementation and Sorting With Heaps</a><!--	690-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.5.html#15.5.1">  15.5.1 Heapsort</a><!--	691
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.5.html#15.5.2">  15.5.2 Heaps and Priority Queues</a><!--	693-->
+<BR><A class = navgrn HREF="Ch15.6.html">15.6 Toward More Generic Structures</a><!--	694-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.6.html#15.6.1">  15.6.1 Low Level Assignment Routines</a><!--	695
+<BR><A class = navgrn HREF="Ch15.7.html">15.7 A Generic List Type With ARRAY OF LOC</a><!--	696-->
+<BR><A class = navgrn HREF="Ch15.8.html">15.8 Pointers and Memory Management Revisited</a><!--	702-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.8.html#15.8.1">  15.8.1 Orphans</a><!--	702-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.8.html#15.8.2">  15.8.2 Garbage</a><!--	702-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.8.html#15.8.3"> 15.8.3 Fragmentation</a><!--	703-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.8.html#15.8.4">  15.8.4 Defragmentation and Garbage Collection</a><!--	703-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.8.html#15.8.5">  15.8.5 Handles</a><!--	703-->
+<BR><A class = navgrn HREF="Ch15.9.html">15.9 Pointers and Generic Structures</a><!--	704
+<BR><A class = navgrn HREF="Ch15.10.html">15.10 Addresses and Generic Sorting Techniques</a><!--	706-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch15.10.html#15.10.1">  15.10.1 Generic Sorts Defined</a><!--	708
+<BR><A class = navgrn HREF="Ch15.11.html">15.11 Chapter Summary</a><!--	709-->
+<BR><A class = navgrn HREF="Ch15.12.html">15.12 Assignments</a><!--	709
+
+<!--Version History Last Modified 1996 10 28
+3.0 completed 1996 10 24
+3.1 HTML by R.S 1996 10 24
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+
+
+
+
+«INCLUDE Ch15.0.html»
+«INCLUDE Ch15.1.html»
+«INCLUDE Ch15.2.html»
+«INCLUDE Ch15.3.html»
+«INCLUDE Ch15.4.html»
+«INCLUDE Ch15.5.html»
+«INCLUDE Ch15.6.html»
+«INCLUDE Ch15.7.html»
+«INCLUDE Ch15.8.html»
+«INCLUDE Ch15.9.html»
+«INCLUDE Ch15.10.html»
+«INCLUDE Ch15.11.html»
+«INCLUDE Ch15.12.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

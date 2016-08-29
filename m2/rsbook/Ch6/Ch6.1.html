@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>6.1 What Did You Say a Module Is?</TITLE>
+<meta NAME="keywords" CONTENT="module, entity, entities, device, container, delimit, visibility, internally, define, defined, internal, import, imported, type, types, constant, constants, procedure, procedures, scope">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.1 What Did You Say a Module is?</B></H2>
+<P>Back in Chapter 2, the following definition was provided:</P>
+<BLOCKQUOTE><I>A <U>module</U> is a container to hold  the items and information that constitute all or part of an executable program.</I></BLOCKQUOTE>
+<P>At the time, the concept was left deliberately vague. Thus far, this text has employed program modules and has pointed out that various imports were also derived from modules. As the definition implies, a module is simply a box, the function of which is to enclose the various entities that are defined or used therein. As ought to be evident already, the entities contained in a module may be variables, constants, types and procedures. Each of these may be defined inside the module in question or may be imported from some other module. One module can even contain another module in this way; and this nesting can go on for as many levels as the programmer desires, or the system permits.</P>
+<P>The closest analogue among the other things seen thus far may be the procedure. An entity such as a variable is either visible and useful in a procedure or it is not. Likewise, an entity (via its identifier) is either visible and usable within the confines of a module or it is not. If it is not, any attempt to employ it in that module will result in an <!--"-->&quot;Undeclared Identifier Error.<!--"-->&quot;</P>
+<P>None of this is entirely new, for much of  it has been stated or hinted at already<!--‹-->--but it does allow some refinement of the definition into a more useful form.</P>
+<BLOCKQUOTE><I><A NAME="Module">A</A> <I><U>module</U></I> is an enclosing device or container to delimit the visibility and use of entities, whether these be internally defined or imported.</I></BLOCKQUOTE>
+<P>This version of the definition implies that the entities in question may constitute all or part of a program. If the module encloses types, constants, and procedures only (as does a library module) then these entities are not part of an actual program until they are imported and used by one. Until that time, they are only abstractly (or more correctly, potentially) portions of programs.</P>
+<P>As remarked both here and in <A HREF="../Ch4/Ch4.2.html">section 4.2</A>, a module defines a scope of visibility, much as does a procedure. Indeed, that is all it does. One might be tempted to extend the analogy between these procedures and modules, but such an attempt quickly fails, for modules are not themselves subprograms; they are only enclosures into which programs, subprograms, and other entities can be placed. They are either used within their own enclosure (as with a program module) or they are extracted from there for use inside another one.</P>
+<P>Like procedures, modules are themselves entities, so they are named. This name must appear both in the declaration and with the end of the module as in all program modules thus far in the text. Unlike procedures, modules in the base ISO standard language have no parameter lists and are not generally subprograms themselves, so it is safest to regard a module as a set of walls and nothing more.</P>
+<P>These concepts will be discussed in more detail in chapter eleven in the sections on scope and visibility rules for local modules. For now, more practical matters demand some attention.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

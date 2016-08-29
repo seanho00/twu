@@ -1,0 +1,4 @@
+Stroustrup: I'll just note that I consider the idea of one language, one
+programming tool, as the one and only best tool for everyone and for every
+problem infantile. If someone claims to have the perfect language he is either
+a fool or a salesman or both.

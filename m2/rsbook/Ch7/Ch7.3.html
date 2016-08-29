@@ -1,0 +1,284 @@
+<HTML>
+<HEAD>
+<TITLE>7.3 Library String Functions</TITLE>
+<meta NAME="keywords" CONTENT="library, libraries, string, strings, function, functions, length, module, array, assign, extract, delete, insert, replace, append, concat, canassignall, canextractall, candeleteall, caninsertall, canreplaceall, canappendall, canconcatall, equal, compare, findnext, findprev, finddiff, capitalize, truncate, truncated, copy, example, examples, import, module, can, replace, assign, extract, delete, insert, append, concat, find, next, prev, all">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.3 Library String Functions</B></H2>
+<P>So much for a few homemade attempts to implement some string operations.  The reader will be asked to implement a few more of these in the exercises.  This section will elaborate on what others consider to be a reasonable collection of string functions.</P>
+<P>What follows is the definition of a module called <I>Strings</I> that is available in the ISO compliant versions of Modula-2.  There are also notes on some variants for other versions.  The explanation of the various procedures follows.</P>
+<P><B>NOTES</B>: 1. ISO standard versions of Modula - 2, implement within the language proper a standard procedure LENGTH with the syntax exactly as indicated above for <I>length</I>.  The function <I>Length</I> is still included in the <I>Strings</I> module for the sake of compatibility with older versions.</P>
+<P>	2. Because some other type of string may also be required for operating system use, or for interface to other languages, many versions of Modula-2 have two separate string handling modules, and a third for conversion functions to move data between the two types.  See the exercises for more information.</P>
+<P>	3. In non-ISO versions, the procedures made available are not always the same as these, and when they are, the order of the parameters varies from one implementation to another.</P>
+<A NAME="Strings"></A><PRE>
+<B>DEFINITION</B> <B>MODULE</B> Strings;
+
+<B>TYPE</B>
+  String1 = <B>ARRAY</B> [0..0] <B>OF</B> <B>CHAR</B>;
+    (* for constructing a value of a single-character string type to pass <B>CHAR</B> values to <B>ARRAY</B> <B>OF</B> <B>CHAR</B> parameters. *)
+
+<B>PROCEDURE</B> Length (stringVal: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* Returns the same value as would be returned by <B>LENGTH</B> *)
+
+<B>PROCEDURE</B> Assign (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies source to destination *)
+
+<B>PROCEDURE</B> Extract (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startPos,
+                    numberToExtract: <B>CARDINAL</B>;
+                    <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies at most numberToExtract characters from source to destination, starting at position startPos in source. *)
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> stringVar: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startPos,
+                    numberToDelete: <B>CARDINAL</B>);
+  (* Deletes at most numberToDelete characters from stringVar, starting at position startPos. *)
+
+<B>PROCEDURE</B> Insert (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startPos: <B>CARDINAL</B>;
+                    <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Inserts source into destination at position startPos *)
+
+<B>PROCEDURE</B> Replace (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+                   startPos: <B>CARDINAL</B>;
+                   <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies source into destination, starting at position startPos. Copying stops when all of source has been copied, or when the last character of the string value in destination has been replaced. *)
+
+<B>PROCEDURE</B> Append (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Appends source to destination. *)
+
+<B>PROCEDURE</B> Concat (source1, source2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Concatenates source2 onto source1 and copies the result into destination. *)
+
+<B>PROCEDURE</B> CanAssignAll (sourceLength: <B>CARDINAL</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> CanExtractAll (sourceLength, startPos,
+                      numberToExtract: <B>CARDINAL</B>;
+                      <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> CanDeleteAll (stringLength, startPos, numberToDelete: <B>CARDINAL</B>): <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> CanInsertAll (sourceLength, startPos: <B>CARDINAL</B>;
+                     <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> CanReplaceAll (sourceLength, startPos: <B>CARDINAL</B>;
+                     <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> CanAppendAll (sourceLength: <B>CARDINAL</B>;
+                  <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> CanConcatAll (source1Length, source2Length: <B>CARDINAL</B>;
+                    <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+
+(* The following type and procedures provide for the comparison of string values, and for the location of substrings within strings. *)
+
+<B>TYPE</B>
+  CompareResults = (less, equal, greater);
+
+<B>PROCEDURE</B> Compare (stringVal1, stringVal2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): CompareResults;
+  (* Returns less, equal, or greater, according as stringVal1 is lexically less than, equal to, or greater than stringVal2. *)
+
+<B>PROCEDURE</B> Equal (stringVal1, stringVal2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns Strings.Compare(stringVal1, stringVal2) = Strings.equal *)
+
+<B>PROCEDURE</B> FindNext (pattern, stringToSearch: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+                    startPos: <B>CARDINAL</B>;
+                    <B>VAR</B> patternFound: <B>BOOLEAN</B>;
+                    <B>VAR</B> posOfPattern: <B>CARDINAL</B>);
+  (* Looks forward for next occurrence of pattern in stringToSearch, starting the search at  position startPos. If startPos <!--<-->&lt; LENGTH(stringToSearch) and pattern is found, patternFound is returned as TRUE, and posOfPattern contains the start position in stringToSearch of pattern. Otherwise patternFound is returned as FALSE, and posOfPattern is unchanged. *)
+
+<B>PROCEDURE</B> FindPrev (pattern, stringToSearch:
+                  <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startPos: <B>CARDINAL</B>;
+                    <B>VAR</B> patternFound: <B>BOOLEAN</B>;
+                    <B>VAR</B> posOfPattern: <B>CARDINAL</B>);
+  (* Looks backward for the previous occurrence of pattern in stringToSearch and returns the position of the first character of the pattern if found. The search for the pattern begins at startPos. If pattern is found, patternFound is returned as TRUE, and posOfPattern contains the start position in stringToSearch of pattern in the range [0..startPos]. Otherwise patternFound is returned as FALSE, and posOfPattern is unchanged. *)
+
+<B>PROCEDURE</B> FindDiff (stringVal1, stringVal2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+                    <B>VAR</B> differenceFound: <B>BOOLEAN</B>;
+                    <B>VAR</B> posOfDifference: <B>CARDINAL</B>);
+  (* Compares the string values in stringVal1 and stringVal2 for differences. If they are equal, differenceFound is returned as FALSE, and TRUE otherwise. If differenceFound is TRUE, posOfDifference is set to the position of the first difference; otherwise posOfDifference is unchanged. *)
+
+<B>PROCEDURE</B> Capitalize (<B>VAR</B> stringVar: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Applies the function CAP to each character of the string value in stringVar. *)
+
+<B>END</B> Strings.</PRE>
+<P>The Procedures <I>Assign</I>, <I>Extract</I>, <I>Delete</I>, <I>Insert</I>, <I>Replace</I>, <I>Append</I>, and <I>Concat</I> have the property that if the string they are constructing has a length exceeding the capacity of the variable parameter, the result is silently truncated.  That is, the extra characters are discarded and no error condition is created.  Of course, if the string created is shorter than the capacity of the variable parameter, the string terminator is appended.</P>
+<P>Because this behaviour might create a problem for the client of this module, the procedures <I>CanAssignAll</I>, <I>CanExtractAll</I>, <I>CanDeleteAll</I>, <I>CanInsertAll</I>, <I>CanReplaceAll</I>, <I>CanAppendAll</I>, and <I>CanConcatAll</I>, are provided to test whether the corresponding command would work correctly (whether there is enough room) if attempted.  The writer of the client program must decide whether to use these or not, and what the program should do if the test produces FALSE, indicating that the intended destination lacks the room for the result.</P>
+<P>The procedure <I>Assign</I> takes the content of one string variable and assigns it to a second (which could have a different underlying type).  If <I>str1</I> and <I>str2</I> are of the same formal type of string, one could also write</P>
+<PRE>
+  str1 := str2;</PRE>
+<P>instead of</P>
+<PRE>
+  Assign (str2, str1);</PRE>
+<P>so this procedure is not always necessary.  However, if one had an ARRAY [2 .. n] OF CHAR (i.e. any array not zero based) then <I>Assign</I> could be used to give its contents to a string identifier. (i.e. one defined as of a type [0 .. m])  Also, if one had:</P>
+<PRE>
+  <B>TYPE</B>
+    ShortStrings = <B>ARRAY</B> [0 .. 10] <B>OF</B> <B>CHAR</B>;
+    LongStrings = <B>ARRAY</B> [0 .. 79] <B>OF</B> <B>CHAR</B>;
+
+  <B>VAR</B>
+    name : ShortStringType;
+    fullName : LongStringType;</PRE>
+<P>then, an assignment like:</P>
+<PRE>
+  fullName := name; </PRE>
+<P>would be illegal in standard Modula-2, because the two underlying types are different.  In this case also, one must, import <I>Assign</I> from <I>Strings</I> and use</P>
+<PRE>
+  Assign (name, fullName);</PRE>
+<P>Note, however, that <I>Assign</I> is not needed in a few non-standard versions, which do allow direct assignments of the kind above as a language extension.</P>
+<P>In general, it is best to use <I>Assign</I> and the other utility library procedures, treating string types as ADTs even though their structure is known to the program.  An ADT <I>String</I> could be implemented that way.  If it were, the parameters for these procedures would all be of type <I>String</I> rather than ARRAY [0 .. N - 1] of CHAR.  <I>Assign</I> would then always be necessary to convert an ARRAY OF CHAR to a variable of type <I>String</I>, for one would not officially know how the type <I>String</I> is defined.  In some ways this would be more in accord with sound Modula-2 programming practice than what is in fact done.  One should therefore regard the implied type <I>String</I> as an anomaly<!--‹-->--an exception to the general technique, rather than as a model to follow in devising user libraries implementing ADTs.  (The details of how to create ADTs whose structure truly is invisible to client programs will be discussed in a later chapter.)</P>
+<P>The procedure here called <I>Extract</I> is also known as <I>Copy</I> in some non-ISO versions.  Its purpose is to assign a substring in the source to the destination.  </P>
+<P><I>Insert</I> and <I>Delete</I> are closely related.  One puts characters in to a string; the other takes them out.  In both cases, the text following the insertion point is moved appropriately.  <I>Replace</I>, on the other hand, copies new material into a destination string over the top of whatever was there.  Suppose one had:</P>
+<PRE>
+  str1 := <!--"-->&quot; the old<!--"-->&quot;;
+  str2 := <!--"-->&quot;Nellie Hacker<!--"-->&quot;;</PRE>
+<P>Then,</P>
+<PRE>
+  Extract (str2, 3, 5, str3);</PRE>
+<P>would result in str3 holding <!--"-->&quot;lie H<!--"-->&quot;, while</P>
+<PRE>
+  Insert (str1, 6, str2);</PRE>
+<P>would result in str2 holding <!--"-->&quot;Nellie the old Hacker<!--"-->&quot;. At this point, </P>
+<PRE>
+  Delete (str2, 1, 14);</PRE>
+<P>would result in str2 holding <!--"-->&quot;Nacker<!--"-->&quot;. Now, </P>
+<PRE>
+  Replace (<!--"-->&quot;Si<!--"-->&quot;, 0, str2);</PRE>
+<P>would result in str2 holding <!--"-->&quot;Sicker<!--"-->&quot;.</P>
+<P>The procedure <I>Append</I> attaches the first string supplied to the end of the second, returning the second string in an altered condition, whereas <I>Concat</I> does this, but places the result in a third parameter, leaving the original strings untouched.  <I>Concat</I> and <I>Length</I> are shown here just as they were defined in the last section.  Of course, the programmer who imports from this library neither knows nor cares whether the writer of the implementation part of this particular module actually wrote them in the same way as shown here.</P>
+<P>The function <I>Compare</I> makes an alphabetical comparison of the strings <I>str1</I> and <I>str2</I>.  The result is <I>less</I> if <I>str1</I> <!--<-->&lt; <I>str2</I>; it is <I>equal</I> if <I>str1</I> = <I>str2</I>, and it is <I>greater</I> if <I>str1</I> <!-->&gt; <I>str2</I>.  If a test for equality is all that is needed, the procedure <I>Equal</I> will suffice.  The comparison distinguishes upper and lower case according to their different positions in the ASCII sequence of characters.</P>
+<H3><B>Examples:</B></H3>
+<P>The following all return <I>less</I>.</P>
+<PRE>
+Compare (<!--"-->&quot;Cat<!--"-->&quot;, <!--"-->&quot;Hat<!--"-->&quot;);
+Compare (<!--"-->&quot;at<!--"-->&quot;, <!--"-->&quot;atrocious);<!--"-->&quot;
+Compare (<!--"-->&quot;105<!--"-->&quot;, <!--"-->&quot;108<!--"-->&quot;);  (* character, not numerical compare *)
+Compare (<!--"-->&quot;Albert<!--"-->&quot;, <!--"-->&quot;albert<!--"-->&quot;); (* upper case before lower case *)</PRE>
+<P>The procedure <I>FindNext</I> (sometimes called <I>Pos</I> in non-standard versions) returns as the value of <I>posOfPattern</I> the cardinal of the starting position of the first string (<I>pattern</I>) if it is found in the second string (<I>stringToSearch</I>) after the given <I>startPos</I>.  In this case, the BOOLEAN parameter <I>patternFound</I> is TRUE.  It returns FALSE in <I>patternFound</I> if it is instructed to start at a point past the end of the target string, or if it does not find the target embedded in the source.  In this case, <I>posOfPattern</I> is unchanged.  Thus;</P>
+<PRE>
+  str1 := <!--"-->&quot;Johanna Meier the next hacker<!--"-->&quot;;
+  FindNext (<!--"-->&quot;Me<!--"-->&quot;, str1, 0, found, where);</PRE>
+<P>would set <I>found</I> to TRUE and <I>where</I> to 8, whereas, if the third parameter were given as 10, <I>found</I> would be FALSE.  The procedure <I>FindPrev</I> acts in the same way as <I>FindNext</I> but searches backward from the given starting point instead of forward.  The procedure <I>FindDiff</I> compares two strings for equality character by character.  If they are equal the BOOLEAN parameter <I>differenceFound</I> is set to FALSE.  If there is a difference, that parameter is set to TRUE and the place at which they first differ is the value of the parameter <I>posOfDifference</I>.</P>
+<P>The procedure <I>Capitalize</I> capitalizes all the letters in a string.  The (non-standard and occasionally supplied) procedures <I>FetchChar</I> and <I>AssignChar</I> allow the client program to manipulate individual characters in items of type <I>String</I> abstractly (i.e. without knowing the structure, or if knowing it, without using that knowledge).</P>
+<P>It is a useful exercise in understanding the meaning of string data to implement all these procedures yourself.</P>
+<P><B>NOTES</B>: 1. Some non-standard implementations export two or more convenience types such as String80 = ARRAY[0..80] OF CHAR.</P>
+<P>	2. Strings are implemented in a variety of ways in different languages and implementations.  Modula-2 itself uses, as seen here, a terminated ARRAY [0 .. len - 1] OF CHAR.  However, the associated operating system may not use Modula-2 style strings for such things as, say, file names.  Thus if the programmer decides to manipulate the file system on a level lower than what is provided by the utility module <I>Files</I>, (see the next chapter for details) it will probably be necessary to convert Modula-2 strings that name files to the appropriate form for the actual file system being used.  Facilities to make these changes may be provided in an appropriate conversions module, or they may have to be programmed.</P>
+<P>To illustrate some of the ideas presented in these two sections, here is a simple program module that will accept an input line from the standard input, and then print it out back to front in two ways<!--‹-->--letter by letter, and word by word.  Note that it is written in a way that depends on knowing what is the structure of string variables.</P>
+<PRE>
+<B>MODULE</B> Backwards;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate string manipulation *)
+(* using ISO Modula-2  *)
+(* last revision 1996 12 04 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteChar, WriteString, ReadString, SkipLine;
+
+<B>TYPE</B>
+  String = <B>ARRAY</B> [0 .. 80] <B>OF</B> <B>CHAR</B>;
+   
+<B>CONST</B>
+  blank = ' ';
+
+<B>VAR</B>
+  inStr : String;
+  count, startWord, endWord : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  WriteString ("Please type in the line to process ");
+  WriteLn;
+  ReadString (inStr);
+  SkipLine;
+  WriteLn;
+  (* Write out original *)
+  WriteString (inStr);
+  WriteLn;
+
+  (* Write backwards letter by letter *)
+  <B>FOR</B> count := (<B>LENGTH</B> (inStr) - 1) <B>TO</B> 0 <B>BY</B> -1
+    <B>DO</B>
+      WriteChar (inStr [count]);
+    <B>END</B>;
+  WriteLn;
+
+  (* Now get ready to print the word-reversed string *)
+  endWord := <B>LENGTH</B> (inStr) - 1;
+  <B>REPEAT</B>
+    <B>WHILE</B> (endWord <!-->&gt; 0) <B>AND</B> (inStr [endWord] = blank)
+      <B>DO</B>
+        <B>DEC</B> (endWord);    (* find last non-blank *)
+      <B>END</B>;    (* it will be the end of a word *)
+    startWord := endWord;    (* set count; find start of word *)
+    <B>WHILE</B> (startWord <!-->&gt; 0)  <B>AND</B> (inStr [startWord - 1] # blank)
+      <B>DO</B>
+        <B>DEC</B> (startWord)   (* move back to letter *)
+      <B>END</B>;                (* following a blank *)
+    (* startword and endword now delimit a word *)
+  
+  (* now print one word *)
+    <B>FOR</B> count := startWord <B>TO</B> endWord
+      <B>DO</B>
+        WriteChar (inStr [count]);
+      <B>END</B>;
+    <B>IF</B> startWord # 0   (* except for the first word *)
+      <B>THEN</B>      (* WriteChar a blank *)
+        WriteChar (blank);   (* after the word *)
+        endWord := startWord - 1   (* reset wordend, carry on *)
+      <B>ELSE</B>
+        endWord := startWord
+      <B>END</B>;
+  <B>UNTIL</B> endWord = 0
+    
+<B>END</B> Backwards.
+</PRE>
+<H3><B>Sample run:</B></H3>
+<PRE>Now is the time for all good men to come to the aid of the party.
+.ytrap eht fo dia eht ot emoc ot nem doog lla rof emit eht si woN
+party. the of aid the to come to men good all for time the is Now</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

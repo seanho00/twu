@@ -1,0 +1,266 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<!--
+Joey done @T-35; half remain @T-5
+a touch too hard: shorten eval Q, increase pts to discussion Qs, simplify prog Q.
+-->
+<title>Midterm 1 :: CMPT140 10FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.<br>
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<br><b>Also:</b> describe each step in your own words,
+and why it is important!
+<u>[5]</u><ul>
+<li><i>Write</i><br>
+<li><i>Apprehend</i><br>
+<li><i>Design</i><br>
+<li><i>Execute</i><br>
+<li><i>Scrutinize</i><br>
+</ul>
+
+<li>
+Name the five program <b>control/flow</b> abstractions
+we talked about in class.  For each one, name a Python
+language construct which implements the abstraction.
+(There is one abstraction which we are not covering in Python;
+you may write "N/A" for the Python for that one.)
+<u>[5]</u><ul>
+<li><i>Sequence (newlines)</i><br>
+<li><i>Selection (if, elif, else)</i><br>
+<li><i>Repetition (while, for)</i><br>
+<li><i>Composition (functions)</i><br>
+<li><i>Parallelism (N/A)</i><br>
+</ul>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to indicate
+whether it can be used as a valid name for a user-defined Python variable.
+If "no", indicate why.
+<u>[5]</u><br>
+<br><tt>python		</tt><i>-- yes</i>
+<br><tt>in		</tt><i>-- no (reserved)</i>
+<br><tt>If		</tt><i>-- yes</i>
+<br><tt>my.Apples	</tt><i>-- no (punctuation)</i>
+<br><tt>____</tt> <em>(4 underscores)</em>	<i>-- yes</i>
+
+<li>
+Use the Python <tt>range()</tt> function to create the following list.
+<br>(There are several possible correct answers.)
+<br>(Don't worry about Py3's list/iterator issue; just use range().)
+<u>[2]</u><br>
+<b><tt>[7, 3, -1, -5]</tt></b>
+<br><i>
+  range(7,-4,-9), or ..., up to range(7,-4,-6)
+</i>
+<div class="answerbox" style="height:1em"></div>
+
+<li class="break">
+Describe the <b>bug</b> in this Python loop, and fix it:
+<u>[3]</u>
+<pre>
+countdown = 10		# Count from 10 down to 1
+
+while countdown &gt; 0:
+
+	print(countdown, end=' ')
+
+	countdown - 1
+
+print("Blast off!!")
+</pre>
+<i>
+  countdown is never decremented: change "- 1" to "-= 1".
+</i>
+
+<li>
+The following is meant to be an interactive gradebook that
+converts from a percentage into a letter grade:
+95 and above is A+, 85-95 is A, 80-85 is A-, and everything below is
+fail (it's a really tough program!).
+The program should prompt the user 100 times for grades.
+Unfortunately, the program was written by a terrible coder (me!),
+so there are numerous <b>bugs</b> in the code.
+Find all the bugs and fix them. <u>[8]</u><br><br>
+<pre>
+
+For i : range(1 .. 100)
+
+	grade == input('What\'s the grade percentage? ')
+
+	if grade &gt; 95
+
+		print("That's an A+!')
+
+	if 85 &gt; grade &gt; 95:
+
+		print("""An A is really good!""")
+
+	elsif 80 &lt; grade:
+
+		print( You got an A-! )
+
+	else grade &lt; 80:
+
+	print("Sorry, you need an A- to pass!")
+</pre>
+<i>
+  (1) For &rarr; for<br>
+  (2) i : &rarr; i in<br>
+  (3) range(1 .. 100) &rarr; range(100) (not range(1,100), either)<br>
+  (4) Colon (:) at end of first line<br>
+  (5) grade == &rarr; grade =<br>
+  (6) input( &rarr; int(input( (convert to int)<br>
+  (7) grade &gt; 95 &rarr; grade &gt;= 95 (logic error: 95 and above)<br>
+  (8) Colon (:) at end of line with 95<br>
+  (9) Mismatched quotes in "That's an A+!"<br>
+  (10) if 85 &rarr; elif 85<br>
+  (11) 85 &gt; grade &gt; 95 &rarr; 85 &lt;= grade &lt; 95 (logic error)<br>
+  (12) elsif &rarr; elif<br>
+  (13) You got an A-! &rarr; (needs to be in quotes)<br>
+  (14) Delete: grade &lt; 80<br>
+  (15) Last print() statement should be indented<br>
+  <br>The apostrophe in "What's" is okay; triple-quotes are okay;
+  and the condition 80 &lt; grade is also okay.<br>
+  <br>Corrected code:<pre>
+for i in range(100):
+	grade = int(input('What\'s the grade percentage? '))
+	if grade &gt; 95:
+		print("That's an A+!")
+	elif grade &gt; 85:
+		print("""An A is really good!""")
+	elif grade &gt; 80:
+		print("You got an A-!")
+	else:
+		print("Sorry, you need an A- to pass!")
+</pre></i>
+<br><br>
+
+<li class="break">
+<b>Evaluate</b> each of the following Python expressions
+exactly as given, or if it produces an error, describe the error.
+Assume each expression is independent of the others, and is the
+only command in a new Python session.  <u>[15]</u><br><br>
+<ol class="subparts">
+<li><tt> list(range(2))			</tt> <i>[0, 1]</i>
+<li><tt> list(range(2,-2))		</tt> <i>[] (empty list)</i>
+<li><tt> list(range(2,-2,-2))		</tt> <i>[2, 0]</i>
+<li><tt> 5 % 13				</tt> <i>5</i>
+<li><tt> 3 ** 2 &lt; 8 and 5 % 0 == 0	</tt> <i>False</i>
+<li><tt> 2 - 2 * - 2 ** 2		</tt> <i>10</i>
+<li><tt> 0.8 + 0.1 + 0.1 = 1.0		</tt> <i>SyntaxError: can't assign</i>
+<li><tt> '7' + '3'			</tt> <i>'73'</i>
+<li><tt> "%04.1f" % 2			</tt> <i>"02.0"</i>
+<li><tt> "My name is %s" % Joe		</tt> <i>NameError: Joe</i>
+<li><tt> "Name: %s, ID: %04d" % 'Bob', 173	</tt> <i>TypeError: not enough args</i>
+<li><tt> "03.0f" % 2			</tt> <i>TypeError (not a format string)</i>
+<li><tt> ord('E') - ord('B')		</tt> <i>3</i>
+<li><tt> 'E' - 'B'			</tt> <i>TypeError: can't subtract strings</i>
+<li><tt> 'pi' + 2*'z' + 'a'		</tt> <i>'pizza'</i>
+</ol><br>
+
+<li>
+Describe and contrast the roles of the <b>producer</b> and the <b>director</b>
+in a team.  Describe specific examples of what these roles might look like
+for a particular kind of task, e.g., developing software, building a bridge,
+making a movie, etc. <u>[6]</u><br>
+<i>
+  Producer is a managerial position -- keeping people on task and on schedule,
+  making sure everyone knows what they're supposed to be doing, facilitating
+  communication amongst team members.  Practical, realist, engineering-type.
+  <br>Director has the vision and concept -- a technical director knows the
+  design and code better than anyone else; an artistic director controls the
+  look and feel of the movie; an architect designs the building.
+</i>
+
+<li class="break">
+Compare and contrast <b>static</b> typing versus <b>dynamic</b> typing,
+including pros/cons. <u>[4]</u>
+<br><i>
+  (The key here is <b>type</b>: not whether the values of the variables can
+  change, but whether their <b>types</b> can change.)
+  <br><b>Static typing</b>: variables cannot change type.
+  Must declare type of variable and initialize value.
+  Compiler enforces correct type.
+  <br><b>Dynamic typing</b>: can change type.
+  More flexible, but usually we don't want variables to change type.
+</i>
+<br><br><br><br><br><br><br>
+
+<li>
+Describe and contrast the <b>requirements</b> document and the
+<b>design specification</b> for a software project. <u>[5]</u>
+<br><i>
+  Requirements are agreed upon by the client and the design team.
+  They form a written, formal definition of what the client is asking for;
+  they define what it means for the project to "succeed".
+  Ideally, the client would not change the requirements once the software
+  team has started work.<br>
+  Design specifications are agreed upon by the design team and the
+  implementation team.  They form a written, formal definition of the
+  architecture of the software project -- its components, top-down design,
+  etc.  It may contain pseudocode, diagrams, sketches, etc.
+</i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li>
+<b>Newton's method</b> for computing square roots is an iterative method
+which starts from an initial guess of the square root and gets closer to
+the true square root with each step, according to the following algorithm:
+<blockquote>
+  Let x be the number we wish to take the square root of.
+  <br> Let r be our current guess for the value of the square root.
+  <br> Calculate our next guess via (r + x/r)/2.
+  <br> Repeat until the guesses don't change by more than, say, 0.0001 (our
+  desired level of precision).
+  <!-- too hard?  just iterate 100x ? -->
+</blockquote>
+
+Your task is to code a Python <b>function</b>, called <tt>newton(x)</tt>,
+that uses Newton's method to calculate and return the square root of x.
+
+<ol class="subparts">
+  <li> Write a <b>docstring</b> for this function, including detailed
+  pre-condition and post-condition. <u>[4]</u>
+
+  <li> Write <b>Python code</b> implementing this function.
+  Use x/2 as the initial guess for the square root.
+  Obviously, you may not use math.sqrt for this!
+  (It turns out that math.sqrt does use a similar algorithm -- Newton's method
+  converges to the right answer quite quickly!) <u>[8]</u>
+</ol>
+
+<p>
+Comments and pseudocode are not required but may earn you partial credit
+if they show good design thinking.
+Little credit will be given for uncommented incorrect code.
+Note that your code is not required to print() anything on the screen
+or to input() anything from the console.
+
+<br><i>
+  See <a href="http://twu.seanho.com/python/newton.py"><tt>newton.py</tt></a>.
+</i>
+
+</ol>
+
+</body></html>

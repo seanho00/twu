@@ -1,0 +1,177 @@
+<HTML>
+<HEAD>
+<TITLE>10.11 FINALLY: Termination, Detection and Cleanup</TITLE>
+<meta NAME="keywords" CONTENT="termination, detection, cleanup, return, final, finally, program, finalization, finalize, finalise, finalisation, halt, clause, import, hashalted, terminate">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.11 FINALLY: Termination, Detection and Cleanup</B></H2>
+<P>In <A HREF="Ch10.8.html#10.8.2">section 10.8.2</A> it was pointed out that immediate normal program termination could be triggered manually through a RETURN from the body of the program module.  The transfer of control was described as being to a point just after the last statement in the block body of the program module, rather than simply <!--"-->&quot;to the END of the module.<!--"-->&quot;  In fact, there can be additional code between the two in what is called a FINALLY clause, and this code can be used for the purpose of cleanup after the program, (such as the closing of files).  Here is a sketch:</P>
+<PRE>
+<B>MODULE</B> Program;
+(* imports *)
+(* declarations *)
+<B>BEGIN</B>  (* the body *)
+  (* statement sequence *)
+<B>FINALLY</B>
+  (* statement sequence *)
+<B>END</B> Program.</PRE>
+<P><B>NOTES</B>: 1. The statement sequence in the FINALLY clause always executes when a program is terminated, regardless of the reason for this termination.</P>
+<P>	2. Every module may have a FINALLY clause.</P>
+<P>If both the program module and one or more library modules that it imports have FINALLY clauses, then when the program terminates, the FINALLY clauses are executed in the reverse order that the module bodies were run (initialized) in the first place.  This order will of course depend on the order of the imports in the program module and in the modules they in turn import and can only be known to the programmer of all the modules in the suite.</P>
+<BLOCKQUOTE><I><A NAME="Finalization">The</A> orderly execution of the finalization clauses of the various modules constituting a program is termed <U>program finalization</U>.</I></BLOCKQUOTE>
+<P><B>NOTE</B>:	If a program terminates because of a HALT or some error condition encountered by a modules, only the modules that have at least <I>begun</I> to run their bodies will be finalized.  The FINALLY clause of any module whose (initialization) body has not yet been commenced will not be invoked.</P>
+<P>Whatever <I>cleanup</I> has to be done by a module should therefore be related only to what that module itself has done.  If a program module, for instance, opens files, that module ought at some point close those files.  In some cases, this might best be done in a FINALLY clause, depending on the logic of the rest of the code.  Here is a simple example, based on the chapter eight program <I>ReadNAdd</I>:</P>
+<PRE>
+<B>MODULE</B> FinallyDemo;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of Finalization *)
+(* using ISO standard Modula-2 *)
+(* last revision 1994 04 22 *)
+
+(* This module, like ReadNAdd,  reads a series of Integers from the disk file called <!--"-->&quot;numbers<!--"-->&quot;. It sums them and prints out the sum. *)
+
+<B>FROM</B> StreamFile <B>IMPORT</B>
+  ChanId, Open, read, Close, OpenResults;
+<B>FROM</B> TextIO <B>IMPORT</B>
+  WriteLn, WriteString, SkipLine, ReadChar;
+<B>FROM</B> IOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> WholeIO <B>IMPORT</B> 
+  ReadInt, WriteInt, WriteCard;
+<B>FROM</B> StdChans <B>IMPORT</B>
+  StdInChan, StdOutChan;
+
+<B>VAR</B>
+  infile, stdOut, stdIn : ChanId;
+  number, sum : <B>INTEGER</B>;
+  res : OpenResults;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  stdOut := StdOutChan(); (* to force screen output *)
+  stdIn := StdInChan(); (* to force keyboard input *)
+  
+  Open (infile, <!--"-->&quot;numbers<!--"-->&quot;, read, res);
+  <B>IF</B> res = opened
+    <B>THEN</B>
+      sum := 0; (* initialize sum *)
+      <B>REPEAT</B>  (* Collect the numbers from the file *)
+        ReadInt (infile, number); 
+        <B>IF</B> ReadResult (infile) = allRight
+          <B>THEN</B>
+            SkipLine (infile);
+            <B>INC</B> (sum, number);    (* ok, so add to sum *)
+          <B>END</B>;  (* if *)
+      <B>UNTIL</B> ReadResult (infile) # allRight;
+ 
+     WriteString (stdOut, <!--"-->&quot;The sum of the numbers is <!--"-->&quot;);
+     WriteInt (stdOut, sum, 6);
+     WriteLn (stdOut);
+    <B>ELSE</B>
+      <B>RETURN</B>
+    <B>END</B>; (* if *)
+    WriteString (stdOut,<!--"-->&quot;Processing concluded normally<!--"-->&quot;);
+    WriteLn (stdOut);
+   
+<B>FINALLY</B>
+  <B>IF</B> res # opened
+    <B>THEN</B>
+      WriteString (stdOut,<!--"-->&quot;Sorry, couldn't open the file<!--"-->&quot;);
+      WriteLn (stdOut);
+      WriteString (stdOut, <!--"-->&quot; because of error number <!--"-->&quot;);
+      WriteCard (stdOut, <B>ORD</B> (res), 1);
+      WriteLn (stdOut);
+    <B>ELSE</B>
+      Close (infile);
+    <B>END</B>;
+  WriteString (stdOut, <!--"-->&quot;type a character to continue==<!-->&gt; <!--"-->&quot;);
+  ReadChar (stdIn, ch);
+
+<B>END</B> FinallyDemo.</PRE>
+<P>HALT interacts with finalization in the following ways:</P>
+<P>1. HALT is a termination event, and like a simple RETURN in a program module will initiate the finalization of the modules whose initialization has begun.<BR>
+2. If HALT is called from a dynamic module (i.e. a module inside a procedure) any FINALLY clause in that dynamic module is not executed.<BR>
+3. If HALT is called in a FINALLY clause, that particular clause is immediately concluded (transfer to a point just beyond its last statement) and the finalization of the program suite carries on with the next scheduled FINALLY clause in its proper order.</P>
+<P>Because HALT and RETURN are not the same kind of termination event, it <I>may</I> be necessary to distinguish between them in code included in a FINALLY clause.  This is done as in the following sketch outline:</P>
+<PRE>
+<B>MODULE</B> DistinguishHalt;
+(* By R. Sutcliffe
+    To demonstrate HALT/FINALLY interaction
+    revised 1994 04 22 *)
+
+<B>FROM</B> <B>TERMINATION</B> <B>IMPORT</B>
+  HasHalted;
+<B>IMPORT</B> STextIO;
+
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+<B>BEGIN</B>
+   STextIO.WriteString (<!--"-->&quot;Halt? Y/N =<!-->&gt; <!--"-->&quot;);
+   STextIO.ReadChar (ch);
+   STextIO.SkipLine;
+   <B>IF</B> <B>CAP</B> (ch) = <!--"-->&quot;Y<!--"-->&quot;
+     <B>THEN</B>
+       <B>HALT</B>
+     <B>END</B>;
+     
+<B>FINALLY</B>
+  <B>IF</B> <B>NOT</B> HasHalted () 
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;Not <!--"-->&quot;);
+    <B>END</B>;
+    STextIO.WriteString (<!--"-->&quot;Halted<!--"-->&quot;);
+    STextIO.WriteLn;
+    STextIO.WriteString (<!--"-->&quot;Press a return to continue<!--"-->&quot;);
+    STextIO.SkipLine;
+
+<B>END</B> DistinguishHalt.</PRE>
+<P>The module TERMINATION is a required system module in the ISO libraries and provides services to distinguish termination events.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

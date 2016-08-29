@@ -1,0 +1,175 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT167 Spr2009 Midterm, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 60
+
+<ol class="main">
+
+<li> What do <b>public</b>, <b>private</b>, and <b>protected</b> mean as
+C++ access modifiers? <u>[3]</u>
+<br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i><br><br><br>
+
+<li> Explain and contrast method <b>overloading</b> with method
+<b>overriding</b>. <u>[3]</u>
+<br><i><dl>
+<dt> overloading
+<dd> multiple versions of the same method (same name) but with
+different number/types of parameters.
+<dt> overriding
+<dd> a method defined in a subclass overrides a method of the same name
+in the superclass.
+</dl></i><br><br><br><br>
+
+<li> Describe and contrast eight of the C++ <b>primitive types</b>. <u>[5]</u>
+<br> <i> <dl>
+<dt> <tt>bool</tt> <dd> boolean type, just true and false
+<dt> <tt>char</tt> <dd> a (ASCII) character, generally 1 byte
+<dt> <tt>short</tt> <dd> an integer with shorter range (usually 2 bytes)
+<dt> <tt>int</tt> <dd> an integer (usually 4 bytes)
+<dt> <tt>long int</tt> <dd> an integer with greater range (usually 8 bytes)
+<dt> <tt>float</tt> <dd> a real value (usually 4 bytes)
+<dt> <tt>double</tt> <dd> a real value with greater precision (usually 8 bytes)
+<dt> <tt>long double</tt> <dd> a real value with even greater precision (usually 16 bytes)
+</dl>
+There are also signed and unsigned versions of these.
+</i><br><br><br><br><br><br>
+
+<li> What is an <b>abstract superclass</b>? What would you use one for?
+Give an example of such a situation (no code required, just describe the
+situation).  How do you declare a class to be abstract? <u>[4]</u>
+<br><i>An abstract class is not meant to be instantiated directly.
+  An abstract superclass can be used as a way of organizing its subclasses
+  under one category.  For example, Dog, Cat, and Cow all are within the
+  Mammal category.  It makes sense to have specific instances of Dog, Cat,
+  and Cow, but not of Mammal.  Mammal is the abstract superclass.
+  In C++, a class is abstract if it has at least one pure virtual function:
+  this is a virtual method that has no body, only <tt>= 0</tt>.  Concrete
+  subclasses must override all pure virtual functions and provide bodies
+  to them.
+</i><br><br><br><br><br><br><br>
+
+<li> What is the role of the C <b>preprocessor</b>?  (What do we most
+commonly use it for?)  Describe at least three preprocessor directives we
+know about. <u>[4]</u>
+<br><i>
+  The preprocessor does text manipulation on source files; its output gets
+  sent to the compiler.  The preprocessor can read in contents of other files
+  into the current file (#include), or define text macros to be used in the
+  code (#define, handy for constants), or optionally skip over lines in the
+  source file (#if and #ifdef) (conditional compilation).
+</i><br><br><br><br><br><br>
+
+<li> Tell me everything you know about <b>namespaces</b> in C++. <u>[4]</u>
+<br><i>
+  Namespaces are containers for names like classes, variables, and functions.
+  You can create a namespace just like you would a class: 
+  <tt>namespace MyNameSpace { }</tt> creates a namespace called MyNameSpace,
+  and everything declared inside the block belongs to that namespace.  Items
+  inside a namespace may be accessed by prepending the namespace and '::'.
+  Items may also be brought into the current scope by <tt>using</tt> the
+  item.  The whole namespace may be brought into the current scope by
+  <tt>using namespace</tt>.
+  Every file has a default, anonymous/unnamed namespace.  Items declared in
+  this namespace are accessible only within that file.
+</i><br><br><br><br><br><br><br>
+
+<li class="break"> Sketch a UML class diagram and code simple C++ classes
+that formalize the following set of statements: <u>[8]</u>
+<ul>
+<li> A <tt>Student</tt> is a kind of <tt>Person</tt>.
+<li> An <tt>Employee</tt> is a kind of <tt>Person</tt>.
+<li> Every <tt>Person</tt> has a <tt>birthDate</tt>.
+<li> A <tt>birthDate</tt> is a <tt>Date</tt>.
+<li> Every <tt>Date</tt> has a <tt>Year</tt>, <tt>Month</tt>, and <tt>Day</tt>.
+<li> Every <tt>Person</tt> has a <tt>name</tt>.
+<li> Every <tt>Student</tt> has a <tt>GPA</tt>.
+</ul>
+<br><br><i><pre>
+class Date { int year, month, day; }
+class Person { Date birthDate; string name; }
+class Student : public Person { float GPA; }
+class Employee : public Person { }
+</pre></i><br><br><br><br><br><br><br>
+
+<h2>On a separate sheet of paper:</h2>
+
+<li> Define your own exception class and write a short but complete C++
+program that throws and catches an instance of that class.<u>[5]</u>
+<br><i><pre>
+#include <iostream>
+using namespace std;
+
+class Badness {
+  private:
+    int level;
+  public:
+    Badness(int l=0) : level(l) {};
+    int howbad() { return level; }
+};
+
+int main() {
+  try {
+    throw Badness(100);
+  } catch( Badness& b ) {
+    cout &lt;&lt; "caught Badness of level " &lt;&lt; b.howbad() &lt;&lt; endl;
+  }
+}
+</pre></i>
+
+<li> A complex number consists of a <tt>real</tt> part and an <tt>imag</tt>
+(imaginary) part (both floats).  Write a C++ class <tt>Complex</tt> for
+complex numbers, including a constructor that takes 0, 1, or 2 arguments
+(use a constructor initializer list), and overloading the operators + and -.
+<u>[6]</u>
+<br><i><a href="complex.cpp">
+    (See file complex.cpp)
+</a></i><br>
+
+</i><br>
+
+<li> Consider a student enrolment database like what we have at TWU: it holds
+students' personal information, transcripts, current enrolment, advising 
+notes, etc.  Design a <b>use-case</b> chart for such a system.  (You have a
+fair amount of freedom in how to design the system.) <u>[6]</u>
+<br><i>
+</i><br>
+
+<li> Write a complete C++ program that <b>reads</b> in lines of text from the
+file '<tt>input.txt</tt>' and outputs the text <b>both</b> on the console and
+to the file '<tt>output.txt</tt>'.  There is no user interactivity in this 
+program.  (This is the basis of the Unix utility, <tt>tee</tt>.) <u>[6]</u>
+<br><i><a href="tee.cpp">
+    (See file tee.cpp)
+</a></i><br>
+
+<li> Write a C++ function that creates and returns a C++ <b>string</b> 
+consisting of the 127 ASCII characters in order (skip the null character).
+Pay attention to efficiency -- don't force the C++ string library to keep 
+reallocating space for the string.<u>[6]</u>
+<br><i><a href="ascii.cpp">
+    (See file ascii.cpp)
+</a></i><br>
+
+</ol>
+
+</body></html>
+
+

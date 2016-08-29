@@ -1,0 +1,377 @@
+<HTML><HEAD><TITLE>19.7 Inheritance</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Inheritance">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.7 Inheritance</b></H2>
+
+<H3><b><A NAME="19.7.1"></A>19.7.1 Why Inherit</b></H3>
+<P>All that has been said thus far is merely syntactical sugar for things that could have been done other ways in the base syntax, without involving OOM-2 at all. Indeed, for many data types, static modules implement ADTs quite nicely, and for most of the rest, Generic templates pick up the remaining slack. However, the real power of using object methods lies in the ability to create objects that are based on pre-existing ones, with perhaps a few changes. This allows the code already written for use in one object class to be reused in another object class, or, perhaps more accurately, it allows the functionality desired for some new object to be handed off to an existing object. With either way of looking at it, the wheel does not have to be re-invented quite so often.</P>
+<P><i>The ability to take an existing object and make it the basis of a new one is called <u>inheritance</u>.</i></P>
+<P><i>A class that inherits from another one is called a derived class or a <u>child class</u> or a <u>subclass</u>.</i></P>
+<P><i>A class that has one or more children is called a <u>parent class</u> or an <u>ancestor class</u> or a <u>superclass.</u></i></P>
+
+<P>Object oriented software also differs from generic approaches in that much of what is done with objects is dynamic, whereas generic templates are simply means of generating new and specialized static modules. There are various strategies for inheritance among the common object oriented languages. In some, a class can inherit from several other classes, incorporating all their features into itself (multiple inheritance). In others, a class is permitted to inherit only from one other class<!--‹-->--though it in turn could inherit from another one<!--‹-->--(single inheritance.)</P>
+
+<H3><b><A NAME="19.7.2"></A>19.7.2 Inheritance in OOM-2</b></H3>
+
+<P>The basic model for OOM-2 is that of single inheritance. One class can say that it is inheriting another class, and this acts in a sense as an import does into a module scope. All the components of a parent class are available inside the scope of the subclass, not just the ones that have been revealed for clients. This allows the subclass declaration to add additional attributes or methods of its own while having full access to those of the original class. It can reveal new components that it defines, but it cannot reveal. An exception is that hidden components (found only in the implementation of a separate library module, not in its definition) are not accessible to subclasses. Apart from this, each class controls the visibility of its own components.</P>
+<P>However, a chain of inheritances may be built in OOM-2, wherein a class inherits from a second class which in turn inherits from an third class, and so on, with each new class making changes to the previous component structure.</P>
+<P><b>WARNING:</b> In OOM-2 a traced class can inherit only from a traced class, and an untraced class can inherit only from an untraced class.</P>
+<P>The reader should be able to see the logic of the above restriction. It would make no sense to derive a class the objects of which the garbage collector is supposed to trace from a class whose objects it cannot trace, and vice-versa.</P>
+<P>Starting with the class <i>Date</i> defined in the previous section, we can create a new subclass with additional properties in the following manner, but this time in a program rather than in a library:</P>
+
+<PRE><b>MODULE</b> DemoDates1;
+(* simple demonstration of inheritance in OOM-2
+    by R. Sutcliffe; revised: 1998 09 22 *)
+<b>IMPORT</b> Dates;
+<b>FROM</b> SWholeIO <b>IMPORT</b>
+  WriteCard;
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteString, WriteChar;
+
+<b>TRACED</b> <b>CLASS</b> Dates1;
+  <b>INHERIT</b> Dates.Date;
+  <b>REVEAL</b> WriteUSDate;
+
+  <b>PROCEDURE</b> WriteUSDate;
+  <b>VAR</b>
+    monthStr : <b>ARRAY</b> [0..8] <b>OF</b> <b>CHAR</b>;
+  <b>BEGIN</b>
+    <b>IF</b> month = 1
+      <b>THEN</b>
+        monthStr := "January"
+      <b>ELSIF</b> month = 2 <b>THEN</b>
+        monthStr := "February"
+      <b>ELSIF</b> month = 3 <b>THEN</b>
+        monthStr := "March"
+      <b>ELSIF</b> month = 4 <b>THEN</b>
+        monthStr := "April"
+      <b>ELSIF</b> month = 5 <b>THEN</b>
+        monthStr := "May"
+      <b>ELSIF</b> month = 6 <b>THEN</b>
+        monthStr := "June"
+      <b>ELSIF</b> month = 7 <b>THEN</b>
+        monthStr := "July"
+      <b>ELSIF</b> month = 8 <b>THEN</b>
+        monthStr := "August"
+      <b>ELSIF</b> month = 9 <b>THEN</b>
+        monthStr := "September"
+      <b>ELSIF</b> month = 10 <b>THEN</b>
+        monthStr := "October"
+      <b>ELSIF</b> month = 11 <b>THEN</b>
+        monthStr := "November"
+      <b>ELSIF</b> month = 12 <b>THEN</b>
+        monthStr := "December"
+      <b>ELSE</b>
+        monthStr := "xxxxxxx"
+      <b>END</b>;
+    WriteString (monthStr);
+    WriteCard (day, 0);
+    WriteChar (",");
+    WriteCard (year, 0);
+  <b>END</b> WriteUSDate;
+<b>END</b> Dates1;
+
+<b>VAR</b>
+  aDate : Dates1;
+<b>BEGIN</b>
+  <b>CREATE</b> (aDate);
+  aDate.SetDate (1998, 11, 5);
+  aDate.WriteUSDate;
+<b>END</b> DemoDates1.</PRE>
+
+<P>This program has the output:</P>
+<PRE>November 5, 1998</PRE>
+<P>If the classes have class bodies (constructors), the order that these are run is from root to leaf, that is from the eldest parent through its child, and so on down to the last subclass.</P>
+<P>If  one is dealing with a chain of untraced classes, and these each have a destructor or FINALLY clause (recall that this is impossible with traced classes) then these are executed in reverse order, that is from child class to parent to grandparent and so on up to the top superclass. Care must be taken with the use of FINALLY clauses in this respect; this order might well be different from the order of finalization of the modules in which these classes are defined, and if the module finalizations could interfere with the object finalizations. Such complications are a good reason to use traced classes; then the programmer does not have to worry about object finalization.</P>
+
+<H3><b><A NAME="19.7.3"></A>19.7.3 Assignment Compatibility between Classes and Subclasses</b></H3>
+
+<P>In OOM-2, a subclass <i>BClass</i> of a superclass <i>AClass</i> is also a subtype of <i>AClass</i>. This means that if one has, for instance:</P>
+
+<PRE>VAR
+   superObject : AClass;
+   subObject : BClass;</PRE>
+   <P>then <i>subObject</i> is assignment compatible with <i>superObject</i>, but not vice versa, so that</P>
+   <PRE>subObject := superObject;</PRE>
+   <P>is incorrect, but</P>
+   <PRE>superObject := subObject;</PRE>
+   <P>is correct.</P>
+<P>What happens here (in the latter case) is that the variable <i>superObject</i>, which has been statically declared to be of (class) type <i>AClass</i>, has been dynamically been assigned an object of (class) type <i>BClass</i>. That is to say, the dynamic type of an object referenced by an identifier may not be the same as its static declaration, it may dynamically become that of a subtype. </P>
+<P>It may at time be necessary to check on the dynamic type status of a class variable, and this can be done with the function ISMEMBER, which returns a boolean according to the following rule:</P>
+
+<PRE>ISMEMBER (param1, param2);</PRE>
+
+<P>allows either parameter to be a class name or an object reference. ISMEMBER returns TRUE if objects of the class type of the first parameter are assignment compatible (subclass or same class) to objects of the type of the second parameter and FALSE otherwise. That is, ISMEMBER can be invoked as</P>
+
+<PRE>ISMEMBER (objectRef, Classname2);</PRE>
+
+<P>and returns TRUE if <i>objectRef</i> is a member of (a subclass of) <i>Classname2</i>. If the first parameter is a class and the second an object reference, ISMEMBER returns TRUE if objects of the class are assignment compatible with the given object. Moreover,</P>
+
+<PRE>ISMEMBER (ClassName1, Classname2);</PRE>
+
+<P>returns true if objects of <i>ClassName1</i> are assignment compatible (subclass or same class) to objects of the <i>ClassName2</i> Class, and false otherwise (that is, if the class of the first parameter is equal to or is a subclass of the second parameter).</P>
+<P>As another fine point on static vs dynamic semantics, the note at the end of <A HREF="#19.7.3">section 19.7.3</A> is to be taken in the sense that the constructor chain is evaluated in static order, but the destructor chain (where present) is evaluated dynamically.</P>
+
+<H3><b><A NAME="19.7.4"></A>19.7.4 Overriding Methods in Subclasses</b></H3>
+
+<P>A class can do more than just decide to inherit the components of a superclass. It can also replace some of the method components (though not the attribute ones) with different ones, provided they have the same interface. That is, a method of the superclass can be overridden in a subclass by a new method provided it has the same definition (name and parameters) as the original. The new method applies to objects of the subclass, but not to those of the superclass. It has the same syntax as the original method but different semantics. All this is accomplished merely by placing the reserved word OVERRIDE in front of the new method.</P>
+<P>The subclass can have attribute components added to the original list, but none of the attribute components can be overridden, because the only point to doing that would be to alter their type, and then the interface would have changed, and the new class would not properly be a child class at all.</P>
+<P>Here is a simple example to illustrate this syntax and semantics. The first class shown implements adding accumulators. These are commonly used in programs to keep running sums and are initialized to zero. The class exports <i>Clear</i> to reset the accumulator, <i>Accumulate</i> to add to the register variable (which is kept private) and <i>Display</i> to print the result. We could just abandon one accumulator after using it a while and create a new one, not bothering with <i>Clear,</i> but this seems unnecessarily messy. </P>
+<P>The reader should observe that it is considered to be good taste to have an object know how to display itself (if this is needed) rather than allowing outside information to be leaked so that it can be displayed external to the object. That is, one keeps data hidden and provides procedures to manipulate it where possible.</P>
+<P>The second class has the same interface, but accumulates a running product instead. It can use the same <i>Display</i>, and reveals the same components, but overrides both <i>Clear</i> and <i>Accumulate</i> for different semantics, because a multiplication register has to be initialized to zero, and of course, has to multiply each new item rather than add it.</P>
+
+<PRE><b>MODULE</b> OverrideDemo;
+(* demonstration of inheritance and overriding methods
+  R. Sutcliffe 1998 09 21 *)
+  
+<b>FROM</b> SLongIO <b>IMPORT</b>
+  WriteReal;
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteLn;
+
+(* first class implements an adding accumulator *)
+<b>TRACED</b> <b>CLASS</b> Accumulator;
+  <b>REVEAL</b> Clear, Accumulate, Display;
+  <b>VAR</b>
+    register : <b>LONGREAL</b>;
+  
+  <b>PROCEDURE</b> Clear;
+  <b>BEGIN</b>
+    register := 0.0;
+  <b>END</b> Clear;
+  
+  <b>PROCEDURE</b> Accumulate (new : <b>LONGREAL</b>);
+  <b>BEGIN</b>
+    register := register + new;
+  <b>END</b> Accumulate;
+  
+  <b>PROCEDURE</b> Display ;
+  <b>BEGIN</b>
+    WriteReal (register, 15);
+  <b>END</b> Display;
+
+<b>BEGIN</b> (* class body *)
+  Clear;
+<b>END</b> Accumulator;
+    
+<b>VAR</b>
+  acc : Accumulator;
+
+(* second class does the same thing but with a multiplying version *)
+<b>TRACED</b> <b>CLASS</b> AccumulatorM;
+  <b>INHERIT</b> Accumulator;  (* same interface *)  
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Clear;
+  <b>BEGIN</b>
+    register := 1.0; (* if cleared to zero, multiplications wouldn't do much. *)
+  <b>END</b> Clear;
+    
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Accumulate (new : <b>LONGREAL</b>);
+  <b>BEGIN</b>
+    register := register * new;
+  <b>END</b> Accumulate;
+      
+<b>BEGIN</b>
+  Clear; (* uses this class' clear *)
+<b>END</b> AccumulatorM;
+    
+<b>VAR</b>
+  accM : AccumulatorM;
+        
+<b>BEGIN</b>
+  <b>CREATE</b> (acc); (* set up an adder *)
+  acc.Accumulate (9.8); (* and exercise it *)
+  acc.Accumulate (6.7);
+  acc.Accumulate (11.35);
+  acc.Display;
+  WriteLn;
+  
+  <b>CREATE</b> (accM); (* now do a multiplier *)
+  accM.Accumulate (9.8);
+  accM.Accumulate (6.7);
+  accM.Accumulate (11.35);
+  accM.Display; (* uses the original; not overriden *)
+  WriteLn;
+
+<b>END</b> OverrideDemo.</PRE>
+    
+<P>The output from this module is:</P>
+<PRE>27.850000000000
+745.24100000000</PRE>
+<P>Observe that even within the subclass, a reference to <i>Clear</i> is to the overridden method, and not to the one in the superclass. In this case, there were no additions needed to the list of things to be made public, so the subclass did not need a <i>REVEAL</i> clause at all.</P>
+<P>Outside the class, client software references are to the dynamic class of the object. Thus, id one were to write</P>
+
+<PRE>accM := acc;</PRE>
+<P>and thereby change the dynamic class of <i>acc,</i> it would become an adder rather than a multiplier, because the methods would be chosen according to the dynamic class.</P>
+<P>It is important to realize that overriding a method does not create a new component or do anything with scope. Rather, it replaces the implementation of the method with a new one and retains the interface as it was. Thus, the overriding method must have the same procedure type as the original one. If it is a regular procedure, the parameters must be the same in number, position, and type; if a function procedure, the return type must also be identical. This also means that an inherited identifier is in the scope of the subclass; it cannot simply be re-used for something else. Overriding is changing the implementation; it is not replacing the name with a new one that happens to be spelled the same way.</P>
+<P>In the event that the class inherited from had a definition and declaration in a separate library module, and one plans to override methods of a superclass, this must be signalled in the definition with the word <i>OVERRIDE</i> and then implemented accordingly. Moreover, where such a class definition has been made, inheritance must be specified in the definition only and not in the declaration. The <i>INHERIT</i> clause was allowed in the previous example within a declaration only because there was no definition already in existence.</P>
+<P>So, for instance, if one wanted to define and declare a new separate <i>Date</i> class, this time overriding the method for date display rather than adding a new one as previously, the modules would be written as follows:</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> Dates2;
+(* Simple class override definition
+by R. Sutcliffe 1998 09 21 *)<b>
+FROM </b>Dates<b> IMPORT
+  </b>Date;<b>
+
+TRACED</b> <b>CLASS</b> Date2;
+  <b>INHERIT </b>Date;
+  <b>OVERRIDE</b> <b>PROCEDURE</b> WriteDate;
+<b>END</b> Date2;
+
+ <b>END</b> Dates2.</PRE>
+<P>Observe the import of the superclass and its inheritance here, followed by the flagging of an override for the one method. Everything else has been left as it was. In the implementation below, no inheritance clause is needed (the one in the definition suffices) and all that remains is to implement the overridden method.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> Dates2;
+(* Simple class override implementation 
+by R. Sutcliffe 1998 09 21 *)
+
+<b>FROM</b> SWholeIO <b>IMPORT</b>
+  WriteCard;
+  
+<b>TRACED</b> <b>CLASS</b> Date2;   
+  <b>OVERRIDE</b> <b>PROCEDURE</b> WriteDate;
+  <b>BEGIN</b>
+    WriteCard (day, 0);
+    WriteCard (month, 0);
+    WriteCard (year, 0);
+  <b>END</b> WriteDate;   
+<b>END</b> Date2;
+
+<b>END</b> Dates2.</PRE>
+
+<P>Of course, once having flagged a method for overriding in the definition, it must actually be done in the implementation or the compiler will generate an error.</P>
+
+<H3><b><A NAME="19.7.5"></A>19.7.5 Class and Object References</b></H3>
+
+<P>There are several situations worth noting where code has to use object or class references in somewhat unusual ways.</P>
+<P><CENTER><b>Accessing an Overridden Method</b></CENTER></P>
+<P>Sometimes in the declaration of a class it may be necessary to refer to an overridden method from a superclass. Because it has been overridden, the original name is not available for use in the subclass. If this is the case, it can be referred to by the syntax</P>
+
+<PRE>superclassName.originalMethod</PRE>
+
+<P>even if the superclass referenced is several levels up the inheritance chain. By this means, all the methods up the chain are available for use in a subclass, if necessary. Such methods are not directly available outside the subclass, however, unless it defines and reveals a new method that simply calls the old one under a new name. </P>
+
+<PRE><b>TRACED</b> <b>CLASS</b> sub;
+  <b>INHERIT</b> oldClass;
+   <b>REVEAL</b> newMethod;
+   <b>OVERRIDE</b> <b>PROCEDURE</b> oldMethod;
+   ....
+   <b>PROCEDURE</b> newMethod;
+   <b>BEGIN</b>
+     oldClass.oldMethod;
+   <b>END</b>;
+ <b>END</b> sub;</PRE>
+
+<P>However, in such a case, it seems to make more sense to keep the old method under its original name and define a new one with a different name. This type of reference is more likely to be used if the old method is incorporated into and made a part of the new one, or used in the initialization body.</P>
+
+<P><CENTER><b>Using a Class Name as a Qualifier</b></CENTER></P>
+<P>As indicated in <A HREF="Ch19.3.html#19.3.3">section 19.3.3</A>, one cannot refer to a method of a class by using its class name as qualifying identifier. After all, without the name of an object to qualify them, such a method has nothing to act upon. One also may not refer to a variable declared in a class in such a manner. However, constants and types declared in a class can be referred to outside the class in this manner, providing they have been revealed. Indeed, this is the only way to refer outside the class to a type declared in a class.</P>
+
+<PRE><b>TRACED</b> <b>CLASS</b> Classy;
+  <b>REVEAL</b> myType,   (* can refer to outside as Classy.myType *)
+          myVar,    (* qualify outside only by an object name of this class *)
+          myConst,  (* OK to use outside as Classy.myConst, not in constant expression *)
+          myMethod; (* qualify outside only by an object name of this class *)
+   <b>TYPE</b>
+     myType : <b>ARRAY</b> [1..2] <b>OF</b> <b>CARDINAL</b>;
+   <b>VAR</b>
+     myVar : myType;
+   <b>CONST</b>
+     pi = 3.14159;
+   <b>PROCEDURE</b> myMethod;
+     some body
+   <b>END</b> myMethod;
+ <b>END</b> Classy;</PRE>
+
+<P><CENTER><b>SELF<!--‹-->--The Hidden Parameter</b></CENTER></P>
+<P>On occasion, it may be necessary for an object to refer to itself somewhere in its declaration. This could come about, for instance, if one of its methods took as a parameter an item whose type is that of the object. In such cases, there is always a reference available to the object using the identifier SELF, and this can in turn of course qualify any component if desired.</P>
+
+<PRE> <b>TRACED</b> <b>CLASS</b> Naval;
+   <b>VAR</b>
+     ok : <b>BOOLEAN</b>;
+   <b>PROCEDURE</b> Gaze (at : Naval);
+   some code
+   <b>END</b> Gaze;
+
+   <b>PROCEDURE</b> check (<b>VAR</b> allRight : <b>BOOLEAN</b>);
+      some code
+   <b>END</b> Gaze;
+
+ <b>BEGIN</b> (* initialization body or another method body *)
+   Gaze (<b>SELF</b>);
+   Check (<b>SELF</b>.ok)
+ <b>END</b> Naval;</PRE>
+
+<P>Inside the various methods, and the initialization body, SELF is available as a kind of hidden parameter, so that every method "knows" what object invoked it and has access to its other components.</P>
+<P>It should be obvious that SELF cannot be re-assigned; after all, to do so within itself would create a logical tangle. It is called an immutable entity, just as are any class variables marked as READONLY.</P>
+<P>Yet another time that SELF may be useful is if it become necessary to assign the object reference to some variable defined globally to the class scope.</P>
+
+<PRE><b>TRACED</b> <b>CLASS</b> SomeClass;
+  <b>PROCEDURE</b> AMethod;
+   <b>BEGIN</b>
+     <b>IF</b> condition
+       <b>THEN</b>
+         globalVar := <b>SELF</b>;
+       <b>END</b>;
+     <b>END</b> AMethod;
+ <b>END</b> SomeClass;</PRE>
+
+<P><CENTER><b>Circular Definitions and Declarations</b></CENTER></P>
+<P>Suppose that two class definitions or declarations make references to each other, in the same manner that two procedures may invoke each other. Perhaps each declares an object variable of the other class type. In this case, neither may come first if there is a strict "declare it before use" rule, so OOM-2 allows the use of FORWARD in such a context, in a manner similar to the way it is used in mutually recursive procedures.</P>
+
+<PRE><b>CLASS</b> EventHandling; <b>FORWARD</b>
+<b>CLASS</b> MyWindow;
+  <b>VAR</b>
+    event : EventHandling;
+  ...
+<b>END</b> MyWindow;
+<b>CLASS</b> EventHandling;
+  <b>VAR</b>
+    theWindow : MyWindow;
+     ...
+<b>END</b> EventHandling;</PRE>
+
+
+<H3><b><A NAME="19.7.6"></A>19.7.6 Why Single Inheritance?</b></H3>
+
+<P>Some OO languages use multiple inheritance. That is, a class is permitted to inherit from more than superclass. The reader who immediately thinks of a score of projects that such a facility would enable ought to consider the following example. Suppose one defines four classes <i>Parent,</i> <i>Daughter,</i> <i>Son,</i> and <i>Grandkid.</i> Class <i>Parent</i> defines a component <i>Pathological.</i> <i>Daughter</i> and <i>Son</i> both override <i>Pathological</i> and define their own version. <i>Grandkid</i> inherits from both <i>Daughter</i> and <i>Son,</i> and does not override <i>Pathological.</i> In this admittedly incestuous tangle, which version of <i>Pathological</i> is a component of <i>Grandkid?</i></P>
+
+<CENTER><IMG SRC="Figure/figure19.1.GIF" BORDER="1"></CENTER><!---->
+<P>Because this problem cannot be resolved without introducing some special magical rule (such as: all versions of a contested method have to be qualified by a class name), many languages, including OOM-2 decline to get involved in such problems by allowing only single inheritance in the first place.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

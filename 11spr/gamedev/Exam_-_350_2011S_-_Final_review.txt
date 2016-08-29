@@ -1,0 +1,57 @@
+﻿COMM 350/CMPT 420: Game Development I
+Spring 2011
+
+Final Exam Review sheet
+
+Topics covered
+- Games and Faith
+- Game design
+- Game writing
+- Overview of the Game Industry
+- QA, Testing and Game Balancing
+- Intellectual Property (2 lectures: Kevin & Alma)
+- Business models in the game industry
+- Project Management (2 lectures: Sean & Alma)
+- Guest speakers: Crystal (art), Kelly (business), Jonathan (programming)
+
+(tentative) Test composition
+- somewhere between a third and a half of the questions will come from the readings (including material we have read but not discussed in class!), the rest coming from what we have talked about in class.  Not every reading will necessarily be touched on, but we’ll try to cover as much as we can.
+- the exam will be a mix of question types.  Probably about 1/3 of the points will come from quick-answer questions (multiple choice, matching, maybe fill in the blank), about 1/3 of the points will come from short answer questions, and about 1/3 of the points will come from longer form questions.
+- some of the questions will be focused on recalling information, but as much as possible, the questions will be application and evaluation questions
+- the exam is supposed to take about 45-60 minutes for average-speed test-takers—in other words, it’s a little lighter than the typical final (reflecting its reduced value to your grade).
+
+Study strategies
+- memorization is less important than understanding and being able to explain things.  However, it’s always best to be able to remember as much as possible.
+- Get some rest and eat well.  A rested body is worth several hours of frantic and unfocused studying.
+
+A (non-exclusive) list of ideas and concepts that may (or may not) be on the exam (not in order of importance)
+- can you make a Christian game?  Do Christians need to make explicitly Christian video games?
+- definition of game design
+- the role of game designers
+- different kinds of game play and appeal
+- different tasks of writers in video games
+- types of narrative structures in video games
+- unique writing issues/conditions for the video game medium
+- history of game industry, the rise of the razor-blad model
+- current development model in AAA game industry: developer-publisher roles and relationships
+- the difference between corporate and indie game development
+- what is game balancing?
+- history, definition, types of intellectual property
+- fair dealing/use, public domain, common misunderstandings about IP
+- arguments supporting and critiquing IP
+- be able to explain the different revenue models discussed (standard price copies, low-price copies, ad-supported, subscription, freemium, ancillary-supported), plus non-profit options
+- what has led to indie game production being feasible?
+- Tasks for pre-production
+- Risk analysis
+- The "Project Triangle" (project variables): Scope, Cost, Time
+- Defining requirements
+- Scheduling: Gantt chart, critical path
+- Tasks for production
+- Tasks for finalling and post-production
+- Project Management methods and comparison
+- Production roles
+- CSAs vs. postmortems
+- How to deal with being behind schedule
+- How to run a meeting
+- Biblical principles on teamwork
+- Biblical principles on managing people

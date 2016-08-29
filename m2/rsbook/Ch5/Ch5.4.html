@@ -1,0 +1,467 @@
+<HTML>
+<HEAD>
+<TITLE>5.4 The FOR Statement</TITLE>
+<meta NAME="keywords" CONTENT="control, structure, loop, loops, for-loop, for, iterative, iteration, counter, start, stop, abstraction, abstract, reserved, word, words, for, to, loop, control, variable, logic, overflow, range, implementation, integer, integers, implement, implementation, implementations, by, increment, decrement, start, constant, expression, threaten, threat, threatened, code, compile, compiler, while, while-loop, undefined, syntax, syntactical, syntactically, example, examples">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.4 The FOR Statement</B></H2>
+<P>A number of the examples thus far in the text have employed counting loops of the following general construction:</P>
+<PRE>
+  count := start;
+  <B>WHILE</B> count <!--<-->&lt;= stop
+    <B>DO</B>
+      statement sequence;
+      <B>INC</B> (count);
+    <B>END</B>;</PRE>
+
+<P>Such loops are likely to be common when dealing with indexed data, and in particular for arrays.  They may be used for counting through the indices of an array, for counting the number of times to perform a computation, or both.  So common are such tasks that a special name is given to them:</P>
+<BLOCKQUOTE><I><A NAME="Iteration">Any</A> task that is repeated according to a numbered pattern is said to be <U>iterative</U>.  The act of such counted repetition, whether of numbered items in a list such as an array, or of steps in a program, such as a loop, is called <U>iteration</U>.</I></BLOCKQUOTE>
+<P>In common with most computing notations, Modula-2 has a special shorthand loop syntax for performing iterations.  This is called the FOR loop, and can be described with the following skeleton<!--‹-->--a direct replacement for the code in the above WHILE loop:</P>
+<PRE>
+  <B>FOR</B> count := start <B>TO</B> stop
+    <B>DO</B>
+      statement sequence;
+    <B>END</B>;</PRE>
+
+<P>The initialization of the loop counter variable to its starting value, and the specification of the stopping point are both handled in the first line of the loop.  There is no need for the programmer to write a statement for incrementing the loop counter, as this action is included in the FOR programming abstraction itself.  When the END of the FOR loop is reached, the loop counter variable is increased by 1 and the new value checked to see if it is beyond the stopping value.  If not, the statement sequence under the control of the loop is executed again.  If the counter has gone past the stopping value, the loop exits to the next statement following it in the main program sequence.</P>
+<P><B>NOTES</B>: 1. FOR and TO are reserved words.</P>
+<P>	 2. This code is prettyprinted like the IF .. THEN statement, with the END under the DO.</P>
+<P>	 3. The loop control variable (<I>count</I> in this case) must have been previously declared as an ordinal type.  It need not have been previously assigned, however, because the FOR statement itself starts with the initial assignment for the sake of starting the loop.</P>
+<P>	 4. Variables or expressions are allowed to control the FOR, but must be of a countable (ordinal) type.  That is, CARDINAL, CHAR, and enumerated or subrange types can be used, but REAL is not allowed.</P>
+<P>Here are some examples:</P>
+<H3><B>Allowed:</B></H3>
+<PRE>
+  <B>FOR</B> count := start <B>TO</B> index + 3
+  (* start, index are expression compatible, and are assignment compatible with count *)
+    <B>DO</B>
+      Statement Sequence; (* semicolon optional here as usual*)
+    <B>END</B>;
+
+  <B>FOR</B> ch = 'A' <B>TO</B> 'Z' (* ch previously declared of type <B>CHAR</B> *)
+    <B>DO</B>
+      Write (ch);
+      WriteLn;
+    <B>END</B>;</PRE>
+
+<H3><B>Not Allowed:</B></H3>
+<PRE>
+  <B>FOR</B> realNum := 1.0 <B>TO</B> 5.0  (* uses a real *)
+  <B>FOR</B> count := 1 to 10.5  (* same problem *)</PRE>
+
+<H3><B>May cause a problem:</B></H3>
+<P>In the discussion that follows 32767 is being suggested as MAX(INTEGER).  This low limit is unlikely on current machines; however there will always be a value of which the point made here does become relevant.</P>
+<PRE>
+  <B>FOR</B> count := 32465 <B>TO</B> 70000 (* outside <B>CARDINAL</B> range on some machines *)
+  <B>FOR</B> integerTypeCounter := 1 <B>TO</B> 32767</PRE>
+
+<P>The latter will not work in some versions, because after <I>count</I> becomes 32767, it would next be 32768, and in many implementations this is past the limit of the INTEGER type.  What happens next in such cases depends on the implementation.  An overflow like this <I>ought</I> to generate an error at run time, but if it does not, 32768 may instead <!--"-->&quot;wrap around<!--"-->&quot; to MIN (INTEGER) and be interpreted as -32768 when the test for exit from the loop is made.  Since this is less than 32767, the loop would continue forever.  The same logic applies for other implementations of INTEGER with the number 32767 replaced by MAX (INTEGER).</P>
+<P>The logic of an actual program may require that the loop skip numbers, count in reverse, or both.  If using the WHILE loop, these were accommodated by using INC (count, increment), DEC (count), or DEC (count, decrement).  To do the same thing in a FOR loop, the increment or decrement is specified in the opening line along with the starting and stopping values with the reserved word BY followed by a whole number amount.  Thus,</P>
+<PRE>
+  count := start;
+  <B>WHILE</B> count <!--<-->&lt;= stop
+    <B>DO</B>
+      statement sequence;
+      <B>INC</B> (count, increment);
+    <B>END</B>;</PRE>
+
+<P>becomes</P>
+<PRE>
+  <B>FOR</B> count := start <B>TO</B> stop <B>BY</B> increment
+    <B>DO</B>
+      statement sequence;
+    <B>END</B>;</PRE>
+
+<P>and likewise,</P>
+<PRE>
+  count := start;
+  <B>WHILE</B> count <!-->&gt;= stop
+    <B>DO</B>
+      statement sequence;
+      <B>DEC</B> (count, decrement);
+    <B>END</B>;</PRE>
+
+<P>becomes</P>
+<PRE>
+  <B>FOR</B> count := start <B>TO</B> stop <B>BY</B> -decrement
+    <B>DO</B>
+      statement sequence;
+    <B>END</B>;</PRE>
+
+<P>That is, one can think of the FOR loop as being shorthand for these WHILE loops.  The loop test is at the top, so the FOR loop will not even be entered if the value of the <I>start</I> expression is already beyond that of the <I>stop</I> expression.  The looping action ceases when the control variable goes <I>past</I> the stopping value.  Thus the loop</P>
+<PRE>
+  <B>FOR</B> count := 1 <B>TO</B> 10 <B>BY</B> 2</PRE>
+
+<P>will execute when <I>count</I> has the values 1, 3, 5, 7, and 9 and will terminate when <I>count</I> has the value 11.   Likewise</P>
+<PRE>
+  <B>FOR</B> count := 10 <B>TO</B> 1 <B>BY</B> -2</PRE>
+
+<P>will execute when <I>count</I> has the values  10, 8, 6, 4, and 2, but terminates when <I>count</I> has the value 0.  On the other hand, the code</P>
+<PRE>
+  start := 6;
+  stop := 13;
+  <B>FOR</B> count := start <B>TO</B> stop <B>BY</B> -2</PRE>
+
+<P>will skip the loop altogether.</P>
+<P>It is now possible to provide a syntax diagram (figure 5.2) for this statement.</P>
+<P><CENTER><IMG SRC="Figure/Figure_5.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>Notice that if a constant BY step is included, it must be a constant expression of a whole number type.</P>
+<H3><B>Correct:</B></H3>
+<PRE>
+  <B>FOR</B> day := Friday <B>TO</B> Monday <B>BY</B> -1
+    <B>DO</B></PRE>
+
+<H3><B>Incorrect:</B></H3>
+<PRE>
+  <B>FOR</B> day := Friday <B>TO</B> Monday <B>BY</B> Thursday (* can't use non-numeric *)
+    <B>DO</B>
+
+ <B>FOR</B> day := Friday <B>TO</B> Monday <B>BY</B> integerVariable (* can't use a variable *)
+    <B>DO</B>
+
+  <B>FOR</B> count := 1 <B>TO</B> 5 <B>BY</B> 1.5 (* increment must be whole *)
+    <B>DO</B></PRE>
+
+<P>Care must be taken when using any loop with a variable of a subrange type.  Suppose one had:</P>
+<PRE>
+  <B>TYPE</B>
+    Digit = [0..9];
+  <B>VAR</B>
+   digitCount : Digit;
+
+  <B>BEGIN</B>
+    <B>FOR</B> digitCount := 0 <B>TO</B> 9
+      <B>DO</B>
+        statementSequence;
+      <B>END</B>;</PRE>
+
+<P>On the last pass through this loop, an attempt might be made to set <I>digitCount</I> to 10, a value that is out of range for this type.  Consequently, a run time error could be generated.  Some compilers <i>may</i> produce correct code (that would not fail) but situations like this may have to be avoided.</P>
+<H3><B><A NAME="5.4.1">5.4.1</A> The FOR Loop and the WHILE Loop</B></H3>
+<P>Like the WHILE loop, the FOR loop has a top-of-loop test.  As has been observed above, any FOR loop is equivalent to (and can therefore be replaced by) an equivalent WHILE construction.  However, the FOR loop can only count up or down in constant increments, whereas the WHILE construction places no limitations on re-assigning the loop counter variable.  Thus,</P>
+<PRE>
+  count := 100;
+  <B>WHILE</B> count <!-->&gt; 0
+    <B>DO</B>
+      statement sequence
+      count := count <B>DIV</B> 2
+    <B>END</B>;</PRE>
+
+<P>executes for count holding values of 100, 50, 25, 12, 6, 3, and 1.  It concludes when count gets the value zero.  Because the loop depends on the values of an ordinal variable, it is a counting loop, in the most general sense, but because the sequence of values it takes are not in an arithmetic sequence with a common spacing, this loop is not, in the sense the term is used in this text, an iteration.  (It cannot be replaced by a FOR loop.)</P>
+<P>One can also use this technique test for some condition within a loop, and if the condition exists, set the WHILE loop control variable to a value beyond the stopping value and force an exit from the loop before the count would otherwise have reached the stopping value.</P>
+<PRE>
+  count := start;
+  <B>WHILE</B> count <!-->&gt; stop
+    <B>DO</B>
+      statement sequence1;
+      <B>IF</B> certainCondition
+        <B>THEN</B>
+          count := stop - 1
+        <B>END</B>;
+     <B>INC</B> (count);
+    <B>END</B>;</PRE>
+
+<P>When the test for the stopping condition is made at the top of the loop, no distinction is made between the two ways in which the value of <I>count</I> might have reached <I>stop</I> and be indicating that it is time to exit the loop code.</P>
+<P>However, this kind of chicanery is <i>not</i> permitted with a FOR loop.  Indeed, reassigning the loop control variable in the code under its control  is an error.  (It is also quite confusing, because the first line of the FOR statement ought to give reliable information about the number of times the loop will execute.)  The Modula-2 rule is:</P>
+<BLOCKQUOTE><I>The loop control variable of a FOR loop may not be threatened by code within the loop.</I></BLOCKQUOTE>
+<P>Thus, the compiler ought to flag as an error any code such as:</P>
+<PRE>
+  <B>FOR</B> count := 100 <B>TO</B> 0 <B>BY</B> -2 (* error *)
+    <B>DO</B>
+      statement sequence
+      count := count <B>DIV</B> 2
+    <B>END</B>;</PRE>
+
+<P>or</P>
+<PRE>
+  <B>FOR</B> count := 1 <B>TO</B> 10 
+    <B>DO</B>
+      count := 2 * count + 1;    (* do not do this either *)
+      (* more statements here *)
+    <B>END</B>;</PRE>
+
+<P>The variable can be used, even though it cannot be assigned within the loop, as in the following simple example:</P>
+<PRE>
+<B>MODULE</B> AlphabetWriter; (* revised 1993 02 26 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar, WriteLn;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+<B>CONST</B>
+  skip = 2;
+
+<B>BEGIN</B>
+  <B>FOR</B> ch := 'A' <B>TO</B> 'Z'
+    <B>DO</B>
+      WriteChar (ch);  (* writes whole uppercase alphabet *)
+    <B>END</B>;
+  WriteLn;
+  <B>FOR</B> ch := 'z' <B>TO</B> 'a' <B>BY</B> -1
+    <B>DO</B>
+      WriteChar (ch);  (* writes lowercase letters backwards *)
+    <B>END</B>;
+  WriteLn;
+  <B>FOR</B> ch := 'A' <B>TO</B> 'Z' <B>BY</B> skip
+    <B>DO</B>
+      WriteCard (<B>ORD</B> (ch), 3);  (* writes every second ordinal *)
+    <B>END</B>;
+<B>END</B> AlphabetWriter.</PRE>
+
+<P>This program produced the following when run:</P>
+<PRE>
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+zyxwvutsrqponmlkjihgfedcba
+ 65 67 69 71 73 75 77 79 81 83 85 87 89</PRE>
+
+<P>A compiler that conforms to the ISO standard Modula-2 specification will catch and report as errors any threats to a loop control variable during compilation.  Classical standard Modula-2 had the same rule, but very few of its compilers enforced the rule.  However, there are other, more subtle, ways to <I>threaten</I> the value of the loop control variable than simple reassignment and even the experts argue about whether the standard covers all the possibilities.  Because checking for all these is rather difficult, some sub-standard compilers do not bother with the issue at all, and permit erroneous code to be written.  Programmers ought to take note, however, that if they do get away with such a trick, the meaning of the program will then depend on code that is incorrect.  The program will not compile properly under a standard conforming compiler unless changes are made.</P>
+<P>Some people claim that since a WHILE loop is a more general form of which the FOR loop can be regarded as a special case, there is no need for the latter.  As can be seen, there is something to be said for this view.  A few teachers go further, and forbid their students to use the FOR construction altogether.  This text is sympathetic to that view to a small extent, in that it has postponed the use of the FOR loop to a point at which it is hoped that the student understands the (more general) WHILE construction.</P>
+<P>However, the two kinds of loops are not interchangeable, for some WHILE loops cannot be replaced by a FOR loop.  Thus, while one could dispense with FOR loops, the two are actually different programming abstractions.  The FOR loop has been specialized for incremental counting (iterations), and ought to be used for that purpose, leaving the WHILE and REPEAT constructions for loops involving logical tests, non-incremental counting, and situations where the loop control variable is REAL.</P>
+<P>There is yet another difference between the Modula-2 FOR loop and WHILE loop, and indeed between the Modula-2 FOR loop and FOR loops in other computing notations.  It is expressed in the following rule:</P>
+<BLOCKQUOTE><I>At the conclusion of a Modula-2 FOR loop, the value of the loop control variable is undefined.</I></BLOCKQUOTE>
+<P>This does not mean that the loop control variable cannot be re-used once the loop has exited.  It simply means that it cannot be relied upon to have any particular value, and so it must be re-initialized before being used for anything else.</P>
+<H3><B>Correct:</B></H3>
+<PRE>  <B>FOR</B> count := 1 to 10
+    <B>DO</B>
+      statement sequence1;
+    <B>END</B>;  (* first for *)
+  <B>FOR</B> count := 1 <B>TO</B> 100
+    <B>DO</B>
+      statement sequence2;
+    <B>END</B>; (* second for *)
+  count := 2;
+  statement sequence 3; (* one that depends on count being 2 *)</PRE>
+
+<H3><B>Incorrect:</B></H3>
+<PRE>
+  <B>FOR</B> count := 1 to 10
+    <B>DO</B>
+      statement sequence1;
+    <B>END</B>;  (* first for *)
+  <B>IF</B> count = 11 <B>THEN</B>  (* count is actually undefined here *)
+    <B>DO</B>
+      statement sequence3;
+    <B>END</B>
+
+  <B>FOR</B> count := 1 <B>TO</B> 100
+    <B>DO</B>
+      statement sequence2;
+    <B>END</B>; (* second for *)
+  count := count + 2;  (* count is undefined here *)
+  statement sequence 3;</PRE>
+
+<P>The two statement sequences in the second group are not <I>syntactically</I> incorrect; they will compile without any error being reported by the compiler.  However, they are <I>logically</I> incorrect, in that they apparently rely on the loop control variable being set to some particular value after the loop is exited, and Modula-2 says nothing about what such a value will be, so different implementations might produce different results.  A program whose correctness depends on the way a particular compiler happens to treat such a situation is incorrect. Even this assumes that a given implementation treats this problem consistently, and that is not required either.  Very good Modula-2 compilers will even generate a message warning the programmer of such ill-advised usage.</P>
+<H3><B><A NAME="5.4.2">5.4.2</A> The FOR Loop in Use</B></H3>
+<P>To further illustrate some of these ideas, consider the following:</P>
+<H3><B>Problem:</B></H3>
+<P>A class set of marks is to be entered in the form of a student's name on one line, followed by a line of real percentages separated by spaces.  At the beginning of the data entry are two cardinals.  The first is the number of student records to be entered, and the second is the number of marks per student.  Write a program to read these records one at a time, print the student's name, grades, and average mark, followed by the class average on the composite marks.</P>
+<H3><B>Sample Input:</B></H3>
+<PRE>3
+4
+Janet
+87.5 92.8 89.0 90.0
+Fred
+45.8 81.9 78.0 88.5
+Laurie
+0.0 15.8 32.5 53.5</PRE>
+
+<H3><B>Code:</B></H3>
+<PRE><B>MODULE</B> <A NAME="ClassMarks">ClassMarks</A>;
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of the for loop *)
+(* using ISO standard Modula-2 *)
+(* last revision 1991 02 27 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString, ReadString, SkipLine, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+
+<B>TYPE</B>
+  NameString = <B>ARRAY</B> [0..10] <B>OF</B> <B>CHAR</B>;
+
+<B>VAR</B>
+  theMark, studSum, studMean, classSum, classMean : <B>REAL</B>;
+  numMarks, numStudents, markCount, classCount : <B>CARDINAL</B>;
+  name : NameString;
+  key : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  (* initialize variable for sum of marks *)
+  classSum := 0.0;
+  (* write information *)
+  WriteString (<!--"-->&quot;This program opens a set of class records<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;and computes student and class averages. <!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  (* find out how many students *)
+  WriteString (<!--"-->&quot;How many students are in the group? <!--"-->&quot;);
+  ReadCard (numStudents); 
+  SkipLine;
+  WriteLn;
+  (* find out how many marks *)
+  WriteString (<!--"-->&quot;How many marks does each have?<!--"-->&quot;);
+  ReadCard (numMarks); 
+  SkipLine;
+  WriteLn;
+  (* get class info one student record at a time *)
+  <B>FOR</B> classCount := 1 <B>TO</B> numStudents
+    <B>DO</B>
+      WriteString (<!--"-->&quot;Student Name, Please ==<!-->&gt;<!--"-->&quot;);
+      ReadString (name);
+      SkipLine;
+      WriteLn;
+      studSum := 0.0;
+      WriteString (<!--"-->&quot;Please enter the<!--"-->&quot;);
+      WriteCard (numMarks ,0);
+      WriteString (<!--"-->&quot; marks for <!--"-->&quot;);
+      WriteString (name);
+      WriteString (<!--"-->&quot;, separated by spaces on a single line<!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;==<!-->&gt; <!--"-->&quot;);
+     <B>FOR</B> markCount := 1 <B>TO</B> numMarks
+        <B>DO</B> (* all marks for each student *)
+          ReadReal (theMark); (* get a number from the list *)
+          studSum := studSum + theMark; (* reset the sum *)
+        <B>END</B>; (* for markCount *)
+      SkipLine;
+      studMean := studSum / <B>FLOAT</B> (numMarks);
+      WriteString (<!--"-->&quot;Average = <!--"-->&quot;);
+      WriteFixed (studMean, 2, 6);
+      WriteLn; (* done one student *)
+
+      classSum := classSum + studMean;
+    <B>END</B>; (* for classCount, done whole class when exit here *)
+
+  classMean := classSum / <B>FLOAT</B> (numStudents);
+  
+  WriteString (<!--"-->&quot;The average of the <!--"-->&quot;);
+  WriteCard (numMarks, 0);
+  WriteString (<!--"-->&quot; marks for the class of  <!--"-->&quot;);
+  WriteCard (numStudents, 0);
+  WriteString (<!--"-->&quot; students was <!--"-->&quot;);
+  WriteFixed (classMean, 2, 0);
+  WriteString (<!--"-->&quot; percent.<!--"-->&quot;); 
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->&gt; <!--"-->&quot;);
+  ReadChar (key);
+
+<B>END</B> ClassMarks.</PRE>
+
+<P>The program was run with the sample data above with the following results:</P>
+<PRE>
+This program opens a set of class records
+and computes student and class averages. 
+
+How many students are in the group? <B>3</B>
+
+How many marks does each have?<B>4</B>
+
+Student Name, Please ==<!-->&gt;<B>Janet</B>
+
+Please enter the 4 marks for Janet, separated by spaces on a single line
+==<!-->&gt; <B>87.5 92.8 89.0 90.0</B>
+Average =  89.82
+Student Name, Please ==<!-->&gt;<B>Fred</B>
+
+Please enter the 4 marks for Fred, separated by spaces on a single line
+==<!-->&gt; <B>45.8 81.9 78.0 88.5</B>
+Average =  73.55
+Student Name, Please ==<!-->&gt;<B>Laurie</B>
+
+Please enter the 4 marks for Laurie, separated by spaces on a single line
+==<!-->&gt; <B>0.0 15.8 32.5 53.5</B>
+Average =  25.45
+The average of the  4 marks for the class of   3 students was  62.94 percent.
+Press a key to continue ==<!-->&gt; <B>q</B></PRE>
+
+<P>The technique of indicating the number of data items that will be read by the FOR loop at the beginning of the input is a common one, but it does have drawbacks.  The data to be read by this code must have exactly the specified structure, and each item must be successfully read for this program to work correctly.  The FOR loop construction cannot itself check the value of <i>ReadResult()</i> as an additional reason to exit the loop.  Therefore, data of this kind is usually written to a file under the control of a program, and then input to this kind of a program from the file.  Such methods may also be used to help check for errors; these can await the introduction of  file handling methods in subsequent chapters.</P>
+<P>Some people like to write fancy output on the screen with boxes made of stars or carefully calculated spacing.  They use the FOR loop in statements that output the same character several times.  Assuming an eighty character wide screen, the code</P>
+<PRE>
+  <B>FOR</B> count := 1 <B>TO</B> 80
+    <B>DO</B>
+      Write (<!--"-->&quot;*<!--"-->&quot;)
+    <B>END</B>;</PRE>
+
+<P>will print a line of stars on the screen.  The loops that follow place on the screen ten lines consisting of blanks, except for the first and last characters, which are stars.</P>
+<PRE>
+  <B>FOR</B> countA := 1 <B>TO</B> 10 (* ten lines in total *)
+    <B>DO</B>
+      Write (<!--"-->&quot;*<!--"-->&quot;);   (* start with star *)
+
+      <B>FOR</B> countB := 2 <B>TO</B> 79   (* then the blanks *)
+        <B>DO</B>
+          Write (<!--"-->&quot; <!--"-->&quot;)
+        <B>END</B>;    (* for countB *)
+
+      Write (<!--"-->&quot;*<!--"-->&quot;)   (* end with star *)
+
+     <B>END</B>;    (* for countA *)</PRE>
+
+<P>Following this with another copy of the first loop would complete an 80 column by 10 row box surrounded with stars.</P>
+<PRE>
+********************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+********************************************************************************</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

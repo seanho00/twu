@@ -1,0 +1,198 @@
+<HTML>
+<HEAD>
+<TITLE>7.4 Comparing and Manipulating Strings</TITLE>
+<meta NAME="keywords" CONTENT="compare, comparison, comparing, manipulate, manipluation, manipulation, string, strings, equal, comparestring">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.4 Comparing and Manipulating Strings</B></H2><P>
+Some of the material in this section has already been touched upon in this chapter, but is here discussed in more detail.  Suppose one has a variable of a <I>String</I> type, that is, an ARRAY OF CHAR of some length, that is holding a keyboard input.  One then wishes to compare this with some other string<!--‹-->--either a literal, or one of a (possibly) different potential length (i.e. of a different formal type).  Say, for instance:</P>
+<PRE>
+  <B>TYPE</B>
+    String80  = <B>ARRAY</B> [0 .. 80] <B>OF</B> <B>CHAR</B>;
+    String10  = <B>ARRAY</B> [0 .. 10] <B>OF</B> <B>CHAR</B>;
+
+  <B>VAR</B>
+    str1, str3 : String80; 
+    str2 : String10;</PRE>
+<P>Now, such comparisons as are found in code like</P>
+<PRE>
+  <B>IF</B> str1 = str2 ... or
+  <B>IF</B> str2 = 'January' ...</PRE>
+<P>will certainly result in a <!--"-->&quot;Type conflict<!--"-->&quot; error in the first case and ought to in the second one as well (though some non-standard versions have been known to relax the rules.)</P>
+<P>Neither can the programmer expect </P>
+<PRE>
+  <B>IF</B> str1 = str3 ...</PRE>
+<P>to yield meaningful results, even if an ISO compiler would pass the code as correct, which it does not, because it does not permit arrays to be compared.  Even if it did, comparisons would need to involve the entire array, and two arrays are equal only if all their entries are equal (including ones after the string terminator in which we have no interest.)  The extraneous characters present after the string terminator in the third comparison will usually cause these entities to be unequal as arrays even though one wishes to regard them as equal strings. (This is one of the problems with not using an abstract implementation of <I>String</I>; one simply knows too much about the structure, and that knowledge could get in the way.)</P>
+<P>There is also the difficulty that if one writes something like:</P>
+<PRE>
+<B>IF</B> str1 <!--<-->&lt; str2
+  <B>THEN</B>
+    StringAlongWithUs
+  <B>ELSE</B>
+    StringUpTheUser
+  <B>END</B>;</PRE>
+<P>one will always get an error, as the comparisons <!--"-->&quot;<!--<-->&lt;<!--"-->&quot; and <!--"-->&quot;<!-->&gt;<!--"-->&quot; are not defined for arrays.  Several solutions to these difficulties are possible<!--‹-->--most involve appealing to procedures such as <I>Equal</I> and <I>CompareString</I>, which are designed for the purpose of making such comparisons.</P>
+<P>It would not be hard to write such procedures if the system lacked it.  The comparison would proceed character by character through the two strings until it found one that was different, and at that point the function value would be returned.  The key comparison could be something like:</P>
+<PRE>
+  <B>IF</B> <B>ORD</B> (str1 [count]) <!--<-->&lt; <B>ORD</B> (str2 [count]) ...</PRE>
+<P><B>NOTE</B>: In the ASCII character set that Modula-2 uses, uppercase letters have a lower ordinal value than do lower case letters.</P>
+<P>The details involved in completing this are left to the student as an exercise.</P>
+<P>Certain very specific situations arise frequently<!--‹-->--such as comparing an input string to one of several possibilities in a small list.  For these, one may make use of a specially tailored method as illustrated in the next example.</P>
+<P>Suppose the need is to compare input keyboard data, say, to the names of months, in order to determine what action to take next.  (That action might be based on the number of days in the month, for instance.)  One might take advantage of the fact that the first one to three letters are sufficient to determine the month and that in some cases, one letter is sufficient.  Suppose:</P>
+<PRE>
+  <B>TYPE</B>
+    MonthName = (Err, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec);
+  <B>VAR</B>
+    month : MonthName;
+    answer : <B>ARRAY</B> [0 .. 10] <B>OF</B> <B>CHAR</B>;</PRE>
+<P>Now, after accepting a keyboard input of the name of a month into the variable <I>answer</I>, one could determine which of the twelve enumeration constants it corresponded to in the following way:</P>
+<PRE>
+<B>PROCEDURE</B> MonthEnum (mon : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : MonthName;
+
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+  
+<B>BEGIN</B>
+  (* check for unique characters in third position *)
+  <B>IF</B> <B>CAP</B>(mon [2])="B"
+    <B>THEN</B>
+      <B>RETURN</B> Feb
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "C" <B>THEN</B>
+      <B>RETURN</B> Dec
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "G" <B>THEN</B>
+      <B>RETURN</B> Aug
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "L" <B>THEN</B>
+      <B>RETURN</B> Jul
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "P" <B>THEN</B>
+      <B>RETURN</B> Sep
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "T" <B>THEN</B>
+      <B>RETURN</B> Oct
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "V" <B>THEN</B>
+      <B>RETURN</B> Nov
+    <B>ELSIF</B> <B>CAP</B> (mon[2]) = "Y" <B>THEN</B>
+      <B>RETURN</B> May
+    <B>END</B>; (* if *)
+    
+  (* check for unique characters in second position *)
+  <B>IF</B> <B>CAP</B> (mon [1]) = "P" <B>THEN</B>
+      <B>RETURN</B> Apr
+    <B>ELSIF</B> <B>CAP</B> (mon [1]) = "U" <B>THEN</B>
+      <B>RETURN</B> Jun  (* Jul and Aug are done already *)
+    <B>END</B>;
+    
+  (* look at remaining first letters *)
+  <B>IF</B> <B>CAP</B> (mon [0]) = "J" <B>THEN</B>
+      <B>RETURN</B> Jan  (* Jun and Jul are done already *)
+    <B>ELSIF</B> <B>CAP</B> (mon[0]) = "M" <B>THEN</B>
+      <B>RETURN</B> Mar (* May is done already *)
+    <B>ELSE</B>   (* any other second letter passes to next step. *)
+      <B>RETURN</B> Err;  (* anything else is an error *)
+    <B>END</B>;
+
+<B>END</B> MonthEnum;</PRE>
+
+<P>Mind you, this method is far from perfect.  It will accept <!--"-->&quot;Hug<!--"-->&quot;, <!--"-->&quot;Jug<!--"-->&quot; and <!--"-->&quot;Rut<!--"-->&quot; as correct under the first case selection, and it will accept <!--"-->&quot;Hay<!--"-->&quot;, <!--"-->&quot;Pay<!--"-->&quot; and <!--"-->&quot;Tadpole<!--"-->&quot; under the second.  In fact, more incorrect answers will be processed and assigned a scalar of type <I>MonthName</I> than there will be correct ones.  Note the need to have an error result that can be returned in order to prevent a run time error in the event that none of the twelve possibilities are selected from the keyboard input.</P>
+<P>A more elegant approach involves the use of pattern matching and is enclosed in the following:</P>
+<PRE>
+  <B>TYPE</B>
+    MonthName = (Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec);
+
+
+<A NAME="ConvertToMonth"></A><B>PROCEDURE</B> ConvertToMonth (name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; 
+                  <B>VAR</B> gotIt : <B>BOOLEAN</B>; <B>VAR</B> result: MonthName);
+
+(* MonthName is the Type defined above. *)
+
+<B>VAR</B>
+  length,  (* Length of Name passed in *)
+  monthNameCounter,  (* Counter on MonthNames *)
+  count   (* Counter on Name passed in *) : <B>CARDINAL</B>;
+  NamesOfMonths : <B>ARRAY</B> [0 .. 35] <B>OF</B> <B>CHAR</B>;
+
+<B>BEGIN</B>
+  NamesOfMonths := <!--"-->&quot;JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC<!--"-->&quot;;
+  (* First, get length of Name passed in, or use 3, whichever is less.  Also, capitalize it at the same time for easier matching *)
+
+  length := 0;
+  <B>WHILE</B> (length <!--<-->&lt;= 2) <B>AND</B> (name [length] <!--<-->&lt;<!-->&gt; terminator)
+    <B>DO</B>
+      name [length] := <B>CAP</B> (name [length]);
+      <B>INC</B> (length)
+    <B>END</B>;   (* <!--"-->&quot;length<!--"-->&quot; now holds the actual length or 3 *)
+
+  monthNameCounter := 0;
+  (* <!--"-->&quot;monthNameCounter<!--"-->&quot; will count through <!--"-->&quot;MonthNames<!--"-->&quot; *)
+  gotIt := <B>FALSE</B>;
+
+  <B>WHILE</B> (<B>NOT</B> gotIt) <B>AND</B> (monthNameCounter <!--<-->&lt; 36)
+    (* last try is at letter #35 *)
+    <B>DO</B>
+      count := 0;   (* and <!--"-->&quot;count<!--"-->&quot; counts up to the length *)
+      <B>WHILE</B> (count <!--<-->&lt; length) <B>AND</B> (name [count] = NamesOfMonths [monthNameCounter])
+        <B>DO</B>    (* try to match <!--"-->&quot;length<!--"-->&quot; characters in a row *)
+          <B>INC</B> (count);
+          <B>INC</B> (monthNameCounter);
+        <B>END</B>;
+      <B>IF</B> count = length    (* we did it *)
+        <B>THEN</B>
+          gotIt := <B>TRUE</B>;   (* tell outside world *)
+          <B>DEC</B> (monthNameCounter); (* because start of next one *)
+          result := <B>VAL</B> (MonthName, monthNameCounter <B>DIV</B> 3);
+              (* and return month name *)
+        <B>ELSE</B>    (* no, not yet, so skip to start of next month*)
+          monthNameCounter := (monthNameCounter + (3 - count))
+        <B>END</B>    (* if count *)       
+    <B>END</B>;    (* first while *)
+
+  <B>END</B> ConvertToMonth;</PRE>
+<P><B>NOTE</B>:  The parameter <I>gotIt</I> is provided, because the value returned is not defined when <I>gotIt</I> is false.</P>
+<P>This procedure is also not perfect, and may match things incorrectly if not used with care.  For instance, if it is called with just <!--"-->&quot;J<!--"-->&quot; it will match the first string starting with that letter and return the value <I>Jan</I>.  If it is called with the string <!--"-->&quot;Ma<!--"-->&quot; it will return <I>Mar</I> and never get to the letters describing <I>May</I>.  It will not matter what is typed after the third letter if a match is possible.  Thus,  <!--"-->&quot;<I>Jan</I> is a good kid<!--"-->&quot; will produce Jan.  However, if sufficient letters are provided in the input string to allow for a unique match, it will find one.  Naturally, this same method could also be used to match somewhat longer strings.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

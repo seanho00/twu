@@ -1,0 +1,124 @@
+<HTML>
+<HEAD>
+<TITLE>10.9 Error Handling Revisited</TITLE>
+<meta NAME="keywords" CONTENT="error, handling, handle, bug, library, module, routine, routines, enumeration, enumerate, chanconst, chanconsts, export, read, enquiry, procedure, procedures, variable, parameter, parameters">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.9 Error Handling Revisited</B></H2>
+<P>Careful planning, accurate coding in a structured notation, and diligent care in debugging can greatly increase confidence in the reliability and correctness of a piece of code.  It must be understood, however, that testing is undertaken to <I>find</I> errors.  No amount of testing <I>proves</I> that software is error free.</P>
+<BLOCKQUOTE><I>There is always one more bug.
+                 <!--</I>‹<I>-->--a Corollary of Murphy's Law</I></BLOCKQUOTE>
+<P>The first thing that <I>any</I> engineer must learn is that Murphy's Law is not a joke.  The good engineer <I>knows</I> there will be failures, and takes that into account.  Specifically, it is not enough to plan what is thought to be error free software and test it thoroughly after it has been produced.  Provision must still be made to handle the errors the programmer thinks cannot occur when they do in fact occur.  No compiler can alert the programmer to logical errors; the ability to do so would mean that all possible logically correct programs were explicitly or implicitly known to the compiler, which is not possible.  Indeed, it can be shown mathematically that it is not possible to build a program that can examine all programs to determine if they will be successful in their tasks or not.</P>
+<P>Thus, one is always required to develop a variety of error handling techniques.  Of course, the best kinds of errors are those that are prevented from happening in the first place.  That is why section 6.6 emphasized precondition checking as a means of reducing errors.  However, even if the software requiring certain preconditions is itself correct, and those preconditions are carefully met by the calling code, there may still be errors of two kinds:</P>
+<P>1. errors caused by the failure of external library module routines, such as those attempting to read information from a file<BR>
+2. unforeseen errors in either the client code or the pre-conditional code</P>
+<P>The first kind is outside the programmer's direct control, and as for the second, there are always conditions the programmer has not thought of, and so there are possible errors unrelated to the checked conditions.</P>
+<H3><B><A NAME="10.9.1">10.9.1</A> Typical Library Errors</B></H3>
+<P>For such reasons, library modules often export an error type so as to allow postcondition checking once the library routine has returned control to the client program.  The simplest method is to export a boolean variable, say, done, which is set to TRUE whenever an invoked library routine succeeded, and to FALSE whenever it failed.  This is the method employed by the classical libraries <I>InOut</I> and <I>RealInOut</I>.</P>
+<P>There are two disadvantages to such a technique.  The first is that a Boolean variable cannot convey information about <I>why</I> the failure took place.  This problem can be solved by making the error type an enumeration, as in the ISO libraries, where one has:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> IOConsts;
+<B>TYPE</B>
+  ReadResults = 
+  ( notKnown,      (* no data read result is set *)
+    allRight,      (* data is as expected or as required *)
+    outOfRange,    (* data cannot be represented *)
+    wrongFormat,   (* data not in expected format *)
+    endOfLine,     (* end of line seen before expected data *)
+    endOfInput     (* end of input seen before expected data *)
+  );
+<B>END</B> IOConsts.</PRE>
+<P>Likewise, the module <I>ChanConsts</I> exports (for the import and re-export of device drivers):</P>
+<PRE>
+<B>TYPE</B>
+  OpenResults =        (* Possible results of open requests *)
+    (opened,           (* the open succeeded as requested *)
+     wrongNameFormat,  (* given name is in the wrong format for the implementation *)
+     wrongFlags,       (* given flags include a value that does not apply to the device *)
+     tooManyOpen,      (* this device cannot support any more open channels *)
+     outOfChans,       (* no more channels can be allocated *)
+     wrongPermissions, (* file or directory permissions do not allow request *)
+     noRoomOnDevice,   (* storage limits on the device prevent the open *)
+     noSuchFile,       (* a needed file does not exist *)
+     fileExists,       (* a file of the given name already exists when a new one is required *)
+     wrongFileType,    (* the file is of the wrong type to support the required operations *)
+     noTextOperations, (* text operations have been requested, but are not supported *)
+     noRawOperations,  (* raw operations have been requested, but are not supported *)
+     noMixedOperations,(* text and raw operations have been requested, but they are not supported in combination *)
+     alreadyOpen,      (* the source/destination is already open for operations not supported in combination with the requested operations *)
+     otherProblem      (* open failed for some other reason *)
+    );</PRE>
+<P>The second difficulty with using variables is that an error <I>variable</I> is not safe, for it can be changed by the client program.  Programmers are fond of reusing such variables by attaching additional conditions to the <I>read</I> in the following manner:</P>
+<PRE>
+Done := Done <B>AND</B> (num <!-->&gt;= 10);</PRE>
+<P>thus destroying the original value of a variable that does not belong to the module making the change.  To prevent this, library modules should not export error variables (and should rarely, if ever, export variables at all).  Rather, they should export only enquiry procedures that return a value of the error type as is done in the ISO I/O library module:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> IOResult;
+<B>IMPORT</B> IOConsts, IOChan;
+ 
+<B>TYPE</B>
+  ReadResults = IOConsts.ReadResults;
+
+<B>PROCEDURE</B> ReadResult (cid: IOChan.ChanId): ReadResults;
+
+<B>END</B> IOResult.</PRE>
+<P>Likewise, a module like StreamFile has:</P>
+<PRE>
+<B>IMPORT</B> IOChan, ChanConsts;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+ 
+<B>PROCEDURE</B> Open (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);</PRE>
+<P>so that, in this case, rather than an inquiry procedure, the error result is returned in a variable parameter of the module's typical procedure activities.</P>
+<P>When both these suggestions are followed, a substantial amount of information can be obtained about the reasons why a file open or a disk read failed, without compromising the value of the variables where this information is stored (because the client program cannot see that variable).</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

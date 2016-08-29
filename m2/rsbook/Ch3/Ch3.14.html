@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+<TITLE>3.14 Assignments</TITLE>
+<meta NAME="keywords" CONTENT="chapter, topics, topic, summary, boolean, selection, loop, loops, while, until, do, repeat, qualified, import, design, bug-proofing, bug, proofing, organization, organizational, style, prettyprinting, pretty, printing, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.14 Assignments</B></H2>
+
+<H3><B>Questions</B></H3>
+<P>1.  What is a boolean variable?</P>
+<P>2.  What is the correct order of evaluation for boolean expressions?</P>
+<P>3.  Given the boolean variables p, q and r with p = TRUE, q = FALSE and r = TRUE, what are the values of the following BOOLEAN expressions?
+<Pre>	a. p AND q OR NOT r
+	b. p OR q AND NOT r 
+	c. p OR q AND q OR r 
+	d. p AND r AND NOT q</Pre>
+<P>4.  Evaluate the following BOOLEAN expressions.
+	<Pre>	a. (1 <!--<-->&lt;= 5) OR (6 DIV 2 = 3)
+	b. (3 + 5 <!--<-->&lt; 9) AND (14 MOD 3 = 2)
+	c. (5 # 7) <!--& -->&amp; (2 DIV 5 <!--<-->&lt; 1)
+	d. (7 DIV 2 - 13 MOD 5 <!--<-->&lt; 8) AND NOT ((2 = 9) OR (7 <!-->&gt;= -3))
+	e. (5 + 3 * 5 <!-->&gt; 39) OR (-3 <!--<-->&lt; 20 + 4 * -3)
+	f. (NOT(5 + 4 <!-->&gt; 2)) AND (5 MOD 1 <!--<-->&lt; 1)</Pre>
+<P>5.  What could be improved in the statement sequence:</P>
+<PRE><B>IF</B> finished = <B>TRUE</B>
+  <B>THEN</B>
+    a := a + 1
+  <B>END</B>;</PRE>
+
+<P>6.  What could be improved in the statement sequence:</P>
+<PRE>flag := <B>TRUE</B>;
+<B>WHILE</B> flag
+  <B>DO</B>
+    WriteString (<!--"-->&quot;enter a cardinal here ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (myCard);
+    flag := (ReadResult () = allRight);
+  <B>END</B>;</PRE>
+
+<P>7.  What is wrong with the loop:</P>
+<PRE>count := 11;
+<B>WHILE</B> count # 0
+  <B>DO</B>
+    statement sequence;
+    <B>DEC</B> (count, 2);
+  <B>END</B>;</PRE>
+
+<P>8.  What is wrong with the loop:</P>
+<PRE><B>REPEAT</B>
+  count := 7;
+  statement sequence;
+  <B>DEC</B> (count, 2);
+<B>UNTIL</B> count <!--<-->&lt; 0;</PRE>
+
+<P>9.  What is wrong with the loop:</P>
+<PRE>realCount := 10.0;
+<B>REPEAT</B>
+  statement sequence;
+  <B>DEC</B> (realCount, 2);
+<B>UNTIL</B> realCount <!--<-->&lt; 0;</PRE>
+
+<P>10. What is wrong with the loop:</P>
+<PRE>realCount := 10.0;
+<B>REPEAT</B>
+  statement sequence;
+  realCount := realCount - 1.0;
+<B>UNTIL</B> realCount = 0;</PRE>
+
+<P>11. Show by writing a few lines of code in a skeletal framework, how to check the outcome of read operations in <I>STextIO</I>, <I>SWholeIO</I> and <I>SRealIO</I></P>
+<P>12. Show by writing a few lines of code in a skeletal framework, how one could import a variable called <i>Done</i> from each of two modules called  <I>RealInOut</I> and <I>InOut</I> into the same program.  Include code showing how the two are referred to in the program. </P>
+<P>13. Check the manuals for your system, and write down how to do the following (where applicable):</P>
+<P>a. obtain a printout of a program</p>
+<P>b. obtain a <!--"-->&quot;compile time listing<!--"-->&quot; with statistical details on the lines, an index into the code compiled, and other details as may be available.</P>
+<P>c. obtain a <!--"-->&quot;hard copy<!--"-->&quot; of a run of a program</P>
+<P>d. list data files to the printer</P>
+<P>14. Research and describe the "year 2000 problem."</P>
+<P>15. List and discuss several common strategies for avoiding errors; for finding errors after they have occurred.</P>
+<H3><B>Problems:</B></H3>
+<P>16. Write a program that will either convert inches to centimetres or vice versa, depending on user input at run time.</P>
+<P>17. Write a program that will compute the perimeter of either a square given one side, a triangle given all three sides, or a circle given the radius.  The task is chosen by the user and the program must ask the appropriate questions in each case.</P>
+<P>18. Expand the small section of code related to <A HREF="Ch3.2.html#Figure 3.2">figure 3.2</A> into a full blown program that will ask for four marks, find their average, and then print appropriate pass/fail messages.</P>
+<P>19. Modify the program <A HREF="Ch3.2.html#SortTwo"><i>SortTwo</i></A> <!--in section 3.2 -->to sort three real numbers into order.</P>
+<P>20. Modify the program <A HREF="Ch3.4.html#AverageWordLength"><i>AverageWordLength</i></A> <!--in section 3.4 -->to improve the algorithm for determining the number of words.  Add statements to keep track of and print out the number of words of 1, 2, 3...10, and more than 10, letters.  Ensure that the statistical summary you print at the end is clear and easy to read.</P>
+<P>21. The least common multiple (LCM) of two numbers is the smallest number that they both divide into.  Write a program LCM to calculate this from two inputs.  (Hint: research this first; there is a relationship between GCD and LCM.)</P>
+<P>22. Extend the mini-calculator to include exponentiation (x<sup>y</sup>) as well as the option to add, subtract, multiply and divide.</P>
+<P>23. Research, plan, write and test programs to compute</P>
+	<P>a. the sum of the first n odd numbers 1 + 3 + 5 + 7 +...+ 2n-1</P>
+	<P>b. the sum of the first n even numbers 2 + 4 + 6 + 8 + ... + 2n.</P>
+	<P>c. the sum of the first n squares 1 + 4 + 9 + 16 + ... + n<sup>2</sup>.</P>
+		      <P>In each case, you must not use a loop to do the calculation.</P>
+<P>24. Extend the GCD program further to allow for three input numbers; for n input numbers.</P>
+<P>25. Modify #16 above to ask how many conversions are to be done and carry on from there.</P>
+<P>26.  Write a program which will read in a sequence of cardinals from the keyboard and then inform the user what is:</P>
+	<P>a. the largest of the numbers.</P>
+	<P>b. the smallest of the numbers.</P>
+	<P>c. the number of cardinals entered.</P>
+	<P>d. the total of the numbers.</P>
+	<P>e. the average of the numbers.</P>
+	The user should be prompted to enter some specific value as a flag to terminate the sequence.  (Hint:  You could use zero for this, but a letter would work too, as it would set <I>SIOResult.ReadResult()</I> to a value other than <I>allRight).</I>  The five pieces of information all need to be computed, but a menu should be given to the user and only the statistic that the user <I>wants</I> should be provided.</P>
+<P>27.  The Board of Governors at Trinity Western University has decided to grant a 3% pay raise, and they wish to know</P>
+<P>a. what the new salaries will be </P>
+<P>b. what the total new salary bill will be </P>
+<P>c. how much extra money this will cost the University.</P>
+<P>	Write a program that will answer all their questions, given the following table of present salaries.  </P>
+<PRE>Amount	Number of faculty receiving this
+$41 000		2
+$41 300		4
+$42 000		8
+$42 100		6
+$43 600		5
+$43 000		2
+$44 000		8
+$44 500		2
+$45 000		2
+$45 300		1</PRE>
+
+<P>28. Modify the solution to #27 so that those receiving less than $42 500 receive 4%, those between $42 501 and $43 999 receive 3% and those receiving $44 000 or more receive 2%.  Compare the total cost of the two methods.</P>
+<P>29.  Write a program which prints out the decimal equivalents of the series of fractions 1/2, 1/4, 1/8, 1/16, etc. in a column.  (You can't continue this forever, but do it for fourteen steps.)  Now print a column beside this one with the sum of all the fractions printed up to that point.  The numbers should start .5, .75, .875, etc.  Because the intermediate results are wanted, one cannot dispense with a loop.  Can the sum ever reach the total one?  Why or why not?</P>
+<P>30. Check your answer to #29 by writing a loop to add the first twenty terms in this sequence and print just the result.  The first fifty.  The first hundred.  Hmmm.</P>
+<P>31. Modify the Module <A HREF="Ch3.11.html#BetterGradePoint"><I>BetterGradePoint</I></A> <!--in section 3.11 -->to use reals for the points and to compute the grade point average of up to five subjects.  You could use a nonexistent grade such as <!--"-->&quot;Z<!--"-->&quot; to indicate when the averaging is finished.</P>
+<P>32. Add to #31 the ability to take into account the number of semester hours of credit that a course is worth, so that courses have their individual grade points weighted by the number of credits (0 - 5) that the course is worth.  Add also the ability to give an extra third of a point for courses with marks like <!--"-->&quot;A+<!--"-->&quot; or <!--"-->&quot;C+<!--"-->&quot; and to subtract a third of a point for those with the corresponding <!--"-->&quot;minus<!--"-->&quot; letter grades.</P>
+<P>33. Go back to Chapter 2, problem #38-39.  Expand this program to handle addition, subtraction, and division as well as multiplication.  The choice of which operation to do will be up to the user.  In the case of division, the full long division algorithm is to be written out with all the steps shown, along with the quotient and remainder.</P>
+<P>34. Using the GCD algorithm developed in this chapter, develop a program which will <!--"-->&quot;reduce<!--"-->&quot; common fractions and print out the result in the following form:
+<PRE>60      3
+--- =  ---
+100     5</PRE>
+
+<P>35. Add to #34 the ability to read in the fraction to be reduced as a decimal numeral.</P>
+<P>36. Write a program that accepts a positive cardinal and either produces its prime factors or states that it is a prime.</P>
+<P>37. Write a program to process payroll data.  Numeric input should consist of the hourly pay, number of hours at regular time, and number of hours overtime (paid at time-and-a-half.)  Deduct 6% for pension, 2.5% for unemployment insurance, 20% for taxes, and $20 if the employee is in the stock sharing plan.  Output should consist of a neat table showing hours, gross pay, deductions, and net pay.</P>
+<P>38. Write a program to convert the units miles per gallon to the units litres per hundred kilometres and vice-versa.  (Look up conversion factors.)  Test the program by having a user input distances and fuel consumption in either metric, imperial (or U.S.) units, and producing both results as output.</P>
+<P>39. Write a program that will find the sum of the digits of a number and then say if it is divisible by 9, by 3 but not 9, by neither.</P>
+<P>40. The motion of an object under a constant acceleration <I>a</I> is given by the formula d = ut + .5at<sup>2</sup>, where <I>d</I> is the distance travelled, <I>t</I> is the time elapsed in seconds, and <I>u</I> is the initial velocity.  Write a program that will take these inputs and print a table of values of distance <I>vs</I>  time for a period of 20 seconds at intervals of one second; for a period of <I>n</I> seconds at intervals of <!----><font face="symbol">D</font><I>n</I> seconds.</P>
+<P>41. Write a complement to the program <A HREF="Ch3.12.html#DateCalc">DateCalc</A> <!--in section 3.12 -->that accepts as input the year, and the day number within that year and produces the date.</P>
+<P>42. Add to the consecutive date calculation program the ability to check for invalid dates. (Hint: convert a date, and convert it back.  Does it equal what it started as or not?)</P>
+<P>43. Look up Julian dates and write a program to accept as input a year, month, and day and compute the Julian date.</P>
+<P>44. Add to #43 the ability to convert Julian dates to conventional dates.</P>
+<P>45. Write a program that will format a date typed in by the user in one of three ways:</P>
+<pre>	January 9, 1950
+	1950 01 09 (yyyy mm dd with leading zeros as needed)
+	9/1/1950</pre>
+<P>46. Write a program to print out a calendar month given the year and month.</P>
+<P>47. Write a program to compute simple interest where the data provided by the user is Principal, Annual Rate, and the starting and ending dates, which could be some years apart.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,270 @@
+<HTML>
+<HEAD>
+<TITLE>2.12 An Extended Example (Bank Interest)</TITLE>
+<meta NAME="keywords" CONTENT="extended, example, bank, interest, suitability, restatement, library, use, refinement, input, computation, output, pseudocode, data, table, i/o, input, output, user, manual, module, import, writeln, writestring, writecard, readreal, writereal, skipline, wriefixed, sample, run, read, readio, readchar, readln">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.12 An Extended Example (Bank Interest)</B></H2>
+<H3><B>Example problem:</B></H3>
+<P>Compute the amount there will be in my bank account after one year if the interest is compounded quarterly and any withdrawals I make are entered immediately after the interest is paid.</P>
+<H3><B>Example problem suitability:</B></H3>
+<P>The bank account example given above is well within the reach of a simple calculator, and is therefore of somewhat marginal suitability for computer solution.  However, the solution does illustrate how a number of the programming ideas discussed in chapter one are actually implemented in Modula-2.</P>
+<H3><B>Example problem restatement:</B></H3>
+<P>Given:  A bank account, possibly containing money.</P>
+<P>To Do:  Compute interest, make withdrawals every 3 months</P>
+<P>Desired Result:  final balance.</P>
+<P>Formula:  interest = principal * rate * time.</P>
+<H3><B>Example problem library use:</B></H3>
+<P>This problem has both input and output requirements.  It will, therefore make use of the ISO standard Modula-2 library.  Because of the withdrawals, four separate simple interest calculations will be made, rather than one compound interest calculation.  No mathematical or financial libraries are required.</P>
+<H3><B>Example problem refinement:</B></H3>
+<PRE>
+1. Input Section  obtain bank balance
+			 obtain interest rate
+			 obtain quarterly withdrawal amounts
+2. Computation	 calculate interest each quarter
+			 subtract withdrawal each quarter
+3. Output		 print out final balance</PRE>
+
+<H3><B>Second refinement of problem:  (same numbers as above)</B></H3>
+<PRE>
+1. Ask the user for the initial balance
+	  Read the balance and assign the value to a real variable
+	  Ask the user for the interest rate
+	  Read the rate and assign the value to another real variable
+
+2. set quarter to one
+    while quarter is less than or equal to four
+	For the current quarter
+	 Compute the interest using
+		interest = principal * rate * time
+	 Add this to original balance
+		balance = balance + interest
+	 Ask user for withdrawal amount
+	 Read the amount and assign the value to a real variable
+	 Subtract the withdrawal from last balance
+		balance = balance - withdrawal
+	 add one to the quarter
+    end while
+
+3. After four quarters
+	 Print out the final balance</PRE>
+
+<H3><B>Pseudocode:</B></H3>
+<P>In this refinement, only portions of the code that involve several steps, formulas, or computations (i.e. an algorithm) are detailed.  In this example, the last natural language refinement is followed very closely, so this section might have been left out in this case, but it is included to make the model for students to follow as complete as possible.</P>
+<PRE>
+quarter = 1
+while quarter <!--<-->&lt;= 4
+	interest = principal * rate * time
+	balance = balance + interest
+  write message <!--"-->&quot;what is withdrawal amount?<!--"-->&quot;
+  read (amount)
+	balance = balance - withdrawal
+  quarter = quarter + 1
+end while</PRE>
+
+<H3><B>Example problem data table:</B></H3>
+<PRE>
+ Variables:	principal, rate, interest, withdrawal<!--‹-->--all reals
+			quarter<!--‹-->--a cardinal
+ Constants: time = 0.25
+ Imports	from STextIO (InOut): WriteString, WriteLn, SkipLine
+			from SWholeIO (InOut): WriteCard
+			from SRealIO (RealInOut) ReadReal, WriteReal</PRE>
+
+<P><B>NOTE</B>:  The purpose of <I>SkipLine</I> is to clear the end of line state that exists following one input line before attempting to read the next input line.  This is necessary whenever inputs are separated by typing a carriage return.  This was not previously needed, because only one input per program was being employed.</P>
+<H3><B>Example problem sample I/O:</B></H3>
+
+<PRE><I>Input</I>:
+What is the opening balance? <B>1000.00</B>
+What is the annual interest rate?
+Enter as a decimal; Example: 6.5% is 0.065. <B>0.08</B>
+How much do you wish to withdraw in quarter number 1? <B>10.00</B>
+How much do you wish to withdraw in quarter number 2? <B>9.00</B>
+How much do you wish to withdraw in quarter number 3? <B>11.00</B>
+How much do you wish to withdraw in quarter number 4? <B>6.00</B>
+<I>Output</I>:
+The final balance in your account is 1044.57</PRE>
+
+<H3><B>Example problem sample User Manual:</B></H3>
+<P><I>Description</I>: Bank Interest is a small application designed to maintain a simple bank account record.  It allows the user to specify the opening balance, and annual interest rate at the beginning of the program, and then to make quarterly withdrawals.  Interest is calculated on the balance before the withdrawal.</P>
+<P><I>Operation</I>: If in an MS-DOS or UNIX environment, type the name of the program from the operating system prompt.  If in a Graphics User Interface (GUI) environment, click twice in close succession on the icon representing the program.</P>
+<P>A banner will appear giving the name of the program and some information about the author.  Following this the prompt</P>
+<PRE>
+What is the opening balance?</PRE>
+
+<P>will appear on the screen.  Type in the amount that the bank account had at the start of the year.  Following this, the prompt</P>
+<PRE>
+What is the annual interest rate?
+Enter as a decimal; Example: 6.5% is 0.065.</PRE>
+
+<P>will appear on the screen.  Type in the interest rate in the form shown.  Now, for each quarter, a message like</P>
+<PRE>
+How much do you wish to withdraw in quarter number 1?</PRE>
+
+<P>will appear on the screen.  Respond with the amount being withdrawn for that quarter in the form 10.23.  That is, give the number in decimal form and without a dollar sign.  The program will finally respond with a message like:</P>
+<PRE>
+The final balance in your account is xxx.xx</PRE>
+
+<H3><B>Example problem code:</B></H3>
+<PRE>
+<B>MODULE</B> <A NAME="BankInterest">BankInterest</A>;
+
+(*
+   Name: Nellie Hacker
+   Student Number: 922001
+   CMPT 141 Fall 1991
+   Assignment #1
+   Bank Interest Computation
+*)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+    ReadReal, WriteFixed;
+
+<B>CONST</B>
+  time = 0.25; (* that is, one quarter *)
+
+<B>VAR</B>
+  principal, rate, interest, withdrawal : <B>REAL</B>;
+  quarter : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* print informative material *)
+  WriteString (<!--"-->&quot;This program computes interest on an account<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;quarterly, and then allows for withdrawals.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;It was written by<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Nellie Hacker<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;for CMPT 141<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Assignment #1 Due 1992 09 15<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  (* get user input *)
+  WriteString (<!--"-->&quot;What is the opening balance? <!--"-->&quot;);
+  ReadReal (principal);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;What is the annual interest rate? <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Enter as a decimal; E.g.: 6.5% is 0.065. ==<!-->&gt;<!--"-->&quot;);
+  ReadReal (rate);
+  SkipLine;
+  WriteLn;
+
+  quarter := 1;
+  <B>WHILE</B> quarter <!--<-->&lt;= 4
+    <B>DO</B>
+      interest := principal * rate * time;
+    (* compute new principal *)
+      principal := principal + interest;
+      WriteString (<!--"-->&quot;What is the withdrawal in quarter number <!--"-->&quot;);
+      WriteCard (quarter, 0);
+      WriteString (<!--"-->&quot;? ==<!-->&gt; <!--"-->&quot;);  (* complete a readable prompt *)
+      ReadReal (withdrawal);
+      SkipLine;
+      WriteLn;
+    (* recompute principal *)
+      principal := principal - withdrawal;
+      quarter := quarter + 1;
+    <B>END</B>;
+(* print output *)
+  WriteString (<!--"-->&quot;The final balance in your account is $ <!--"-->&quot;);
+  WriteFixed (principal, 2, 0);
+  WriteLn;
+<B>END</B> BankInterest.</PRE>
+
+<H3><B>Example problem actual output (user input in bold):</B></H3>
+<PRE>
+This program computes interest on an account
+quarterly, and then allows for withdrawals.
+
+It was written by
+Nellie Hacker
+for CMPT 141
+Assignment #1 Due 1992 09 15
+
+What is the opening balance? <B>1000.00</B>
+What is the annual interest rate?
+Enter as a decimal; E.g.: 6.5% is 0.065. ==<!-->&gt; <B>0.08</B>
+What is the withdrawal in quarter number  1? ==<!-->&gt; <B>11.00</B>
+What is the withdrawal in quarter number  2? ==<!-->&gt; <B>9.00</B>
+What is the withdrawal in quarter number  3? ==<!-->&gt; <B>5.00</B>
+What is the withdrawal in quarter number  4? ==<!-->&gt; <B>6.00</B>
+The final balance in your account is $  1050.30</PRE>
+
+<P><B>NOTE</B>:	When submitting such an assignment, students should include <I>several</I> sample runs with different data.</P>
+<P>As indicated in the planning documents, the purpose of <I>SkipLine</I> is to read past the carriage return typed at the end of one piece of data so that the program can correctly access the next one.  Technically, being at the end of a line is a <!--"-->&quot;state<!--"-->&quot; the input achieves.  <I>SkipLine</I> removes any more input on the current line until this state is reached; then it passes the state by and readies the next <!--"-->&quot;line<!--"-->&quot; of data for reading.</P>
+<H3><B><A NAME="2.12.1"></A>2.12.1 Input in non ISO Versions</B></H3>
+<P>Non ISO standard libraries may employ a procedure <I>ReadLine</I> for essentially the same purpose as <I>SkipLine</I>. On the other hand, they may simply regard the end-of-line as a character to be read, rather than as a state to be in, and therefore must handle this differently.  There are two possibilities:</P>
+<P>1. <I>Readxx</I> statements may be set up to skip any <!--"-->&quot;white space<!--"-->&quot; (including carriage returns) before doing their read.  If this is the case, the carriage returns do not need to be read separately, for they will be taken out of the input and thrown away by the next read statement.</P>
+<P>2. They may require the user program to handle the carriage return as a character, but not supply any special procedure for doing so.  In this event, the user program should import the procedure <I>ReadChar</I> or its equivalent <I>Read</I> from <I>InOut</I>, declare a character variable, say </P>
+<PRE>
+  <B>VAR</B>
+    cr : <B>CHAR</B>;</PRE>
+
+<P>and replace all occurrences of SkipLine in the above program with</P>
+<PRE>
+  Read (cr);</PRE>
+
+<P>to read off and discard the carriage return.</P>
+<P>In any event, the matter cannot simply be ignored, or the program will not operate correctly.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,310 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Final Exam :: CMPT140 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Unless otherwise specified, all questions pertain to Python.
+<br>Total points: 110
+
+<ol class="main">
+
+<li> Fill in the blank: <u>[25]</u> <ol class="subparts">
+  <li> "<b>Computers</b> are <i>tools</i>__________, and computing scientists
+  are <i>toolsmiths</i>________________."
+  <li> The software development model that emphasizes repeated iterations
+  through the waterfall (WADES) process, with refinements each time, is called
+  <i>spiral or agile</i>____________.
+  <li> In software development, the document that describes the functionality
+  you intend to deliver to the client is called the 
+  <i>specifications</i>________________.
+  <li> Testing of a single component in isolation (as opposed to integration
+  testing) is called <i>unit</i>________ testing.
+  <li> In <b>statically-typed</b> languages, before we can use the value of a 
+  variable for the first time in <br> a program, we need to
+  ______________<i>declare</i> and ________________<i>initialize</i> it.
+  <li> What word describes functions which <b>invoke</b> themselves?
+  <i>recursion</i>________
+  <li> The Python keyword used to introduce an exception <b>handler</b> clause is
+  <i>except</i>__________
+  <li> When an object is <tt>print</tt>ed, Python invokes the object method
+  named <i><tt>__str__()</tt></i>_______________.
+  <li> Convert 1010011110 from binary to <b>hexadecimal</b>:  <i>0x29E</i>_______
+  <li> Convert the same to <b>octal</b>: <i>01236</i>_______
+  <li> Evaluate: <tt><b>range(5,5)</b></tt>: <i>[] (empty list)</i>____________
+  <li> What is the <b>type</b> of the Python expression 
+  <tt><b>2*'x' + 'y'</b></tt> ? <i>string</i>________
+  <li> In Python classes, the <tt><b>__init__()</b></tt> method is the special
+  method called the <i>constructor or initializer</i>____________________.
+  <li> Name three drawable objects in Zelle's <tt>graphics.py</tt> library.
+  <i>Point, Line, Circle, Rectangle, Oval, Polgyon</i>
+  __________ __________ __________ 
+  <li> What method returns a list of all the <b>indices</b> in a <b>dictionary</b>?
+  <i>keys()</i>________
+  <li> The Python method on file objects that sets the <b>file pointer</b>
+  (location within the file) is called <i>seek()</i>__________
+  <li> The function in the standard library <tt>string</tt> which transforms
+  all letters within a string to uppercase is called <i>upper()</i>_________
+  <li> What English part of speech should a <b>variable</b> name be?
+  <i>noun</i>___________
+  <li> What operator is used to indicate bitwise <b>left shift</b>?
+  <i>&lt;&lt;</i>_______
+  <li> (2pts) An Iridium satellite internet connection runs at
+  <b>28 kb/s (kibibits/sec)</b>.  Assuming full utilization of the bandwidth
+  (which never happens in reality), how long would it take to download a
+  <b>7 MB (mebibyte)</b> document?  Assume <b>binary</b> units.
+  <i>2**11 == 2048 seconds, or 34 mins 8 seconds</i>_____________
+</ol>
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as we discussed in class.
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[3]</u><br><br>
+<i>Write, Apprehend, Design, Execute, Scrutinize<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Discuss the limitations of the software development model used in the
+previous question, and describe at least two alternate models that we
+talked about in class that might better reflect real-world software
+development. <u>[6]</u>
+<br><i>
+Waterfall (WADES) assumes perfect requirements, perfect specification,
+perfect design, etc.  In reality, we never get that, and have to move
+on with imperfect documentation, often resulting in a poor product and
+an unhappy client.  The "V" model is a slight modification of WADES that
+emphasizes testing of each stage (components, systems, releases, products)
+before completion.  The spiral model emphasizes repeated cycles of the
+waterfall model, early prototypes to get client feedback, and flexibility
+to changes in requirements, specification, or design.
+</i><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Describe the five software <b>control/flow</b> 
+abstractions mentioned in the text. 
+For each one, also name a corresponding Python language construct.
+<u>[5]</u><br><br>
+<i>Sequence (newlines in Python), Selection (if/elif/else),
+Repetition (while/for), Composition (def/functions), Parallelism<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+<br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given.  If it produces an error/exception, describe
+the error in words.
+Assume each expression is independent of the others.
+For all expressions, assume only the following initialization: <u>[15]</u>
+<pre>	myPear = "Red Bartlett"
+	import string
+	from math import pi	</pre>
+  <ol class="subparts">
+  <li><tt> 0x2b </tt>			<i>43</i>
+  <li><tt> 14 &amp; 7</tt>		<i>6</i>
+  <li><tt> 17040183 % 2</tt>		<i>1</i>
+  <li><tt> [2, 4, 6] * 2 </tt>		<i>[2, 4, 6, 2, 4, 6]</i>
+  <li><tt> [2, 4, 6] + 8 </tt>		<i>TypeError: list + int</i>
+  <li><tt> "03d%s" % (15, 'pears') </tt><i>TypeError (# args)</i>
+  <li><tt> 'b' in myPear </tt>		<i>False</i>
+  <li><tt> string.upper(Bartlett)</tt>	<i>NameError: Bartlett</i>
+  <li><tt> range(myPear)	</tt>	<i>TypeError</i>
+  <li><tt> myPear[2:6]	</tt>		<i>'d Ba'</i>
+  <li><tt> sorted(myPear) </tt>		<i>' BRadeelrtt' (as a list, actually)</i>
+  <li><tt> chr(ord('P') + 4) </tt>	<i>'T'</i>
+  <li><tt> 'pi' + 'e' </tt>		<i>'pie'</i>
+  <li><tt> 'pie' - 'e' </tt>		<i>TypeError: str - str</i>
+  <li><tt> pi + 'e' </tt>		<i>TypeError: float + str</i>
+</ol>
+<br>
+
+<li>
+Is <tt>3.6</tt> in Python equal to the mathematical number 3.6?
+Explain why or why not. <u>[3]</u>
+<br><i>
+Nope! (Try it!)  Floating-point numbers are represented with limited
+precision.  To represent 3.6 in binary requires an infinite number of
+bits, so the computer stores only an approximation to 3.6.  (This is
+true of any computer language; it's not Python's fault.)
+</i><br><br><br>
+
+<li>
+What does the Python standard library '<b><tt>pickle</tt></b>' do? <u>[3]</u>
+<br><i>
+Object serialization: converts any Python object into a string representation,
+optionally storing it into a file.  also converts back from string.
+</i><br><br><br><br><br>
+
+<li>
+Compare and contrast <b>static</b> typing versus <b>dynamic</b> typing.
+What are pros/cons of each?
+<u>[4]</u><br>
+<i>
+  (The key here is <b>type</b>: not whether the values of the variables can
+  change, but whether their <b>types</b> can change.)
+  Static typing: variables cannot change type
+  Must declare type of variable and initialize value
+  Compiler enforces correct type
+  Dynamic typing: can change type
+  More flexible, but usually we don't want variables to change type
+</i><br><br><br><br><br><br><br>
+
+<li>
+Describe all the differences between Python <b>lists</b> and C <b>arrays</b>.
+<u>[4]</u>
+<br>
+<i>Python lists can change length (can insert/delete), can have items of 
+differing type, can have
+items which change type (due to Python's dynamic typing), and have various
+operators/functions defined on them, such as del, len(), negative indexing,
+list slicing, etc. </i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Consider the following Python expression:<br>
+<tt>5 + 2 ** 4 % 10 &lt; 43 / 4 or not 3 in range(0, 10, 2)</tt>
+<ol class="subparts">
+
+<li> Rewrite the expression in <b>Reverse Polish Notation</b>.
+(This will not be valid Python code.)<u>[3]</u>
+<br><i>
+5 2 4 ** 10 % + 43 4 / &lt; 3 range(0, 10, 2) in not or<br>
+(You could also split 'range(0,10,2)' further into '0 10 2 range()'.)
+</i><br><br>
+
+<li> Now evaluate your RPN expression, showing the state of the stack
+at each step.  (If you show each step, partial credit will be given
+if you make a mistake at one point.) <u>[4]</u>
+<br><i>
+[5], [5, 2], [5, 2, 4], [5, 16], [5, 16, 10], [5, 6], [11], [11, 43],
+[11, 43, 4], [11, 10], [False], [False, 3], [False, 3, range(0,10,2)],
+[False, False], [False, True], [True]
+</i><br><br><br><br>
+
+</ol>
+
+<li class="break">
+Define or describe each of the following <b>object-oriented</b> terms:
+<u>[7]</u>
+<ol class="subparts">
+  <li> Class: <i>a user-defined container type</i>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+  types</i>
+  <li> Attribute: <i>a variable or method belonging to an object</i>
+  <li> Method: <i>a function/procedure belonging to an object</i>
+  <li> Constructor/initializer: <i>the special method which is called when an object is
+  instantiated</i>
+  <li> Interface: <i>a set of messages that an object can receive</i>
+  <li> Overloading: <i>giving multiple definitions to a
+  function/method/operator depending on the type of its parameters/operands</i>
+</ol>
+<br><br><br><br>
+
+<li>
+What is the difference between the <b>public interface</b> and the
+<b>private implementation</b> of a library?  Why should there be a distinction?
+Describe a specific example where the distinction would be helpful. <u>[4]</u>
+<br><i>
+The public interface describes everything outside code needs to use the
+library: what the public classes and methods are, how to invoke the functions,
+etc.  The private implementation is the code that makes the library work.
+Keeping them separate allows us to modify/upgrade the internal workings of
+the library without forcing other code using the library to change how it
+accesses the library.  The public interface is the API; we want it to be stable.
+</i>
+
+<li>
+We wish to demonstrate the differences between <b>alias</b>,
+<b>shallow copy</b>, and <b>deep copy</b>.
+Come up with your own situation using user-defined <b>classes</b> that might 
+illustrate this.  Define the classes in Python, create an instance, then create
+an alias, a shallow copy, and a deep copy.  The classes should make some sense!
+<u>[6]</u>
+<br>
+<i>See <a href="final-alias.py">separate Python code</a>.
+</i>
+
+<li>
+Tell me everything you know about <b>exceptions</b> in Python.
+<u>[4]</u>
+<br>
+<i>
+Exceptions are a way of breaking out of the normal flow of execution in a 
+Python program.  Exceptions are raised/thrown by built-in and standard library
+functions when errors happen.  Exceptions may also be raised programmatically
+via the <tt>raise</tt> command.  A <tt>try</tt> keyword delimits a block wherein
+an exception is expected to be raised.  If an exception is raised anywhere within
+that <tt>try</tt> block, control jumps to the corresponding <tt>except</tt> block
+(the exception handler).  The <tt>except</tt> clause may catch all exceptions
+(discouraged), or it may specify which exceptions it will handle.  Any unhandled
+exceptions will continue looking for a handler down the call stack.
+The programmer may also define custom exceptions by subclassing the built-in
+class <tt>Exception</tt>.
+</i>
+
+<li>
+Describe in detail at least three principles of graphical user interface 
+design.  For each principle, describe or sketch an example UI that might
+violate that principle.  <u>[8]</u>
+<br><i>
+We covered many: know your users, be consistent with names/colours/etc., 
+use metaphors carefully, use multiple levels of complexity (safety vs. control),
+always show current state, design around the epicentre, be tolerant of
+user mistakes, etc.
+</i>
+
+<li>
+The game of 'craps' uses two six-sided dice. The value of each roll is the sum
+of the values on each die; hence each roll can have a value between 2 and 12.
+Write a program that rolls a pair of dice 1000 times and outputs how many
+times each value is obtained.  E.g., the value 2 ("snake eyes") turned up 28
+times, 3 ("ace deuce") turned up 56 times, etc.
+<u>[6]</u>
+
+<br><br>
+Docstrings are required for your program; comments
+are not required but may be helpful for partial credit if your code isn't
+perfect.
+<br><br>
+FYI (just for fun), here are the names for each value of roll:<br>
+<table border="1">
+<tr><td> 2</td><td> 3</td><td> 4</td><td> 5</td><td> 6</td>
+    <td> 7</td><td> 8</td><td> 9</td><td>10</td><td>11</td><td>12</td></tr>
+<tr><td>Snake Eyes</td><td>Ace Deuce</td><td>Easy Four (2+2 = Hard Four)</td>
+<td>Fever Five</td><td>Easy Six (3+3 = Hard Six)</td><td>Natural</td>
+<td>Easy Eight</td><td>Nina</td><td>Easy Ten</td><td>Yo</td><td>Boxcars</td></tr>
+
+<br>
+<i>See <a href="final-craps.py">separate Python code</a>.
+</i><br>
+
+</ol>
+
+</body></html>
+
+

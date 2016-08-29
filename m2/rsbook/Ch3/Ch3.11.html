@@ -1,0 +1,155 @@
+<HTML>
+<HEAD>
+<TITLE>3.11 Style and Prettyprinting</TITLE>
+<meta NAME="keywords" CONTENT="style, pretty, printing, professional, ethics, readable, programs, comments, commenting, rules, var, const, type, procedure, arithmetic, operation, operations, statements, indentation, identifier">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.11 Style and Prettyprinting</B></H2>
+<P>All the program examples thus far have followed a certain written style. The beginner should study carefully the textual layout (also known as <I>prettyprinting</I> conventions) employed for these examples.  Observe particularly the use of indentation and blank lines.  These conventions are not necessary to produce <I>working</I> programs (the compiler couldn't care less about prettyprinting).  Rather, they are required to produce <I>readable</I> programs.</P>
+<P>Style is a matter of good taste, to be sure, but it is more than that: it is a matter of professional ethics as well.  Programs written for a client must be readable and modifiable.  That is why it is important to incorporate informative and effective comments in the body of programs.  Non-trivial commenting for understandability and prettyprinting for readability go hand-in-hand with good overall design.  Without these, one cannot produce programs that can be maintained, and cannot therefore produce good programs.  Comments included in a program to explain its steps are part of its internal documentation.  Because of the difference it makes in readability, prettyprinting is also part of internal documentation.</P>
+<P>Consider an extreme example of unreadability.  Since a Modula-2 compiler ignores carriage returns, a program could be written as:</P>
+<PRE>
+<B>MODULE</B> Test; <B>BEGIN</B> Statement Sequence; <B>END</B> Test.</PRE>
+
+<P>that is, all on one line.  In practice, this would make things very nearly impossible to read, and even though the compiler would accept it, no computing science teacher or programming supervisor ever would.</P>
+<P>Here are some general rules for laying out programs in a clear and readable fashion:</P>
+<H3><B>A. Prettyprinting Rules</B></H3>
+<P>1. Blank lines should be placed before such headings as CONST, VAR, TYPE, and PROCEDURE.  (The latter two will be taken up later.)  They should also be placed before and after any comment extending over more than one line.  They may also be placed after each END but the last if desired.  Creative and liberal use of blank lines to set off sections of code is encouraged.</P>
+<P>2. Spaces should be placed before and after all arithmetic operations and the symbols <!--"-->&quot;:=<!--"-->&quot;, <!--"-->&quot;=<!--"-->&quot;, and <!--"-->&quot;:<!--"-->&quot;, before the opening parenthesis which follows the name of a procedure (such as <I>WriteString</I>), and after any commas (say, in import lists.)</P>
+<P>3. All statements and declarations begin on a new line.</P>
+<P>4. The body of every CONST, VAR, and TYPE declaration as well as of every BEGIN .. END, IF .. THEN .. END or similar construction, is indented one tab or two spaces from the heading.  The END of such a structure always appears directly below the keyword that starts it (such as THEN, or DO).</P>
+<P>5. Specifically, the correct indentation for an IF .. THEN .. ELSIF .. ELSE is as follows:</P>
+<PRE>
+ <B>IF</B> Boolean Expression 1
+   <B>THEN</B>
+     Statement Sequence 1;
+   <B>ELSIF</B> Boolean Expression 2 <B>THEN</B>
+     Statement Sequence 2;
+     ...
+
+   <B>ELSE</B>
+     Statement Sequence n + 1;
+   <B>END</B>;</PRE>
+
+<P>In this construction, only the first THEN appears on a line by itself.  Strictly speaking, it is an integral part of the first IF, and that is why there must be no semicolon before it, but lining THEN up with the ELSIF and ELSE keywords makes the whole block easier to read.  The idea is to improve the layout, not to emphasize the THEN as if it were a more important part of the statement.</P>
+<P>6. If a FROM is used, the list of imports should start on the line following the library module name.</P>
+<P>7. When DO is used, it is indented on a line by itself.  This applies to WHILE loops, and to any similar construction. </P>
+<P>8. No source line should contain more than about 72 characters. </P>
+<P>Besides these layout rules, there are a number of other style rules that should be followed in the choice of identifiers:</P>
+<H3><B>B. Identifier Style Rules </B></H3>
+<P>1.  Use an identifier name which is self-documenting, such as <I>Principal</I>, rather than a cryptic character such as <I>P</I>.</P>
+<P>2.  The identifiers of constants and variables start with a lower case letter and are nouns; those of Procedures start with upper case letters.  If they perform an action (eg <i>WriteString</i>) they are verbs and if they return a value (eg <i>ReadResult</i>) they are nouns.  BOOLEAN identifiers should normally be adverbs.</P>
+<P>3.  Multi-word identifiers have each new word after the first starting with a capital (eg <i>WriteString</i>).  The low-line often used in Pascal is allowed in ISO standard Modula-2, but its use ought to be discouraged by anyone interested in readable programs.  Write <I>myIdentifier</I>, rather than my_identifier.</P>
+<P>4.  Only reserved words and standard identifiers are entirely capitalized, except in the case of certain imports, where the programmer must simply match the library style.  (Authors of library modules should themselves follow this rule.)</P>
+<P>5.  Module names may have any case, as there may be constraints imposed by the underlying operating system.</P>
+<P>Here is a bad example:</P>
+<PRE>
+<B>MODULE</B> BadGradePoint;
+<B>FROM</B> STextIO <B>IMPORT</B> WriteString,WriteLn,ReadChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B> WriteCard;
+<B>VAR</B> x:<B>CHAR</B>;y:<B>CARDINAL</B>;
+<B>BEGIN</B> WriteString(<!--"-->&quot;What is your letter grade?  A .. F ==<!-->&gt;<!--"-->&quot;);
+ReadChar(x);x:=<B>CAP</B>(x);<B>IF</B> x=<!--"-->&quot;A<!--"-->&quot;<B>THEN</B> y:=4 <B>ELSIF</B> x=<!--"-->&quot;B<!--"-->&quot;<B>THEN</B> y:=3
+<B>ELSIF</B> x=<!--"-->&quot;C<!--"-->&quot;<B>THEN</B> y:=2 <B>ELSIF</B> x=<!--"-->&quot;D<!--"-->&quot;<B>THEN</B> y:=1 <B>ELSE</B> y:=0 <B>END</B>;
+WriteString(<!--"-->&quot;The grade point for that letter grade is <!--"-->&quot;);
+WriteCard (y,2); WriteLn;<B>IF</B> y<!-->&gt;2 <B>THEN</B> WriteString (<!--"-->&quot;You passed.<!--"-->&quot;);
+<B>END</B>;<B>END</B> BadGradePoint.</PRE>
+
+<P>Could you tell what that program was for?  (It did compile!) Here it is again in a better form:</P>
+<PRE>
+<A NAME="BetterGradePoint"></A><B>MODULE</B> BetterGradePoint;
+
+(* This program takes a letter grade input from the keyboard and converts it into a grade point numeral. *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>VAR</B>
+  userInput : <B>CHAR</B>;
+  gradePoint : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* First obtain the letter grade *)
+  WriteString (<!--"-->&quot;What is your letter grade?  A .. F ==<!-->&gt;<!--"-->&quot;);
+  ReadChar (userInput);
+  userInput := <B>CAP</B> (userInput);
+
+  (* and now, convert it to the correct number of points *)
+  <B>IF</B> userInput = <!--"-->&quot;A<!--"-->&quot;
+    <B>THEN</B>
+      gradePoint := 4
+    <B>ELSIF</B> userInput = <!--"-->&quot;B<!--"-->&quot; <B>THEN</B>
+      gradePoint := 3
+    <B>ELSIF</B> userInput = <!--"-->&quot;C<!--"-->&quot; <B>THEN</B>
+      gradePoint := 2
+    <B>ELSIF</B> userInput = <!--"-->&quot;D<!--"-->&quot; <B>THEN</B>
+      gradePoint := 1
+    <B>ELSE</B>
+      gradePoint := 0
+    <B>END</B>;
+
+  (* output results *)
+  WriteString (<!--"-->&quot;The grade point for that letter grade is <!--"-->&quot;);
+  WriteCard (gradePoint, 2);
+  WriteLn;
+
+  <B>IF</B> gradePoint <!-->&gt; 2  (* do this if grade point is high enough *)
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;You passed.<!--"-->&quot;);
+    <B>END</B>;
+
+<B>END</B> BetterGradePoint.</PRE>
+
+<P><B>NOTE</B>:   The degree to which prettyprinting and style rules are enforced (as well as the details of these rules) depends not on the implementation of the language, but on the installation (site) at which it is used.  Teachers or supervisors will surely vary these rules, but students and other low apprentices do so at their own peril.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,282 @@
+<HTML>
+<HEAD>
+<TITLE>6.5 Starting Your Own Libraries</TITLE>
+<meta NAME="keywords" CONTENT="libraries, library, module, modules, definition, definitions, implement, implementation, reserved, word, words, symbol, symbolic, file, import, imports, syntax, export, link, linking, linked, program, module, decoupling, compilation, unit, user, define, defined, data-type, data-types, data, type, types, procedure, procedures, variable, variables, custom, ood, oo, object-oriented, object, oriented, design, language, languages">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.5 Starting Your Own Libraries</B></H2>
+<P>This section details one of the most powerful and unique features of Modula-2<!--‹-->--how to create new library modules from which to import entities such as data types or procedures as desired in a particular program.</P>
+<P>Library modules are different from program modules and there are special rules for writing and compiling them. That is, one cannot simply compile an ordinary program module, place it on a disk, and import from it. There are two main reasons for making this distinction between program and library modules.</P>
+<P>1. There has to be some way for potential client modules to determine what entities are available for import. (Some procedures may be for the internal use of the library module only and not be appropriate for outsiders to know anything about.)</P>
+<P>2. Client programs (and programmers for that matter) do not need to know what is the code by which some library procedure was implemented in order to use it. All that is required for use is the syntax. Moreover, the compiler also needs to have available only the syntax; the code can be collected and bound together with the program code by the linker at a later time.</P>
+<P>Modula-2 addresses these considerations by partitioning the source material into two separate modules, one containing only the definitions (syntax) of the library entities, and the other containing the implementation (actual code) of those definitions.</P>
+<P>These are called the DEFINITION and IMPLEMENTATION parts of a library module respectively (two new reserved words) and are indicated by having the appropriate keyword precede the word MODULE in the heading. Here is a simple example to illustrate how to set this all up.</P>
+<H3><B>Problem:</B></H3>
+<P>Write a library module to supplement <I>RealMath</I>.</P>
+<H3><B>Solution:</B></H3>
+<P>One would first have to decide what to include in such a module. For the sake of simplicity, this example will have only base ten logarithms, and a simple constant<!--‹-->--the square root of two.</P>
+<P>First write out a text file such as the following:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> MyRealMath;
+
+<B>CONST</B>
+  root2 = 1.414213562;
+
+<B>PROCEDURE</B> log (x : <B>REAL</B>) : <B>REAL</B>;
+
+<B>END</B> MyRealMath.</PRE>
+
+<P>This text file is saved and is then compiled. Since this is not a program module (it does not do anything) no code is produced. Instead, compilation yields a <I>symbol file</I> that can be checked whenever any other code is compiled that makes use of the definition. In fact, the definition part of a module is not allowed to contain a body<!--‹-->--all code goes elsewhere. A definition module may have imports, such as data types, but these should only be what it uses itself, perhaps by mentioning them in parameter lists.</P>
+<P>The actual code for the procedures is embodied in a separate part of the library module, and stored in a different file. It is a good strategy to retain the definitions in the program editor, make such changes as needed, and then save the results as the following:</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> MyRealMath;  (* note same name *)
+
+<B>FROM</B> RealMath <B>IMPORT</B>
+  ln;
+
+<B>PROCEDURE</B> log (x : <B>REAL</B>) : <B>REAL</B>;
+(* returns the base 10 logarithm of x *)
+<B>BEGIN</B>
+  <B>RETURN</B> (ln (x)) / (ln (10.0) )
+<B>END</B> log;
+
+<B>END</B> MyRealMath.</PRE>
+
+<P>Once this source file has been created and saved, it too is compiled, and the corresponding code file is generated. This step <I>must</I> be done after the definition module has been compiled to a symbol file, for the symbol file contains information that the compiler requires when building the code for the implementation part of the module.</P>
+<P>At this point a client program can be written that uses this library module in exactly the same way as it would a vendor supplied library. That is, one can now write:</P>
+<PRE>
+<B>MODULE</B> Client;
+
+<B>FROM</B> MyRealMath <B>IMPORT</B>
+  root2, log;</PRE>
+
+<P>and then write code making use of the imported items in the normal way.</P>
+<P>In order to manage all the files that are needed to store the text and compiled versions of this code, most operating systems employ standard extensions to the basic name. These are typically some variation of the following:</P>
+<A NAME="namechart"></A><PRE>File Contents	                               Typical File Names
+text source of a program module Myfile	        Myfile.MOD
+compiled code of the program Myfile	        Myfile.MOD.o or Myfile.OBJ
+text source of definition module Mylib	        Mylib.DEF
+symbol file compiled from Mylib	                Mylib.SBM or Myfile.SYM
+text source of implementation module Mylib	Mylib.MOD
+compiled code of Mylib	                        Mylib.MOD.o or Mylib.OBJ
+linked executable final program	                Myfile or Myfile.EXE</PRE>
+
+<P><B>NOTES</B>:	1. The syntax of implementation modules is identical to that of program modules, except that they may not contain export lists (these will be covered in <A HREF="../Ch10/Ch10.5.html">section 10.5</A>).</P>
+<P>	2. The parameter lists of their procedures should <I>exactly</I> repeat the ones declared in the corresponding definition module. (Although the parameters names may differ between definition and implementation, the types must exactly match).</P>
+<P>	3. Anything declared in the definition module is available to the implementation module, (thus, <i>root2</i> can be used in the implementation of <I>MyRealMath</I> without further mention) but anything just imported into the definition module is not; it must be imported again into the implementation module if it is to be used there.</P>
+<P>	4. Like program modules, the implementation part of a library module may have a body. This body (when it exists) is executed at the point in the client program where the imports from the library are done. This is sometimes used for initializing variables needed for the correct operation of the module, but will not be employed in any examples until later in the text.</P>
+<P>When a client program that does imports is compiled, only the syntax of the imported entities needs to be looked up. This can be done with the symbol file, so only the definition part of the library module needs to be compiled at this point. It is not until the system linker is invoked to tie all the code segments together into a single executable application that the output from compiling the implementation part is required. This allows the design of the program and its library support to be conducted in one phase of the job, and all the code implementation to be postponed until later.</P>
+<BLOCKQUOTE><I><A NAME="Decoupling">The</A> separation of the definition from the implementation is called <U>module decoupling</U>. </I></BLOCKQUOTE>
+<P>In all, Modula-2 has three kinds of modules that can be compiled. Each is termed a <I>compilation unit</I> and their general relationship and syntax is summarized in the diagram below. Note that the diagram does not say that an implementation module contain something that <I>acts</I> like a program module, but something that <I>looks</I> (syntactically) the same as a program module.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.11.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B><A NAME="6.5.1">6.5.1</A> Modules and User-Defined Data Types</B></H3>
+<P>A common (indeed the most common) use of library modules is to encapsulate the representation of some abstract data type along with the procedures necessary to manipulate items of this type. What follows is a simple example of this technique. Another will be found in section 6.9, and several more throughout later chapters.</P>
+<P>Consider the abstract data type <I>fraction</I>. Mathematically, items of this type are represented as 
+<IMG SRC="Figure/Eq6.4.7.GIF"><!----> where a and b are integers and b <!--‚-->&lt;&gt; 0.</P>
+<P>The fraction bar is just a convenient symbol, and the representation could just as easily be done with an ordered pair (a, b) where the first component is the numerator and the second is the denominator. With this notation, and if (a, b) and (c, d) are fractions, some basic operations can be defined as follows:</P>
+<P><I>Negation:</I></P>
+<P>The opposite of a fraction can be found by negating the numerator alone. That is, -(a, b) is just (-a, b). It is a common error on the part of elementary school students to negate <I>both</I> the numerator and the denominator. That answer, of course, is actually equal to the original fraction.</P>
+<P><I>Inverse:</I></P>
+<P>1/(a, b), that is <IMG SRC="Figure/Eq6.4.8.GIF"><!---->, can be inverted just by writing (b, a), that is, <IMG SRC="Figure/Eq6.4.9.GIF"><!----> at least, provided that a <!--¼-->&lt;&gt; 0 also.</P>
+<P><I>Multiplication</I>:</P>
+<P>(a, b) <!--¥-->&#215; (c, d) is calculated by multiplying the numerators and denominators together, respectively. This yields (ac, bd).</P>
+<P><I>Addition</I>:</P>
+<P>To compute (a, b) + (c, d), a common denominator bd is employed. The numerator can then be expressed as ad + bc. The result: (ad + bc, bd). The reader should verify this by writing it in the more conventional notation.</P>
+<P>At this point, subtraction and division can be written in terms of adding a negation and multiplying by an inverse, respectively. Another operation on fractions is reducing them to lowest terms. There is a choice here; this could be provided to the client of the library module, or it could be retained inside the implementation module and all answers automatically reduced to lowest terms. In the initial implementation that follows, it will be left out altogether, and the decision deferred to the reader in the exercises.</P>
+<P>What will not be left out, however, even though one might argue that it is not necessary, is a procedure to assign two integers to an item of the type <I>fraction</I>. Since the representation will simply be</P>
+<PRE>
+  <B>TYPE</B>
+    Fraction = <B>ARRAY</B> [1 .. 2] <B>OF</B> <B>INTEGER</B>;</PRE>
+
+<P>and assuming that <I>frac</I> is of type <I>Fraction</I>, one could do assignment transparently by having a client program contain the lines</P>
+<PRE>
+  frac [1] := a;
+  frac [2] := b;</PRE>
+
+<P>without a separate procedure. However, it is best not to <I>use</I> the implementation details of the type in client programs, but to treat the data type abstractly at all times. Indeed, a means will be shown later in the text to deliberately hide the fact that a <I>Fraction</I> is implemented as an array at all. This will actually prevent client programs from knowing any details about the representation, and force them to access items of the abstract type solely through the provided procedures. With the means available so far, this abstract view cannot be enforced, but it ought to be disciplined. This is done to reduce the possibility of errors being introduced by client programs that manipulate parts of data items incorrectly or inappropriately.</P>
+<P><B>NOTE</B>:	It is incumbent on the writer of a library module encapsulating an abstract data type to provide all necessary services for that data type so as to eliminate any necessity for client programs to attempt to use items of the type in a transparent manner.</P>
+<P>In order to be consistent with this design philosophy, procedures will also have to be included to return the numerator or denominator of a fraction without having a client program look at its components directly. These discussions lead to the following:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> <A NAME="Fractions">Fractions</A>;
+
+<B>TYPE</B>
+  Fraction = <B>ARRAY</B> [1 .. 2] <B>OF</B> <B>INTEGER</B>;
+  (* the first component is the numerator; the second the denominator *)
+
+<B>PROCEDURE</B> Assign (num, denom : <B>INTEGER</B>) : Fraction;
+  (* Pre: denom is not equal to zero
+  Post: the fraction returned has num as numerator and denom as denominator *)
+
+<B>PROCEDURE</B> Numerator (x : Fraction) : <B>INTEGER</B>;
+  (* Pre: none
+  Post: the numerator of the fraction is returned *)
+
+<B>PROCEDURE</B> Denominator (x : Fraction) : <B>INTEGER</B>;
+  (* Pre: none
+  Post: the denominator of the fraction is returned *)
+
+<B>PROCEDURE</B> Neg (x : Fraction) : Fraction;
+  (* Pre: none
+  Post: the fraction returned has the numerator negated *)
+
+<B>PROCEDURE</B> Inv (x : Fraction) : Fraction;
+  (* Pre: the numerator of x is not equal to zero
+  Post: the fraction returned has numerator and denominator swapped*)
+
+<B>PROCEDURE</B> Add (x, y : Fraction) : Fraction;
+  (* Pre: the fractions are initialized
+  Post: the fraction returned is the sum x plus y *)
+
+<B>PROCEDURE</B> Sub (x, y : Fraction) : Fraction;
+  (* Pre: the fractions are initialized
+  Post: the fraction returned is the difference x minus y *)
+
+<B>PROCEDURE</B> Mul (x, y : Fraction) : Fraction;
+  (* Pre: the fractions are initialized
+  Post: the fraction returned is the product of x and y *)
+
+<B>PROCEDURE</B> Div (x, y : Fraction) : Fraction;
+  (* Pre: the fractions are initialized and the numerator of y is not equal to 0
+  Post: the fraction returned is the quotient of x by y *)
+
+<B>END</B> Fractions.</PRE>
+
+<P>What follows is only an initial implementation of this module. It can be finished and tested by the reader at her leisure once decisions have been made on such matters as how to handle reducing fractions.</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> Fractions;
+
+<B>PROCEDURE</B> Assign (num, denom : <B>INTEGER</B>) : Fraction;
+
+<B>VAR</B>
+  temp : Fraction;
+
+<B>BEGIN</B>
+  temp [1] := num;
+  temp [2] := denom;
+  <B>RETURN</B> temp;
+<B>END</B> Assign;
+
+<B>PROCEDURE</B> Numerator (x : Fraction) : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> x [1];
+<B>END</B> Numerator;
+
+<B>PROCEDURE</B> Denominator (x : Fraction) : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> x [2];
+<B>END</B> Denominator;
+
+<B>PROCEDURE</B> Neg (x : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  x [1] := -x [1];
+  <B>RETURN</B> x;
+<B>END</B> Neg;
+
+<B>PROCEDURE</B> Inv (x : Fraction) : Fraction;
+
+<B>VAR</B>
+  temp : <B>INTEGER</B>;
+
+<B>BEGIN</B>;
+  temp := x [1];
+  x [1] := x [2];
+  x [2] := temp;
+  <B>RETURN</B> x;
+<B>END</B> Inv;
+
+<B>PROCEDURE</B> Add (x, y : Fraction) : Fraction;
+
+<B>VAR</B>
+  temp : Fraction;
+
+<B>BEGIN</B>
+  temp [1] := x [1] * y [2] + x [2] * y [1];
+  temp [2] := x [2] * y [2];
+  <B>RETURN</B> temp;
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Sub (x, y : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  <B>RETURN</B> Add (x, Neg (y) );
+<B>END</B> Sub;
+
+<B>PROCEDURE</B> Mul (x, y : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  <B>RETURN</B> Assign (x [1] * y [1], x [2] * y [2]);
+<B>END</B> Mul;
+
+<B>PROCEDURE</B> Div (x, y : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  <B>RETURN</B> Mul (x, Inv (y) );
+<B>END</B> Div;
+
+<B>END</B> Fractions.</PRE>
+
+<P>As above, once this second part of the library module has been compiled, client program modules can be written that import one or more of these items from the new library and then employ them in writing code.</P>
+<P>Some readers might be wondering at this point why one would bother implementing this data type at all when the type REAL is available to handle fractional quantities. There are two reasons:</P>
+<P>1. The type REAL is intended to represent the set of real numbers. The type <I>Fraction</I> represents just the rational numbers. As these are mathematically distinct, it makes sense to represent them differently in a computing notation as well. Of course, items of the type REAL actually can only take on a finite number of values, as storage space for significant figures and exponents is limited, but this is an implementation problem and ought not to be allowed to obscure the abstraction of reals by REAL.</P>
+<P>2. Not only is it the case that some reals cannot be represented in a given implementation of REAL, some rational numbers cannot be represented exactly either. A fraction such as 1/2 <I>may</I> have an exact representation in a particular implementation of REAL, whereas the fraction 121/349 may not. Both have exact representations in the abstract type <I>Fraction</I>, as does any rational whose numerator and denominator do not overflow the INTEGER type in the implementation.</P>
+<P>It ought also to be observed that this example follows a different design methodology than any previously employed in the text, though it is one that has been hinted at in general terms ever since chapter one. Here, the designer perceives the need to have a certain type of data, designs a representation and decides on the procedures that will act upon it. After the design is complete and the resulting definition module compiled, the data type is implemented in a separately compiled implementation module. The text has not at this point even suggested what application (client) program might have given rise to the need to make use of this data type. While one must presume that such an application would in fact surface <I>before</I> the decision to implement the data type, it is important to note that creating the abstract data type <I>Fraction</I> and its operations, is a task that can be handled independently of the original problem, whatever it may have been.</P>
+<P>Once having decided on the need for a particular data type, the programmer is free to concentrate on its implementation, temporarily setting aside the original problem that brought about the need in the first place. The procedure is always as in this section:</P>
+<P>1. Decide on what the data type will be and how it will be represented.</P>
+<P>2. Write down all the procedures (with their parameter lists and types)  that will be needed to use that data type effectively.</P>
+<P>3. Write out the definition module in the syntax of Modula-2 with all the necessary types, variables, and procedures that will be available for import by client programs. No code is written, only declarations. Compile this module first.</P>
+<P>4. Implement the types and procedures in an implementation module that contains the details of all types, the code for all procedures (the headings of which must be as defined in step three), and assign values to any variables in the body of the module. Compile this module last. The corresponding symbol file of the definition module from step three must be on-line (probably in the same disk directory) when this module is compiled, because it will be checked for matching syntax and some important information copied for library control. See section 6.7.</P>
+<P>This section closes with a definition of the design process that has been introduced here:</P>
+<BLOCKQUOTE><I><A NAME="Object">The</A> method of design that begins with the specification of a data type and all its associated procedures, and then implements these<!--</I>‹<I>-->--all independent of the application problems that spawned the need for the data type in the first place<!--</I>‹<I>-->--is called <U>object-oriented</U> design.</I></BLOCKQUOTE>
+<P>Some programming notations are themselves designed in such a way as to encourage this kind of design, or even to enforce it. These are termed <I>object oriented languages</I>. Modula-2 can be used as a vehicle for  object oriented design, but object oriented notations such as Smalltalk take this design methodology much further. Some versions of Modula-2 have object oriented extensions to the language. These will be discussed in a later chapter.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

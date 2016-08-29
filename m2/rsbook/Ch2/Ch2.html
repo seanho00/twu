@@ -1,0 +1,117 @@
+<HTML><HEAD><TITLE>Chapter 2: From Plan to Program</TITLE><STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<CENTER><H1><B>Chapter 2<BR>
+From Plan to Program</B></H1></CENTER>
+
+
+<BR><A class = navgrn HREF="Ch2.0.html">2.0 Chapter Goals</A><!--	30-->
+<BR><A class = navgrn HREF="Ch2.1.html">2.1 Giving Birth--A First Modula-2 Program</A><!--	30-->
+<BR><A class = navgrn HREF="Ch2.2.html">2.2 The Anatomy of an Infant Program</A><!--	32-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.2.html#2.2.1">  2.2.1 What is a Module?</A><!--	32-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.2.html#2.2.2">  2.2.2 Reserved Words</A><!--	33-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.2.html#2.2.3">  2.2.3 Standard Library Tools</A><!--	33-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.2.html#2.2.4">  2.2.4 A Name for the Baby<!--‹-->--Identifiers</A><!--	33-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.2.html#2.2.5">  2.2.5 Strings</A><!--	35-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.2.html#2.2.6">  2.2.6 Summary</A><!--	36-->
+<BR><A class = navgrn HREF="Ch2.3.html">2.3 How to Solve a Problem</A><!--	37-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.3.html#2.3.1">  2.3.1 Analysis</A><!--	37-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.3.html#2.3.2">  2.3.2 Planning and Refining a Solution</A><!--	39-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.3.html#2.3.3">  2.3.3 Data Tables and Sample I/O</A><!--	39-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.3.html#2.3.4">  2.3.4 Refining the Solution</A><!--	40-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.3.html#2.3.5">  2.3.5 Execution and Satisfaction</A><!--	41-->
+<BR><A class = navgrn HREF="Ch2.4.html">2.4 Documenting the Solution</A><!--	42-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.4.html#2.4.1">  2.4.1 External Documentation</A><!--	42
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.4.html#2.4.2">  2.4.2 Internal Documentation</A><!--	42-->
+<BR><A class = navgrn HREF="Ch2.5.html">2.5 Variables in Modula-2</A><!--	44-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.5.html#2.5.1">  2.5.1 Simple Variable Types</A><!--	45-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.5.html#2.5.2">  2.5.2 Standard Identifiers</A><!--	47-->
+<BR><A class = navgrn HREF="Ch2.6.html">2.6 Literals and Constants</A><!--	47-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.6.html#2.6.1">  2.6.1 Literals</A><!--	47-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.6.html#2.6.2">  2.6.2 Constants</A><!--	48-->
+<BR><A class = navgrn HREF="Ch2.7.html">2.7 Expressions for Constants and Variables</A><!--	49-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.7.html#2.7.1">  2.7.1 Precedence in Modula-2</A><!--	51-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.7.html#2.7.2">  2.7.2 Mixed Expressions and Modula-2</A><!--	51-->
+<BR><A class = navgrn HREF="Ch2.8.html">2.8 Simple Output Methods</A><!--	52-->
+<BR><A class = navgrn HREF="Ch2.9.html">2.9 REAL Variables</A><!--	55-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.9.html#2.9.1">  2.9.1 Real Operations</A><!--	56-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.9.html#2.9.2">  2.9.2 The Format of Real Output</A><!--	58-->
+<BR><A class = navgrn HREF="Ch2.10.html">2.10 Type Compatibility and REAL</A><!--	60
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.10.html#2.10.1">  2.10.1 Additional Conversion Functionality</A><!--	60-->
+<BR><A class = navgrn HREF="Ch2.11.html">2.11 Interactive Programs</A><!--	61-->
+<BR><A class = navgrn HREF="Ch2.12.html">2.12 An Extended Example (Bank Interest)</A><!--	63-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch2.12.html#2.12.1">  2.12.1 Input in non ISO Versions</A><!--	66-->
+<BR><A class = navgrn HREF="Ch2.13.html">2.13 Chapter Summary</A><!--	67-->
+<BR><A class = navgrn HREF="Ch2.14.html">2.14 Assignments</A><!--	68-->
+<BR><A class = navgrn HREF="Ch2n.html">Programming Note<!--‹-->--I/O In Non-Standard Modula-2</A><!--	70-->
+
+<!--Version History:
+Version 3.0 released to MS 93 07 19 to Deane 94 01 04
+Version 3.0.1 with character graphics 1994 01 24
+Version 3.0.2 with table of contents 1994 08 25
+Version 4.0 with HTML markup by G Tisher 1995 05 15
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 06 12
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+Version 5.1 corrected and revised 2004 01 08 by R. Sutcliffe--><!--
+«INCLUDE Ch2.0.html»
+«INCLUDE Ch2.1.html»
+«INCLUDE Ch2.2.html»
+«INCLUDE Ch2.3.html»
+«INCLUDE Ch2.4.html»
+«INCLUDE Ch2.5.html»
+«INCLUDE Ch2.6.html»
+«INCLUDE Ch2.7.html»
+«INCLUDE Ch2.8.html»
+«INCLUDE Ch2.9.html»
+«INCLUDE Ch2.10.html»
+«INCLUDE Ch2.11.html»
+«INCLUDE Ch2.12.html»
+«INCLUDE Ch2.13.html»
+«INCLUDE Ch2.14.html»
+«INCLUDE Ch2n.html»-->
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

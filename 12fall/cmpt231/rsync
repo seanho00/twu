@@ -1,0 +1,2 @@
+#! /bin/sh
+/usr/bin/rsync -Chauzi --delete-after --stats -e ssh . seanhoco@seanho.com:twu/12fall/cmpt231/

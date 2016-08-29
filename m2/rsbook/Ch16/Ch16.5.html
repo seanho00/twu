@@ -1,0 +1,92 @@
+<HTML><HEAD><TITLE>16.5 Refining within an Implementation Module</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Refining within an Implementation Module">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><b>16.5 Refining Within an Implementation Module</b></H2>
+<P>A refining local module may be employed in any context in which the refined local module is permitted by the base language, including a program module (as in <A HREF="Ch16.4.html">section 16.4</A>), an implementation module of a separate library module, or a local module contained within either.</P>
+
+<P>Example</B> <b>1:</b> Generic modules to implement structures and those to implement data manipulation can be defined as in the examples in <A HREF="Ch16.2.html#16.2.1">16.2.1</A> and then combined in a new generic definition module using local modules. First create the generic definition module.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION</B> <B>MODULE</b> ValidStacks (PType : <b>TYPE</b>; PValidProc : ValidProcType);
+
+<b>TYPE</b>
+  ValidProcType = <b>PROCEDURE</b> (item : PType) : <b>BOOLEAN</b>;
+
+<b>PROCEDURE</b> PushValid (item : PType);
+
+<b>END</b> ValidStacks.</PRE>
+
+<P>Then, combine the two by refining both within the implementation via local modules and then employing services from both so that, in this case, only valid items are pushed on the stack. In addition, note that the data items are to be defined in another module and are assumed to have ADT components available for use as follows:</P>
+<P>(i) <i>PType</i> that can be mapped both to the <i>Element</i> required by <i>Stacksand</i> to the <i>Item</i> required by <i>Validate</i></P>
+<P>   and</P>
+<P>(ii) <i>PValidProc</i> compatible with the <i>Validation</i> required by <i>Validate</i>.</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION</B> <B>MODULE</b> ValidStacks (PType : <b>TYPE</b>; PValidProc : ValidProcType);
+<b>IMPORT</b> Stacks, Validate;
+
+<b>MODULE</b> MyStacks = Stacks (PType);
+<b>EXPORT</B> <B>QUALIFIED</b> StackSize, Push, Pop, Empty;
+<b>END</b> MyStacks;
+
+<b>MODULE</b> MyValidate = Validate (PType, PValidProc);
+<b>EXPORT</B> <B>QUALIFIED</b> Valid;
+<b>END</b> MyValidate;
+
+<b>PROCEDURE</b> PushValid (item : PType);
+<b>BEGIN</b>
+  <b>IF</b> MyValidate.Valid (item) <b>THEN</b>
+    MyStacks.Push (item)
+  <b>END</b> (* if *)
+<b>END</b> PushValid;
+
+<b>END</b> ValidStacks.</PRE>
+
+<P>These may then be refined further for a specific data type and validation procedure.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

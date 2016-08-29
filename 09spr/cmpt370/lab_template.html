@@ -1,0 +1,168 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2009 Lab Template, Trinity Western University</title>
+</head><body>
+
+<h1>CMPT370 Lab0: Template Lab Write-up</h1>
+
+<p><a href="fltk/BankInterest/">The project directory for this sample lab
+(including code, Fluid file, and Windows executable) are here.</a>
+A tarball or ZIP of this whole directory are what should be submitted to
+eCourses.
+
+<p>Approximate lab marking weights:<ul>
+<li> 40%: Program compiles, runs, doesn't crash, and accomplishes its primary purpose
+<br>(if it crashes for me but not for you, we can arrange for you to demo it to
+me.)
+<li> 10%: Internal code style and documentation: comments, identifiers
+<li> 40%: Program design and lab write-up, excluding test cases
+<li> 10%: Testing / test cases
+</ul>
+
+<h2>Purpose of the Program:</h2>
+Compute the amount there will be in my bank account after one year if
+the interest is compounded quarterly and any withdrawals I make are entered
+immediately after the interest is paid.
+
+<h2>Suitability:</h2>
+The bank account example given above is well within the reach of a simple
+calculator, and is therefore of somewhat marginal suitability for computer
+solution.  However, the solution does illustrate how the problem-solving
+process works, from problem statement to design to implementation.
+
+<h2>Problem Restatement:</h2><ul>
+<li> <b>Given:</b> A bank account, possibly containing money.
+<li> <b>To Do:</b> Compute interest, make withdrawals every 3 months.
+<li> <b>Desired Result:</b> Final balance.
+<li> <b>Formula:</b> <tt>interest = principal * rate * time</tt>
+</ul>
+
+<h2>Libraries:</h2>
+This program uses FLTK for the graphical user interface; any 1.x version
+should work.  This program should work anywhere FLTK works.
+
+<h2>Problem Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input Section:</b> <ul>
+  <li> bank balance
+  <li> interest rate
+  <li> quarterly withdrawal amounts (4)
+  </ul>
+<li> <b>Computation:</b> <ul>
+  <li> calculate interest each quarter
+  <li> subtract withdrawal each quarter
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> display final balance
+  </ul>
+</ol>
+
+<h2>Second Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input (BankInterestUI Fluid file):</b> <ul>
+  <li> Get values from widgets for initial balance, interest rate, and four
+  quarterly widthdrawals.
+  </ul>
+<li> <b>Computation (BankInterest core logic):</b> <ul>
+  <li> For loop: for each current quarter from 1 to 4: <ul>
+    <li> Compute the interest using <tt>interest = principal * rate * time</tt>
+    <li> Add this to the original balance: <tt>balance = balance + interest</tt>
+    <li> Subtract the current withdrawal amount from the current balance:
+         <tt>balance = balance - withdrawal</tt>
+    </ul>
+  </ul>
+<li> <b>Output (BankInterestUI Fluid file):</b> <ul>
+  <li> Set value in widget for final balance
+  </ul>
+</ol>
+
+<h2>Program Design:</h2>
+This simple GUI program has several input widgets and one output widget for the
+final balance.  All the input widgets have the same callback:
+<tt>update_balance()</tt>.  This callback just does the interface between the
+GUI widgets and the C function which does all the number-crunching.
+
+<p>The core logic is in BankInterest.cxx, which just has one function:
+<tt>calc_balance()</tt>.  This takes a starting balance, an interest rate
+(percent), and an array of four widthdrawal amounts.  It returns the final
+balance amount.
+
+<h2>Data Table:</h2>
+<h3>BankInterestUI (Fluid GUI):</h3> <ul>
+  <li> widthdrawal: array of four floats
+  <li> <b>Widgets:</b> <ul>
+    <li> init_bal, rate, w1, w2, w3, w4: Value_Input
+    <li> balance: Value_Output
+    <li> (in FLTK/Fluid, you don't need to list all the auto-generated variable
+  names, but you should list any that you explicitly name that are referenced
+  by any callbacks.)
+    </ul>
+  </ul>
+<h3>BankInterest (core logic):</h3> <ul>
+  <li> COMPOUND_INTERVAL = 0.25 (constant)
+  <li> calc_balance(): <ul>
+    <li> balance: float (current balance)
+    </ul>
+  </ul>
+
+<h2>User Manual:</h2>
+
+<h3>Description:</h3>
+Bank Interest is a small application designed to maintain a
+simple bank account record.  It allows the user to specify the opening balance,
+and annual interest rate at the beginning of the program, and then to make
+quarterly withdrawals.  Interest is calculated on the balance before the
+withdrawal.
+
+<h3>Operation:</h3>
+There are six input boxes in the main window: <ul>
+<li><b>Starting balance:</b> 
+Type in the number of dollars that the bank account had at the start of the year.
+<li><b>Interest rate:</b>
+Type in the interest rate as a percentage;
+for example, type <tt>6.5</tt> if the interest rate is 6.5%.  Do not type
+the percent symbol.
+<li><b>First Quarter widthdrawal:</b>
+Type in the amount being withdrawn for that quarter in the form 10.23.  
+That is, give the number in decimal form and
+without a dollar sign.  Repeat for all four quarters of the year.
+</ul>
+At the bottom of the window you will see the final balance in the account at
+the end of the year.  It will automatically update each time you change a value
+in the input boxes.
+<p>To quit the program, select the "Ok, bye!" button, or press Esc.
+
+<h2>Test Cases, with expected results:</h2>
+
+<h3>Normal Test case:</h3>
+<ul>
+<li> Starting balance: 100
+<li> Interest rate: 12.3
+<li> First Quarter widthdrawal: 20
+<li> Second Quarter widthdrawal: 10
+<li> Third Quarter widthdrawal: 50
+<li> Fourth Quarter widthdrawal: 25
+<li> Ending balance: 3.81
+</ul>
+
+<h3>Test case with negative balance:</h3>
+<ul>
+<li> Starting balance: 100
+<li> Interest rate: 8.53
+<li> First Quarter widthdrawal: 47
+<li> Second Quarter widthdrawal: 89
+<li> Third Quarter widthdrawal: 22
+<li> Fourth Quarter widthdrawal: 6
+<li> Ending balance: -10.41
+</ul>
+
+<h2>Bugs / Limitations</h2>
+The program is quite limited in only allowing four widthdrawals, at a fixed
+compounding interval of once a quarter.  Potential extensions could allow
+for arbitrary compounding intervals, and perhaps a more flexible way of 
+specifying when widthdrawals happen.
+
+<h2>Screenshots</h2>
+<img src="fltk/BankInterest/screenshot1.gif" width="322" height="293">
+<br>(Can be embedded here or left as separate files if you like, 
+but list the filenames here.)
+
+</body></html>

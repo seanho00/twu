@@ -1,0 +1,178 @@
+<HTML>
+<HEAD>
+<TITLE>2.14 Assignments</TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, modula-2, module, program, identifier, identifiers, entity, entities, comments, literals, literal, variable, contstant, constants, assign, values, integer, cardinal, char, real, expressions, precedence, type, conversions, io, input, output, I/o, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.14 Assignments</B></H2>
+<H3><B>Questions</B></H3>
+<P>1.  What are the functions of:  (a) an editor; (b) a compiler; (c) a linker; (d) an interpreter?  Determine whether linking is a separate step on your system.</P>
+<P>2.  Why is it that input and output is not in the Modula-2 language proper, but has to be imported from a separate library?</P>
+<P>3.  What is the general format of a Modula-2 program?</P>
+<P>4.  Determine whether any special characters not normally legal in Modula-2 identifiers are allowed on your system.</P>
+<P>5.  Determine from the manuals and write down in a handy place the limits your system imposes on the numeric types CARDINAL, INTEGER, REAL, and LONGREAL.  Make a note of any types such as LONGINT and LONGCARD that may be provided, and note their limits as well.</P>
+<P>6.  Determine from the manuals and write down in a handy place the exact syntax and semantics (meaning) of the I/O procedures discussed in this chapter, organized by the names of the modules in which they are found.  (If your version is ISO standard, you have nothing to do.)</P>
+<P>7.  Which of the following identifiers are illegal in Modula-2 and why? FirstFruit, Result#1, Goody2Shoes, Execute User, 12Dozen, MODULE, Canada'sBest, AVeryLongIdentifier, THISYEARSIMPORTS, Begin, This_low_life_identifier</P>
+<P>8.  Define the term <I>identifier</I>.</P>
+<P>9.  Define the term <I>statement</I>.</P>
+<P>10.  Define the term <I>standard</I> in the context of Modula-2.</P>
+<P>11.  Distinguish among the terms <I>reserved</I> <I>word</I>, <I>standard identifier</I>, and <I>standard library identifier</I>.</P>
+<P>12.  Distinguish among the terms literal, constant, and variable.</P>
+<P>13. Make a list of three problems a small computer would be suitable for, three more that only a large machine could handle, and three that would be unsuitable for computer solution at all.  (Do not use any of the illustrations in this chapter; make them as unlike these as possible.) Give your reasons in each case.  Discuss your list with several other people.</P>
+<P>14. What is the difference between the way a constant is given a value and a variable is given a value in Modula-2?</P>
+<P>15. What is a Modula-2 expression?</P>
+<P>16. What does it mean to say that CARDINAL and INTEGER are assignment compatible but not expression compatible?</P>
+<P>17. Correct the right hand side of each assignment statement so that it will work properly.  Assume that <I>int</I> is of type INTEGER, <I>card</I> is of type CARDINAL, <I>lre</I> is of type LONGREAL, and <I>re</I> is of type REAL.
+<Pre>	a) card := card + int;
+	b) re := int;
+	c) lre := re;
+	d) lre := card;
+	e) re := card;
+	f) re := <B>FLOAT</B>(<B>VAL</B>(<B>INTEGER</B>, 6));
+	g) card := <B>TRUNC</B> (-5);</Pre>
+<P>18.  Without writing any programs, determine the answers to the following expressions.  A few cause errors.  Note these and state why there is an error.
+<Pre>	a) 4 + 5 * 7 - 3
+	b) 8 <B>DIV</B> 2 * 10 <B>MOD</B> 3
+	c) 4 / (2 - 6 <B>DIV</B> 3)
+	d) -15 <B>REM</B> 6 - 3 * 14 / 4
+	e) 2 - 5 * (4 + 7)
+	f) 3.2 - 16.7 * (4.1 + 5.9)
+	g) 15.25 - 12 <B>DIV</B> 4
+	h) 2.4 + 1.5 * <B>FLOAT</B> (4)
+	i) 2.5 * <B>FLOAT</B> ( 15 <B>MOD</B> -4)
+	j) <B>FLOAT</B> (<B>TRUNC</B> (11.7))
+	k) (1.5 E+09) * (3.0 E+04)
+	l)  (2.8 E+12) / (7.0 E-04)
+	m) (7.5 E-18) / (1.5 E-03)
+	n) <B>FLOAT</B> (8 <B>DIV</B> 2 + 6 <B>DIV</B> 5) + 5.9
+	o) (7.5 E-18) / 10000
+	p) -12 + <B>TRUNC</B> (7.8)
+	q) <B>LFLOAT</B> (8) + <B>FLOAT</B> (7)</Pre>
+<P>19. What is the exact result output from each of the following?  Be sure to indicate spaces where present, and to describe the nature of any apparent logical errors.</P>
+<PRE>  a) WriteCard (4, 0);
+     WriteInt (-2, 4);
+  b) WriteString (<!--"-->&quot;answer =<!--"-->&quot;);
+     WriteInt (-6, 0);
+  c) counter := 1;
+     <B>WHILE</B> counter <!--<-->&lt; 5
+       <B>DO</B>
+         WriteCard (counter, 3);
+         WriteLn;
+       <B>END</B>;
+  d) counter := 1;
+     <B>WHILE</B> counter <!--<-->&lt; 10
+       <B>DO</B>
+         counter := counter - 1;
+         WriteCard (counter, 3);
+       <B>END</B>;
+  e) counter := 3;
+     <B>WHILE</B> counter <!--<-->&lt; 20
+       <B>DO</B>
+         WriteCard (counter, 3);
+         counter := counter * 2;
+       <B>END</B>;</PRE>
+
+<H3><B>Problems</B></H3>
+<P>20.  Write a program that will print out to the screen a message of the type</P>
+<PRE>
+*********************************
+** This program was written by **
+*****      <!--<-->&lt;your name<!-->&gt;      *****
+***         on <!--<-->&lt;date<!-->&gt;         ***
+***    for <!--<-->&lt;your course<!-->&gt;      ***
+*****   <!--<-->&lt;professor's name<!-->&gt;    ***
+*********************************</PRE>
+
+<P>	That is, the program should print out an ownership message for your subsequent work within a fancy box made up of stars or some other symbols.  Try to get the whole thing so that it is centered in the screen.   (Many screens are eighty columns wide, and are twenty four rows high.)</P>
+<P>21.  Write a batch style program to convert 45 pounds to kilograms.  (One pound equals 0.453592 kilograms.)</P>
+<P>22.  Write a batch style program to convert 45 miles per hour to metres per second. (One mile equals 1606.344 metres.)</P>
+<P>23.  Write a batch style program to convert 17 hours 15 minutes 43 seconds to seconds.</P>
+<P>24.  Write a batch style program to compute how many times your heart would beat if you lived for seventy-five years. (Assume it beats 72 times per minute, and a year has 365.25 days.)</P>
+<P>25. Rewrite the module <I><A HREF="Ch2.3.html#Powers">Powers</A></I> in section 2.3 as an interactive program.</P>
+<P>26. Rewrite the module <I><A HREF="Ch2.8.html#SquareCubeFormatted">SquareCubeFormatted</A></I> in section 2.8 as an interactive program.  The user should be prompted for the starting and ending number of the table to print.</P>
+<P>27. Rewrite the program in question 21 above in interactive form.</P>
+<P>28. Rewrite the program in question 22 above in interactive form.</P>
+<P>29. Rewrite the program in question 23 above in interactive form.  The user should be prompted for all three pieces of input data.</P>
+<P>30. Rewrite the program in question 24 above in interactive form.  The user should be prompted for a pulse rate and a number of years.</P>
+<P>31. Rewrite the module <I><A HREF="Ch2.12.html#BankInterest">BankInterest</A></I> in section 2.12 so that the withdrawals come out before interest is calculated on the remaining balance, then there is an opportunity to make a deposit.  Have the program print a chart with the headings <I>opening</I> <I>balance</I>, <I>withdrawal</I>, <I>interest</I>, <I>deposit</I>, and <I>new balance</I>.  Each line after that should be one time period.  Have the program do monthly figures rather than quarterly ones.  Write new refinements, pseudocode, and users' manual.</P>
+<P><B>NOTE</B>:	The following programs should have complete plans, including applicable refinements, pseudocode, documentation, sample data, and actual runs.  All should be interactive.</P>
+<P>32.  Write a program to compute and display answers to more general simple interest problems.  (interest = principal * rate * time) The user should be prompted for three pieces of input data.</P>
+<P>33.  Write a program that will compute and print on the screen the area and perimeter of a rectangle, given that the length and width are real and are to be typed in from the keyboard.</P>
+<P>34. Write a payroll module to compute the wages of secretary Nellie Hacker.  The user should be prompted for the hourly pay, the hours worked on each of the five working days of the week, and pay Nellie one-and-a-half times her regular salary for working more than 8 hours in a given  day.  Use only the syntax discussed in this chapter.</P>
+<P>35. Write a module that will compute the cost of operating your car given the number of kilometres travelled, the number of litres of fuel consumed per hundred kilometres, and the cost of gasoline in cents per litre.</P>
+<P>36. (Alternate to #35 in countries using the old Imperial units) Write a module that will compute the cost of operating your car given the number of miles travelled, the number miles travelled per gallon of fuel consumed, and the cost of gasoline in cents per gallon. (You may use either of the gallon sizes you are familiar with.)</P>
+<P>37. Write a module that will convert miles per gallon to litres per hundred kilometres.  Be sure to note which gallon size you are using for the conversion (Imperial or U.S.)</P>
+<P>38. Write a program that will compute and print to the screen the answers to cardinal multiplications in the following form:</P>
+<PRE>		  225
+		  112
+		------
+		  450
+		 225
+		225
+		------
+		25200</PRE>
+
+<P>39. Write a program that will compute and print to the screen the answers to cardinal divisions in the following form:</P>
+<PRE>     34  R 13
+   --------
+15) 523</PRE>
+
+<P>40. Write a program that will sum a set of purchases, print a subtotal, apply a sales tax, print and add this, then print a grand total.  The user should be asked repeatedly for a new purchase amount until a figure of 0.0 is entered. The sales tax may be a constant.</P>
+<P>41. A vector is an array of numbers that has only one row (or column, as the case may be). If two vectors have the same length, their dot product is defined as the sum of the products of their respective components. That is, the dot product of (2, 3, 5) with (1, -7, 9) is 2 + (-21) + 45, a total of 26. Write a program to read in the values of two vectors and compute their dot product. The easiest way to do this is to read the two first components, then the two second, and so on, multiplying and adding to a running sum as you go along.</P>
+<P>42.  Write a program that will compute and print on the screen the surface area and volume of a rectangular prism, given that the side lengths are real and are to be typed in from the keyboard.</P>
+<P>43.  Write a program that will compute and print on the screen the surface area and volume of a sphere, given that the radius is real and is to be typed in from the keyboard.</P>
+<P>44. Modify #40 so that there are two taxes, one provincial (or state) and the other federal. Both are applied on the original amount, that is you do not compute federal tax on the provincial tax.</P>
+<P>45. You begin with two members in a population. Every so often (the doubling time) the population doubles. After how many steps does the CARDINAL data type overflow? Suppose you do this for a REAL. After how many steps does it overflow?</P>
+<P>46. Write a program to compute the sum of the first n positive whole numbers 1 + 2 + 3 + 4 + ... + n. The number n is to be read from the keyboard.</P>
+<P>47. Write a program to compute the product of the first n positive whole numbers 1 * 2 * 3 * 4 * ... * n. The number n is to be read from the keyboard.</P>
+
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

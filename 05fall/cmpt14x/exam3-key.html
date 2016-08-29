@@ -1,0 +1,173 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li {
+  margin-top: 2em;
+}
+.subparts li {
+  margin-top: 0.3em;
+} 
+ol.subparts {
+  list-style-type: lower-alpha;
+}
+.break {
+  page-break-before: always;
+}
+i {
+ color: red;
+ font-weight: bold;
+}
+b {
+  color: blue;
+ font-weight: normal;
+}
+
+--></style>
+<title>CMPT145 Fall2005 Midterm ch8-10 KEY, Trinity Western.
+23 Nov 2005.</title>
+</head><body>
+
+<i>total: 50 marks</i>
+
+<ol class="main">
+
+<li><i>[4]</i>
+3FH: Decimal=<b>63</b>, octal=<b>77B</b>, binary=<b>111111</b>
+
+<li><i>[4]</i>
+2Gb = <b>2^18</b> kilobytes = <b>262,144</b> kilobytes
+
+<li><i>[12]</i>
+<ul>
+<li><b>StreamFile (Open, Close): normal restricted sequential stream</b>
+<li><b>SeqFile (OpenRead, OpenWrite, OpenAppend, Close, Reread, Rewrite):
+rewindable sequential stream</b>
+<li><b>RndFile (OpenOld, OpenClean, SetPos, NewPos, CurrentPos, StartPos, EndPos):
+random-access file</b>
+</ul>
+
+<li>
+Write a complete program module that does the following:
+<ol class="subparts">
+<li><i>[6]</i> Declare a list of 30 students -- each student has a name string,
+a CARDINAL student ID, and a REAL GPA.
+<li><i>[3]</i> Initialize the list to default values using a single statement.
+<li><i>[4]</i> Write out the list to a file in binary format.
+<li><i>[2]</i> Display the size of the output file in LOCs.
+<li><i>[4]</i> Read back in from the file only the entry for the 17th student.
+</ol>
+<b><pre>
+MODULE ClassList;
+IMPORT StreamFile, RndFile, RawIO, STextIO, SWholeIO;
+FROM StreamFile IMPORT
+	ChanId, OpenResults, read, write, raw, old;
+TYPE
+	NameString = ARRAY [0..30] OF CHAR;
+	Student = RECORD
+		name : NameString;
+		ID : CARDINAL;
+		GPA : REAL;
+	END;
+	Class = ARRAY [0..29] OF Student;
+VAR
+	cmpt14x : Class;
+	idx : CARDINAL;
+	oneStudent : Student;
+	cid : ChanId;
+	res : OpenResults;
+BEGIN
+	cmpt14x := Class { Student { "Jane Doe", 0, 4.0 } BY 30 };
+
+	StreamFile.Open (cid, "cmpt14x.bin", write+raw, res);
+	IF res = opened THEN
+		RawIO.Write (cid, cmpt14x);
+	END;
+	StreamFile.Close (cid);
+
+	STextIO.WriteString ("The file should be");
+	SWholeIO.WriteCard (SIZE (cmpt14x), 0);
+	STextIO.WriteString (" LOCs long.");
+	STextIO.WriteLn;
+
+	idx := 17;
+	RndFile.OpenOld (cid, "cmpt14x.bin", read+raw, res);
+	IF res = opened THEN
+		RndFile.SetPos (cid,
+		  RndFile.NewPos (cid, idx-1, SIZE(Student),
+		    RndFile.StartPos (cid)));
+		RawIO.Read (cid, oneStudent);
+	END;
+	RndFile.Close (cid);
+END ClassList.
+</pre></b>
+
+<li><i>[5]</i>
+Rewrite the following FOR loop code snippet as a general LOOP.
+Don't worry about the rest of the module (IMPORT, VAR, etc.).
+<pre>
+FOR idx := 0 TO LENGTH (name)
+  	DO
+		name[idx] := CAP (name[idx]);
+	END;
+</pre>
+
+<b><pre>
+idx := 0
+LOOP
+	name[idx] := CAP (name[idx]);
+	INC (idx);
+	IF idx &gt; LENGTH (name) THEN
+		EXIT
+	END;
+END;
+</pre></b>
+
+<li class="break"><i>[6]</i>
+What is output from executing the following program module?
+<pre>
+MODULE ExceptTest;
+
+FROM M2EXCEPTION IMPORT
+	M2Exceptions, IsM2Exception, M2Exception;
+FROM EXCEPTIONS IMPORT
+	IsExceptionalExecution;
+FROM STextIO IMPORT
+	WriteString, WriteLn;
+FROM SRealIO IMPORT
+	WriteFixed;
+
+PROCEDURE FloorDivide (num, denom : REAL) : REAL;
+BEGIN
+	RETURN FLOAT ( INT (num) / INT (denom) );
+EXCEPT
+	IF IsExceptionalExecution() AND
+	  (M2Exception() = sysException) THEN
+		WriteString (" div-by-zero!");
+	END;
+END FloorDivide;
+
+BEGIN
+	WriteFixed ( FloorDivide ( 14.2, 5.9 ), 0, 0 );
+	WriteFixed ( FloorDivide (  1.5, 0.5 ), 0, 0 );
+	WriteFixed ( FloorDivide (  6.8, 2.1 ), 0, 0 );
+EXCEPT
+	IF IsExceptionalExecution() THEN
+		WriteString (" bummer!");
+		RETURN;
+	END;
+END ExceptTest.
+</pre>
+
+<b> The output is " 2. div-by-zero! bummer!".</b>
+
+</ol>
+
+</body></html>
+

@@ -1,0 +1,106 @@
+<HTML><HEAD><TITLE>14.10 Assignments</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Assignments">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.10 Assignments</B></H2>
+<H3><B>Questions</B></H3>
+<P>1.  What does the term <i>semi-generic</i> mean?</P>
+<P>2.  What are the principal issues that need to be resolved before implementing a list ADT?</P>
+<P>3.  What is the difference between a queue and a stack?</P>
+<P>4.  What is a table?</P>
+<P>5.  The table was implemented using a linked list structure.  What is it not correct to assert that a table is a linked list?</P>
+<P>6.  What is a tree?</P>
+<P>7.  What is a binary tree?</P>
+<P>8.  What does a root lack that every other node has?</P>
+<P>9.  What do leaves lack that other nodes have?</P>
+<P>10. What does an interior node always have?</P>
+<P>11. What is the degree of a node in a binary tree?</P>
+<P>12. A binary tree with eight levels is full.  What is the number of occupied nodes?</P>
+<P>13. Explain the two different senses of the word <i>full</i> when applied to a binary tree.</P>
+<P>14. Why is a binary search tree a more efficient data structure than a linked list when it comes to searching through large data aggregates?</P>
+<P>15. Both a two way linked list and a binary tree have two node pointers. What is the difference between these structures?</P>
+<P>16. What does the term ISAM mean?</P>
+<P>17. What is <!--"-->&quot;hashing?<!--"-->&quot;</P>
+<P>18. Describe the three different forms of tree traversal.</P>
+<P>19. Suppose a tree were <I>ternary</I> (degree three). How many different ways would there be of traversing it?</P>
+<P>20. In the entable procedure of the module <I>CountryTable</I>, suppose the line <I>Assign (data, temp^.item)</I>;  is replaced with the line <I>temp^.item := data;</I>  What differnence will this make?  Predict what will happen, then try it.</P>
+<P>21. In the insert procedure of the module CountryBinaryTree, suppose the line Assign (data, temp^.item);  is replaced with the line  temp^.item := data;  What differnence will this make?  Predict what will happen, then try it.</P>
+<P>22. Carefully examine and complete a detailed commenting of the implementation module <i><A HREF="Ch14.2.html#Lists">Lists</A></i> in section 14.2.</P>
+<P>23. Carefully examine and complete a detailed commenting of the implementation modules <i><A HREF="Ch14.3.html#TextQueues">TextQueues</A></i> and <i><A HREF="Ch14.3.html#AnAdtQueues">AnAdtQueues</A></i> in section 14.3.</P>
+<P>24. Carefully examine and complete a detailed commenting of the implementation module <i><A HREF="Ch14.5.html#CountryTable">CountryTable</A></i> in section 14.5.</P>
+<P>25. Carefully examine and complete a detailed commenting of the implementation module <i><A HREF="Ch14.8.html#CountryBinaryTree">CountryBinaryTree</A></i> in section 14.8.</P>
+<H3><B>Problems</B></H3>
+<P>26. You have a stamp collection to keep track of. Implement an abstract data type <I>Stamp</I> with fields for the country name, year of issue, name of stamp, condition, and current value.  Now implement a list structure of these using the simple modifications to the list type discussed in this chapter.</P>
+<P>27. Implement and test the module <i><A HREF="Ch14.4.html#anADTStacks">anADTStacks</A></i> in section 14.4.</P>
+<P>28. Revise (and test) the <I>Table</I> data type as a <I>SortedTable</I> type. Invent your own data type to entable.</P>
+<P>29. A <i>priority queue</i> or <i>sorted queue</i> incorporates new items into the queue in a sorted fashion according to the value of some field.  Serving is still done at the head of the queue as before.  Modify the semi-generic queue in this chapter to be a priority queue for some key field.</P>
+<P>30. Re-implement the text queue using a linked list of characters.</P>
+<P>31. Re-implement  <I>anAdtQueues</I> without the need to obtain a data node ahead of time, finding another way to report the error and determine the full condition.  Hint: look at the other ADTs in this chapter.</P>
+<P>32. A <I>dequeue</I> or double-ended queue allows items to be entered and served at either end.  Thus it has <I>headEnque</I>, <I>tailEnqueue</I>, <I>headServe</I>, and <I>tailServe</I> routines.  Implement and test this structure.</P>
+<P>33. A <I>stack pair</I> is a pair of stacks in a single structure.  Implement this as an array with one stack pointer crawling forward from zero as items are pushed and back as they are pulled and the other stack pointer moving back from the maximum index as items are pushed and forward as they are pulled.  Thus, it has <I>push1</I>, <I>pull1</I>, <I>push2</I>, and <I>pull2</I> routines.  Both stacks are full (only one procedure needed) if the two pointers collide.  Test your implementation.</P>
+<P>34. Adapt the example in section 12.2 of the last chapter to the semi-generic methods of this chapter and create a linked list with two sets of links to enlist data consisting of people's names and their ages in two different sorted orders.</P>
+<P>35. Another way of solving the last problem is to have only one set of links in the  linked lists but two keys for sorting and two of the lists.  Solve the problem this way.</P>
+<P>36. Develop an airline flight reservation list.  The passenger records should have last name, first name, smoker or non-smoker, and final destination.  Set it up to read in any passenger's information and print out flight lists in alphabetical order and by destination.  For each flight you should be able to select from a menu that allows you to add a passenger, delete a passenger, or print a list.  Each flight is a list, so a main menu will have to control starting and ending flights. </P>
+<P>37.  Represent a polynomial as a linked list where each term is of the following type:</P>
+<PRE>    <B>TYPE</B>
+      Term =
+       <B>RECORD</B>
+         toPoint : Point;
+         coefficient : <B>INTEGER</B>;
+         exponent : <B>CARDINAL</B>
+       <B>END</B></PRE>
+<P>	Each linked list is one polynomial and has as many records in the chain as there are terms in the polynomial.  Write and test the routines to add, subtract, and multiply such polynomials, and to display the result.</P>
+<P>38. Write a program module that will take data input from the keyboard and sort it into a tree.  Each record tree consists of a person's name, age, sex, and whether they eat raspberry ice cream or not.  Test your module by having your application program write it all out in alphabetical order by last name.</P>
+<P>39. Add to the traversals in the semi-generic binary tree <i>reverse</i> in, pre, and post order traversals.  Test all three.</P>
+<P>40. Write a module to implement a data base to keep track of your library.  The important information includes the publisher, author, title, subject, and ISBN number.  Your data structure(s) must keep track of each of these in alphanumeric order, sorting items as they are read in from the keyboard or from the disk file where they are stored.  Routines must be available to add to the list, store and retrieve via the disk and print it out on the screen or printer in order by selected category.  Remember, sorting is to be done at input time, not at the printing stage.  All five fields will be printed in any case; only the order is to be different.</P>
+<P>41. Write a program similar in structure to the above, but designed to keep an inventory<!--‹-->--say of chemicals, equipment, or merchandise for sale.  Appropriate data items might include price paid, stock number, name of item, sale price, and date of acquisition.  The print routines should output the data in a neat table ordered on one of four (or more) of the fields. </P>
+<H3><B>Projects</B></H3>
+<P>42. Look up and implement AVL balanced trees as an ADT.</P>
+<P>43. Develop an ADT <I>FamilyTree</I> that allows you to express family relationships.  Include the capability to express successive marriages for one person.</P>
+<P>44. Define and implement an ADT <I>Table</I> for data that has two key types and three other data fields.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

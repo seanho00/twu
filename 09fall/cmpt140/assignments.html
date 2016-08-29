@@ -1,0 +1,71 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>HW/Labs :: CMPT140 09FA :: TWU</title>
+<style type="text/css"><!--
+body, p, td, th { font-size: 14pt; }
+--></style>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/09fall/cmpt140/">CMPT 140 Fall 2009</a>
+  Extra HW/Lab Assignments</h1>
+
+<center>
+<p>Most homework and lab assignments are taken from the Python or M2 textbooks.
+This page lists amendments and assignments not taken from the textbooks.
+</center>
+
+<a name="Lab4"></a>
+<h2>Lab 8: Lists and File I/O <em>(due Wed/Thu 4/5 Nov)</em></h2>
+
+For this lab, you will be building complex data structures like Python
+lists and also using file I/O to read/save results to file.
+Choose one of the following options:<ul>
+
+<li> <b><a href="m2/Ch7/Ch7.14.html">M2 &sect;7.14 #22</a></b>:
+Your program should read in the list of words from a file specified
+by the user (this can also help a lot for debugging!).
+
+<li> <b><a href="m2/Ch7/Ch7.14.html">M2 &sect;7.14 #43</a></b>:
+Also write a testbed program that can encrypt/decrypt a whole
+(text) file, outputting to a new file.
+
+<li> <b><a href="m2/Ch9/Ch9.14.html">M2 &sect;9.14 #39</a></b>:
+You can use a Python list instead of a "record".
+Read the student data in from a user-specified file rather than
+getting it interactively from the user.
+
+<li> <b><a href="m2/Ch9/Ch9.14.html">M2 &sect;9.14 #40</a></b>:
+Note that your program needs not only to read previous balance
+from file, but also to write the new transaction and new balance
+to the end of the file -- the file should be a log of all transactions.
+
+</ul>
+
+<a name="Lab5"></a>
+<h2>Lab 5: Exceptions <em>(due Wed/Thu 25/26 Nov)</em></h2>
+
+Write a library that provides <em>robust user input</em>:<br>
+For each basic Python data type (int, float, bool, str), provide a function 
+that reads input from
+the keyboard and returns the value in the proper type.
+E.g., <tt>input_str(), input_bool()</tt>, etc.
+<ul>
+<li>If the user types an invalid input (e.g., a string when an
+  integer is expected), then an error message is printed, and 
+  the function keeps prompting the user until
+  the user does enter a valid input.
+<li>Make sure to handle if the user just presses "Enter" without any input.
+<li>Also provide a way for the user to cancel, and explain this to the user.
+<li>Each function should be able to take
+  either zero or one parameters; the parameter, if present, should be the
+  prompt string (just like with regular <tt>input()</tt>).
+<li>Each function should return a value of the proper type, or
+  <tt>None</tt> if the user cancelled.  
+<li>For <tt>input_bool()</tt>, allow the user to type any of
+  <tt>(1, T, t, True, true, TRUE, Y, y, Yes, yes, YES)</tt> etc. for True,
+  and any of <tt>(0, F, f, False, false, FALSE, N, n, No, no, NO)</tt> etc. for
+  False.
+</ul>
+You may find your library useful for future projects!
+
+</body></html>

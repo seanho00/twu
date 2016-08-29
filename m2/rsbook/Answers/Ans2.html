@@ -1,0 +1,188 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 2 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+<H2><B>CHAPTER 2</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	(a)	Editor:  a program that produces a text version of a program in the high level notation.
+	(b)	Compiler:  a program that translates the text version into machine-readable form.
+	(c)	Linker:  a program that merges previously compiled code and the current code to generate an executible program.
+	(d)	Interpreter:  a program similar to a compiler but that translates code into machine language every time the program is run.</P>
+
+<P>2.	Input and output functions are hardware dependent, so programs written for one kind of computer are unlikely to work on another. By having I/O in the library, only the library has to be changed to port code to another computer.</P>
+
+<P>3.	MODULE --> name --> IMPORT commands --> BEGIN --> END.</P>
+
+<P>4.	Answers may vary. Check for such characters as $.</P>
+
+<P>5.	Answers may vary. Non-standard types may be found in SYSTEM.</P>
+
+<P>6.	Answers may vary.</P>
+
+<P>7. 	Illegal identifiers:	Reason:
+
+	Result#1			#  is not allowed
+	Execute User		space not allowed
+	12Dozen			can't start with a digit
+	MODULE			reserved word
+	Canada'sBest		quote mark is not allowed</P>
+
+<P>8.	An identifier is a name for a value or an action. In Modula-2 it is a sequence of non-blank letters or digits beginning with a letter.</P>
+
+<P>9.	A statement is an instruction directing a computer to take some action. It usually is written out in a high level notation for subequent translation by the computer into one or more low level instructions and their corresponding actions.</P>
+
+<P>10.	There are two "standards", the de facto standard of classical Modula-2 as defined by Professor Wirth's books and interpreted by implementors, and the de jure standard represented by the ISO document 10514, parts 1, 2, and 3.</P>
+
+<P>11.	Reserved Word:  A special word or maker used to outline the structure of a program in the manner of punctuation. It must be entirely written in uppercase letters, and cannot be used for any other purpose.
+	Standard Identifer:  A name that is built-in to the notation. It must be written entirely in capital letters. It can be re-used, through this is unwise
+	Standard Library Identifier:  an identifier that names a particualar library item in every standard implementation of Modula-2.</P>
+
+<P>12.	Literal:  any entity whose name is an encoding of its value
+	Constant:  an identified value that remains the same throughout a program; that is , it is not subject to change or later re-assignment.
+	Variable:  a name for a memory location, the contents of which can be changed by a program.</P>
+
+<P>13.	Answers may vary.</P>
+
+<P>14.	Constants are declared only in the beginning of the program code. The "=" operator is used to assign names to constant values. Variables are assigned whenever needed in the program. The ":=" operator is used to assign values to variables.</P>
+
+<P>15.	Modula-2 expression:  a combination of literals, constants, and variables using addition, subraction, multiplication, division, and/or such other operations as may be defined for the type of the entities being combined.</P>
+
+<P>16.	To say they are assignment but not expression compatible means that one can assign CARDINAL and INTEGER values to variables of types each other's as long as they fall in the same range, though it may cause overflow problems at run time. That they are not expression compatible, means that one cannot use the two different data types in one expression.</P>
+
+<P>17.	(a)	card := card + VAL(CARDINAL, int); or card := card + TRUNC (int);<BR>
+	(b)	re := FLOAT (int);<BR>
+	(c)	lre := LFLOAT (re);<BR>
+	(d)	lre := LFLOAT (card);<BR>
+	(e)	re := FLOAT (card);<BR>
+	(f)	re := FLOAT(6);<BR>
+	(g)	This one probably cannot be fixed, unless -5 is replaced by 5 or we write int := INT(-5), both of which seem trivial.</P>
+
+<P>18.	(a)	36<BR>
+	(b)	1<BR>
+	(c)	eror: division by 0<BR>
+	(d)	-12<BR>
+	(e)	-53<BR>
+	(f)	-163.8<BR>
+	(g)	error: real subtract whole; incompatible types<BR>
+	(h)	8.4<BR>
+	(i)	error: divisor in MOD has to be positive<BR>
+	(j)	11.0<BR>
+	(k)	4.5 E+13<BR>
+	(l)	4.0 E+15<BR>
+	(m)	5.0 E-15<BR>
+	(n)	10.9<BR>
+	(o)	error: divisor is a cardinal (2 different data types)<BR>
+	(p)	error: mixing integer and cardinal types<BR>
+	(q)	error: mixing real and longreal types.</P>
+
+<P>19.	 Note:  _ will indicate spaces.<BR>
+	(a)	_ 4_ _-2<BR>
+	(b)	answer_=_-6<BR>
+	(c)	_ _1<BR>
+		_ _2<BR>
+		_ _3<BR>
+		...infinite loop<BR>
+	(d)	_ _0 then the program will not write any others because counter will be an integer and WriteCard does not handle integers, so the program crashes with an overflow error.<BR>
+	(e)	_ _3_ _6_ 12</P>
+
+<H3><B>Problems</B></H3>
+
+
+<P>Note: Not all problems are shown. Most problems are left to students as labs.</P>
+<P>
+<pre>
+(* Created
+    July.07.1999
+    Chapter 2, Question 21 *)
+
+MODULE LbsToKg;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn;
+FROM SRealIO IMPORT
+  WriteFixed;
+
+VAR
+  convert : REAL;
+
+BEGIN
+  (* Conversion: 1lb = 0.453592Kg *)
+  convert = 4.0 * 0.453592;
+  WriteString ("4 pounds is equivalent to");
+  WriteFixed (convert, 3, 0);
+END LbsToKg.</pre></P>
+
+<pre>
+(*  Created
+    July.07.1999
+    Chapter 2, Question #22 *)
+
+MODULE mphTomps;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn;
+FROM SRealIO IMPORT
+  WriteFixed;
+
+VAR
+  convert : REAL;
+
+BEGIN
+  (* Conversion: 1mi = 1606.344m; 1hr = 3600s *)
+  convert = 45.0 * 1606.344 * 3600;
+  WriteString ("45 miles per hour equivalent to");
+  WriteFixed (convert, 3, 0);
+  WriteString (" meters per second");
+END mphTomps.</pre></P>
+
+</BODY>
+
+</HTML>

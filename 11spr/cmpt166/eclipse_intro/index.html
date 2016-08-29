@@ -1,0 +1,228 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>Eclipse Intro :: CMPT166 11SP :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/11spr/cmpt166/">
+    CMPT166 Spring 2011</a> Eclipse Intro</h1>
+
+<h2>Starting Eclipse</h2>
+
+<p>Eclipse is installed on the senior lab computers,
+under the Programs menu, Programming.  If you want to install Java and Eclipse
+on your own computer, you may; see the section at the bottom of this document.
+
+<h2>Workspace</h2> <ul>
+  <li> The Workspace is where all the Java programs you write in Eclipse will
+  be stored.  You want to put this on a network drive so that you have access
+  to it from different computers.  You would probably want to create a
+  subdirectory on a network drive, e.g., "X:\eclipse" or "X:\cmpt166".
+  <li> In the senior lab, the X: "csilab" drive is accessible from any
+  computer in the lab, and there are no disk quotas.  You won't be able to 
+  access X: from other computers on campus, but Eclipse is also only installed
+  in the senior lab.
+  <li> You could also put the Workspace on Z: "My Documents", but there is
+  a 250MB quota there.
+  <li> Once you've chosen where you want the Workspace to be, check
+  "Use this as the default and do not ask again" in order to use this folder
+  in the future.
+</ul>
+
+<h2>The Workbench</h2><ul>
+  <li> Now you should see the Welcome screen, with just a few big round
+  icons.  You can browse the tutorials if you like, or just select the
+  right-most icon to "Go to Workbench".
+  <br><img src="welcome.png" width="999" height="595">
+  <li> The Workbench is the main window where you do your coding and testing.
+  It is composed of a number of sub-windows, called Views:<ul>
+    <li> The left-most pane ("Package") shows an outline of your whole 
+    project, including all packages and files.
+    Double-click a file to open it for editing.
+    <li> The main middle pane is for the current Java source code file you're
+    editing.
+    <li> The lower pane ("Console") is for output when you test your program.
+    There are a few other views that can be shown in that lower pane,
+    accessible by tabs.
+    <li> The right-hand pane ("Outline") shows the organization of the
+    current file being edited -- imports, classes, methods, etc.
+  </ul>
+  <br><img src="workbench.png" width="950" height="672">
+  <li> These panes can be reconfigured; a set of Views is called a Perspective.
+  You can change Perspectives in the toolbar at top right: one Perspective
+  might be better for coding, and another for debugging, etc.  You can also
+  define your own Perspectives with the Views that work best for you.
+  I usually just stick with the default Java perspective for coding.
+</ul>
+
+<h2>New Java Project</h2><ul>
+  <li> Let's create a new project: from the File menu, select New --&gt;
+  Java Project. <ul>
+    <li> You can also select the top-left white toolbar button --
+    choose the little arrow next to the button to pull-down a menu -- and
+    select "Java Project".
+    <li> If you click the toolbar button instead of the pull-down, the
+    "New Project" dialogue pops up; just navigate the kinds of projects
+    and select "Java Project".  The idea is you can also use Eclipse to
+    develop C++ projects, PHP projects, etc.
+    <li> Each project can contain multiple packages.  Each package may
+    contain multiple classes.  Each class may contain multiple methods.
+    For CMPT166, a project might be a single lab assignment.
+  </ul>
+  <br><img src="newproj.png" width="497" height="618">
+  <li> In the "New Java Project" wizard, choose a "Project Name": for our
+  example, type "HelloWorld".
+  <li> The Java convention is that project names can be only letters or numbers,
+  and are capitalized in "CamelCase".
+  <li> Under "Project Layout", check the option,
+  "Use project folder as root for sources and class files".  This puts both
+  your source code (*.java) and the compiled Java bytecode (*.class) in the
+  same directory.  When you turn in your labs, you can just upload everything
+  in that directory.
+  <li> You can even set this as the default for future projects: select 
+  "Configure default", and in the resulting configuration window for
+  "Build Path", select "Source and output folder: Project" and press "OK".
+  <li> Press "Finish" to close the "New Java Project" wizard, or
+  press "Next" to see more options and then "Finish".
+</ul>
+
+<h2>New Class</h2><ul>
+  <li> Now we have a new empty project; let's create a class.  Remember that
+  Java is fully object-oriented, so every bit of code has to go into some
+  method in a class.
+  <li> From File --&gt; New, or from the toolbar button pull-down, select
+  "New Class".
+  <br><img src="newclass.png" width="610" height="612">
+  <li> In the "New Class" wizard, name your class "HelloWorld".  The same
+  rules apply to class names; the filename will also match the class name.
+  <li> Verify that the "Source folder" is in the correct project 
+  ("HelloWorld").
+  <li> The "Package" may be left blank for now, but there will be a warning
+  about "The use of the default package is discouraged".  You can ignore this
+  warning for now.  Packages are libraries, used for organizing groups of
+  classes; classes may share information within a package.  If you deliver your
+  project for others to use, you should specify your own package to help
+  organize the classes: e.g., ca.twu.seanho.lab2 or somesuch.  More info
+  on packages in the lectures.
+  <li> Under "Which method stubs would you like to create?", ask for
+  "public static void main(String[] args)".  This is the class method that
+  gets run first when you run the program; it kicks everything else off.
+  You don't have to ask Eclipse to generate method stubs; you can type them
+  in manually if you like.
+  <li> You may also ask Eclipse to "Generate comments" for you to fill in.
+  <li> Press "Finish" and behold your new file of Java code!
+</ul>
+
+<h2>Coding and Testing</h2><ul>
+  <li> In the body of the main() method, just after the "TODO" comment,
+  type in the following Java code exactly as given here, including
+  the semicolon at the end:<br>
+  <tt>System.out.println("Hello, World!");</tt>
+  <li> This uses the "out" object (the stdout file handle) from the 
+  "System" library, which is already imported by default.  The "println()"
+  method is called on that file handle, with the string parameter
+  "Hello, World!".  The result is to print the given string to the console,
+  with a newline afterward.
+  <li> You may now delete the line with the "TODO" comment if you like.
+  Eclipse can search for comments that start with "TODO" (in all-caps) and
+  flag them as tasks for you (see the top-right pane of the default View).
+  The idea is that when you write a stub function, put a "TODO" comment there,
+  then you know to come back to it later and fill in the body of the function.
+  <li> Let's run our program!  Press the green triangle toolbar button
+  (looks like a VCR "play" button), or use the "Run" menu.
+  <br><img src="run-icon.png" width="193" height="53">
+  <li> The console output should appear in the bottom pane: "Hello, World!".
+  Congratulations, you have just written your first Java program!
+  (With a bit of help from Eclipse!)
+</ul>
+
+<h2>Further Resources</h2><ul>
+  <li> Eclipse is not just a Java development environment; it has plug-ins
+  for doing C++ development, Perl, PHP, and even
+  <a href="http://pydev.org/">Python</a>!  It can be used to develop
+  stand-alone programs, or web-based applets, or even plug-ins to extend
+  Eclipse itself.  There is also a large and active community around Eclipse,
+  and it is completely free for your own use.  Have fun exploring its many
+  features, both within the program as well as on the web at
+  <a href="http://www.eclipse.org/">eclipse.org</a>.
+  <li> Eclipse has some excellent tutorials built-in to its help system;
+  see the "Help" menu.  You can also always get back to the Welcome screen
+  from Help --&gt; Welcome.
+  <li> Some beginner's video tutorials; they go pretty slowly, but explain
+  a lot, and you can always fast-forward:
+  <a href="http://eclipsetutorial.sourceforge.net/">EclipseTutorial</a>
+</ul>
+
+<h2>Installing Java on your own computer</h2>
+You may also install the JDK (Java Development Kit) on your own computer.
+Do so at your own risk; no official support will be given for development
+environments other than the lab PCs.
+<ul>
+
+<li> If you have Mac OS X 10.6 prior to Update 3, then the JDK should be pre-installed
+already, so you can skip these steps.
+
+<li> Go to <a href="http://www.oracle.com/technetwork/java/index.html">
+  Oracle's Java developer site</a>. <ul>
+  <li> <em>Note that the consumer-oriented java.com site only has the
+    JRE (Java Runtime Environment), which doesn't let you write Java programs.</em>
+</ul>
+
+<li> Select the <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">
+  Java SE</a> (standard edition). <ul>
+  <li> <em>You don't need the EE (enterprise edition), which is for web servers, and</em>
+  <li> <em>You don't need the ME (micro edition), which is for mobile phones.</em>
+</ul>
+
+<li> Select the download icon for "Java" to download the JDK. <ul>
+  <li> <em>You don't need JavaFX, which is for Internet apps on diverse screens.</em>
+  <li> <em>You may download the bundle with the NetBeans IDE if you like;
+    NetBeans is an alternative to Eclipse.</em>
+</ul>
+
+<li> Select your platform (operating system), agree to the license, and proceed
+to the download page.
+
+</ul>
+
+<h2>Installing Eclipse on your own computer</h2>
+The JDK is all you need to compile Java programs, but you may want to
+install an IDE (Integrated Development Environment) like Eclipse to help
+you manage your code.
+Eclipse is a big download and a big program, but very powerful -- and
+free for your own use!
+
+<ul>
+  <li> Make sure you have installed the JDK as above.
+  <li> Go to <a href="http://www.eclipse.org/downloads/">eclipse.org</a>.
+  <li> Select "Eclipse IDE for Java Developers"; this is what is installed in
+  the computer lab.
+  The latest version should be 3.6.1, codenamed "Helios". <ul>
+    <li> You may also try the larger "Eclipse Classic 3.6.1" package,
+    which includes the Java IDE plus various add-ons.
+  </ul>
+  <li> Open the resulting (large) ZIP file and extract the contents to someplace 
+  on your hard drive, e.g., <tt>C:\</tt> or <tt>C:\Program Files\</tt>.
+  Unpacking the ZIP file will create a folder called <tt>Eclipse</tt> there.
+  This is <b>not</b> where your code will live, but where the Eclipse program
+  will be stored.  If you ever need to uninstall Eclipse, simply delete the
+  <tt>Eclipse</tt> folder.
+  <li> Run the <tt>eclipse.exe</tt> program in the <tt>Eclipse</tt> folder.
+  <li> There is more documentation on installing Eclipse available on
+  <a href="http://wiki.eclipse.org/FAQ_Where_do_I_get_and_install_Eclipse%3F">
+    the Eclipse wiki</a>.
+</ul>
+
+<p>There are other options for IDEs for Java: 
+<a href="http://www.netbeans.org/">NetBeans</a>,
+<a href="http://www.jcreator.com/">JCreator</a>,
+<a href="http://www.drjava.org/">DrJava</a>, etc.
+The CD in the back of the Savitch textbook has copies of these (although
+the version of Eclipse on the web is newer than the one on the CD).
+
+<p> If you don't have an IDE you can always use a
+plain-text editor like Notepad, 
+<a href="http://www.vim.org/">vim</a>, etc.
+The compiler is named <tt>javac</tt>, and the runtime environment to execute
+a Java class is named <tt>java</tt>.
+
+</body></html>

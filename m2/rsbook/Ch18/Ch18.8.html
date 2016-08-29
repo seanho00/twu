@@ -1,0 +1,93 @@
+<HTML><HEAD><TITLE>18.1 Basic Graphics Concepts</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Basic Graphics Concepts">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>18.8 Assignments</b></H2>
+
+<P><b>Questions</b></P>
+
+<P>1. What is meant by the term "screen resolution"?</P>
+<P>2. Who was René Descartes, and what were some of major contributions to mathematics?</P>
+<P>3. What procedure of the API is employed in (a) MacOS and (b) Windows NT to determine the current size of a window?</P>
+<P>4. What is a pixel?</P>
+<P>5. Why do you suppose that no graphics module was standardized by the ISO committee?</P>
+<P>6. Give a detailed explanation of the three kinds of coordinate systems used in this chapter.</P>
+<P>7. Give a detailed explanation of the three kinds of angle measurement units.</P>
+<P>8. What is a fractal?</P>
+<P>9. Look up a typical <i>turtlegraphics</i> module and discuss how it differs from <i>GraphPaper</i>. Write a definition module for <i>Turtlegraphics</i>.</P>
+<P>10. The moire pattern in <A HREF="Figure/Figure_18.12.GIF">figure 18.12</A> is just made with straight lines. Yet, the result does not have lines right across the figure in most instances. Why not?</P>
+<P>11. Look up a MacOS programming reference and thoroughly comment everything in the MacOS versions of <i>GraphWindow</i>, explaining what every import is and what it does. Be sure to detail the Window record type.</P>
+<P>12. Look up a Windows NT programming reference and thoroughly comment everything in the NT version of <i>GraphWindow</i>, explaining what every import is and what it does.</P>
+<P>13. Detail the differences between the style of event-based programming in MacOS and in Windows.</P>
+<P><b>Problems</b></P>
+
+<P>14. Produce a module <i>ComplexPlane</i> that graphs points in a complex plane. It will take arguments that are complex numbers, not ordered pairs (x, y). As this is drawing complex numbers as points, the contents are likely to have little relationship with those of <i>GraphPaper</i>. Be sure to get your design approved by your instructor before implementation.</P>
+<P>15. Implement a <i>turtlegraphics</i> module as you described in question 9.</P>
+<P>16. Write and test a module to graph functions. It should be able to read from the keyboard and parse such expressions asy = 3x^5 + 4x^-2 + sin(x) + 1/x + ln(x), where the "^" symbol is taken to mean "to the power of." That is, it should correctly evaluate polynomial expressions, reciprocal, negative exponents, and the names of the functions in <i>RealMath</i>, and then graph them over some user-specified range of values.</P>
+<P>17. Look up (in a calculus book) how to draw such figures as the rose, limaçon, and lemniscate in polar coordinates. Construct and test a module to read formulas in polar form in terms of r and <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q-->. (similar to the previous module in Cartesian form) , parse such formulas, and graph them.</P>
+<P>18. Parametric equations are given in the form x = f (t); y = g (t), where t is another variable, called a parameter, and s equation forms are called parametric equations. Construct and test a module to read from the keyboard functions in parametric form and graph them, as in the last two questions.</P>
+<P>19. Write a module that graphically illustrates the results of adding two dimensional vectors.</P>
+<P>20. The module <i>TestGraph</i> in <A HREF="Ch18.3.html">section 18.3</A> did not completely test all aspects of <i>GraphPaper</i>. Extend it so that it does test everything.</P>
+<P>21. Look up at least two more fractals and write code to construct them.</P>
+<P>22. Look up Hilbert's space filling curve and write a module to produce it.</P>
+<P>23. Sierpinski's curve in <A HREF="Ch18.4.html#18.4.3">section 18.4.3</A> was based on a rectangle. Write a module to make the analogous figure bases on five sides.</P>
+<P>24. Write a module to draw a table and four chairs around it.</P>
+<P>25. Produce a piece of string art of your own design. Perhaps you can make the bounding figure something other than a rectangle.</P>
+<P>26. Add to <i>GraphPaper</i> the ability to clear the screen from one graph and start over.</P>
+<P>27. Write a module to draw pie charts and/or bar graphs. The data could be read from a file.</P>
+<P>28. Port <i>SillyBalls</i> to WindowsNT. Detail all the changes you have to make.</P>
+<P>29. Implement the module <i>Keyboard</i> for Windows NT.</P>
+<P>30. If you have a Windows 32-bit compiler other than StonyBrook, port the <i>GraphWindow</i> and <i>GraphPaper</i> modules to it.</P>
+<P><b>Projects</b></P>
+
+<P>31. Add to <i>GraphPaper</i> the ability to save and load graphics files in some standard format (such as PICT or TIFF.)</P>
+<P>32. Add to the MacOS version of <i>GraphWindow</i> the ability to switch to another application, switch back and get the window redrawn.</P>
+<P>33. Write a module to graphically illustrate the results of a tree traversal as it is taking place.</P>
+<P>34. Write a module to graphically illustrate the contents of a heap in tree form as it is being sorted.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

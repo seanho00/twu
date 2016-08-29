@@ -1,0 +1,55 @@
+/* handout.css
+ * Cascading style sheet for in-class handouts
+ * Sean Ho <seanho@seanho.com> Aug2005
+ */
+
+@import "http://seanho.com/seanho.css";
+
+/**** General Text ****/
+body, p, td, th { font-size: 10pt; }
+h1 { font-size: 18pt; text-align: center; }
+h2 { font-size: 14pt; font-weight: bold; background: #ddddff; }
+h3 { font-size: 12pt; font-weight: bold; background: #ffffdd; }
+
+/**** General Tables ****/
+table {
+  empty-cells: show;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+tr, td, th {
+  vertical-align: top;
+}
+th {
+  background: #ddddff;
+}
+
+/**** Course Schedule ****/
+.schedule { width: 100%; }
+.schedule td, .schedule th {
+  border: 2px solid #999;
+  padding: 0.5em;
+}
+td.hr {
+  text-align: center;
+  border: 0px;
+}
+.schedule .M { background: #e5ffff; }
+.schedule .T { background: #ffe5ff; }
+.schedule .W { background: #ffffe5; }
+.schedule .R { background: #e0e0ff; }
+.schedule .F { background: #ffe5d8; }
+
+/**** Course Syllabus ****/
+table.syllabus {
+  width: 100%;
+}
+.syllabus th, .syllabus td {
+  border: 2px solid #999999;
+  padding: 0.5em;
+}
+.syllabus table th, .syllabus table td {
+  border: 1px;
+  padding: 0.2em;
+}
+

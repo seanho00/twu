@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<TITLE>12.5 Managing Dynamic Memory in Modula-2</TITLE><meta NAME="keywords" CONTENT="manage, manageing, dynamic, memory, new, allocate, allocation, heap, size, dispose, pointer, point, points, dangle, dangling, engineer, maintainable, software, tool, tools, new, dispose, allocate, deallocate, system, storage">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.5 Managing Dynamic Memory in Modula-2</B></H2>
+<P>All that now remains to explore are the specific notational abstractions employed in Modula-2 to manage dynamic memory (de)allocation.  One has to be able to obtain a stretch of memory for an item at run time, and to keep on hand a pointer to let the program know where it starts.  One also needs to be able to give the memory back when it is no longer needed, so that a subsequent allocation request by another part of the program may lay claim to that territory for its own.  That is, dynamic memory management involves handling directly some of the things that are done automatically for static types.</P>
+<BLOCKQUOTE><I><A NAME="New">Dynamic</A> memory allocation is performed using the standard Modula-2 procedure <U>NEW</U>.</I></BLOCKQUOTE>
+<P>Suppose one has:</P>
+<PRE>
+<B>TYPE</B>
+  CardPoint = <B>POINTER</B> <B>TO</B> <B>CARDINAL</B>;
+  RecPoint = <B>POINTER</B> <B>TO</B> MyRecType;
+
+<B>VAR</B>
+  cPoint : CardPoint;
+  rPoint : RecPoint;
+  theRec : MyRecType;</PRE>
+<P>The code</P>
+<PRE>
+<B>NEW</B> (cPoint);</PRE>
+<P>will obtain a stretch of dynamic (heap) memory sufficient to store an item the size of a CARDINAL.  Simultaneously, the address of that chunk of memory  will be assigned to <I>cPoint</I>, so that future use of <I>cPoint^</I> will give access to the new piece of memory.  Likewise, the code</P>
+<PRE>
+<B>NEW</B> (rPoint);</PRE>
+<P>will obtain SIZE (MyRecType) number of LOCs of dynamic memory to store a an item of type <I>MyRecType</I>.  Simultaneously, the address of that chunk of memory  will be assigned to <I>rPoint</I>, so that future use of <I>rPoint^</I> will give access to the new piece of memory.  Once this is done, it is legitimate to use such code as:</P>
+<PRE>
+cPoint^ := 34;
+rPoint^ := theRec;</PRE>
+<P>Naturally, there is no point in making these latter (normal) type of assignments until after a valid pointer has been initialized via the procedure NEW, for NEW does more than just give <I>cPoint</I> and <I>rPoint</I> their values; it simultaneously obtains and sets aside enough memory for one item of the type of data to which the respective pointer points.</P>
+<P>It was noted earlier that this type of data is called <I>dynamic</I> because the number of items of such types can be expected to grow and shrink as the program runs.  This implies the existence of a procedure to reclaim for other use the chunk of memory pointed to by a pointer variable.</P>
+<BLOCKQUOTE><I><A NAME="Dispose">Dynamic</A> memory deallocation is performed using the standard Modula-2 procedure <U>DISPOSE</U>.</I></BLOCKQUOTE>
+<P>Continuing from above, if at some point in the program one were to execute the code</P>
+<PRE>
+<B>DISPOSE</B> (rPoint);</PRE>
+<P>then SIZE (MyRecType) number of LOCs of dynamic memory at the address <I>rPoint</I> and referred to as <I>rPoint^</I> would be returned to the system for later use by some other client of dynamic memory.</P>
+<P>There are several rather important points to note in connection with the use of the two procedures NEW and DISPOSE.</P>
+<P><B>First</B>, these are relatively low-level routines, and there are few safeguards against their misuse.  If an assignment has been done so that two pointers <I>point</I> and <I>pointer2</I> of the same type both happen to point to the same section of memory (and thus to the same entity) and one writes, say,</P>
+<PRE>
+<B>DISPOSE</B> (point),</PRE>
+<P>the memory at <I>point</I> is reclaimed by the system and could be used for something else (because it can be reassigned at any time).  However, at this juncture, <I>pointer2</I> still points to that deallocated memory.  Logically, <I>pointer2^</I> must be regarded as undefined, even though <I>pointer2</I> apparently still has a legitimate value.  Indeed, in older versions of Modula-2 <I>point</I> also still points to the deallocated memory, because in classical versions of Modula-2 the procedure DISPOSE (p) does not necessarily change the value of p (Wirth did not say what happens to p).  However, the rule in ISO Modula-2 is that</P>
+<BLOCKQUOTE><I>The ISO Modula-2 procedure DISPOSE (p)  not only deallocates the memory pointed to by p, it also assigns NIL as the value of p.</I></BLOCKQUOTE>
+<P>Thus, although references to the deallocated memory are not possible via <I>point^</I>, they are through <I>pointer^</I> even though some other data may now be occupying that memory.  (One says that <I>pointer2^</I> has been left <I>dangling</I>.) The compiler cannot check these logical aspects of the program, so such errors will only be revealed when the program crashes.  Experienced programmers are well aware of the fact that some of the most difficult-to-find errors are generated from logically invalid pointer references.  Thus, programs that employ pointers can be extremely difficult to debug and maintain, and programmers who use pointers must do so in an extremely careful and disciplined manner.</P>
+<P>If the student has taken to heart the lessons about planning and program structure presented thus far in this text, much progress will already have been made toward the goal of writing correct programs.  If however, the student has developed a careless and unprofessional approach to the detail work needed to write good programs, it is at this point that she will part company with the professional and remain an amateur, for her programs will be less and less likely to work as she employs more pointers in such a manner.</P>
+<P>At the risk of belabouring the matter, it is also worth noting that languages whose structure promote or requires the routine and indiscriminate use of pointers when they are not really necessary are inherently poor tools for writing properly engineered and maintainable software.  This needs to be remembered when the student begins to use commercial tools, for they will not necessarily be crafted to the professional standards being upheld here.  Moreover, the marketplace has a way of insisting upon the use of tools (hardware as well as software) because they are popular, even in the face of the fact that they are inferior.  Some professional programmers even find it efficient to design and write code first in Modula-2 and then translate or re-write it in some other notation that happens to be demanded in the workplace in order to minimize errors and reduce debugging time.</P>
+<P>For such people, Modula-2 becomes their last pseudocode before producing the flavour of code required of the installation.</P>
+<P><B>Second</B>, the astute reader may have observed the fact that NEW and DISPOSE are low level (machine specific) and been expecting to be told that they are in a separate module and must be imported in order to improve portability.  Yet both are standard identifiers in the language proper<!--‹-->--isn't that somewhat of a contradiction?</P>
+<P>This is indeed an inconsistency, and has a unique explanation (for Modula-2).  Calls to NEW and DISPOSE are not executed directly, but are translated by the compiler into calls upon ALLOCATE and DEALLOCATE (respectively).  The definitions are:</P>
+<PRE>
+<B>PROCEDURE</B> <B>ALLOCATE</B> (<B>VAR</B> addr: SYSTEM.ADDRESS; amount: <B>CARDINAL</B>);
+  (* Allocates storage for a variable of size amount and assigns the address of this variable to addr. If there is insufficient unallocated storage to do this, the value NIL is assigned to addr. *)
+
+<B>PROCEDURE</B> <B>DEALLOCATE</B> (<B>VAR</B> addr: SYSTEM.ADDRESS; amount: <B>CARDINAL</B>);
+  (* Deallocates amount locations allocated by ALLOCATE for the storage of the variable addressed by addr and assigns the value NIL to addr. *)</PRE>
+<P>That is</P>
+<PRE>
+<B>NEW</B> (p);
+<B>DISPOSE</B> (p);</PRE>
+<P>automatically are translated into</P>
+<PRE>
+ALLOCATE (p, <B>SIZE</B> (type of p^));
+DEALLOCATE (p, <B>SIZE</B> (type of p^));</PRE>
+<P>If the programmer has an intimate knowledge of the way in which memory is handled on a particular machine and is capable of writing a manager to handle the details, it is possible to write a separate module that exports two procedures called ALLOCATE and DEALLOCATE, and then import them into programs that employ NEW and DISPOSE.  It is also possible to include procedures called ALLOCATE and DEALLOCATE in the scope of the program (either by defining them there or by import) that do something entirely different, or that do nothing at all.  In such cases, calls to NEW and DISPOSE would compile correctly but would not actually perform as they should, and this would presumably make the programs incorrect, or at least misleading.</P>
+<P>For most mortals, both the ISO standard and classical Modula-2 require implementors to supply a predefined module <I>Storage</I> from which ALLOCATE and DEALLOCATE are exported and can be imported into programs.  Thus, any program module that makes use of dynamic data will normally have to include the line:</P>
+<PRE>
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;</PRE>
+<P>In this way one preserves the portability of the Modula-2 code, while at the same time being able to perform the necessary low level functions by employing a library to encapsulate code that must be platform-specific.</P>
+<P><B>WARNING</B>: For one edition of Programming in Modula-2 Wirth apparently decided that the automatic translation to ALLOCATE and DEALLOCATE was too sly, or possibly too magical, so he removed NEW and DISPOSE from the language altogether, requiring programmers to both import and write code in terms of ALLOCATE and DEALLOCATE.  Although most implementations (and the ISO committee) declined to follow this new rule, some compiler writers did, so there are a few versions that lack NEW and DISPOSE entirely.</P>
+<P>Another possible difference between classical and ISO versions  relates to the handling of situations where there is no memory left to allocate.  Some classical versions of the module <I>Storage</I> had something resembling</P>
+<PRE>
+<B>PROCEDURE</B> Available (memoryNeeded : <B>CARDINAL</B>) : <B>BOOLEAN</B>;</PRE>
+<P>and the cautious user of dynamic memory could call this enquiry procedure before attempting to use Storage.ALLOCATE (whether directly or via NEW).   Other versions (including the ISO) do not have such an enquiry procedure.  Instead, they merely specify (as noted above in the procedure definitions) that an attempt to use Storage.ALLOCATE that fails results in the return of the pointer NIL.  If NEW was used, this value is returned in its parameter as well.  It is then up to the program to check the return value to ensure that it is proceeding under the assumption that memory has been obtained.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

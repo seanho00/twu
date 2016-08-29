@@ -1,0 +1,92 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT/ISYS 14x Fall2007 Lab Assignments</title>
+<style type="text/css"><!--
+body, p, td, th { font-size: 14pt; }
+--></style>
+</head><body>
+
+<h1><a href="/">CMPT 14x Fall2007 HW/Lab Assignments</a></h1>
+
+<center>
+<p>Most homework and lab assignments are taken from the M2 textbook.  This page
+lists the assignments not from the M2 textbook.
+</center>
+
+<a name="Lab08"></a>
+<h2>Lab08: due 14 Nov</h2>
+
+Write a library that provides <em>robust user input</em>:<br>
+For each basic Python data type (int, float, bool, str), provide a function 
+that reads input from
+the keyboard and returns the value in the proper type.
+E.g., <tt>input_str(), input_bool()</tt>, etc.
+<ul>
+<li>If the user types an invalid input (e.g., a string when an
+  integer is expected), then an error message is printed, and 
+  the function keeps prompting the user until
+  the user does enter a valid input.
+<li>Make sure to handle if the user just presses "Enter" without any input.
+<li>Also provide a way for the user to cancel.  
+<li>Each function should be able to take
+  either zero or one parameters; the parameter, if present, should be the
+  prompt string (just like with regular <tt>input()</tt>).
+<li>Each function should return a value of the proper type, or
+  <tt>None</tt> if the user cancelled.  
+<li>For <tt>input_bool()</tt>, allow the user to type any of
+  <tt>(1, T, t, True, true, TRUE, Y, y, Yes, yes, YES)</tt> etc. for True,
+  and any of <tt>(0, F, f, False, false, FALSE, N, n, No, no, NO)</tt> etc. for
+  False.
+<li><em>Hint: exception handling may be useful.</em>
+</ul>
+
+<a name="HW09"></a>
+<h2>HW09: due Fri 23 Nov</h2>
+
+Calculate a <a href="http://mathworld.wolfram.com/KnightsTour.html">knight's
+tour</a> for a 3x4 board, starting at the corner (0,0).  In addition to the
+completed board, also show all your backtracking, using a tree diagram or a
+list of moves or whatever you see fit.
+
+<a name="Lab09"></a>
+<h2>Lab09: due 28 Nov</h2>
+
+Write a Python program to calculate a <b>knight's tour</b> of an arbitrary-size
+board, given the dimensions of the board and the starting position.
+
+<p>References you may find useful (cite them in your lab write-up if you use
+them):<ul>
+<li> <a href="m2/Ch11/Ch11.2.html">M2 11.2 section on the knight's tour</a>
+<li> <a href="http://mathworld.wolfram.com/KnightsTour.html">MathWorld entry on
+the knight's tour</a>
+</ul>
+
+<a name="HW10"></a>
+<h2>HW10: due Fri 30 Nov</h2>
+
+Given the following simple Python class definition for a doubly-linked 
+(i.e., bidirectional) list, write a function <tt>delete(head, n)</tt> which
+takes a reference to the head of the list and a positive integer index
+(head is n=0) and returns a reference to the list with the nth entry deleted.
+If n is beyond the end of the list, return None.  Make sure to handle the
+special case n=0 (deleting the head).
+<pre>
+class Node:
+	def __init__(self, data=None, prev=None, next=None):
+		self.data = data
+		self.prev = prev
+		self.next = next
+</pre>
+
+<a name="Lab10"></a>
+<h2>Lab10: due 5 Dec</h2>
+
+Complete one of Lab04-07 in Modula-2, with a full lab write-up.
+Some labs gave you a choice of problems; you need not choose the same problem,
+but you may.  You may reuse parts of your old lab write-up if appropriate,
+although some refinements of your pseudocode may need to be revisited before
+you start your M2 code.  You may wish to refer to
+<a href="http://twu.seanho.com/05fall/cmpt14x/stonybrook/">the Stonybrook M2
+tutorial</a> and the M2 text.
+
+</body></html>

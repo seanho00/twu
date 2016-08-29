@@ -1,0 +1,135 @@
+<HTML>
+<HEAD>
+<TITLE>7.14 Assignments</TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, technical, string, strings, menu, menus, elementary, encrypt, encryption, generation, matrices, generics, matrix, operation, operations, vectors, vector, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.14 Assignments</B></H2>
+<H3><B>Questions: </B></H3>
+<P>1.  What is a Modula-2 string?  Explain all terms used.</P>
+<P>2.  What is an implied abstract data type, and why is it more correct to use this terminology than to say that Modula-2 has a string type?</P>
+<P>3.  Suppose str1, str2, and str3 are of type String (ARRAY [0 .. 79] OF CHAR,) and str1 = <!--"-->&quot;dogs <!--"-->&quot;, str2 = <!--"-->&quot;cats <!--"-->&quot;, str3 = <!--"-->&quot;chase<!--"-->&quot;.  What will the assigned variable hold in each case, assuming it to be of the correct type?<BR>
+	a. Concat (str1, str3, D); Concat (D, str2, E)<BR>
+	b. m := Length (str3)<BR>
+	c. FindNext (<!--"-->&quot;t<!--"-->&quot;, str3, 0, found, position)<BR>
+	d. i := CompareStr (<!--"-->&quot;cat<!--"-->&quot; , str2)<BR>
+	e. Copy (str2, 0, 1, F); Copy (str1, 1, 3, G); Concat (F, G, H)<BR>
+	f. Insert (str2, 2, str1); Delete (str1, 6, 2)<BR>
+	g. FindNext (<!--"-->&quot;cat<!--"-->&quot;, <!--"-->&quot;the old cat in the hat<!--"-->&quot;, 0, found, position);</BR>
+	h. FindPrev (<!--"-->&quot;cat<!--"-->&quot;, <!--"-->&quot;the cat in the hat sat on the bat<!--"-->&quot;, 26, found, position)</P>
+<P>4.  <!--"-->&quot;Some string operations may silently truncate the result.<!--"-->&quot;  What does this statement mean, and under what circumstances may this arise?</P>
+<P>5.  What is the difference between the <I>Length</I> of a string and the number returned by HIGH when it operates on a string?</P>
+<P>6.  When the following pairs of strings are compared, will the result be <I>less</I>, <I>equal</I>, or <I>greater</I>?  Why?<BR>
+	a. <!--"-->&quot;hare<!--"-->&quot; and <!--"-->&quot;hair<!--"-->&quot;<BR>
+	b. <!--"-->&quot;all<!--"-->&quot; and <!--"-->&quot;ALL<!--"-->&quot;<BR>
+	c. <!--"-->&quot;rick<!--"-->&quot; and <!--"-->&quot;Rick<!--"-->&quot;<BR>
+	d. <!--"-->&quot;%ages<!--"-->&quot; and <!--"-->&quot;pages<!--"-->&quot;<BR>
+	e. <!--"-->&quot;1<!--"-->&quot; and <!--"-->&quot;one<!--"-->&quot;</P>
+<P>7.  For client programs of the module <A HREF="Ch7.5.html#MenuHandler">MenuHandler</A> (Section <A HREF="Ch7.5.html">7.5</A>) why is it necessary to initialize the first unused string to the null string?</P>
+<P>8.  (Research) Look up and be able to explain how DES encryption works.</P>
+<P>9.  Define mean, variance and standard deviation (both versions of the latter.)</P>
+<P>10.  Look up and write out a definition of the <I>median</I> of a data set.  What additional facilities would be needed in addition to those in the statistical modules presented to calculate the median?</P>
+<P>11. Look up and write out a definition of the <I>mode</I> of a set of data.  What additional facilities would you suggest are necessary to do this calculation?</P>
+<P>12. What are the advantages of separating the low level statistical functions from the high level ones?</P>
+<P>13. Why are random numbers generated by a formula not really random numbers?  (What <I>are</I> they called?)  What can to be done to make them <I>more</I> random?</P>
+<P>14. What is a matrix?  State at least four substantially different applications of matrices.</P>
+<P>15. What is a vector?  State at least four substantially different applications of vectors in science.</P>
+<P>16. Make a table listing the differences between the ADT <I>Point</I> and the ADT <I>Vector</I>.</P>
+<H3><B>Problems</B></H3>
+<P>17. Write a module that will read an input paragraph of text from the keyboard and reformat it and output it to the printer according to the following rules:<BR>
+	a. The first line is indented exactly five spaces.<BR>
+	b. Multiple spaces between words are reduced to single spaces.<BR>
+	c. There are exactly two spaces between sentences, regardless of how many are found in the original text.<BR>
+	d. As many complete words are printed on a line as possible and there are no words that are broken between lines.  You may assume any convenient line length.</P>
+<P>18. Pretend that you do not have the procedures <I>Insert</I> and <I>Delete</I> available from the module <I>Strings</I>.  (In some cases, you won't.) Write them, and include them with the procedures <I>Concat</I> and <I>Length</I> in a module of your own.  Test your module by calling on it in a program module and show the results on a printout.</P>
+<P>19. Write a program module that will take lines of text as they are typed at the keyboard and save them into a disk file under an appropriate name.  The text should go into the disk file as a continuous block with carriage returns only at the end of a paragraph.  Define a paragraph as a carriage return followed by one or more spaces.</P>
+<P>20. A Pascal string or a Macintosh string is an ARRAY [0 .. 255] OF CHAR, but the first CHAR is in position 1, with str [0] containing a CHAR whose ORDinal value is the length of the string (number of the last position).  Note that such strings are limited to lengths of no more than can be accomodated in a storage location used by the type CHAR<!--‹-->--usually this means no more than 255 characters to a string.  Write a procedure StrModToPas that converts a Modula string to a Pascal string.</P>
+<P>21. Add to #20 the complementary procedure StrPasToMod.  Encapsulate both in a library module and test them with a suitable client program.</P>
+<P>22. A word search game is played with an array of letters and a list of words that the player is expected to find in the array.  Words may go in any direction (including diagonally) and a given letter may be part of more than one word.<P>
+<PRE>A X Y T J K R E W
+B L O O D F F W G
+R A U D I T N W Q
+A U L M O A O R U
+T M I N T M O R E
+E A T L Y Y E S R
+M O D U L A M G Y</PRE>
+	Some of the words in the puzzle above include <I>modula</I>, <I>mint</I>, <I>blood</I>, <I>query</I>, <I>brat</I>, <I>more</I>, and there are others.  The letters between the words that are to be found and circled can be anything.  Write a program module that will read in the words to be hidden in the puzzle, and construct and print the letter array.  The program should either decide the size of the array based on the number and length of the words, or be told this by the puzzlemaster.</P>
+<P>23. Write and test a procedure <I>ConvertToDay</I>, along similar lines to the procedure <I><A HREF="Ch7.4.html#ConvertToMonth">ConvertToMonth</A></I> in section <A HREF="Ch7.4.html">7.4</A>.  Write also the procedure <I>WhatDay</I>, similar to <I>WhatMonth</I> in the same section.  Test both.  Now, test again with a driver program that makes a large number of calls to each and see which is more efficient.</P>
+<P>24. Implement the menu generating module and test it with one of your own programs.</P>
+<P>25. Implement the module <I><A HREF="Ch7.6.html#Substitution">Substitution</A></I> in section <A HREF="Ch7.6.html">7.6</A> (the second way) and test it with a driver program that reads the coder/decoder key from the user.  Now try encrypting a file and decrypting it again.</P>
+<P>26. Rewrite the suite of statistical modules so as to have appropriate error handling.  Include</P>
+<PRE><B>TYPE</B>
+  StatsState = (StatsOK, ...); (* with appropriate values *)
+<B>VAR</B>
+  StatsStatus : StatsState;</PRE>
+<P>	and revise the code to set the value of StatsStatus appropriately.  If it is available, reduce the probability of an overflow by accumulating the sums in the type LONGREAL.</P>
+<P>27. Section <A HREF="Ch7.8.html">7.8</A> included discussion of the system dependent nature of randomizers that depend on a special memory location that the system periodically updates.  Either implement the module <A HREF="Ch7.8.html#Randoms"><I>Randoms</I></A> without this provision, or find such a location for your system, or some similar means of obtaining a seed from the system and rewrite the system dependent code in the suggested module.</P>
+<P>28. Write a short program module to generate an array of at least ten thousand random cardinals.  Write the array out to a disk file for further reference.</P>
+<P>29. At the beginning of section <A HREF="Ch7.8.html">7.8</A> the procedure <I>Generator.Random</I> was developed to produce random numbers between zero and one.  Write a new version of the later module <I><A HREF="Ch7.8.html#Randoms">Randoms</A></I> that uses this procedure as the basis for generating random cardinals or random numbers in some cardinal subrange.</P>
+<P>30. The procedure <A HREF="Ch7.8.html#RndInRange"><I>RndInRange</I></A> as presented in section <A HREF="Ch7.8.html">7.8</A> will not work very well if the range is a large fraction of the whole cardinals.  For instance, suppose the cardinals are in the range [0 .. 65535] and the selected range for random number generation is [0 .. 9999].  In this case too many of the random cardinals generated have a second digit of 5 or less, so more than the proper share of the numbers in the range [0 .. 9999] will be in the subrange [0 .. 5535].  Compute what are the expected and proper percentage of numbers generated in the subrange [0 .. 5535].  Run the code given in the text, generating a large number of random numbers and determine the actual percentage generated in this range to confirm this.  (This will require a replacing of the question with an appropriate range and some extra steps if the range of cardinals is different on your machine.)  Now rewrite the code to eliminate this bias.</P>
+<P>31. Can you predict what ought to be the standard deviation of a population (and a sample) of randomly distributed numbers over a range?  Test your prediction with a suitable program module and the file of random numbers you created earlier.</P>
+<P>32. There are a variety of ways of testing the effectiveness of random number generators.  One is simply to find the mean of the numbers and see if it lies in the middle of the range selected.  You may wish to try this and to research other methods as well. One method that is fairly easy to implement if your terminal is capable of graphics is to convert the random numbers generated into ordered pairs that represent points on the graphics screen over the complete range of possible horizontal and vertical coordinates allowed (look this up for your machine) and then plot a dot at that point.  If your program is allowed to run long enough, it should eventually plot every possible dot and there will be no blank spaces at all on the screen.  If, on the other hand, your random number generator is flawed, repetition will set in, and some space will remain no matter how long you allow it to run.  How good is yours on a test like this?  You will, of course, have to look up the module for handling graphics on your terminal.</P>
+<P>33. Rewrite the procedure <I><A HREF="Ch7.8.html#Multiply">Multiply</A></I> in section <A HREF="Ch7.8.html">7.8</A> to operate by converting both numbers to reals, performing a real multiplication, stripping the amount over <I>maxcard</I> and converting back to a cardinal.</P>
+<P>34. Implement Addition, Subtraction, Multiplication, and Division (the latter is a challenge) on the type <I>BigCard</I>.  You will have to change the error type to an enumeration, as there are more than just overflow errors to contend with now.</P>
+<P>35. Modify the code produced in the last section so that the procedures can handle user-defined types of a type similar to but bigger than the convenience type <I>BigCard</I> that the suggested module exports.  That is, they should take parameters that are ARRAY OF CARDINAL rather than <I>BigCard</I> and operate correctly regardless of how many components there are.  If you have a larger range for CARDINAL on your machine, you may wish to store more than four digits in each component.</P>
+<P>36. Modify the procedure <I>WriteBigCard</I> to take a second parameter that is the field length in which to write the <I>BigCard</I>.  Your code will have to pre-scan the <I>BigCard</I> to be written to find out how many spaces it would occupy.  If too little is available, it should take what space it needs.  If the field length is longer than needed, the number should be padded on the left with blanks.</P>
+<P>37. Design, define, implement, and test a module to do matrix arithmetic and operations.  You must decide which operations to include, providing a rationale for your decisions, write and compile the definition module, and then implement that definition, define a test harness program, and thoroughly test your implementation.</P>
+<P>38. Implement the determinant computation procedures given in section <A HREF="Ch7.10.html#7.10.2">7.10.2</A> with the addition in the client program of a test to distinguish between the two cases where the determinant is zero, and appropriate messages for the two cases.  Also, test your program on systems of two, three, four, five, and six variables, timing each solution.  You may wish to make use of files to input the data, if <I>OpenInput</I> is available in some form.  What is the practical limit on your machine for solving systems of equations in this way?</P>
+<P>39. Complete and test the module <I><A HREF="Ch7.11.html#Vectors">Vectors</A></I> in section <A HREF="Ch7.11.html">7.11</A> and develop a test harness to check your work thoroughly.</P>
+<P>40. A ship heads due East at 15 knots. It is influenced by a current of 10 Knots setting to the Northwest, and a wind of 10 Knots from the South. Ignoring the effects of friction, what will be the resultant velocity?  (Solve this with a program module that is a client of the module <I>Vectors</I>.)</P>
+<P>41. Write a client of the module <I>Vectors</I> that computes the resultant force of any two supplied force vectors. You can decide what format the vectors are to be input in from the keyboard or a file, and what units to use.</P>
+<P>42. An old problem in probability has a solution that rather astounds many people. If two people are in a room, what is the probability that both were born on the same day of the year? (Answer 1/365<!--‹-->--ignore Feb 29)  Now toss in a third, and ask what is the probability that two of the three have the same birthday. This is a little harder computation, but still not very difficult. The problem is to discover how many people need to be in the room before it becomes a 50-50 proposition that at least two will have the same birthday. Get the computer to do the computations for you. The answer is not very large, is it?</P>
+<H3><B>Research Projects and Challenges</B></H3>
+<P>43. What are the most secure encryption algorithms?  Implement and test one of these.</P>
+<P>44. What is the cross product of two vectors?  What is it used for in practical applications?  Design a library module abstracting a three dimensional vector type. Implement and test this, including the cross product. Build a client application to solve a practical problem using cross products and test it.</P>
+<P>45. Implement and completely test the module <A HREF="Ch7.12.html#FinanceMath"><i>FinanceMath</i></A> in section 7.12, ensuring that all formulas are correct by comparing the results with those obtained on a financial calculator. You may decide to add one or more procedures. If you do, be sure to provide a complete rationale and documentation.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,149 @@
+<HTML>
+<HEAD>
+<TITLE>12.12 Variant Dynamic Records</TITLE><meta NAME="keywords" CONTENT="variant, dynamic, record, records, tag, tags, field, fields, new, parameter, parameters, dispose, size, system, system.tsize, tsize, allocate, deallocate, tag, tags, field, fields, nest, nested, word, words, iso, compile, time">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.12 Variant Dynamic Records</B></H2>
+<P>If one has a variant record (see <A HREF="../Ch11/Ch11.7.html">Section 11.7</A>) that contains one or more tag fields and their variants call for differing amounts of memory, then the statements</P>
+<PRE>
+<B>SIZE</B> (thePoint);
+<B>NEW</B> (thePoint);</PRE>
+<P>where <I>thePoint</I> is a pointer to such a record will necessarily report and reserve (respectively) the maximum number of memory locations possible for the variant.</P>
+<P>However, if there are large differences in memory requirements for the variants, it might be useful to reserve only the amount necessary.  There is a variant (sic) version of NEW to do just this; one places after the pointer parameter the values of each tag field in turn.  For instance, given the declarations:</P>
+<PRE>
+<B>TYPE</B> 
+  Item = <B>POINTER</B> <B>TO</B> ItemData;
+  ItemData =
+    <B>RECORD</B>
+      number : <B>CARDINAL</B>;
+      <B>CASE</B> tag : <B>BOOLEAN</B> <B>OF</B>
+        <B>TRUE</B> :  
+          married : <B>BOOLEAN</B> |
+        <B>FALSE</B> :  
+          num1, num2, num3 : <B>CARDINAL</B>
+        <B>END</B>;
+    <B>END</B>;
+<B>VAR</B>
+  point1, point2, point3: Item;</PRE>
+<P>a call to NEW (point1) reserves the maximum possible number of locations (for number, tag, num1, num2, and num3,) but a call to </P>
+<PRE>
+<B>NEW</B> (point2, <B>TRUE</B>);</PRE>
+<P>reserves only the number of locations needed for number, tag, and married.  A call to</P>
+<PRE>
+<B>NEW</B> (point2, <B>FALSE</B>); </PRE>
+<P>reserves the number of locations needed for number, tag, num1, num2, and num3.</P>
+<P>If there are more variant parts, the value of each tag field in turn is listed.  Exactly the same considerations apply to DISPOSE.  If the user wishes to know the number of locations used by a variant, the procedure SIZE will not, as indicated above, report the correct value.  In order to make the computation, it is necessary to import the procedure SYSTEM.TSIZE.  This procedure has the same syntax as the variant forms of NEW and DISPOSE except that its first parameter is always a type rather than a variable.</P>
+<P>To illustrate further, suppose one has:</P>
+<PRE>
+<B>TYPE</B>
+  Item = <B>POINTER</B> <B>TO</B> ItemData;
+    ItemData =
+      <B>RECORD</B>
+        int : <B>INTEGER</B>;
+        <B>CASE</B> b : <B>BOOLEAN</B> <B>OF</B>
+          <B>TRUE</B> : 
+            sex : <B>BOOLEAN</B> |
+          <B>FALSE</B> : 
+            num1, num2 : <B>INTEGER</B>
+        <B>END</B>;
+        <B>CASE</B> descriptor : <B>CARDINAL</B> <B>OF</B>
+          1 :  
+            flag : <B>BOOLEAN</B>|
+          2..5 :  
+            int2 : <B>INTEGER</B>
+          <B>ELSE</B>
+            num3, num4, num5 : <B>INTEGER</B>
+        <B>END</B>
+      <B>END</B>;
+<B>VAR</B>
+  point : Item;</PRE>
+<P>Now, one may write things like:</P>
+<PRE>
+  <B>NEW</B> (point1);
+  WriteString (<!--"-->&quot;size of point1^ is <!--"-->&quot;);
+  WriteCard (<B>SIZE</B> (point1^), 6);
+  WriteLn;
+  
+  <B>NEW</B> (point2, <B>FALSE</B>);
+  WriteString (<!--"-->&quot;tsize of point2^ is <!--"-->&quot;);
+  WriteCard (<B>TSIZE</B> (ItemData, <B>FALSE</B>), 6);
+  WriteString (<!--"-->&quot; note that size of point2^ is <!--"-->&quot;);
+  WriteCard (<B>SIZE</B> (point2^), 6);
+  WriteLn;
+
+  <B>NEW</B> (point3, <B>TRUE</B>);
+  WriteString (<!--"-->&quot;tsize of point3^ is <!--"-->&quot;);
+  WriteCard (<B>TSIZE</B> (ItemData, <B>TRUE</B>), 6);
+  WriteLn;</PRE>
+<P>When this code was run on one machine, the results were as follows:</P>
+<PRE>
+size of point1^ is     18
+tsize of point2^ is     18 note that size of point2^ is     18
+tsize of point3^ is      6 note that size of point3^ is     18</PRE>
+<P>Observe that SIZE always gives the maximum number of locations whereas TSIZE gives the number appropriate to the particular variant.  The ISO standard says that calls to</P>
+<PRE>
+<B>NEW</B> (p, <!--<-->&lt;expression list<!-->&gt;);
+<B>DISPOSE</B> (p, <!--<-->&lt;expression list<!-->&gt;);</PRE>
+<P>are translated into calls to </P>
+<PRE>
+ALLOCATE (p, SYSTEM.TSIZE (p, <expression list>));
+DEALLOCATE (p, SYSTEM.TSIZE (p, <expression list>)) ;</PRE>
+<P>respectively.  If the program makes a version of ALLOCATE and DEALLOCATE available other than that supplied by Storage, these calls will work in the same way as the standard (one parameter) calls to NEW and DISPOSE.  That is, all the <!--"-->&quot;magic<!--"-->&quot; (varying number of parameters) is in TSIZE and that is why it is located in SYSTEM.</P>
+<P><B>NOTES</B>: 1.  For this variation on memory allocation to work correctly, it is essential that a variable's tag fields be correctly initialized and remain the same once it is allocated, so that when DISPOSE is called, the list of constants is the same as when memory was allocated by NEW.<BR>
+	 2.  Some Modula-2 compilers can only assign the maximum amount of space to variant records, so much of this discussion may not apply to them.  They would always give the same value when the above code was run.<BR>
+	 3. There can be difficulties with writing such records out to the disk and later reading back in, as there must be a way of determining the variants before the NEW statement is executed.  Moreover, the random access file scheme depends on all records having the same size, and could not be used with variants of different sizes.</P>
+<P>In addition, when using TSIZE, if there is more than one parameter, the first must be a record.  That is, TSIZE will work on any type, but it makes no sense to supply a type that is not a variant record, and then supply additional parameters that can only be tag field values.  The compiler will flag this error. The values for the fields of variant records may also be included as parameters following the record type.  TSIZE then returns the size of the specified variant.</P>
+<P>For any use of TSIZE, whether translated form a call to NEW or not, if there are two or more variant fields, the values of the various tag fields are listed in the same order they are declared.</P>
+<P><B>NOTES</B>:	 1. In some non-ISO versions, this facility is limited to one <I>main</I> variant, which must be at the end of the RECORD.  Additional variant tags can be listed only if they are <I>nested</I> within the first.</P>
+<P>	 2. In some non-ISO versions, SIZE and TSIZE both return the number of <I>words</I>.  This must be doubled or possibly quadrupled to obtain the number of storage locations (often called <I>bytes</I> on such systems).</P>
+<P>	 3. The tag fields whose values are given must be fields of the main record type itself, and not fields of a sub-record type.</P>
+<P>	 4. The time at which these functions operate is also worth noting.  TSIZE operates strictly on entities whose size is known to the compiler, and so does SIZE most of the time.  Therefore, these calculations are done by the compiler, not while the finished program is running.  There is one exception, but only in non-ISO versions.  When SIZE operates on an open array, the size is not known until the assignment has been made during the program's execution.  So in such cases instance, SIZE is a run-time procedure.  The ISO standard simply does not allow one to take the SIZE of an open array.</P>
+<BLOCKQUOTE><I>The restrictions on SIZE and TSIZE in the ISO version ensure that both can be used in constant expressions and can be evaluated at compile time.</I></BLOCKQUOTE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,421 @@
+<HTML>
+<HEAD>
+<TITLE>7.10 Matrices</TITLE>
+<meta NAME="keywords" CONTENT="matrix, matrices, addition, subtraction, add, subtract, left, right, multiply, determinant, determinants, linear, equation, solution, simultaneous, equation, equations, gauss, gaussian, elimination, algebra, algebraic, analysis, form, cramer, cramer's, rule, minor, minors, cross, crossed, recursive, augment, augmented, dependent">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.10 Matrices</B></H2>
+<P>In chapter 5 the matrix was defined and modelled by a two dimensional array.  Matrices have a number of applications in various branches of mathematics, and are useful entities for study in their own right.</P>
+<H3><B><A NAME="7.10.1">7.10.1</A> Matrix Operations</B></H3>
+<P><I>Addition and Subtraction</I>:</P>
+<P>If two matrices are the same size (have the same number of rows and columns) then addition is done component by component in the same fashion as for vectors.  Subtraction is just adding the opposite.  Thus, if</P>
+<IMG SRC="Figure/Eq7.10.1.GIF"><!---->   and   <IMG SRC="Figure/Eq7.10.2.GIF"><!---->
+<P>Then</P>
+<IMG SRC="Figure/Eq7.10.3.GIF"><!---->   and   <IMG SRC="Figure/Eq7.10.4.GIF"><!---->
+<P>One Modula-2 procedure that can do the first of these operations is given below.  It uses open array parameters and returns the result of checking for valid data in a boolean parameter.</P>
+<PRE>
+<B>PROCEDURE</B> AddMatrices (A, B:  <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>;
+  <B>VAR</B> C:  <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>;  <B>VAR</B>  ok:  <B>BOOLEAN</B>);
+
+  <B>VAR</B>
+    aRow, aCol, bRow, bCol, cRow, cCol,
+    rowCount,colCount : <B>CARDINAL</B>;
+
+  <B>BEGIN</B>
+    aRow := <B>HIGH</B> (A);
+    bRow := <B>HIGH</B> (B);
+    cRow := <B>HIGH</B> (C);
+    aCol := <B>HIGH</B> (A[0]);
+    bCol := <B>HIGH</B> (B[0]);
+    cCol := <B>HIGH</B>  (C[0]);
+
+    <B>IF</B>  (aRow  #bRow) <B>OR</B> (aRow # cRow) <B>OR</B> (aCol # bCol)  <B>OR</B> (aCol # cCol)
+    <B>THEN</B>
+      ok := <B>FALSE</B>;
+      <B>RETURN</B>; (* gives up *)
+    <B>ELSE</B>
+      ok := <B>TRUE</B>;
+      <B>FOR</B> rowCount := 0 <B>TO</B> aRow
+        <B>DO</B>
+          <B>FOR</B> colCount := 0 <B>TO</B> aCol
+            <B>DO</B> 
+              C[rowCount, colCount] :=
+                  A[rowCount, colCount] + B[rowCount, colCount]
+            <B>END</B>
+        <B>END</B>
+    <B>END</B>
+  <B>END</B> AddMatrices;</PRE>
+<P>A similar method can be used to write a procedure <I>SubMatrices</I> to subtract two matrices.  Products of matrices are more complicated.  First, the product of a row by a column of the same length is defined as the matrix whose single entry is the sum of their component-wise products.  That is, if </P>
+<IMG SRC="Figure/Eq7.10.5.GIF"><!---->   and   <IMG SRC="Figure/Eq7.10.6.GIF"><!---->
+<P>then AB = [1(2) + 4(3) + 0(5) + -7(1)] = [7]</P>
+<P>If A is a matrix with <I>n</I> rows each of length <I>m</I> (<I>n</I> by <I>m</I>) and B is a matrix with <I>n</I> columns each of length <I>m</I> (<I>m</I> by <I>n</I>), then the product AB is defined by calculating its ijth  entry as the product of row <I>i</I> in A by column <I>j</I> in B in the sense shown above.  Thus if</P>
+<IMG SRC="Figure/Eq7.10.7.GIF"><!---->   and   <IMG SRC="Figure/Eq7.10.8.GIF"><!---->
+<P>then</P>
+<IMG SRC="Figure/Eq7.10.9.GIF"><!---->   and   <IMG SRC="Figure/Eq7.10.10.GIF"><!---->
+<P>Note that not only is AB not equal to BA, one product may be defined when the other is not.  For instance, if A has four rows and five columns, then AB is defined provided B has 5 rows.  BA is defined if B has 4 columns. So, if B is five by two, AB can be computed, but not BA.  With this information in hand, it is an easy matter (left for the student as an exercise) to write:</P>
+<PRE>
+<B>PROCEDURE</B> MulMatrices (A, B:  <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>;
+  <B>VAR</B> C:  <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>;  <B>VAR</B>  ok:  <B>BOOLEAN</B>);</PRE>
+<H3><B><A NAME="7.10.2">7.10.2</A> Matrices and Determinants</B></H3>
+<P>Matrices are used in the solution of a variety of problems, particularly those requiring the solution of systems of linear equations.</P>
+<H3><B>Example:</B></H3>
+<P>The basic cost of manufacturing shirts retail is $3.00.  For every dollar over this price, the manufacturer is willing to produce another hundred shirts.  (Below this, she will of course produce none.)  For their part, the maximum consumer demand is for 1000 shirts, but that is only if they are given away for nothing.  For each dollar increase in price, the demand is reduced by 125 shirts.  Assuming an orderly and rational market, at what level will the sales and price of shirts settle?</P>
+<H3><B>Discussion:</B></H3>
+<P>This is a simple example of supply and demand economics.  It ignores the effect of wholesalers, taxes, and subsidies and presents a rather simple market pattern.  Nonetheless, it serves as a starting point for the examination of a variety of similar problems, and for the abstraction of solution techniques.</P>
+<H3><B>Solution:</B></H3>
+<P>Representing the quantity of shirts by <I>n</I> and the price by <I>p</I>, the relationship in the data provided are:</P>
+<P>n = 100(p - 3.00)  for the supply of shirts<BR>
+n = 1000 - 125p   for the demand</P>
+<P>The market should settle at a point where demand quantity and price match supply quantity and price; that is, at the point represented by the solution to these two equations.</P>
+<P>If the two equations are graphed, straight lines are produced, and a visual inspection reveals that they cross at a price of about $5.75 and a quantity of about 275. (Figure 7.1)</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.1.GIF" BORDER="1"></CENTER><!----></P>
+<BLOCKQUOTE><I><A NAME="Equation">An</A> equation in two variables that can be written in the form ax + by=c (a and b not both zero) is called a <U>linear equation</U>.  The point at which the straight lines represented by two such equations cross is called the <U>solution</U> to the system of simultaneous linear equations.</I></BLOCKQUOTE>
+<P>A graphical solution of such equations is not sufficiently accurate, however, and it is more profitable to use an algebraic analysis.  The common method is called Gaussian elimination, and is based on the simple notion that equal numbers can be added to both sides of any equation without disturbing its truth value(s) ( that is, its solution[s]).  Given the linear system:</P>
+<P>  x + y = 7<BR>
+  x - y = 19</P>
+<P>and regarding the second as an equality of numbers to be added to the first, one adds the left-hand-sides and right-hand sides to obtain</P>
+<P>2x = 26 (the y-variable has been eliminated)</P>
+<P>and then proceeds to multiply both sides by one-half to obtain</P>
+<P>x =13</P>
+<P>Now, substituting this value into one of the originals gives y = -6 and the solution (13, -6) as the (x, y) pair that simultaneously satisfies both equations.</P>
+<P>One or both of the equations may need to be multiplied on both sides by an appropriately chosen constant before adding to  eliminate one or the other variable.  Thus one rewrites the system</P>
+<P>2x + y  = 7      multiply by 4<BR>
+3x - 4y = 5                          </P>
+<P>as the equivalent system</P>
+<P><IMG SRC="Figure/Eq7.10.11.GIF"><!----></P>
+<P>Substituting this value in one of the original equations produces the solution (3,1).</P>
+<P>Likewise, the system</P>
+<P>3s + 4t = 7           <!--¥-->* 4<BR>
+4s - 5t = 1           <!--¥-->* -3</P>
+<P>can be re-written as</P>
+<P><IMG SRC="Figure/Eq7.10.12.GIF"><!----></P>
+<P>or, by multiplying by 5 and 4, respectively, as</P>
+<P><IMG SRC="Figure/Eq7.10.13.GIF"><!----></P>
+<P>and the solution (s, t) = (1, 1)</P>
+<P>In the case of the initial supply and demand example, the system</P>
+<P>n = 100 (p - 3.00)<BR>
+n = 1000 - 125p</P>
+<P>is re-written first as</P>
+<P>n - 100p = -300<BR>
+n + 125p = 1000</P>
+<P>Multiplying the first by -1 and adding yields</P>
+<P>225p = 130<BR>
+      p = 5.76     (nearest cent)</P>
+<P>Likewise, multiplying the first by 5 and the second by 4 yields</P>
+<P><IMG SRC="Figure/Eq7.10.14.GIF"><!----></P>
+<P>The actual solution (6.76, 278) is quite close to the visual estimate.</P>
+<P>Gaussian elimination can be abstracted.  Starting with:</P>
+<P>ax + by = c<BR>
+dx + ey = f</P>
+<P>and using Gaussian elimination, first eliminating y by multiplying by e and -b respectively yields:</P>
+<P>aex + bey = ce<BR>
+-bdx - eby = -fb</P>
+<P>so that, adding these two produces</P>
+<P>(ae - bd) x = ce - fb</P>
+<P>whence</P>
+<P><IMG SRC="Figure/Eq7.10.25.GIF"><!----></P>
+<P>Then, eliminating x by multiplying the original equations by d and -a respectively yields</P>
+<P><IMG SRC="Figure/Eq7.10.15.GIF"><!----></P>
+<P>Now consider the <I>form</I> of the numerators and denominator of the two fractions in this solution.  These three numbers are all of the same kind.  If the various coefficients are written in the matrices below, with the first being the original coefficients, and the second and third having the column of coefficients from the right hand substituted for the x-column, and the y-column of coefficients respectively,</P>
+<P><IMG SRC="Figure/Eq7.10.16.GIF"><!----></P>
+<P>and in each case, if the a11 and a21 terms are multiplied and then the product of the a12 and a21 terms is subtracted from this, the results are:</P>
+<P>ae - bd,    ce - fb,   and  af - cd.</P>
+<BLOCKQUOTE><I><A NAME="Determinant">In</A> a two by two matrix A, the product a11 a22 - a12 a21  is called the <U>determinant</U> of A.</I></BLOCKQUOTE>
+<P>The determinants of matrixes constructed from the coefficients of a linear equation, by substituting the constants from the right hand side of the equation for either the coefficients of x or y are denoted Dx and Dy respectively.</P>
+<P>The solution of the system can therefore be expressed in terms of determinants as</P>
+<P><IMG SRC="Figure/Eq7.10.17.GIF"><!----></P>
+<P>where D is the determinant of the coefficient matrix.</P>
+<P>This method is called Cramer's rule, and it extends to systems with a larger number of variables as well.  It turns out that the determinant of a three-by-three matrix is computed from two-by-two sub-determinants as follows. Given:</P>
+<P><IMG SRC="Figure/Eq7.10.18.GIF"><!----></P>
+<P>where the Mij are called <I>minors</I> and are obtained by crossing out the ith row and the jth  column of the original matrix and working temporarily with whatever is left.  The sign of each term is computed by (-1)^i+j and so is positive when (i + j) is even, and negative when (i + j) is odd.</P>
+<P>Notice that because of the definition of determinants in terms of the determinant of successively smaller matrices, (until one reaches a two by two matrix, for which the calculation is easy),  determinants are inherently recursive.  In this particular case, the recursive expansion by minors has been done by targeting the first row elements and using the corresponding minors.  This is usual, but it turns out that any row or column could have been used. (For a discussion of why this is so, see an appropriate text on linear algebra).  Since the definition is recursive, it can be used to compute the determinant of a matrix of any size, provided that sufficient computational power is available to do all the calculations..</P>
+<P>Cramer's rule for a system of three equations in three variables can now be expressed as</P>
+<P><IMG SRC="Figure/Eq7.10.19.GIF"><!----></P>
+<P>It is also useful to employ the notation of indicating the determinant of a matrix by using vertical bars rather than brackets around the array of numbers.  This notation resembles that of absolute value as used with real numbers.</P>
+<H3><B>Example:</B></H3>
+<P>   x - 7y +  2z = 7<BR>
+  3x +  y -   z = 5<BR>
+  2x -3y  + z = -10</P>
+<P>has the solution calculated as above where</P>
+<P><IMG SRC="Figure/Eq7.10.20.GIF"><!----></P>
+<P>In order to code this, it is necessary to keep track (at each level of recursion) which rows and columns have been <!--"-->&quot;crossed out<!--"-->&quot;.  This is easy to do for the rows, as the expansion can be performed on the top row of the minor each time.  The trap door for escaping from the lowest level of the recursive calls can be the fact of having arrived at the second-to-last row, for then all but two rows have been expanded upon and crossed out, and only a two-by-two minor remains to be computed.  Suppose, for example, while calculating the determinant:</P>
+<P><IMG SRC="Figure/Eq7.10.21.GIF"><!----></P>
+<P>one expanded on the first row, working column by column with the minors in the usual way.  At, say the calculation of the third minor, one conceives of the remaining active items of the matrix for subsequent recursive steps looking like:</P>
+<P><IMG SRC="Figure/Eq7.10.22.GIF"><!----></P>
+<P>If one now continues recursively, expanding on the first row of this, then the first minor calculation leaves the active items:</P>
+<P><IMG SRC="Figure/Eq7.10.23.GIF"><!----></P>
+<P>If as the recursion has proceeded, a record has been kept as to which columns have been crossed out, it is a simple matter now that the second-to-last row has been arrived at to scan that record for the first two active columns and perform the simple computation that yields the determinant of this two-by-two minor.  Keeping track of what columns have been crossed out presents some difficulty.  Each cross out needs to be recorded, and this task requires data space.  The storage needs for this of a general purpose recursive procedure that is supposed to operate on any two dimensional open array parameter cannot be pre-determined, so the procedure itself must find a way to reserve sufficient memory.  This could be done by using a second (one-dimensional) open array parameter of the same length as the number of columns in the matrix. The simplest and most obvious way to do this might be be to write:</P>
+<PRE> 
+  <B>PROCEDURE</B> Determinant (theMatrix:  <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>REAL</B>;
+         crossed: <B>ARRAY</B> <B>OF</B> <B>BOOLEAN</B>) : <B>REAL</B>;</PRE>
+<P>where the second array was the same length as the number of columns (i.e. the length of a row) in the first matrix.  It would be up to a client program to declare and pass an array of booleans of the correct size to work with the matrix parameter being used.   This approach, however, burdens the client program with more detail than should be used in an abstract approach.  It ought to be possible to invoke a procedure to do a determinant computation without requiring the user of the procedure to be concerned with such details.</P>
+<P>A solution can be had to this difficulty if the main procedure is simply a shell, and it calls the recursive procxedure with an extra parameter for the storage space.  The difficulty lies in the main procedure having to compute the size of this second parameter.  One might be tempted to write: </P>
+<PRE>
+<B>PROCEDURE</B> Determinant (theMatrix: <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>REAL</B>): <B>REAL</B>;
+
+<B>VAR</B> 
+  temp = <B>ARRAY</B> [0 .. <B>HIGH</B> (a)] <B>OF</B> <B>BOOLEAN</B>; (* not allowed *)
+
+<B>PROCEDURE</B> Det  (aMatrix:  <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>REAL</B>;
+         crossed: <B>ARRAY</B> <B>OF</B> <B>BOOLEAN</B>): <B>REAL</B>;
+
+(* body of Det with working code here *)
+
+<B>END</B> Det;
+         
+<B>BEGIN</B> (* main *)
+  <B>RETURN</B> Det (theMatrix, crossed);
+<B>END</B> Determinant;</PRE>
+<P>However, a Modula-2 compiler has to be able to calculate the storage space for all variables declared under a VAR heading, and the size of temp is not available until run time.  Consequently, Modula-2 does not allow the declaration of arrays using run time calculations such as this.  Therefore, another approach to obtaining a data storage of the right size for marking off columns is needed.</P>
+<P>Recall that a value parameter makes a copy of data and allows it to be modified without affecting the original.  Also recall that a two dimensional array of items (an ARRAY OF ARRAY OF item) can be thought of as a one dimensional array of rows.  Thus, if one row (say, the first) of the original matrix is passed to a formal value parameter, a sufficient number of data items will be available within the procedure to flag columns.  These items will be of a numeric type rather than the type BOOLEAN, but that is of no consequence, as numeric values can be chosen to indicate the (inherently BOOLEAN) values <I>crossed</I> and <I>not crossed</I>.  When the recursive procedure is first entered, it can set the values of these data items to some non-zero value (representing <I>not crossed</I>); on a subsequent call the entry can be set to zero (representing <I>crossed</I>) in the column being crossed out for that call.  Since the rows employed for this purpose are to be value parameters, there is no threat posed to the values of the original matrix by making use of a copy of one of its rows for something else.  Moreover, when one backs out through the levels of the recursion, the record of columns crossed out is preserved at each level, for alterations made at deeper levels are again made on a copy of the row.</P>
+<P>This leads to the employment of two more parameters in the header of the recursive procedure, for it must always have available the number of the row being expanded upon (for the multipliers of the minors) and the column number currently being used (and that it must therefore cross out).  Taking all these ideas into consideration leads to the following pseudocode:</P>
+<PRE>
+function procedure determinant
+  parameter: open m by n two-dimensional array of real
+  returns:  the determinant of the array.
+  calls the recursive procedure dMinor, passing
+      the original array
+      the first row of the original array
+      0,0 as the row and column being expanded on.
+
+function procedure dMinor
+    parameters: open n by n two-dimensional array of real
+                     : open length n one-dimensional array of real (crossed)
+                     : the row and column being expanded on (cardinals)
+    returns:  the determinant of the (row, column)th  minor
+    
+    if row is 0 
+      call fix row to ensure all items in array crossed are non-zero 
+    else
+        columnth element of crossed is set to 0
+    end if
+    if row is n-2,  call scan to get the first and second column numbers to use
+      return  a [n-2, first Col] x a [n-1, second Col]-
+                  a [n-1, first Col] x a [n-2, second Col]
+    else
+      set sum to zero
+      set col count to zero
+      while col count <!--<-->&lt; n
+        if crossed [col count] # 0 (*  use active columns only for minor *)
+          add to sum sign (row, col) * a [row, col count] * DMinor (a, crossed,
+                                                                          row + 1, col count)
+          alternate sign
+        end if
+        increment col count
+      end while
+
+procedure scan
+  parameters: open one-dimensional array of real of length n
+                   :a cardinal indicating the last column to check
+                   :(out) two column numbers
+  set count to zero
+  set got to zero
+    while count <!--<-->&lt; n - 1 and got <!--<-->&lt;2
+      if a [count] # 0
+        if got = 0 then first = count
+        if got = 1 then second = count
+        increment got
+      end if
+      increment count
+    end while</PRE>
+<P>Translating into Modula-2 (with the independent procedures first and the dependent one last) yields the code below.  Note that the procedure <I>FixRow</I> was not given in the pseudo-form, as it is quite simple.</P>
+<PRE>  
+(* auxiliary  procedures for the main calculation *)
+
+<B>PROCEDURE</B> FixRow (<B>VAR</B> theRow: <B>ARRAY</B> <B>OF</B> <B>REAL</B>);
+(*  Pre: none
+    Post: all elements 0..hi of the row are non-zero *)
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B>  <B>HIGH</B> (theRow)
+    <B>DO</B>
+      theRow [count] := 1.0;
+    <B>END</B>;
+<B>END</B> FixRow;
+
+<B>PROCEDURE</B> Scan (theRow: <B>ARRAY</B> <B>OF</B> <B>REAL</B>; max: <B>CARDINAL</B>; 
+                               <B>VAR</B> first, second: <B>CARDINAL</B>);
+(* Pre: none
+   Post: returns the first two column positions in the row (up to max) where the item is non-zero *)
+
+<B>VAR</B>
+  count, got, cols : <B>CARDINAL</B>; 
+
+<B>BEGIN</B>
+  count := 0;
+  got := 0;
+  cols := <B>HIGH</B> (theRow);
+  <B>WHILE</B> (count <!--<-->&lt;= cols) <B>AND</B> (got <!--<-->&lt; 2)
+    <B>DO</B>
+      <B>IF</B> theRow [count] # 0.0
+        <B>THEN</B>
+          <B>IF</B> got = 0
+            <B>THEN</B>
+              first := count;
+              <B>INC</B>(got);
+            <B>ELSIF</B> got = 1 <B>THEN</B>
+              second := count;
+              <B>INC</B>(got);
+            <B>END</B>; (* <B>IF</B> got = 0 *)
+        <B>END</B>; (* <B>IF</B> a [count] *)
+      <B>INC</B> (count);
+    <B>END</B> (* while *);
+<B>END</B> Scan;
+
+(* this is the procedure that actually does the work *)
+
+<B>PROCEDURE</B> DMinor (<B>VAR</B> a : <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>REAL</B>; (* matrix *)
+    crossed: <B>ARRAY</B> <B>OF</B> <B>REAL</B>; (* for crossed out rows *)
+    row, col: <B>CARDINAL</B>) : <B>REAL</B>;
+
+<B>VAR</B>
+  size, colcount, firstCol, secondCol: <B>CARDINAL</B>;
+  sum, sign: <B>REAL</B>;
+
+<B>BEGIN</B>
+  size := <B>HIGH</B> (a);  (* number of rows *)
+  <B>IF</B> row = 0
+    <B>THEN</B>
+      FixRow (crossed);
+    <B>ELSE</B>
+      crossed [col] := 0.0;
+    <B>END</B>;
+  <B>IF</B> row = size - 1
+    <B>THEN</B>
+      Scan (crossed, size, firstCol, secondCol);
+      <B>RETURN</B> a [size - 1, firstCol] * a [size, secondCol]
+             -a [size, firstCol] * a [size - 1, secondCol];
+
+    <B>ELSE</B>
+      sum := 0.0;
+      colcount := 0;
+      sign := 1.0;
+      <B>WHILE</B> colcount <!--<-->&lt;= size
+        <B>DO</B>
+          <B>IF</B> crossed [colcount] # 0.0
+            <B>THEN</B>
+              sum := sum + (sign * a [row, colcount]
+                  * DMinor (a, crossed, row + 1, colcount));
+              sign := -1.0 * sign; (* alternates *)
+             <B>END</B>; (*if *)
+           <B>INC</B> (colcount );
+         <B>END</B>; (* <B>WHILE</B> *)
+       <B>RETURN</B> sum;
+     <B>END</B>; (* <B>IF</B> row = size - 1 *)
+<B>END</B> DMinor;
+
+(* finally, the procedure that would be exported from a library *)
+
+<B>PROCEDURE</B> Determinant (theMatrix: <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>REAL</B>): <B>REAL</B>;
+
+<B>BEGIN</B> 
+  <B>RETURN</B> DMinor (theMatrix, theMatrix[1], 0, 0);
+<B>END</B> Determinant;</PRE>
+<P>The client using this latter procedure still has to be able to  substitute columns appropriately before involving <I>Determinant</I>.  To do this, it needs access not only to the coefficients on the left-hand-side of the equation, but also to the constants on the right.  For this purpose, it is often useful to employ an augmented matrix of n rows by n + 1 columns with the last column being the constants on the right-hand-side.  In such a method, the equations</P>
+<P>x -  3y + 7z = 4<BR>
+2x + 5y -  z = l0<BR>
+3x - y + 15z = -5</P>
+<P>give rise to the so called <I>augmented</I> matrix:</P>
+<P><IMG SRC="Figure/Eq7.10.24.GIF"><!----></P>
+<P>The bar before the last column is written to emphasize the nature of the matrix as a three by three matrix of coefficients augmented by the column constants from the right hand side.  The practitioner who is used to these will usually not use the bar.  Also, in common use, employing x,y, and z for the variables loses generality and restricts one to the number of letters available.  It is better to denote them x1, x2, x3, .........xn.  The solution to the system is given by the Di/D,  employing the same notation as previously.  </P>
+<P>D can be found by passing the entire n by n+1 matrix to the procedure determinant, as the latter ignores the last column.  To compute  Di, it is necessary to use an intermediate step that places column n into column i before calling <I>Determinant</I>.  This is formulated as:</P>
+<PRE>
+(* the next one is for use with Cramer's rule.  It does a substitution first, then computes the determinant. *)
+
+<B>PROCEDURE</B> DetJ (a: <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>REAL</B>; col: <B>CARDINAL</B>): <B>REAL</B>;
+(* Pre: none
+   Post: the column at position col is replaced by last column in the array passed. *)
+   
+<B>VAR</B>
+  count, size: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  size := 1 + <B>HIGH</B> (a);
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (a)
+    <B>DO</B>
+      a [count, col - 1] := a [count, size];
+        (* recall that column numbering inside starts at zero *)
+    <B>END</B>;
+ <B>RETURN</B> Determinant (a);
+<B>END</B> DetJ;</PRE>
+<P>One potential difficulty remains to be considered.  If one of the equations has coeffiecients that are multiples of those belonging to another equation in the set, there will not be a unique solution to the system.  In such cases, the determinant of the coefficient matrix will be zero.  To avoid a run time error, this possibility must be checked before performing the division Di/D.  A client program containing an n row by n+1 column augmented coeffient matrix <I>coefMat</I> and a vector solution of length n could employ the following code to determine the solutions:</P>
+<PRE>  
+  det := Determinant (theMatrix);
+  WriteString (<!--"-->&quot;The determinant is <!--"-->&quot;);
+  WriteFixed (det, 5, 0);
+  WriteLn;
+  <B>IF</B> <B>ABS</B> (det - 0.0) <!-->&gt; 0.001
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;The solutions by Cramer's Rule are: <!--"-->&quot;);
+      WriteLn;
+      <B>FOR</B> count := 1 <B>TO</B> n
+       <B>DO</B>
+         WriteString (<!--"-->&quot;x<!--"-->&quot;);
+         WriteCard (count, 0);
+         WriteString (<!--"-->&quot; = <!--"-->&quot;); 
+         WriteFixed (DetJ (theMatrix, count) / det, 5, 0);
+         WriteLn;
+       <B>END</B>; (* for *)
+    <B>ELSE</B>
+      WriteString (<!--"-->&quot;There are no unique solutions.<!--"-->&quot;);
+      WriteLn;
+    <B>END</B>;</PRE>
+<P>Notice that no attempt has been made to distinguish between the case where there is no solution, for instance:</P>
+<P>2x + y = 7<BR>
+2x + y = l3</P>
+<P>where the elimination method produces 0 = 6 (inconsistency) and the case where there are many solutions, for instance:</P>
+<P> x + 2y  = 5<BR>
+2x + 4y = 10</P>
+<P>where the elimination method produces 0 = 0 (the equations are dependent<!--‹-->--i.e. essentially the same equation). Both of these yield a zero determinant for the coefficient matrix, so the two situations must be distinguished in some other way.  This discrimination can be made more easily using methods other than computing the determinant, but that has been left either as an exercise or for discussion by a text more specifically dedicated to this topic.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

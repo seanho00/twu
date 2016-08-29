@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<TITLE>12.14 Assignments</TITLE><meta NAME="keywords" CONTENT="chapter, summary, pointer, pointers, static, dynamic, memory, management, obtain, create, adt, adts, structure, opaque, data, type, types, abstract, link, linked, list, lists, variant, dynamic, record, records, point, pointer, dispose, new, nil, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.14 Assignments</B></H2>
+<H3><B>Questions</B></H3>
+<P>1.  What is a pointer and how is it declared?</P>
+<P>2.  What is the Modula-2 symbol ^ called?</P>
+<P>3.  What is the difference between a reference to <i>point</i> and a reference to <i>point^</i>?</P>
+<P>4.  With what two types are all pointer variables assignment compatible?</P>
+<P>5.  How can pointers be used to make a program more efficient even without using dynamic memory?</P>
+<P>6.  What does it mean to say that some pointer expressions must be <I>guarded</I>?  What is the error being guarded against?</P>
+<P>7.  What procedures can be employed to do pointer arithmetic?</P>
+<P>8.  What is a dangling pointer and how does it get that way?</P>
+<P>9.  Explain how pointers can be used to simulate the action of a variable parameter.</P>
+<P>10. Explain the operation of the machine stack.  What is a stack pointer?</P>
+<P>11. What is an activation record?</P>
+<P>12. Explain how the use of activation records on a stack allows recursion.</P>
+<P>13. Why would one not call the use of activation records on a stack a true dynamic activity?</P>
+<P>14. What is the heap?</P>
+<P>15. What two pervasive (built-in) procedures does Modula-2 employ to manage the heap?</P>
+<P>16. What two  unusual (magical) properties do these two procedures have? </P>
+<P>17. The ISO standard says that the two procedures mentioned in the last question are <I>often</I> translated into two library procedures.  What two library procedures are these, and why does the standard say <I>often</I>?</P>
+<P>18. What restriction on the use of function procedure identifiers was highlighted in this chapter?</P>
+<P>19. A program needs a pointer to access every dynamic item, yet the goal in using dynamic memory is to be free of the limitations on static memory.  How is this problem avoided?</P>
+<P>20. What are two applications of dynamic memory?</P>
+<P>21. What is a linked list?</P>
+<P>22. Name and explain two extensions to the linked list ADT.</P>
+<P>23. Write a definition module for a linked list ADT.  You may employ any base data type you wish.</P>
+<P>24. What is an opaque data type and what does the ISO standard require them to be re-declared as?</P>
+<P>25. Why was this limitation on the nature of opaque data types made?</P>
+<P>26. How does the handling of variant dynamic records differ from that of ordinary dynamic records?</P>
+<P>27. Why is it that a dynamic variant record might occupy different amounts of memory depending on the value of its tag field(s)?</P>
+<P>28. A static variant record has the same amount of memory regardless of the value of its tag fields.  Explain why this is the case.</P>
+<P>29. A record type with a variant is found as the type of a field in another record.  Do the sub-record tags affect memory allocation for the entire record?</P>
+<P>30. How would you refer to the integer item ultimately pointed to through the variable <I>handle</I> below?</P>
+<PRE><B>TYPE</B>
+  HandleType = <B>POINTER</B> <B>TO</B> <B>POINTER</B> <B>TO</B> <B>INTEGER</B>;
+<B>VAR</B>
+  handle : HandleType;</PRE>
+<P>31. The use of SIZE (point^) could, in theory, cause a run-time error if the pointer had a value of NIL.  In actual fact, this will never take place in the ISO version of Modula-2 because of the way in which SIZE is evaluated.  Explain.</P>
+<H3><B>Exercises</B></H3>
+<P>32. Write a small program to check on the way your implementation handles Storage.ALLOCATE and Storage.DEALLOCATE.  Does a failure to allocate memory result in a NIL value being assigned to the pointer?  Does DEALLOCATE assign NIL to the pointer?  What does your system actually do when a reference to <I>point^</I> is made while <I>point</I> has the value NIL?</P>
+<P>33. Consider the following declarations.  Devise a short test harness and determine the amount of memory allocated for the variants on your machine.</P>
+<PRE><B>TYPE</B>
+  Date =
+    <B>RECORD</B>
+      day: [0 .. 31];
+      month: [0 .. 11];
+      year: <B>CARDINAL</B>;
+    <B>END</B>;
+  Index = <B>CARDINAL</B>;
+  Frac = <B>REAL</B>;
+  <B>STRING</B> = <B>ARRAY</B> [0 .. 80] <B>OF</B> <B>CHAR</B>;
+  Person =
+    <B>RECORD</B>
+      name, birthPlace: <B>STRING</B>;
+      birthDate: Date;
+      <B>CASE</B> tag <B>OF</B>
+        student:
+          (* Nothing<!--‹-->--null record *)
+        |faculty:
+          rank: <B>STRING</B>
+        |staff:
+          department, position: <B>STRING</B>
+      <B>END</B>
+    <B>END</B>;</PRE>
+<P>34. Declare your own variant record type with one or more nested variants, check the validity of your declarations with the compiler you are using, and test the possible tag field values for the amount of memory allocation on your machine. While you are at it, investigate the use of the alternate version of NEW and of TSIZE for such purposes.</P>
+<P>35. As in number 34, but this time declare your own variant record type with two or more non-nested variants and one or more nested variant and test the possible tag field values for the amount of memory allocation on your machine.</P>
+<P>36. By finding and printing the address of value parameters and/or a local variable, verify that your system operates a stack for activation records in the manner described in this chapter. Are the first stack addresses greater or less than the addresses of main program memory variables? Does the stack grow up or down in memory (or neither?) </P>
+<P>37. Declare variables of two different dynamic types of different sizes.  Allocate memory to one, get and print (interesting task) the address, then deallocate the memory and reallocate it, first to the same pointer, then to one of the other type, printing out the addresses each time.  What conclusion do you come to about the location of the heap on your machine relative to the main program variables and the stack?  Does the memory given up on a deallocate get used when a new allocation is requested?</P>
+<P>38. Declare and fill with values a dynamic array of reals (dimension chosen at run time) and then print the values out to verify you have done it correctly.</P>
+<P>39. Implement and test for yourself the sorting of a collection of three records with auxiliary pointers as suggested in <A HREF="Ch12.2.html#AuxPointers">section 12.2</A>.</P>
+<P>40. Implement and test more complete and bullet-proof versions of the modules <A HREF="Ch12.6.html#MakeRecords">MakeRecords</A> and <A HREF="Ch12.6.html#GetPrintRecords">GetPrintRecords</A> in section 12.6.  Your improvements should be substantial, not just cosmetic.</P>
+<P>41. Test the module <A HREF="Ch12.9.html#OpaquePoints">OpaquePoints</A> in section 12.9 with an appropriate test harness.</P>
+<P>42. Assemble the procedures of <A HREF="Ch12.10.html">section 12.10</A> into a test harness, and add procedures to find and to delete a specific item.</P>
+<P>43. Complete the module <A HREF="Ch12.11.html#TwoWayList">TwoWayList</A> in section 12.11 by adding a procedure to delete a specific item by index number and another procedure to delete one by the data it contains.</P>
+<P>44. Modify the module <A HREF="Ch12.11.html#TwoWayList">TwoWayList</A> in section 12.11 to have another data field, say, a student number, and two more forward and backward pointers.  New items should be added in such a way that they are in order by one set of pointers for the names (as shown in the example) and by the other set of pointers for the numbers.  Deletion should be by name or number (student number, not index number.)  The procedures to write the data need to be modified as well for testing purposes.</P>
+<H3><B>Projects</B></H3>
+<P>45. Implement and test the linked list ADT you defined in question 23 above.</P>
+<P>46. Define, implement and test a dynamic string ADT.</P>
+<P>47. Define, implement and test a dynamic array of reals ADT whose dimensions can be established at run time.  Include and test in a client program the code to add and to multiply two of these.</P>
+<P>48. Devise, implement, and test a means of storing and retrieving (in random access fashion) variant records of different lengths from a disk file.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

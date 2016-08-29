@@ -1,0 +1,1872 @@
+<HTML><HEAD><TITLE>18.6 An Extended Example--Implementing GraphPaper</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Implementing GraphPaper">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>18.6 An Extended Example<!--‹-->--Implementing  GraphPaper</b></H2>
+
+<P>Two kinds of functionality have to be combined into the working package in order to implement <i>GraphPaper</i>. First, one has to be able to get a window open that can be used for the purpose, and second, one has to have available some drawing routines from a variety of system specific modules. Actually implementing the routines in the definition module then turns out to be relatively routine. </P>
+<P>Thus, in the implementations that follow, the functionality is divided between two modules<!--‹-->--one that opens and prepares a window for drawing, and the other the actual implementation of <i>GraphPaper</i>.</P>
+
+<H3><b><A NAME="18.6.1"></A>18.6.1 Defining the Module GraphWindow</b></H3>
+<P>The only purpose of this module is to isolate the task of preparing the graphics window from the task of implementing the procedures in <i>GraphPaper</i>. The MacOS versions are relatively simple, and in the initial implementation one incorporated into <i>GraphPaper</i> to make a single module. However, the Windows version was so cumbersome that the details obscured those of <i>GraphPaper</i> so the two were separated and the module <i>GraphWindow</i> created. Here is the definition:</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> GraphWindow;
+
+(* Design and Macintosh implementattion by R.  Sutcliffe
+   Windows implementation by Joel Schwartz
+   Last revision: 1998 07 07 *)
+   
+(* This module obtains and passes to applications that need it a simple graphics window and its dimensions. Some applications will need only to import this module, and possibly get the window dimensions, as graphing takes place in the current grafport anyway, and this module will set that port, so GetWindow may not have to be imported. *)
+
+<b>IMPORT</b> (* MacOS *) Quickdraw; (* Windows: IMPORT WIN32; *) 
+
+(* for convenience we export the type of the reference; this makes it more compatible to the 
+Windows version where we import the HDC type and define WindowRef to be an HDC. *)
+
+<b>TYPE</b> 
+  WindowRef = Quickdraw.WindowRef;  (* Windows: WindowRef = WIN32.HDC *)
+
+<b>PROCEDURE</b> GetWindow () : WindowRef;
+<b>PROCEDURE</b> GetWDimensions (<b>VAR</b> width, height : <b>INTEGER</b>);
+
+<b>END</b> GraphWindow.</PRE>
+
+<P>The Windows version needs the minor change as noted<!--‹-->--another reason to separate this functionality from that of <i>GraphPaper</i>. One does not want OS-specific items like <i>WindowRef</i> turning up in a top level general definition module. If the user of <i>GraphPaper</i> needs this reference, perhaps to do some annotating of her own in the window, it is available, but at this lower level. A full listing of the Windows version with the small revisions is given in <A HREF="#18.6.5">section 18.6.5</A> for reference purposes.</P>
+
+<H3><b><A NAME="18.6.2"></A>18.6.2 Implementing GraphWindow in MacOS</b></H3>
+
+<P>There are a variety of ways to get a window open for graphing in MacOS. In the author's implementation of the ISO library, the I/O system opens a window that comes complete with menu bar and a quit command so that no loop is needed to wait for a key press. The implementation that follows imports <i>STextIO</i>, thereby forcing the opening of a window for text (which can also be used to draw) and essentially "steals" this window, setting its graphics port as the current one, and allowing <i>GraphPaper</i> to go ahead and draw in it.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> SGraphWindow;
+(* Design and Macintosh implementation by R. Sutcliffe
+   Ultra simple version that steals a window from elsewhere
+   Last revision: 1998 07 07 *)
+
+<b>FROM</b> Quickdraw <b>IMPORT</b>
+  SetPort;
+
+<b>FROM</b> MacWindows <b>IMPORT</b>
+  FrontWindow;
+
+<b>FROM</b> Types <b>IMPORT</b>
+  Rect;  
+  
+<b>IMPORT</b> STextIO; (* force a window *)
+
+<b>VAR</b>
+(* Graphics Variables *)
+  graphRect  : Rect;
+  gWindow : WindowRef;
+  lwidth, lheight : <b>INTEGER</b>;
+
+ (*------------------------ Window Related Procedures ------------------ *)
+
+<b>PROCEDURE</b> GetWindow () : WindowRef;
+
+<b>BEGIN</b>
+  <b>RETURN</b> gWindow;  (* Return the stored window reference *)
+<b>END</b> GetWindow;
+
+<b>PROCEDURE</b> GetWDimensions (<b>VAR</b> width, height : <b>INTEGER</b>);
+
+<b>BEGIN</b>
+  width := lwidth;
+  height := lheight;
+<b>END</b> GetWDimensions;
+
+<b>BEGIN</b> (* main *)
+  gWindow := FrontWindow (); (* steals the one STextIO puts up *)
+  SetPort (gWindow);
+  graphRect := gWindow^.visRgn^^.rgnBBox;
+  lwidth := graphRect.right - graphRect.left;
+  lheight := graphRect.bottom - graphRect.top;
+<b>END</b> SGraphWindow.</PRE>
+
+<P>The details of the record structure pointed to by a <i>WindowRef</i> are not given here. Suffice it to say that once the window has been opened by <i>STextIO</i>, it is easy to get its reference using <i>FrontWindow</i> and then take information concerning the window size from that data structure as shown.</P>
+<P>If the same trick is tried without using the author's implementation of the ISO library, the <i>Terminal</i> program that supplies services to the I/O library probably will not have such features as a <i>Quit</i> command on the menu bar, and the window will simply vanish as soon as the program has run. In that event, the same implementation as above may be employed, but with the addition of a termination clause. One would include the lines:</P>
+
+<PRE><b>FROM</b> Keyboard IMPORT
+  BusyRead;
+<b>FROM</b> Events <b>IMPORT</b>
+  Button;
+
+<b>FINALLY</b>
+  WriteString ("touch any key to exit");
+  <b>REPEAT</b>
+    BusyRead (ch); (* delay until keypress or mouse button *)
+  <b>UNTIL</b> (ch # 0C) <b>OR</b> Button ();</PRE>
+ 
+<P>The addition of the use of <i>Button</i> is to ensure that such items as the control, option, and command buttons (which are not keys) will also exit the program if touched.</P>
+<P>If the user desires to create graphics windows without using the ones available by stealing from a <i>Terminal</i> module employed by <i>STextIO</i> then a little more work is necessary, as the module would actually have to open the window itself. Rather than immediately give a variation on <i>GraphWindow</i> here that does this, the information necessary is provided in the following module, which opens a graphics window directly and then draws some rectangles and ovals in it. This module does <b>not</b> use <i>GraphPaper</i>, only built in routines. Extracting the necessary routines from it to produce a stand-alone version of <i>GraphWindow</i> for the MacOS is shown later in this section. The only thing this particular module does, besides open the window, is set a pen size to a two-by-two rectangle rather than the usual one pixel each way, and then draw a few figures. Of course, it would be easy to port this module to <i>GraphPaper</i> either by importing the routines for framing rectangles and ovals directly, or by writing them in a client of <i>GraphPaper</i>.</P>
+
+<PRE><b>MODULE</b> DrawRectangles;
+
+(* by R. Sutcliffe
+  to demonstrate simple graphics on the MacOS using QuickDraw directly
+  illustrates simple actions such as opening and preparing a graphics window
+  revised 1996 07 14 *)
+  
+<b>FROM</b> SYSTEM <b>IMPORT</b>
+  ADR, CAST;  
+<b>FROM</b> Keyboard <b>IMPORT</b>
+  BusyRead;  
+<b>FROM</b> Quickdraw <b>IMPORT</b>
+  qd, PenSize, WindowRef, InsetRect, SetPort, SetRect, FrameRect, FrameOval; 
+<b>FROM</b> MacWindows <b>IMPORT</b>
+  WindowRecord, NewWindow, documentProc;  
+<b>FROM</b> Types <b>IMPORT</b>
+  Rect;  
+<b>FROM</b> Events <b>IMPORT</b>
+  Button;
+  
+<b>CONST</b>
+  inFront = CAST (WindowRef, -1); (* Special constant used when opening window to say it goes on top. *)
+  deltaXY = 20;
+  penH = 2;  penV = 2;
+  
+<b>VAR</b>
+  curRect, windRect : Rect;
+  left, right, top, bot : <b>CARDINAL</b>;
+  ch : <b>CHAR</b>;
+  wRecord: WindowRecord;
+  myWindow: WindowRef;
+
+<b>BEGIN</b>
+  windRect := qd.screenBits.bounds;  (* find out screen size *)
+  InsetRect (windRect, 50, 50);  (* and make an inset from this *)
+
+  (* now, open a named window using this rect *)
+  (* we have to pass the address of a WindowRecord, a rectangle to draw in, a title for the window, TRUE to make the window visible, the name of the procedure that draws a standard document window, the constant inFront to put it on top, FALSE to indicate it has no goAway box and a zero for the refCon.
+   *)
+  myWindow := NewWindow
+   (ADR (wRecord), windRect, 'DrawRectangles', <b>TRUE</b>, documentProc, inFront, <b>FALSE</b>, 0);
+
+  SetPort (myWindow); (* establish graphics port *)
+
+  (* and the relative coordinates of its size *)
+  left := 0;
+  right := windRect.right - windRect.left;
+  top := 0;
+  bot := windRect.bottom - windRect.top;
+  PenSize (penH, penV);
+
+  (* Now, draw a series of contained rectangles and ovals *)
+  <b>WHILE</b> left < right
+    <b>DO</b>
+      SetRect (curRect, left, top, right, bot);
+      FrameRect (curRect); 
+      FrameOval (curRect); 
+      <b>INC</b> (left, deltaXY);
+      <b>INC</b> (top, deltaXY);
+      <b>DEC</b> (right, deltaXY);
+      <b>DEC</b> (bot, deltaXY);
+    <b>END</b>;
+  
+ <b>FINALLY</b>
+   <b>REPEAT</b>
+     BusyRead(ch); (* delay until keypress or mouse button *)
+   <b>UNTIL</b> (ch # 0C)  <b>OR</b> Button ();
+ 
+<b>END</b> DrawRectangles.</PRE>
+
+<P>Here is a reduced screen shot of the output from this simple module.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.13.GIF" WIDTH=627 HEIGHT=418 BORDER="1"></CENTER></P><!---->
+
+<P>This module too has a dependency on one of the author's own modules, but the concept has been presented before, and the reader should consult <A HREF="../Ch8/Ch8.4.html#8.4.1"> section 8.4.1</A> for the details of implementing <i>Keyboard</i>.</P>
+<P>It is not the purpose of this section to give a detailed description of the MacOS toolbox routines, but some careful study of the simple ones employed here should go a long way toward assisting in understanding some of the basics.</P>
+<P>Collecting some of these ideas into one module provides a better implementation of <i>GraphWindow</i>,this one not dependent on <i>Keyboard</i>. Note, however, that this is still not a full-blown MacOS application. It has no menu bar, and it is not possible to switch out of applications based on this window and then back in again, for the graphics drawn on the window will not reappear once they have been erased. Once the client program is finished, the termination clause in this module takes over, and waits for a keypress or a mouse click. In this version, other button clicks (CMD, OPT, CNTRL, SHFT) are left alone so that the normal screen shot process can take place.</P>
+<P>This implementation also hints at the very different style of programming needed in a graphics user interface such as MacOS or Windows. When the program is idling, it does so in a loop (called a main event loop) that waits for an event to take place. When one does, the program decides whether or not to handle that event. In this case, the <i>MainEventLoop</i> is a very simple one and contains all the code needed to handle the only events of interest. Much more would need to be done in a fully developed application, and the usual method is to have separate procedures for each kind of event and dispatch control to the handling procedures after detecting which event has occurred. The purpose of the <i>gSleep</i> variable is to give the system some time to respond to events as well, keeping the system clock and other such things up-to-date. Very few systems will lack colour; those that do will produce a window anyway, but it will not be possible to import routines from <i>Quickdraw</i> to change the pen colour for drawing.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> GraphWindow;
+(* Implements a very simple graphics window on the Mac. There is no menu, and any keypress or mouse click quits.
+  Screenshots using shft-cmd-4 work, so the results from clients can be captured.
+ 
+  Design and Macintosh implementation by R.  Sutcliffe
+   Last revision: 1998 07 22 *)
+
+<b>FROM</b> SYSTEM  IMPORT
+  ADR, CAST;
+<b>FROM</b> Types  <b>IMPORT</b>
+  OSErr, Rect;
+<b>FROM</b> OSUtils <b>IMPORT</b>
+  SysEnvirons, SysEnvRec;
+<b>FROM</b> Quickdraw <b>IMPORT</b>
+  qd, SetPort;  
+<b>FROM</b> MacWindows <b>IMPORT</b>
+  WindowRecord, NewCWindow, NewWindow, documentProc;
+<b>FROM</b> Events <b>IMPORT</b>
+  EventRecord, GetCaretTime, WaitNextEvent, keyDown, mouseDown, everyEvent;
+
+<b>VAR</b>
+    (* Graphics Variables to pass out *)
+  gWindow : WindowRef;
+  lwidth, lheight : <b>INTEGER</b>;
+    (* internal variables *)
+  windRect, graphRect  : Rect;
+  gSleep   : <b>INTEGER</b>;
+  wRecord : WindowRecord;
+
+<b>CONST</b>
+  inFront = CAST (WindowRef, -1); (* special constant to display window *)
+
+ (*------------Exported Procedures --------------- *)
+
+<b>PROCEDURE</b> GetWindow () : WindowRef;
+
+<b>BEGIN</b>
+  <b>RETURN</b> gWindow;  (* Return the stored window reference *)
+<b>END</b> GetWindow;
+
+<b>PROCEDURE</b> GetWDimensions (<b>VAR</b> width, height : <b>INTEGER</b>);
+
+<b>BEGIN</b>
+  width := lwidth;
+  height := lheight;
+<b>END</b> GetWDimensions;
+
+(* -------------------------------------------*)
+   
+
+(* Initialize everything for the program, make sure we can run. *)
+<b>PROCEDURE</b> Initialize;
+<b>VAR</b>
+  error : OSErr;
+  theWorld  : SysEnvRec;
+  colour : <b>BOOLEAN</b>;
+  
+<b>BEGIN</b>
+  (* Test the computer to be sure we can do color.  If not we could crash.  Note that a client program should do its own test before assuming that the window has colour. *)
+  
+  error := SysEnvirons (1, theWorld);
+  colour := theWorld.hasColorQD;
+ 
+  (* The run time system initializes all the needed managers. *)
+
+  (* Make a new window for drawing in.  The window is inset from full screen size. *)
+  
+  windRect := qd.screenBits.bounds; (* get overall dimensions *)
+  <b>INC</b> (windRect.top, 40); (* drop down from the top *)
+  <b>IF</b> colour (* make it a colour window if we can *)
+    <b>THEN</b>
+      gWindow := NewCWindow
+        (ADR (wRecord), windRect, 'GraphicsWindow', <b>TRUE</b>, documentProc, 
+              inFront, <b>FALSE</b>, 0);
+    <b>ELSE</b> (* otherwise get one anyway--only on old Macs *)
+       gWindow := NewWindow
+        (ADR (wRecord), windRect, 'GraphicsWindow', <b>TRUE</b>, documentProc, 
+              inFront, <b>FALSE</b>, 0);
+    <b>END</b>;
+ SetPort (gWindow);      (* set window to be current graf port  *)
+  graphRect := gWindow^.visRgn^^.rgnBBox; (* get local copies of length and width *)
+  lwidth := graphRect.right - graphRect.left;
+ lheight := graphRect.bottom - graphRect.top;
+   (* set idle time used by WaitNextEvent *)
+ gSleep := GetCaretTime ();
+
+<b>END</b> Initialize;
+
+<b>PROCEDURE</b> MainEventLoop;
+<b>VAR</b> 
+  theEvent : EventRecord;
+<b>BEGIN</b>
+  <b>LOOP</b> (* wait for something to happen *)
+    <b>IF</b> WaitNextEvent (everyEvent, theEvent, gSleep, <b>NIL</b>)
+      <b>THEN</b>
+        <b>IF</b> (theEvent.what = keyDown) <b>OR</b> (theEvent.what = mouseDown)
+          <b>THEN</b>
+            <b>EXIT</b> (* on any keypress or mouse press *)
+          <b>END</b>
+      <b>END</b> (* if WaitNextEvent *)
+  <b>END</b> (* loop *)
+
+<b>END</b> MainEventLoop;
+
+<b>BEGIN</b>    
+  Initialize;
+<b>FINALLY</b>
+  MainEventLoop;  
+<b>END</b> GraphWindow.</PRE>
+
+<P>Once graphics windows are available, one can do some interesting things in them. The following program, often supplied for beginners on the MacOS, draws small coloured balls on the screen at random locations and with random colours. Its only purpose here is to demonstrate <i>GraphWindow</i> and to give the students a few more graphics tools to play with. As the output is dynamic, and the ball drawing stops only when the mouse button is pressed, no output for this module is shown here. The aname Sillyballs, by the way, comes from the original of this program, which was part of tutorial materials for the MacOS.</P>
+<P>Notice that all drawing is in the context of a rectangle, including that of each individual ball. Notice also that in this case, the interior of the balls has been painted.</P>
+
+<PRE><b>MODULE</b> SillyBalls;
+(* This program draws balls in random colours and at random locations on the screen. *)
+
+<b>FROM</b> SYSTEM  <b>IMPORT</b>
+  INT16;
+<b>FROM</b> Types  <b>IMPORT</b>
+  Rect, OSErr, UInt16;
+<b>FROM</b> OSUtils <b>IMPORT</b>
+  SysEnvirons, SysEnvRec;
+<b>FROM</b> DateTimeUtils <b>IMPORT</b>
+  GetDateTime;
+<b>FROM</b> Sound <b>IMPORT</b>
+  SysBeep;
+<b>FROM</b> Quickdraw <b>IMPORT</b>
+  qd, RGBColor, InsetRect, SetRect, Random, RGBForeColor, PaintOval, MoveTo, InvertColor;
+<b>FROM</b> QuickdrawText <b>IMPORT</b>
+  DrawString, TextSize;
+<b>FROM</b> Events <b>IMPORT</b>
+  Button;
+<b>IMPORT</b> GraphWindow; (* gets window *)
+
+(*----------------------------------------------------------------
+#
+#   Adapted to Modula-2
+#   by R. Sutcliffe
+#   Trinity Western University
+#   1996 01 29
+#   revised 1998 07 22 
+#   to use GraphWindows
+#     last revision 1998 09 09 for Mac 3.1 interfaces
+#   from an original program bearing the notice:
+#
+#  Macintosh Developer Technical Support
+#  Simple Color QuickDraw Sample Application
+#
+#   Copyright © 1988 Apple Computer, Inc.
+#  All rights reserved.
+#
+*)
+
+<b>CONST</b>
+  ballWidth  = 25;
+  ballHeight = 25;
+  TWUSize  = 8;    (* Size of text in each ball. *)
+<b>VAR</b>
+  height, width : <b>INTEGER</b>;
+
+(* Initialize everything for the program, make sure we can run. *)
+<b>PROCEDURE</b> Initialize;
+<b>VAR</b>
+  error : OSErr;
+  theWorld  : SysEnvRec;
+  
+<b>BEGIN</b>
+  (* Test the computer to be sure we can do color.  If not we would crash, which would be bad.  If we can¹t run, just beep and exit. *)
+  
+  error := SysEnvirons (1, theWorld);
+  <b>IF</b> <b>NOT</b> theWorld.hasColorQD
+    <b>THEN</b> 
+      SysBeep (50);
+      <b>HALT</b>;            (* If no color QD, we must leave. *)
+    <b>END</b>;
+  
+  (* The run time system initializes all the needed managers. *)
+  
+  (* To make the Random sequences truly random, we need to make the seed start at a different number.  An easy way to do this is to put the current time and date into the seed.  Since it is always incrementing the starting seed will always be different.  Don¹t for each call of Random, or the sequence will no longer be random.  Only needed once, here in the init. *)
+  
+  GetDateTime (qd.randSeed);
+
+  (* Make a new window for drawing in, and it must be a color window.  The window is full screen size, made smaller to make it more visible. *)
+  
+  TextSize (TWUSize);     (* small font for drawing. *)
+  GraphWindow.GetWDimensions (width, height);
+  <b>DEC</b> (width, ballWidth); (* don't start any balls too far right *)
+  
+<b>END</b> Initialize;
+
+(* NewBall: make another ball in the window at a random location and color. *)
+<b>PROCEDURE</b> NewBall;
+<b>VAR</b>
+  ballColor  : RGBColor;
+  ballRect  : Rect;
+  newLeft, newTop : <b>INTEGER</b>;
+  
+<b>BEGIN</b>
+  (* Make a random new color for the ball. *)
+  <b>WITH</b> ballColor
+    <b>DO</b> 
+      red := <b>VAL</b> (UInt16, <b>ABS</b> (Random()));
+      green := <b>VAL</b> (UInt16, <b>ABS</b> (Random()));
+      blue := <b>VAL</b> (UInt16, <b>ABS</b> (Random()));
+    <b>END</b>;
+  (* Set that color as the new color to use in drawing. *) 
+  RGBForeColor (ballColor);
+
+  (* Make a Random new location for the ball, that is normalized to the window size.  
+  This makes the Integer from Random into a number that is 0..hieght  and 0..width.  They are normalized so that we don't spend most of our time drawing in places outside of the window. *)
+  
+  newTop := Random();
+  newLeft := Random();
+  newTop := <b>VAL</b> (INT16, ((<b>VAL</b> (<b>INTEGER</b>, newTop) + 32767) * <b>VAL(</b>INTEGER, height)) <b>DIV</b> 65536);
+  newLeft := <b>VAL</b> (INT16, ((<b>VAL</b>(<b>INTEGER</b>, newLeft) + 32767) * <b>VAL</b>(INTEGER, width)) <b>DIV</b> 65536);
+  SetRect (ballRect, newLeft, newTop, newLeft + ballWidth, 
+          newTop + ballHeight);
+  
+  (* Move pen to the new location, and paint the colored ball. *)  
+  MoveTo(newLeft, newTop);
+  PaintOval (ballRect);
+  
+  (* Move the pen to the middle of the new ball position, for the text *)  
+  MoveTo(ballRect.left + ballWidth <b>DIV</b> 2 - TWUSize, 
+      ballRect.top + ballHeight <b>DIV</b> 2 + TWUSize <b>DIV</b> 2 -1);
+  
+  (* Invert the color and draw the text there.  This won¹t look quite right in 1 bit mode, since the foreground and background colors will be the same.  Color QuickDraw special cases this to not invert the color, to avoid invisible drawing. *)
+  
+  InvertColor (ballColor); 
+  RGBForeColor (ballColor);
+  DrawString ('TWU');
+<b>END</b> NewBall;
+
+
+<b>BEGIN</b>     (* Main body of program SillyBalls *)
+  Initialize;  
+  <b>REPEAT</b>
+    NewBall;
+  <b>UNTIL</b> Button();  
+<b>END</b> SillyBalls.</PRE>
+
+<H3><b><A NAME="18.6.3"></A>18.6.3 Implementing GraphWindow in Windows NT</b></H3>
+
+<P>As a reminder, the (stripped down and relatively uncommented) definition module is given first, with the appropriate small modifications to move from MacOS to Windows NT. This implementation should also work in Windows 95/98.</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> GraphWindow;
+<b>IMPORT</b> WIN32;
+<b>TYPE</b>
+  WindowRef = WIN32.HDC;
+
+<b>PROCEDURE</b> GetWindow () : WindowRef;
+
+<b>PROCEDURE</b> GetWDimensions (<b>VAR</b> width, height : <b>INTEGER</b>);
+<b>END</b> GraphWindow.</PRE>
+
+<P>The implementation is somewhat more work, as the trick of stealing the top available window does not appear to give good results, and more has to be done to get anything to happen at all. Moreover, a lot more information has to be prepared into a data structure before the window is opened. As the purpose here is to supply the necessary code, not to explain every detail, very little other commentary is provided. The reader is invited to compare this code with what was needed in the corresponding MacOS implementation. There are similarities, but several differences as well.</P>
+
+<P><b>WARNING</b>: This implementation was done for Stonybrook Modula-2 for Win32. As numerous implementation details are certain to vary, the reader cannot expect it to work unmodified on other 32-bit Windows implementations. It is likely that the various imports will come from different places, and it is also likely that the method of handling the translation to C++ classes will also be different. It may be necessary for the reader, as it was for the author, to obtain an example program for the specific implementation, and then modify it to suit, as the available documentation for the Microsoft C++ classes and API is unlikely to shed much light on how to get started.</P>
+
+<P>The reader will note that the style here is a little different in that a window class has to be created and registered before the window itself is created. Then, the main event loop consists of waiting for a <i>message</i>, which is then translated and despatched. Because the system has some built in handlers to which messages can be dispatched, client applications created with this module can be quit in the normal way. </P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> GraphWindow;
+
+(* Design by R. Sutcliffe
+   Implementation by Joel Schwartz for StonyBrook Modula-2
+   last modification : 1998 07 14 by RS *)
+   
+<b>FROM</b> SYSTEM <b>IMPORT</b>
+  FUNC, ADR, CAST;
+
+<b>FROM</b> WIN32 <b>IMPORT</b>
+  UINT, WPARAM, LPARAM, LRESULT, BOOL, RECT, HBRUSH, HWND;
+
+<b>FROM</b> WINUSER <b>IMPORT</b>
+  GetDC, ReleaseDC, SetRect, InvalidateRect, GetClientRect, RegisterClass,
+  ShowWindow, GetMessage, TranslateMessage, DispatchMessage,
+  LoadCursor, LoadIcon, IDC_ARROW,
+  FillRect, DefWindowProc, UpdateWindow, PostQuitMessage,
+  BeginPaint, EndPaint, CreateWindow, GetSysColor,
+  LOWORD, HIWORD, COLOR_WINDOW, WS_OVERLAPPEDWINDOW,
+  CS_VREDRAW, CS_HREDRAW, CS_BYTEALIGNCLIENT,
+  WM_SIZE, WM_DESTROY, WM_PAINT, WM_SYSCOLORCHANGE, WM_ERASEBKGND,
+  WNDCLASS, MSG, PAINTSTRUCT;
+
+<b>FROM</b> WINGDI <b>IMPORT</b>
+  CreateSolidBrush, GetDeviceCaps, VERTRES, HORZRES;
+
+<b>FROM</b> WINX <b>IMPORT</b>
+  DeleteBrush, NULL_HWND, NIL_RECT, NULL_HBRUSH, NULL_HINSTANCE, NULL_HMENU, Instance, PrevInstance, CmdShow;
+
+<b>VAR</b>
+  graphRect  : RECT;
+(* Window Creation / Management Variables *)
+  VRes, HRes : <b>INTEGER</b>;
+  WindowWidth, WindowHeight : <b>INTEGER</b>;
+  szBuffer : <b>ARRAY</b> [0..30] <b>OF</b> <b>CHAR</b>;
+  bFirst : BOOL = <b>TRUE</b>;
+  hbrBackgnd  : HBRUSH;    (* background brush -- system window backbround color *)
+  Wnd : HWND;
+  mess : MSG;
+  DC : WindowRef;
+
+(*----------------- Public Procedures --------------*)
+
+<b>PROCEDURE</b> GetWindow () :WindowRef;
+<b>BEGIN</b>
+  <b>RETURN</b> DC;  (* Return the window reference *)
+<b>END</b> GetWindow;
+
+<b>PROCEDURE</b> GetWDimensions (<b>VAR</b> width, height : <b>INTEGER</b>);
+<b>BEGIN</b>
+  width := WindowWidth;
+  height := WindowHeight;
+<b>END</b> GetWDimensions;
+
+(*-----------------Private Procedures ---------------*)
+<*/PUSH*>
+<*/CALLS:WIN32SYSTEM*>
+
+<b>PROCEDURE</b> FrameWndProc (wnd : HWND;
+          message : UINT;
+          wParam : WPARAM;
+          lParam : LPARAM) : LRESULT [EXPORT];
+
+ (* Pre: A window event has occurred
+ * Post: The window event is handled manually or by the default manager.
+ *)
+
+<b>VAR</b>
+  ps : PAINTSTRUCT;
+  rc : RECT;
+
+<b>BEGIN</b>
+  <b>CASE</b> message
+    <b>OF</b>
+      WM_SIZE:
+        SetRect (graphRect, 0, 0, LOWORD (lParam), HIWORD (lParam));
+        UpdateWindow (wnd);
+      |
+      WM_DESTROY:
+  (* Delete Tools *)
+        FUNC DeleteBrush (hbrBackgnd);
+        PostQuitMessage (0);
+      |
+      WM_PAINT:
+        InvalidateRect (wnd, NIL_RECT, <b>TRUE</b>);
+        FUNC BeginPaint (wnd, ps);
+        FUNC FillRect (DC, graphRect, hbrBackgnd);
+        EndPaint (wnd, ps);
+      |
+      WM_SYSCOLORCHANGE:
+  (* Change tools to coincide with system window colors *)
+  (*Delete Tools*)
+        FUNC DeleteBrush (hbrBackgnd);
+  (* Create Tools *)
+        hbrBackgnd  := CreateSolidBrush (GetSysColor (COLOR_WINDOW));
+      |
+      WM_ERASEBKGND:
+        (* Paint over the entire client area *)
+        GetClientRect (wnd, rc);
+        FUNC FillRect (CAST (WindowRef, wParam), rc, hbrBackgnd);
+      |
+      <b>ELSE</b>
+        (* Perform the default window processing *)
+        <b>RETURN</b> DefWindowProc (wnd, message, wParam, lParam);
+    <b>END</b>;
+  <b>RETURN</b> 0;
+<b>END</b> FrameWndProc;
+<*/POP*>
+
+<b>PROCEDURE</b> FrameInit () : <b>BOOLEAN</b>;
+
+ (* Pre: The window is to be displayed for the first time.
+   Post: The window class is initialized and registered  *)
+
+<b>VAR</b>
+  frameClass  : WNDCLASS;
+
+<b>BEGIN</b>
+  frameClass.lpszClassName := ADR (szBuffer);
+  frameClass.hbrBackground := NULL_HBRUSH;
+  frameClass.style         := CS_VREDRAW + CS_HREDRAW + CS_BYTEALIGNCLIENT;
+  frameClass.hInstance     := Instance;
+  frameClass.lpfnWndProc   := FrameWndProc;
+  frameClass.hCursor       := LoadCursor (Instance, IDC_ARROW^);
+  frameClass.hIcon         := LoadIcon (Instance, 'Graphics');
+  frameClass.cbClsExtra    := 0;
+  frameClass.cbWndExtra    := 0;
+  frameClass.lpszMenuName  := <b>NIL</b>;
+
+  <b>IF</b> RegisterClass (frameClass) = 0
+    <b>THEN</b>
+      (* Error registering class -- return *)
+      <b>RETURN</b> <b>FALSE</b>;
+    <b>END</b>;
+  <b>RETURN</b> <b>TRUE</b>;
+<b>END</b> FrameInit;
+
+ (*--------------------------- Main Code ---------------------------*)
+
+<b>BEGIN</b>
+  (* Initialize variables *)
+  szBuffer  := "The Best of Graphics";
+
+  <b>IF</b> PrevInstance = NULL_HINSTANCE
+    <b>THEN</b>
+      (* First instance -- register window class *)
+      <b>IF</b> <b>NOT</b> FrameInit ()
+        <b>THEN</b>
+          <b>HALT</b> (1);
+        <b>END</b>;
+    <b>ELSE</b>
+        (* Not first instance -- reset bFirst flag *)
+        bFirst := <b>FALSE</b>;
+    <b>END</b>;
+
+   (* Find the height and width of the screen *)
+  DC := GetDC (NULL_HWND);
+  VRes := GetDeviceCaps (DC, VERTRES);
+  HRes := GetDeviceCaps (DC, HORZRES);
+  FUNC ReleaseDC (NULL_HWND, DC);
+
+       (* Create Tools*)
+  hbrBackgnd  := CreateSolidBrush (GetSysColor (COLOR_WINDOW));
+
+       (* set window height and width *)
+  WindowWidth := HRes;
+  WindowHeight := VRes - 30;
+
+  Wnd := CreateWindow ( szBuffer,    (* class name              *)
+           szBuffer,    (* The window name         *)
+           WS_OVERLAPPEDWINDOW, (* window style            *)
+           0,      (* Position window at top right *)
+           0,                (* y not used              *)
+           WindowWidth,      (* window Width            *)
+           WindowHeight,     (* window height           *)
+           NULL_HWND,        (* NULL parent handle      *)
+           NULL_HMENU,       (* NULL menu/child handle  *)
+           Instance,         (* program instance        *)
+           <b>NIL</b>               (* NULL data structure ref.*)
+           );
+
+  DC := GetDC (Wnd); (* Obtain the window reference*)
+  FUNC ShowWindow (Wnd, CmdShow);
+  (* Pause until user closes the screen *)
+  <b>FINALLY</b>
+    <b>WHILE</b> GetMessage (mess, NULL_HWND, 0, 0)
+      <b>DO</b>
+        FUNC TranslateMessage (mess);
+        FUNC DispatchMessage (mess);
+      <b>END</b>;
+<b>END</b> GraphWindow.</PRE>
+
+<H3><b><A NAME="18.6.4"></A>18.6.4 Implementing GraphPaper in MacOS</b></H3>
+
+<P>With the infrastructure now in place, <i>GraphPaper</i> is fairly easy to implement. The next listing is the version for the MacOS. A couple of items to note are that many of the drawing routines use the short integer (16 bit) called INT16. As calls into this module use INTEGER for the most part, users will have to be careful or there will be an overflow. Also, the MacOS uses Pascal strings for most purposes. Thus, the internal string type has to be converted into STR255 type internally.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> GraphPaper;
+
+(* Original design copyright 1996 by R. Sutcliffe
+  Original implementation 1996 using p1 on the Macintosh
+  Windows implementation 1998 05 12 by Joel Schwartz
+      with use of examples written by Stony Brook
+      added scaling, labelling, showing axes
+  Changes ported back to the Mac 1998 05 21 by Joel Schwartz
+  Removed all widow-related functionality to a separate module 1998 07 06
+    to clean thing up a little more; now imports from GraphWindow
+    Last revision: by RS 1998 07 11--added angle measure types
+*)
+
+<b>FROM</b> GraphWindow <b>IMPORT</b> 
+  WindowRef, GetWindow, GetWDimensions;
+<b>FROM</b> Strings <b>IMPORT</b>
+  Concat;
+<b>FROM</b> WholeStr <b>IMPORT</b>
+  CardToStr, IntToStr;
+<b>FROM</b> SYSTEM <b>IMPORT</b>
+  STR255, TOSTR255;
+<b>IMPORT</b> Quickdraw; (* use MoveTo and LineTo, and have our own by this name *)
+<b>FROM</b> Quickdraw <b>IMPORT</b>
+  PenState, SetPenState, GetPenState, SetPort;
+<b>FROM</b> QuickdrawText <b>IMPORT</b>
+  DrawString;
+<b>FROM</b> RealMath <b>IMPORT</b>
+  pi, sin, cos;
+      
+<b>CONST</b>
+  convertRad = pi / 180.0;
+  AspectV = 40;   (* vertical raster lines per division mark *)
+  AspectH = 40;   (* Horizontal pixels per division mark *)
+
+<b>VAR</b>
+  activeSystem : CoordSystem;
+  angleUnits : AngleType;
+  width, height : <b>INTEGER</b>;
+  xLabel, yLabel : LabelType;
+  xScale, yScale : <b>REAL</b>;
+  homeX, homeY, graphX, graphY  : <b>REAL</b>;
+  graphArg : <b>REAL</b>; (* kept internally in degrees *)
+  divisionValue : <b>INTEGER</b>;
+  scaleString : LabelType;
+  scaleSet, labelSet, axesDrawn : <b>BOOLEAN</b>;
+  penPos : PenState;
+  gWindow : WindowRef;
+
+(* note that internally we use the Mac/Win position angle in which East is 0 and we rotate clockwise but in the bearing system users communicate with bearing angles in which North is zero and they rotate clockwise. *)
+
+<b>PROCEDURE</b> Round (x : <b>REAL</b>) : <b>INTEGER</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> <b>VAL</b> (<b>INTEGER</b>, x + 0.5 );
+<b>END</b> Round;
+
+<b>PROCEDURE</b> SetCoordSystem (kind : CoordSystem);
+<b>BEGIN</b>
+  activeSystem := kind;
+  <b>CASE</b> activeSystem (* set up appropriate home *)
+    <b>OF</b>
+      bearing, standard:
+        homeX := <b>FLOAT</b> (width) / 2.0;
+        homeY := <b>FLOAT</b> (height) / 2.0; |
+      MacWin:
+        homeX := 0.0;
+        homeY := 0.0
+    <b>END</b>;
+ Home; (* and go there *)
+<b>END</b> SetCoordSystem;
+
+<b>PROCEDURE</b> SetAngleType (kind : AngleType);
+<b>BEGIN</b>
+  angleUnits := kind;
+<b>END</b> SetAngleType;
+
+<b>PROCEDURE</b> ToDeg (arg : <b>REAL</b>) : <b>REAL</b>;
+(* used to get angle units into degrees for internal store *)
+<b>BEGIN</b>
+  <b>CASE</b> angleUnits <b>OF</b>
+    deg :
+      <b>RETURN</b> arg |
+    rad :
+      <b>RETURN</b> arg/convertRad |
+    grad :
+      <b>RETURN</b> 0.9 * arg
+    <b>END</b>;
+<b>END</b> ToDeg;
+      
+<b>PROCEDURE</b> FromDeg (arg : <b>REAL</b>) : <b>REAL</b>;
+(* convert from internal store to whatever units have been set. *)
+<b>BEGIN</b>
+  <b>CASE</b> angleUnits <b>OF</b>
+    deg :
+      <b>RETURN</b> arg |
+    rad :
+      <b>RETURN</b> arg * convertRad |
+    grad :
+      <b>RETURN</b> arg / 0.9
+    <b>END</b>;
+<b>END</b> FromDeg;
+
+<b>PROCEDURE</b> Home; (* moves to 0,0 and sets angle to 0 *)
+<b>BEGIN</b>
+  TurnTo (0.0);
+  graphX := homeX;
+  graphY := homeY;
+  Quickdraw.MoveTo (Round (graphX), Round (graphY));
+<b>END</b> Home;
+
+<b>PROCEDURE</b> ShiftOrigin (deltaX, deltaY : <b>INTEGER</b>);
+<b>BEGIN</b>
+  homeX := homeX + <b>FLOAT</b> (deltaX);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        homeY := homeY - <b>FLOAT</b> (deltaY); |
+      MacWin:
+        homeY := homeY + <b>FLOAT</b> (deltaY);
+    <b>END</b>;
+<b>END</b> ShiftOrigin;
+
+<b>PROCEDURE</b> GetDimensions (<b>VAR</b> x, y: <b>INTEGER</b>);
+<b>BEGIN</b>
+  GetWDimensions (x, y);
+<b>END</b> GetDimensions;
+
+<b>PROCEDURE</b> GetLocation (<b>VAR</b> x,y :<b>INTEGER</b>);
+<b>BEGIN</b>
+  x := Round (graphX - homeX);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        y := Round (homeY - graphY);|
+      MacWin:
+        y := Round (graphY - homeY)
+     <b>END</b>;
+<b>END</b> GetLocation;
+
+<b>PROCEDURE</b> Radians (angle : <b>REAL</b>) : <b>REAL</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> angle * convertRad;
+<b>END</b> Radians;
+
+<b>PROCEDURE</b> MoveBy (distance : <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + (<b>FLOAT</b> (distance) * cos (Radians (graphArg))) ;
+  graphY := graphY - (<b>FLOAT</b> (distance) * sin (Radians (graphArg)));
+  Quickdraw.MoveTo (Round (graphX), Round (graphY));
+<b>END</b> MoveBy;
+
+<b>PROCEDURE</b> MoveTo (x, y : <b>INTEGER</b>);
+ (* have to revise coordinates to screen system *)
+<b>BEGIN</b>
+  graphX := homeX + <b>FLOAT</b> (x);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := homeY - <b>FLOAT</b> (y);|
+      MacWin:
+        graphY := homeY + <b>FLOAT</b> (y);
+     <b>END</b>;
+ Quickdraw.MoveTo (Round (graphX), Round (graphY));
+<b>END</b> MoveTo;
+
+<b>PROCEDURE</b> Move (dx, dy: <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + <b>FLOAT</b> (dx);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := graphY - <b>FLOAT</b> (dy);|
+      MacWin:
+        graphY := graphY + <b>FLOAT</b> (dy);
+     <b>END</b>;
+  Quickdraw.MoveTo (Round (graphX), Round (graphY));
+<b>END</b> Move;
+
+<b>PROCEDURE</b> ReviseAngle (angle : <b>REAL</b>) : <b>REAL</b>;
+(* this procedure is internal, so works strictly in degrees *)
+<b>BEGIN</b>
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing:
+        angle := 450.0 - angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);
+        <b>RETURN</b> graphArg;|
+      MacWin:
+        angle := 360.0 - angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);
+        <b>RETURN</b> graphArg;|
+     standard:
+       graphArg :=  angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);
+       <b>RETURN</b> graphArg
+   <b>END</b>;
+
+<b>END</b> ReviseAngle;
+
+<b>PROCEDURE</b> Turn (angle : <b>REAL</b>);
+ (* convert if a bearing change *)
+<b>BEGIN</b>
+  angle := ToDeg (angle);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, MacWin:
+        angle := graphArg - angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);|
+      standard:
+        angle := graphArg + angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360)
+    <b>END</b>;
+<b>END</b> Turn;
+
+<b>PROCEDURE</b> TurnTo (angle : <b>REAL</b>);
+<b>BEGIN</b>
+  angle := ReviseAngle (ToDeg (angle));
+<b>END</b> TurnTo;
+
+<b>PROCEDURE</b> GetCurrentAngle () : <b>REAL</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> FromDeg (graphArg);
+<b>END</b> GetCurrentAngle;
+
+<b>PROCEDURE</b> LineBy (distance : <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + (<b>FLOAT</b> (distance) * cos (Radians (graphArg)));
+  graphY := graphY - (<b>FLOAT</b> (distance) * sin (Radians (graphArg)));
+  Quickdraw.LineTo (Round (graphX), Round (graphY));
+<b>END</b> LineBy;
+
+<b>PROCEDURE</b> LineTo (x, y : <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := homeX + <b>FLOAT</b> (x);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := homeY - <b>FLOAT</b> (y);|
+      MacWin:
+        graphY := homeY + <b>FLOAT</b> (y);
+   <b>END</b>;
+ Quickdraw.LineTo (Round (graphX), Round (graphY));
+<b>END</b> LineTo;
+
+<b>PROCEDURE</b> Line (dx, dy: <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + <b>FLOAT</b> (dx);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := graphY - <b>FLOAT</b> (dy);|
+      MacWin:
+        graphY := graphY + <b>FLOAT</b> (dy);
+  <b>END</b>;
+  Quickdraw.LineTo (Round (graphX), Round (graphY));
+<b>END</b> Line;
+
+<b>PROCEDURE</b> Dot;
+<b>BEGIN</b>
+  Line (0, 0);
+<b>END</b> Dot;
+
+<b>PROCEDURE</b> DotAt (x, y: <b>INTEGER</b>);
+<b>BEGIN</b>
+  MoveTo (x,y);
+  Dot;
+<b>END</b> DotAt;
+
+ (*----------------------- Graphing related functions -------------------*)
+
+<b>PROCEDURE</b> DrawXY;
+ (* Draw the axes of the graph *)
+<b>BEGIN</b>
+  <b>CASE</b> activeSystem 
+    <b>OF</b>
+      bearing:
+        Home;
+        MoveTo (0,- (height <b>DIV</b> 2 - 25));
+        LineBy (height - 45);
+        Home;
+        MoveTo (- (width <b>DIV</b> 2 - 30), 0);
+        TurnTo (90.0);
+        LineBy (width - 60);
+      |
+      standard:
+        Home;
+        MoveTo (0,- (height <b>DIV</b> 2 - 25));
+        TurnTo (90.0);
+        LineBy (height - 45);
+        Home;
+        MoveTo (- (width <b>DIV</b> 2 - 30), 0);
+        LineBy (width - 60);
+      |
+      MacWin:
+        Home;
+        MoveTo (0,- (height - 50));
+        TurnTo (90.0);
+        LineBy (height - 50);
+        Home;
+        MoveTo (- (width - 30), 0);
+        LineBy (width - 30);
+    <b>END</b>;
+<b>END</b> DrawXY;
+
+<b>PROCEDURE</b> SetLabels (horiz, vert : LabelType);
+ (* Set the horizontal and vertical axes labels *)
+<b>BEGIN</b>
+  xLabel := horiz;
+  yLabel := vert;
+  labelSet := <b>TRUE</b>;
+<b>END</b> SetLabels;
+
+<b>PROCEDURE</b> ShowLabels;
+ (* Show the labels but only if the axes have been drawn *)
+<b>BEGIN</b>
+  <b>IF</b> axesDrawn
+    <b>THEN</b>
+      <b>IF</b> ~labelSet
+        <b>THEN</b>
+          xLabel := "x";
+          yLabel := "y";
+        <b>END</b>;
+
+      <b>CASE</b> activeSystem
+        <b>OF</b>
+          bearing, standard:
+            GetPenState (penPos);
+            penPos.pnLoc.h := width - 100;
+            penPos.pnLoc.v := height <b>DIV</b> 2 + 20;
+            SetPenState (penPos);
+            DrawString (TOSTR255(xLabel));
+            GetPenState (penPos);
+            penPos.pnLoc.h := width <b>DIV</b> 2 + 20;
+            penPos.pnLoc.v := 20;
+            SetPenState (penPos);
+            DrawString (TOSTR255(yLabel));
+         |
+         MacWin:
+            GetPenState (penPos);
+            penPos.pnLoc.h := width - 100;
+            penPos.pnLoc.v := 50;
+            SetPenState (penPos);
+            DrawString (TOSTR255(xLabel));
+            GetPenState (penPos);
+            penPos.pnLoc.h := 40;
+            penPos.pnLoc.v := height - 70;
+            SetPenState (penPos);
+            DrawString (TOSTR255(yLabel));
+       <b>END</b>;
+   <b>END</b>;
+<b>END</b> ShowLabels;
+
+<b>PROCEDURE</b> ShowAxes;
+ (* Show the axes and draw the division marks on the axes *)
+<b>BEGIN</b>
+  DrawXY;
+  <b>IF</b> <b>NOT</b> scaleSet
+    <b>THEN</b>
+      SetScale (1);
+    <b>END</b>;
+  DrawDivisionMarks;
+  axesDrawn := <b>TRUE</b>;
+<b>END</b> ShowAxes;
+
+<b>PROCEDURE</b> SetScale (dataPerDivision : <b>CARDINAL</b>);
+
+ (* Set the scale if no scale has been set up to this point.
+ * <b>NOTE</b>: this does not support mid-graph scale changing *)
+<b>VAR</b>
+  temp, temp2 : LabelType;
+
+<b>BEGIN</b>
+  <b>IF</b> ~scaleSet
+    <b>THEN</b>
+      xScale := <b>FLOAT</b> (AspectH * dataPerDivision);
+      yScale := <b>FLOAT</b> (AspectV * dataPerDivision);
+
+     (*Set the scale to a string representation *)
+      CardToStr (dataPerDivision, temp);
+      Concat ('<b>SCALE</b> = 1 unit : ', temp, temp2);
+      Concat (temp2,' division', temp);
+      divisionValue := dataPerDivision;
+      scaleString := temp;
+      scaleSet := <b>TRUE</b>;
+    <b>END</b>;
+<b>END</b> SetScale;
+
+<b>PROCEDURE</b> DrawDivisionMarks;
+
+<b>VAR</b>
+  counter : <b>INTEGER</b>;
+  multiple : <b>INTEGER</b>;
+  xMax, yMax, tempStore, determineDivision : <b>INTEGER</b>;
+  xPos, yPos : <b>INTEGER</b>;
+  xString, yString : <b>ARRAY</b> [0..5] <b>OF</b> <b>CHAR</b>;
+  widthTest, heightTest, xdivisionPos : <b>INTEGER</b>;
+
+<b>BEGIN</b>
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        widthTest := (width <b>DIV</b> 2 - 30);
+        heightTest := ((height - 70) <b>DIV</b> 2);
+        xdivisionPos := -10;
+     |
+     MacWin:
+        widthTest := width - 40;
+        heightTest := height - 40;
+        xdivisionPos := - 10;
+   <b>END</b>;
+
+ (* Draw the division marks 1cm apart while determining where the scale marker will go.*)
+
+ <b>CASE</b> activeSystem
+   <b>OF</b>
+     bearing:  (* for bearing system *)
+       counter := AspectH;
+       multiple := 2;
+       Home;
+       <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+           MoveTo ( - counter, xdivisionPos);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+       counter := AspectH;
+       multiple := 2;
+       <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+           MoveTo (counter, xdivisionPos);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+       xMax := multiple - 2;
+       xPos := counter - AspectH;
+
+       counter := AspectH;
+       multiple := 2;
+       <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+           MoveTo ( -10, -counter);
+           TurnTo (90.0);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+       counter := AspectH;
+       multiple := 2;
+       <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+           MoveTo ( -10, counter);
+           TurnTo (90.0);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+
+       yMax := multiple - 2;
+       yPos := counter - AspectV;
+     |
+     standard, MacWin: (* For standard coordinate systems *)
+       counter := AspectH;
+       multiple := 2;
+       <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+           MoveTo ( - counter, xdivisionPos);
+           TurnTo (90.0);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+       counter := AspectH;
+       multiple := 2;
+       <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+           MoveTo (counter, xdivisionPos);
+           TurnTo (90.0);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+
+       xMax := multiple - 2;
+       xPos := counter - AspectH;
+
+       counter := AspectH;
+       multiple := 2;
+       Home;
+       <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+           MoveTo ( -10, -counter);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+       counter := AspectH;
+       multiple := 2;
+       <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+           MoveTo ( -10, counter);
+           LineBy (20);
+           counter := (AspectH * multiple);
+           <b>INC</b> (multiple);
+         <b>END</b>;
+       yMax := multiple - 2;
+       yPos := counter - AspectV;
+   <b>END</b>;
+
+  tempStore := xMax / divisionValue;
+  determineDivision := xMax <b>MOD</b> divisionValue;
+  xPos := xPos - (AspectH * determineDivision);
+  IntToStr (tempStore, xString);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+         GetPenState (penPos);
+         penPos.pnLoc.h := width <b>DIV</b> 2 + xPos;
+         penPos.pnLoc.v := height <b>DIV</b> 2 + 20;
+         SetPenState(penPos);
+         DrawString (TOSTR255 (xString));
+      |
+      MacWin:
+         GetPenState(penPos);
+         penPos.pnLoc.h := xPos;
+         penPos.pnLoc.v := 20;
+         SetPenState(penPos);
+         DrawString (TOSTR255 (xString));
+    <b>END</b>;
+  tempStore := yMax / divisionValue;
+  determineDivision := yMax <b>MOD</b> divisionValue;
+  yPos := yPos - (AspectV * determineDivision);
+  IntToStr (tempStore, yString);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+         GetPenState (penPos);
+         penPos.pnLoc.h := width <b>DIV</b> 2 - 20;
+         penPos.pnLoc.v := height <b>DIV</b> 2 - yPos;
+         SetPenState (penPos);
+         DrawString (TOSTR255 (yString));
+      |
+      MacWin:
+         GetPenState(penPos);
+         penPos.pnLoc.h := 20;
+         penPos.pnLoc.v := yPos;
+         SetPenState(penPos);
+         DrawString (TOSTR255 (yString));
+    <b>END</b>;
+  GetPenState(penPos);
+  penPos.pnLoc.h := width - 250;
+  penPos.pnLoc.v := height - 50;
+  SetPenState (penPos);
+  DrawString (TOSTR255 (scaleString));
+<b>END</b> DrawDivisionMarks;
+
+<b>PROCEDURE</b> PlotPoint (x, y : <b>REAL</b>);
+
+<b>BEGIN</b>
+  <b>IF</b> ~scaleSet
+    <b>THEN</b>
+      SetScale (1);
+    <b>END</b>;
+  DotAt (Round (x * xScale), Round (y * yScale));
+<b>END</b> PlotPoint;
+
+<b>PROCEDURE</b> PolarPlotPoint (radius, angle : <b>REAL</b>);
+
+<b>VAR</b>
+  x,y : <b>REAL</b>;
+
+<b>BEGIN</b>
+  <b>IF</b> activeSystem = MacWin
+    <b>THEN</b>
+      angle := - angle;
+    <b>END</b>;
+  angle := ReviseAngle (ToDeg (angle));
+
+  x := radius * cos (angle * convertRad);
+  y := radius * sin (angle * convertRad);
+
+  <b>IF</b> ~scaleSet
+    <b>THEN</b>     (* Make sure the graph has a scale *)
+      SetScale (1);
+    <b>END</b>;
+  DotAt (Round (x * xScale), Round (y * yScale));
+<b>END</b> PolarPlotPoint;
+
+  (*--------------------------- Main Code ---------------------------*)
+
+<b>BEGIN</b>
+  (* Initialize variables *)
+  (* the import of GraphWindow sets up the window for us. 
+    but we had better make sure the graph port is current *)
+  gWindow := GetWindow ();
+  SetPort (gWindow);
+  GetWDimensions (width, height);
+  scaleSet  := <b>FALSE</b>;
+  labelSet  := <b>FALSE</b>;
+  axesDrawn := <b>FALSE</b>;
+  graphArg  := 0.0;
+  SetCoordSystem (standard); (* default *)
+  Home;
+<b>END</b> GraphPaper.</PRE>
+
+<H3><b><A NAME="18.6.5"></A>18.6.5 Implementing GraphPaper in Windows NT</b></H3>
+
+<P>Much of the code for implementing the routines is the same in the windows version as in the MacOS version. Some differences to note include:</P>
+
+<UL><LI><!--- -->imports from WINGDI rather than Quickdraw</LI>
+<LI><!--- -->the text drawing routine is in the same module as the line drawing ones</LI>
+<LI><!--- -->these routines take a window reference parameter, so this must be obtained from <i>GraphWindow</i></LI>
+<LI><!--- -->some routines are called using <i>SYSTEM.FUNC</i></LI></UL>
+
+<P><b>WARNING</b>: This implementation was done for Stonybrook Modula-2 for Win32. As numerous implementation details are certain to vary, the reader cannot expect it to work unmodified on other 32-bit Windows implementations.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> GraphPaper;
+
+(* Original design copyright 1996 by R. Sutcliffe
+  Original implementation 1996 using p1 on the Macintosh
+  Windows implementation 1998 05 12 by Joel Schwartz
+    with use of examples written by Stony Brook
+  Changes ported back to the Mac 1998 05 21 by Joel Schwartz
+  Removed all widow-related functionality to a separate module 1998 07 06
+    to clean thing up a little more; now imports from GraphWindow
+  Last revision: by RS 1998 07 11
+*)
+<b>FROM</b> SYSTEM <b>IMPORT</b>
+  FUNC;
+<b>IMPORT</b> WINGDI;
+<b>FROM</b> WINGDI <b>IMPORT</b>
+  MoveToEx, TextOut;
+<b>FROM</b> WINX <b>IMPORT</b>
+  NIL_POINT;
+<b>FROM</b> GraphWindow <b>IMPORT</b>
+  WindowRef, GetWindow, GetWDimensions;
+<b>FROM</b> Strings <b>IMPORT</b>
+  Length, Concat;
+<b>FROM</b> WholeStr <b>IMPORT</b>
+  CardToStr, IntToStr;
+<b>FROM</b> RealMath <b>IMPORT</b>
+  sin, cos, pi;
+
+<b>CONST</b>
+  convertRad = pi / 180.0;
+  AspectV = 40;   (* vertical raster lines per division mark *)
+  AspectH = 40;   (* Horizontal pixels per division mark *)
+
+<b>VAR</b>
+
+ (* Graphics Variables *)
+  window : WindowRef;
+  activeSystem : CoordSystem;
+  angleUnits : AngleType;
+  xLabel, yLabel : LabelType;
+  xScale, yScale : <b>REAL</b>;
+  homeX, homeY, graphX, graphY  : <b>REAL</b>;
+  graphArg : <b>REAL</b>; (* kept internally in degrees *)
+  width, height : <b>INTEGER</b>;
+  divisionValue : <b>INTEGER</b>;
+  scaleString : LabelType;
+  scaleSet, labelSet, axesDrawn : <b>BOOLEAN</b>;
+
+ (* note that internally we use the Mac/Win position angle in which East is 0 and we rotate clockwise but in the bearing system users communicate with bearing angles in which North is zero and they rotate clockwise. *)
+
+<b>PROCEDURE</b> Round (x : <b>REAL</b>) : <b>INTEGER</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> <b>VAL</b> (<b>INTEGER</b>, x + 0.5 );
+<b>END</b> Round;
+
+<b>PROCEDURE</b> SetCoordSystem (kind : CoordSystem);
+<b>BEGIN</b>
+  activeSystem := kind;
+  <b>CASE</b> activeSystem (* set up appropriate home *)
+    <b>OF</b>
+      bearing, standard:
+        homeX := <b>FLOAT</b> (width) / 2.0;
+        homeY := <b>FLOAT</b> (height) / 2.0; |
+      MacWin:
+        homeX := 0.0;
+        homeY := 0.0
+   <b>END</b>;
+   Home; (* and go there *)
+<b>END</b> SetCoordSystem;
+
+<b>PROCEDURE</b> SetAngleType (kind : AngleType);
+<b>BEGIN</b>
+  angleUnits := kind;
+<b>END</b> SetAngleType;
+
+<b>PROCEDURE</b> ToDeg (arg : <b>REAL</b>) : <b>REAL</b>;
+<b>BEGIN</b>
+  <b>CASE</b> angleUnits <b>OF</b>
+    deg :
+      <b>RETURN</b> arg |
+    rad :
+      <b>RETURN</b> arg/convertRad |
+    grad :
+      <b>RETURN</b> 0.9 * arg
+  <b>END</b>;
+<b>END</b> ToDeg;
+
+<b>PROCEDURE</b> FromDeg (arg : <b>REAL</b>) : <b>REAL</b>;
+<b>BEGIN</b>
+  <b>CASE</b> angleUnits <b>OF</b>
+    deg :
+      <b>RETURN</b> arg |
+    rad :
+      <b>RETURN</b> arg * convertRad |
+    grad :
+      <b>RETURN</b> arg / 0.9
+  <b>END</b>;
+<b>END</b> FromDeg;
+
+<b>PROCEDURE</b> Home; (* moves to 0,0 and sets angle to 0 *)
+
+<b>BEGIN</b>
+  TurnTo (0.0);
+  graphX := homeX;
+  graphY := homeY;
+  FUNC MoveToEx (window, Round (graphX), Round (graphY), NIL_POINT);
+<b>END</b> Home;
+
+<b>PROCEDURE</b> ShiftOrigin (deltaX, deltaY : <b>INTEGER</b>);
+<b>BEGIN</b>
+  homeX := homeX + <b>FLOAT</b> (deltaX);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        homeY := homeY - <b>FLOAT</b> (deltaY); |
+      MacWin:
+        homeY := homeY + <b>FLOAT</b> (deltaY);
+    <b>END</b>;
+<b>END</b> ShiftOrigin;
+
+<b>PROCEDURE</b> GetDimensions (<b>VAR</b> x, y: <b>INTEGER</b>);
+<b>BEGIN</b>
+  GetWDimensions (x, y);
+<b>END</b> GetDimensions;
+
+<b>PROCEDURE</b> GetLocation (<b>VAR</b> x,y :<b>INTEGER</b>);
+<b>BEGIN</b>
+  x := Round (graphX - homeX);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        y := Round (homeY - graphY);|
+      MacWin:
+        y := Round (graphY - homeY)
+  <b>END</b>;
+<b>END</b> GetLocation;
+
+<b>PROCEDURE</b> Radians (angle : <b>REAL</b>) : <b>REAL</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> angle * convertRad;
+<b>END</b> Radians;
+
+<b>PROCEDURE</b> MoveBy (distance : <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX
+     + (<b>FLOAT</b> (distance) * cos (Radians (graphArg))) ;
+  graphY := graphY
+     - (<b>FLOAT</b> (distance) * sin (Radians (graphArg)));
+  FUNC MoveToEx (window, Round (graphX), Round (graphY), NIL_POINT);
+<b>END</b> MoveBy;
+
+<b>PROCEDURE</b> MoveTo (x, y : <b>INTEGER</b>);
+ (* have to revise coordinates to screen system *)
+<b>BEGIN</b>
+  graphX := homeX + <b>FLOAT</b> (x);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := homeY - <b>FLOAT</b> (y);|
+      MacWin:
+        graphY := homeY + <b>FLOAT</b> (y);
+  <b>END</b>;
+  FUNC MoveToEx (window, Round (graphX), Round (graphY), NIL_POINT);
+<b>END</b> MoveTo;
+
+<b>PROCEDURE</b> Move (dx, dy: <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + <b>FLOAT</b> (dx);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := graphY - <b>FLOAT</b> (dy);|
+      MacWin:
+        graphY := graphY + <b>FLOAT</b> (dy);
+  <b>END</b>;
+  FUNC MoveToEx (window, Round (graphX), Round (graphY), NIL_POINT);
+<b>END</b> Move;
+
+<b>PROCEDURE</b> ReviseAngle (angle : <b>REAL</b>) : <b>REAL</b>;
+(* this procedure is internal, so works strictly in degrees *)
+<b>BEGIN</b>
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing:
+        angle := 450.0 - angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);
+        <b>RETURN</b> graphArg;|
+      MacWin:
+        angle := 360.0 - angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);
+        <b>RETURN</b> graphArg;|
+      standard:
+        graphArg :=  angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);
+  <b>RETURN</b> graphArg
+  <b>END</b>;
+
+<b>END</b> ReviseAngle;
+
+<b>PROCEDURE</b> Turn (angle : <b>REAL</b>);
+ (* convert if a bearing change *)
+<b>BEGIN</b>
+  angle := ToDeg (angle);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, MacWin:
+        angle := graphArg - angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360);|
+      standard:
+        angle := graphArg + angle;
+        graphArg := angle - <b>FLOAT</b> (<b>VAL</b> (<b>INTEGER</b>, (angle / 360.0)) * 360)
+  <b>END</b>;
+<b>END</b> Turn;
+
+<b>PROCEDURE</b> TurnTo (angle : <b>REAL</b>);
+<b>BEGIN</b>
+ angle := ReviseAngle (ToDeg (angle));
+<b>END</b> TurnTo;
+
+<b>PROCEDURE</b> GetCurrentAngle () : <b>REAL</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> FromDeg (graphArg);
+<b>END</b> GetCurrentAngle;
+
+<b>PROCEDURE</b> LineBy (distance : <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + (<b>FLOAT</b> (distance) * cos (Radians (graphArg)));
+  graphY := graphY - (<b>FLOAT</b> (distance) * sin (Radians (graphArg)));
+  WINGDI.LineTo (window, Round (graphX), Round (graphY));
+<b>END</b> LineBy;
+
+<b>PROCEDURE</b> LineTo (x, y : <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := homeX + <b>FLOAT</b> (x);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := homeY - <b>FLOAT</b> (y);|
+      MacWin:
+        graphY := homeY + <b>FLOAT</b> (y);
+  <b>END</b>;
+  WINGDI.LineTo (window, Round (graphX), Round (graphY));
+<b>END</b> LineTo;
+
+<b>PROCEDURE</b> Line (dx, dy: <b>INTEGER</b>);
+<b>BEGIN</b>
+  graphX := graphX + <b>FLOAT</b> (dx);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        graphY := graphY - <b>FLOAT</b> (dy);|
+      MacWin:
+        graphY := graphY + <b>FLOAT</b> (dy);
+  <b>END</b>;
+  WINGDI.LineTo (window, Round (graphX), Round (graphY));
+<b>END</b> Line;
+
+<b>PROCEDURE</b> Dot;
+<b>BEGIN</b>
+  Line (1, 1);
+<b>END</b> Dot;
+
+<b>PROCEDURE</b> DotAt (x, y: <b>INTEGER</b>);
+<b>BEGIN</b>
+  MoveTo (x,y);
+  Dot;
+<b>END</b> DotAt;
+
+ (*----------------------- Graphing related functions -------------------*)
+
+<b>PROCEDURE</b> DrawXY;
+ (* Draw the axes of the graph *)
+<b>BEGIN</b>
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing:
+        Home;
+        MoveTo (0,- (height <b>DIV</b> 2 - 50));
+        LineBy (height - 70);
+        Home;
+        MoveTo (- (width <b>DIV</b> 2 - 30), 0);
+        TurnTo (90.0);
+        LineBy (width - 60);
+      |
+      standard:
+        Home;
+        MoveTo (0,- (height <b>DIV</b> 2 - 50));
+        TurnTo (90.0);
+        LineBy (height - 70);
+        Home;
+        MoveTo (- (width <b>DIV</b> 2 - 30), 0);
+        LineBy (width - 60);
+      |
+      MacWin:
+        Home;
+        MoveTo (0,- (height - 50));
+        TurnTo (90.0);
+        LineBy (height - 50);
+        Home;
+        MoveTo (- (width - 30), 0);
+        LineBy (width - 30);
+    <b>END</b>;
+<b>END</b> DrawXY;
+
+<b>PROCEDURE</b> SetLabels (horiz, vert : LabelType);
+ (* Set the horizontal and vertical axes labels *)
+<b>BEGIN</b>
+  xLabel := horiz;
+  yLabel := vert;
+  labelSet := <b>TRUE</b>;
+<b>END</b> SetLabels;
+
+<b>PROCEDURE</b> ShowLabels;
+ (* Show the labels but only if the axes have been drawn *)
+<b>BEGIN</b>
+  <b>IF</b> axesDrawn
+    <b>THEN</b>
+      <b>IF</b> <b>NOT</b> (labelSet)
+        <b>THEN</b>
+          xLabel := "x";
+          yLabel := "y";
+        <b>END</b>;
+
+      <b>CASE</b> activeSystem
+        <b>OF</b>
+          bearing, standard:
+            TextOut (window, (width - 100), (height <b>DIV</b> 2 + 50), xLabel, Length (xLabel));
+            TextOut (window, (width <b>DIV</b> 2 + 20), 20, yLabel, Length (yLabel));
+          |
+          MacWin:
+            TextOut (window, (width - 100), 50, xLabel, Length (xLabel));
+            TextOut (window, (40), (height - 70), yLabel, Length (yLabel));
+        <b>END</b>;
+    <b>END</b>;
+
+<b>END</b> ShowLabels;
+
+<b>PROCEDURE</b> ShowAxes;
+ (* Show the axes and draw the division marks on the axes *)
+<b>BEGIN</b>
+  DrawXY;
+  <b>IF</b> <b>NOT</b> scaleSet
+    <b>THEN</b>
+      SetScale (1);
+    <b>END</b>;
+  DrawDivisionMarks;
+  axesDrawn := <b>TRUE</b>;
+<b>END</b> ShowAxes;
+
+<b>PROCEDURE</b> SetScale (dataPerDivision : <b>CARDINAL</b>);
+
+ (* Set the scale if no scale has been set up to this point.
+ * NOTE: this does not support mid-graph scale changing *)
+<b>VAR</b>
+  temp, temp2 : LabelType;
+
+<b>BEGIN</b>
+  <b>IF</b> ~scaleSet
+    <b>THEN</b>
+      xScale := <b>FLOAT</b> (AspectH * dataPerDivision);
+      yScale := <b>FLOAT</b> (AspectV * dataPerDivision);
+
+     (* Set the scale to a string representation *)
+      CardToStr (dataPerDivision, temp);
+      Concat ('SCALE = 1 unit : ', temp, temp2);
+      Concat (temp2,' division', temp);
+      divisionValue := dataPerDivision;
+      scaleString := temp;
+      scaleSet := <b>TRUE</b>;
+    <b>END</b>;
+<b>END</b> SetScale;
+
+<b>PROCEDURE</b> DrawDivisionMarks;
+
+<b>VAR</b>
+  counter : <b>INTEGER</b>;
+  multiple : <b>INTEGER</b>;
+  xMax, yMax, tempStore, determineDivision : <b>INTEGER</b>;
+  xPos, yPos : <b>INTEGER</b>;
+  xString, yString : <b>ARRAY</b> [0..5] <b>OF</b> <b>CHAR</b>;
+  widthTest, heightTest, xdivisionPos : <b>INTEGER</b>;
+
+<b>BEGIN</b>
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+        widthTest := (width <b>DIV</b> 2 - 30);
+        heightTest := ((height - 70) <b>DIV</b> 2);
+        xdivisionPos := -10;
+      |
+      MacWin:
+        widthTest := width - 40;
+        heightTest := height - 40;
+        xdivisionPos := - 10;
+    <b>END</b>;
+
+ (* Draw the division marks 1cm apart while determining where the scale marker will go.*)
+
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing:  (* for bearing system *)
+        counter := AspectH;
+        multiple := 2;
+        Home;
+        <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+            MoveTo ( - counter, xdivisionPos);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+        counter := AspectH;
+        multiple := 2;
+        <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+            MoveTo (counter, xdivisionPos);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+        xMax := multiple - 2;
+        xPos := counter - AspectH;
+
+        counter := AspectH;
+        multiple := 2;
+        <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+            MoveTo ( -10, -counter);
+            TurnTo (90.0);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+        counter := AspectH;
+        multiple := 2;
+        <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+            MoveTo ( -10, counter);
+            TurnTo (90.0);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+
+        yMax := multiple - 2;
+        yPos := counter - AspectV;
+      |
+      standard, MacWin: (* For standard coordinate systems *)
+        counter := AspectH;
+        multiple := 2;
+        <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+            MoveTo ( - counter, xdivisionPos);
+            TurnTo (90.0);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+        counter := AspectH;
+        multiple := 2;
+        <b>WHILE</b> counter < widthTest
+          <b>DO</b>
+            MoveTo (counter, xdivisionPos);
+            TurnTo (90.0);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+
+        xMax := multiple - 2;
+        xPos := counter - AspectH;
+
+        counter := AspectH;
+        multiple := 2;
+        Home;
+        <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+            MoveTo ( -10, -counter);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+        counter := AspectH;
+        multiple := 2;
+        <b>WHILE</b> counter < heightTest
+          <b>DO</b>
+            MoveTo ( -10, counter);
+            LineBy (20);
+            counter := (AspectH * multiple);
+            <b>INC</b> (multiple);
+          <b>END</b>;
+        yMax := multiple - 2;
+        yPos := counter - AspectV;
+    <b>END</b>;
+
+  tempStore := xMax / divisionValue;
+  determineDivision := xMax <b>MOD</b> divisionValue;
+  xPos := xPos - (AspectH * determineDivision);
+  IntToStr (tempStore, xString);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+    TextOut (window, (width <b>DIV</b> 2 + xPos), (height <b>DIV</b> 2 + 20), xString , Length (xString));
+      |
+      MacWin:
+        TextOut (window, (xPos), (20), xString , Length (xString));
+    <b>END</b>;
+  tempStore := yMax / divisionValue;
+  determineDivision := yMax <b>MOD</b> divisionValue;
+  yPos := yPos - (AspectV * determineDivision);
+  IntToStr (tempStore, yString);
+  <b>CASE</b> activeSystem
+    <b>OF</b>
+      bearing, standard:
+      TextOut (window, (width <b>DIV</b> 2 - 20), (height <b>DIV</b> 2 - yPos), yString, Length (yString));
+      |
+      MacWin:
+        TextOut (window, (20), (yPos), yString, Length (yString));
+    <b>END</b>;
+  <b>IF</b> axesDrawn
+    <b>THEN</b>
+      TextOut (window, (width - 250), height - 50, scaleString, Length (scaleString));
+    <b>END</b>;
+<b>END</b> DrawDivisionMarks;
+
+<b>PROCEDURE</b> PlotPoint ( x, y : <b>REAL</b>);
+
+<b>BEGIN</b>
+  <b>IF</b> <b>NOT</b> (scaleSet)
+    <b>THEN</b>
+      SetScale (1);
+    <b>END</b>;
+  DotAt (Round (x * xScale), Round (y * yScale));
+<b>END</b> PlotPoint;
+
+<b>PROCEDURE</b> PolarPlotPoint (radius, angle : <b>REAL</b>);
+
+<b>VAR</b>
+  x,y : <b>REAL</b>;
+
+<b>BEGIN</b>
+  <b>IF</b> activeSystem = MacWin
+    <b>THEN</b>
+      angle := - angle;
+    <b>END</b>;
+  angle := ReviseAngle (ToDeg (angle));
+
+  x := radius * cos (angle * convertRad);
+  y := radius * sin (angle * convertRad);
+
+  <b>IF</b> ~scaleSet
+    <b>THEN</b>     (* Make sure the graph has a scale *)
+      SetScale (1);
+    <b>END</b>;
+ DotAt (Round (x * xScale), Round (y * yScale));
+<b>END</b> PolarPlotPoint;
+
+(*--------------- Main Code ----------------*)
+
+<b>BEGIN</b>
+  (* Initialize variables *)
+  (* the import of GraphWindow sets up the window for us. *)
+  window := GetWindow ();  (* obtain the variable associated with the graph window *)
+  GetWDimensions (width, height);
+  scaleSet  := <b>FALSE</b>;
+  labelSet  := <b>FALSE</b>;
+  axesDrawn := <b>FALSE</b>;
+  graphArg  := 0.0;
+  SetCoordSystem (standard); (* default *)
+  Home;
+  (* Pause until user closes the screen *)
+
+<b>END</b> GraphPaper.</PRE>
+
+<P>Again, the reader is invited to peruse the details of the API, but they are not going to be explained in detail here. However, the implementations of <i>GraphWindow</i> and <i>GraphPaper</i> between them, ought to provide a means of getting started on other programs in Windows NT.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

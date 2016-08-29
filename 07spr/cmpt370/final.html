@@ -1,0 +1,351 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT370 Spr2007 Final Exam, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ ans ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+
+<ol class="main">
+
+<li> Name at least three of the groundbreaking innovations in Engelbart's NLS
+prototype demonstration in 1968. <u>[3]</u>
+<br><i>mouse, windowing system, hyperlinks, chording keyboard,
+collaborative work (email, IM, video conf)</i>
+<br><br><br><br>
+
+<li> What are events and callbacks?  Describe an example. <u>[3]</u>
+<br><i>
+An event is an action, usually triggered by the user: e.g., clicking on a
+button, selecting a menu item, pressing Enter, moving the mouse.  A callback
+is a procedure/function
+invoked when a corresponding event happens.  For example, the exit() function
+might be run when the user clicks on a "Quit" button.
+</i>
+<br><br><br><br><br><br>
+
+<li> Describe Flynn's taxonomy of parallel computing.
+(Give more detail than just expanding the acronyms!) <u>[6]</u>
+<br><i><dl>
+<dt>SISD:</dt><dd>regular serial uniprocessor computing</dd>
+<dt>SIMD:</dt><dd>multiple processors each doing the same task, but on
+different parts of the data.  Vector processing.</dd>
+<dt>MISD:</dt><dd>the same data being run through different operations in
+parallel.   Certain kinds of image processing, perhaps encryption breaking.
+Rarely used.</dd>
+<dt>MIMD:</dt><dd>multiple processors doing different tasks on different data.
+Most general form of parallel computing; also most common nowadays.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Compare the pros/cons of OpenMP vs. MPI. <u>[4]</u>
+<br><i>
+OpenMP uses the threading model instead of the message-passing model, is easier
+to program in and easier to add-on to existing serial code.  The programmer
+need not know how many processors the program is actually using.  It is generally
+more well-suited to a shared-memory model.  MPI is more complex to program in
+but provides more control over synchronization and communication.  MPI often
+scales up better to more processors; it is more appropriate for
+distributed-memory models.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<div class="break"></div>
+
+<li> Describe the (1) shared, (2) distributed, and (3) hybrid
+memory models of parallel computing.  Draw the diagrams illustrating how memory
+and processors are tied together.  What are the advantages/disadvantages of
+shared memory vs.  distributed memory models? <u>[6]</u>
+<br><i><dl>
+<dt>Shared:</dt><dd>All processors share same address space for main memory.
+The assumption is that memory access times are the same for all processors.
+Easier to program: threads communicate simply by sharing data structures
+directly.  For small numbers of processors, often faster due to less overhead.
+Does not scale well.</dd>
+<dt>Distributed:</dt><dd>Each processor has its own address space.  No data
+structures can be shared with other processors.  All communication must be
+explicit via networking, which makes programming more complicated due to
+synchronization and latency issues.  Scales to hundreds of thousands of
+processors.</dd>
+<dt>Hybrid:</dt><dd>Each node has a few (often 4-8) processors which share
+that node's memory.  Nodes cannot directly see the memory of other nodes.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+In your own words, compare the complementary fields of <b>computer graphics</b>
+and <b>image analysis</b>. <u>[4]</u>
+<br><i>
+Synthesis vs. analysis: both are components of visual computing.  Computer
+graphics starts with digital representations of objects (triangle meshes,
+lights, etc.) and produces images on screen.  Image analysis starts with images
+(digital camera, satellite, MRI, etc.) and produces digital representations of
+the objects in the images.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+What is <b>colour</b>?  Is an RGB triple (e.g., "#00FF77") a colour?  Discuss.
+<u>[3]</u>
+<br><i>
+Colour is a distribution of light energy across the visible spectrum ("frequency
+distribution").  An RGB triple is a point in a colour space, a 
+combination of three chromaticities.  Without specifying what those
+chromaticities are or how they are combined, an RGB triple is not a colour.
+</i>
+<br><br><br><br><br><br><br>
+
+<li>
+Describe <b>back-face culling</b>.  Why is it a good idea? <u>[3]</u>
+<br><i>
+Back-face culling removes polygons whose normal vectors point away from the
+camera.  The idea is that in a closed object, all polygons that point away from
+the camera are on the back side of an object and are occluded by front-facing
+polygons, so we won't see them, so they don't need to be rendered, so we can
+delete them from the graphics pipeline, which speeds up our rendering.
+</i>
+<br><br><br><br><br>
+
+<div class="break"></div>
+
+<li>
+Describe the four types of <b>lights</b> offered by OpenGL. <u>[5]</u>
+<br><i><dl>
+<dt>Point:</dt><dd>has a location and colours (ambient, diffuse, specular).
+Similar to a candle.</dd>
+<dt>Directional:</dt><dd>has a direction and colours, but no location.  Similar
+to the sun.  Specified in OpenGL the same way as point lights, but using
+homogeneous coordinates to specify a vector instead of a point.</dd>
+<dt>Spot:</dt><dd>has a location, direction, cutoff depth, falloff exponent, and
+colours.  Similar to a theatre spotlight.</dd>
+<dt>Global ambient:</dt><dd>We can specify an ambient light that uniformly
+illuminates the whole scene.  Similar to a very evenly lit scene like an open
+field on a cloudy day.</dd>
+<dt>(Area light):</dt><dd>(not offered by OpenGL, but we can model it using
+global illumination techniques like radiosity.)</dd>
+<dt>(Emissive):</dt><dd>(Emissive OpenGL objects don't count as lights because
+they don't cast light on other objects.)</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Tell me everything you know about <b>homogeneous coordinates</b>. <u>[4]</u>
+<br><i>
+Homogeneous coordinates are a compact way of representing both 3D points and 3D
+vectors using the same representation: a list of 4 numbers, [x y z w].  If
+w=0, then it represents a vector (direction and magnitude, but no location).
+If w=1, then it represents a point (position in space).  If w is any other
+number, it represents the point (x/w, y/w, z/w).  Most transforms used in 3D
+computer graphics are 4x4 matrices that multiply by entities in homogeneous
+coordinates.
+</i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Write a C/C++ function that takes two points in normalized mouse coordinates 
+(x0,y0,x1,y1) and finds the <b>axis-angle</b> (vector-angle)
+representation of the virtual trackball rotation.  Normalize mouse coordinates
+are floats in the range 0 to 1.  Such an axis-angle representation could, for
+example, be passed to <tt>glRotate()</tt> to create a 4x4 rotation matrix.
+You may assume the presence of 3D-vector helper functions <tt>normalize()</tt>,
+<tt>magnitude()</tt>, <tt>dotproduct()</tt>, and <tt>crossproduct()</tt>, as
+well as <tt>sqrt()</tt>.  Syntax is not as important as concept/pseudocode.
+<u>[6]</u>
+<br><i><pre>
+void getAxisAngle(float x0, float y0, float x1, float y1, float& axis, float& ang) {
+	float vec0[3], vec1[3], xprod[3];
+	vec0[0] = x0; vec0[1] = y0;
+	vec1[0] = x1; vec1[1] = y1;
+	vec0[2] = sqrt(1 - x0*x0 + y0*y0);
+	vec1[2] = sqrt(1 - x1*x1 + y1*y1);
+	xprod = crossproduct(vec0, vec1);
+	axis = normalize(xprod);
+	ang = arcsin(magnitude(xprod));
+}
+</pre></i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<div class="break"></div>
+
+<li> How does <b>Gouraud</b> shading work?  How does <b>Phong</b> shading work?
+What are pros/cons of each? <u>[5]</u>
+<br><i><dl>
+<dt>Gouraud shading:</dt><dd>Calculate shades at each vertex, interpolate RGB
+shades across the polygon</dd>
+<dt>Phong shading:</dt><dd>Interpolate normal vectors across polygon; calculate
+shades at each pixel</dd>
+</dl>
+Phong shading looks better but requires more computation: the local
+illumination model is performed at each pixel across the polygon instead of just
+once for each vertex.  Gouraud shading is built-in to OpenGL.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li>Contrast <b>texture</b> maps, <b>bump</b> maps, and <b>environment</b>
+maps. <u>[6]</u>
+<br><i><dl>
+<dt>Texture map:</dt><dd>an image pasted on a surface in 3D.  Colours of the
+surface are taken from the image.</dd>
+<dt>Bump map:</dt><dd>the normal vectors on the surface are wobbled to
+simulate a perturbation of the surface (in/out) by an amount given in the bump
+map image.</dd>
+<dt>Environment map:</dt><dd>reflections in specular surfaces use colours taken
+from an image, to simulate the reflection of a complex scene in a shiny object.
+</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What is <b>mip-mapping</b>?  Why is it cool? <u>[4]</u>
+<br><i>
+Mip-maps are precalculated smaller versions of the texture at various levels of
+detail.  e.g., a version with half the length and half the width; another
+version with one-quarter the length and one-quarter the width, etc.  They are
+used in texture mapping to avoid aliasing: unsightly jagged edges and artifacts
+that would otherwise occur when the texture's projected fragment on the screen is
+very small.
+</i>
+<br><br><br><br><br><br>
+
+<li> Contrast <b>interpolating</b> cubic polynomial curves, <b>Hermite</b>
+curves, and <b>Bezier</b> curves.  For each type of cubic polynomial curve,
+what information is needed to uniquely specify a curve? <u>[6]</u>
+<br><i><dl>
+<dt>Interpolating:</dt><dd>Specify four points; the curve goes through all
+four.</dd>
+<dt>Hermite:</dt><dd>Specify positions and tangent/velocity vectors at the 
+start and end of the curve.</dd>
+<dt>Bezier:</dt><dd>Specify four Bezier control points.  Two are the start and
+end of the curve (interpolated).  The other two control points are used to
+derive the velocity vectors (3 times the difference vector) for the start and end
+points.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<div class="break"></div>
+
+<li> Describe and contrast <b>C<sup>0</sup>, C<sup>1</sup>, C<sup>2</sup>, and
+G<sup>1</sup></b> continuity for splines. <u>[4]</u>
+<br><i><dl>
+<dt>C<sup>0</sup>:</dt><dd> Curve segments touch; basic continuity.</dd>
+<dt>C<sup>1</sup>:</dt><dd> Curves touch and velocity vectors also match at the
+joins</dd>
+<dt>C<sup>2</sup>:</dt><dd> Curves touch, velocity vectors match, and even the
+curvatures match at the joins</dd>
+<dt>G<sup>1</sup>:</dt><dd> Curves touch, and velocity vectors point in the
+same direction (but might not be the same magnitude).  In between C<sup>0</sup>
+and C<sup>1</sup>.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What is a <b>NURBS</b>?  Explain each part of the acronym in detail.
+<u>[6]</u>
+<br><i><dl>
+<dt>NU (non-uniform):</dt><dd>the knots (joins between Bezier segments) need
+not be uniformly spaced in u (the parameter space).  For instance, this can be
+used to make the NURBS interpolate its endpoints, by repeating knots four times
+at the start (u=0) and end (u=1).</dd>
+<dt>R (rational):</dt><dd>Each control point has a relative weighting
+associated with it which biases its influence on the curve.</dd>
+<dt>BS (B-spline, Bezier spline):</dt><dd>A B-spline is a spline made up of
+cubic Bezier segments, joined in a particular way so as to get C<sup>2</sup>
+continuity.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe how to find all the intersection points between a ray and a
+sphere. <u>[5]</u>
+<br><i><ul>
+<li> Equation of a sphere with radius r and centre
+(x<sub>c</sub>, y<sub>c</sub>, z<sub>c</sub>):
+(x-x<sub>c</sub>)<sup>2</sup> + (y-y<sub>c</sub>)<sup>2</sup> +
+(z-z<sub>c</sub>)<sup>2</sup> = r<sup>2</sup>.
+<li>Substitute ray equations:
+(x<sub>0</sub> + t*x<sub>v</sub> - x<sub>c</sub>)<sup>2</sup> +
+(y<sub>0</sub> + t*y<sub>v</sub> - y<sub>c</sub>)<sup>2</sup> +
+(z<sub>0</sub> + t*z<sub>v</sub> - z<sub>c</sub>)<sup>2</sup> = r<sup>2</sup>.
+<li>Solve for t using quadratic formula.
+</ul></i>
+<br><br><br><br><br><br><br><br>
+
+<li> What are <b>quadric</b> surfaces, and why are they cool in raytracing?
+List some examples. <u>[4]</u>
+<br><i>
+A quadric is any implicit surface that is defined by a quadratic (degree 2
+polynomial) in x, y, and z.  Examples include spheres, ellipses, cylinders,
+cones, and hyperboloids.  The ray-surface intersection test, so critical in
+raytracing, is analytically solvable for quadrics, using the quadratic formula.
+As a result, finding intersections with quadrics is relatively easy, which
+speeds up raytracing.
+</i>
+<br><br><br><br>
+
+<div class="break"></div>
+
+<li> Describe and contrast: <b>spatial grids</b>, <b>octrees</b>, <b>k-d</b>
+trees, and <b>BSP</b> trees. <u>[6]</u>
+<br><i><dl>
+<dt>Grids:</dt><dd>subdivide space into equal voxels, regularly spaced</dd>
+<dt>Octrees:</dt><dd>Adaptive subdivision: where needed, each cell is
+subdivided into eight equal subcells along the coordinate axes.</dd>
+<dt>k-d trees:</dt><dd>Also adaptive like octrees, but cells are subdivided
+along one axis at a time.  Cells need not be split into equal-size
+subcells.</dd>
+<dt>BSP trees:</dt><dd>Even more flexible than k-d trees: each time a cell is
+split using a (k-1)-dimensional hyperplane (a regular plane in 3D), oriented in
+any way (need not be along a coordinate axis).</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li> What are the basic assumptions for classical <b>radiosity</b>? <u>[3]</u>
+<br><i>
+Most important assumption: Lambertian (perfectly diffuse) surfaces -- no
+specularity, no translucency.  Other assumptions (not so important to get):
+light transfer from one element to another is <em>linear</em>, no fog, can
+solve for radiosity in RGB space, radiosity constant across each element.
+</i>
+<br><br><br><br><br>
+
+<li> What is <b>radiosity</b>? (in physics/optics/radiometry)
+What are the SI units used to describe it? <u>[3]</u>
+<br><i>
+Exitant flux density: radiant power per unit surface area.
+Radiant power is energy (J) per unit time (s), so the units of radiosity
+are in J/(s*m<sup>2</sup>), or W/m<sup>2</sup>.
+</i>
+<br><br><br><br>
+
+<li> Explain what a <b>BRDF</b> is.  What simplifying assumption is made about
+the BRDF in classical radiosity?  What sort of surfaces is radiosity unable to
+model as a result? <u>[5]</u>
+<br><i>
+Bidirectional reflectance distribution function: defines for every combination
+of an incoming direction and an outgoing direction, what fraction of the 
+incoming flux density along the given incoming direction is reflected along 
+the given outgoing direction.  In general, the BRDF varies along the surface
+and also varies with both incoming and outgoing direction vectors.  Radiosity
+assumes Lambertian surfaces, which means that the BRDF simplifies to a
+constant, called the albedo.
+</i>
+<br><br><br><br><br><br><br>
+
+<li> Contrast and describe pros/cons: realtime <b>OpenGL</b> pipeline, vs.
+<b>ray tracing</b>, vs. <b>radiosity</b>. <u>[6]</u>
+<br><i>
+</i><br>
+
+</ol>
+
+</body></html>
+
+

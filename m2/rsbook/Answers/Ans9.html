@@ -1,0 +1,518 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 9 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 9</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	A Modula-2 set is a collection of items of the same scalar non-real type without regard to order, whereas an abstract set is a collection of items of any type.</P>
+
+<P>2.	A subrange of a scalar type is a sequence of consecutive values of the host type, unlike a subset which is a collection of values (in no particular order) taken from a set.</P>
+
+<P>3.	TYPE
+		month30 = SET OF [jan,  mar,  may,  jul, oct,  dec];
+		month31 = SET OF [apr, jun, aug, sep, nov];</P>
+
+<P>4.	Sets in older versions of Modula-2 were of limited use because most of them followed the suggestion of Wirth which limited the ranges of a set (usually to a maximum of 16 or 32 elements).  Some implemented the language to limit sets to cardinal ranges starting at zero.  Instead of making a maximum allowable, the ISO standard requires a SET OF CHAR to be permitted.</P>
+
+<P>5.	All the driver modules export flags that are sets.  They are compatible because they are defined elsewhere, imported, then re-exported.</P>
+
+<P>6.	Union:  creates a new set that contains all the elements present in either of the two original sets.
+	Intersection:  creates a new set that contains only those elements common to the original pair of sets.
+	Difference:  creates a new set consisting of all elements of one set that are not in the other.</P>
+<P>	Symmetric Set Difference:  creates a new set whose elements are in either of the original sets, but not in both.
+	INCL: same as set union, but only one element is inserted into the set.
+	EXCL:  same as set difference, but only one element is removed from the set.</P>
+
+<P>7.	A BITSET is a  set of [0..bitsperbitset-1] with membership in the set dependent on whether the bit position at that number contains a one or a zero.  A PACKEDSET is similar, but the maximum bit number is user-defined.  Operations that are used on these types are SHIFT, which shift all the bits of the pattern n positions to the left or right, and ROTATE, which rotates all the bits of the pattern n positions to the left or right.  </P>
+
+<P>8.	Shifting 1 bit to the left equals multiplication by 2.  Shifting one bit right is division by 2.  Shifting n bits is multiplication or division by the nth power of 2.  </P>
+
+<P>9.	(a)	{1,3,5}<BR>
+	(b)	{1,4,5}<BR>
+	(c)	{4}<BR>
+	(d)	{'a','2'}<BR>
+	(e)	{1,10}<BR>
+	(f)	{'m'}<BR>
+	(g)	{5,7,9}<BR>
+	(h)	{4,8}<BR>
+	(i)	{'y'}<BR>
+	(j)	{2,3,4,a,b,c}</P>
+
+<P>10.	(a)  TRUE</P>
+<P>	(b)  FALSE</P>
+<P>	(c)  TRUE</P>
+
+<P>11.	In Modula-2, a record is a data abstraction designed to allow for aggregates of various types of related data named by a single identifier.  In mathematics a record is an item taken from a cross product of two or more sets, producing tuples.</P>
+
+<P>12.<pre>	TYPE
+	  String = ARRAY [0..50] OF CHAR;
+	  Time =
+	    RECORD
+	      Year, Month, Day : CARDINAL;
+	    END;
+	  traveller = 
+	    RECORD
+	      name : String;
+	      addr : String;
+	      airline : String;
+	      flightnum : CARDINAL;
+	      arrival : Time;
+	      departure : Time;
+	      luggage : BOOLEAN;
+	    END;</pre></P>
+
+<P>	Mathematically:<BR>
+	  (namestring) * (addstring) * (CARDINAL) * (timestring) * (timestring) * (BOOLEAN)</P>
+
+<P>13.	<pre>	PROCEDURE Filltraveller (VAR rectype : traveller);
+	BEGIN
+	  WITH rectype DO
+	    name := 'Jack';
+	    addr := '1600 Pensylvania Ave.';
+	    airline := 'Air Canada';
+	    flightnum := 654321;
+	    WITH arrival DO
+	      Year := 1999;
+	      Month := 12;
+	      Day := 31;
+	    END;
+	    WITH departure DO
+	      Year := 2000
+	      Month := 1;
+	      Day := 1;
+	    END;
+	    luggage := TRUE;
+	  END;
+	END Filltraveller;</pre>
+
+<P>14.<pre>	student =
+	  RECORD
+	    name : string;
+	    sid : CARDINAL;
+	    age : [0..100];
+	    owing : REAL;
+	  END;</pre></P>
+
+<P>15.<pre>	PROCEDURE FillStudent (VAR sturec : student);
+
+	BEGIN
+	  WITH sturec DO
+	    WriteString ("Enter student's name: ");
+	    ReadString (name);
+	    SkipLine;
+	    WriteLn;
+	    WriteString ("Enter SID#: ");
+	    ReadCard (sid);
+	    SkipLine;
+	    WriteLn;
+	    WriteString ("Enter age: ");
+	    ReadCard (age);
+	    SkipLine;
+	    WriteLn;
+	    WriteString ("Enter amount owing: ");
+	    ReadReal (owe);
+	    SkipLine;
+	    WriteLn;
+	  END;
+	END FillStudent;</pre></P>
+
+<P>16.<pre>	TYPE
+	  Address =
+	    RECORD
+	      num : CARDINAL;
+	      street : string;
+	      postal : CARDINAL;
+	      city : string;
+	    END;
+	  Customer = 
+	    RECORD
+	      name : string;
+	      addr : Address;
+	      amount : REAL;
+	    END;
+
+	PROCEDURE FillCustomer (VAR customer : Customer);
+	BEGIN
+	  WITH customer DO
+	    name := 'Steve';
+	    WITH addr DO
+	      num := 1492;
+	      street := 'Glover Rd.'
+	      postal := 654321;
+	      city := 'Langley';
+	    END;
+	    amount := 0.00
+	  END;
+	END FillCustomer;</pre></P>
+
+<P>17.	An array should be used when grouping items of the same types and only a simple structure is needed  A record on the other had should be used when there is a diverse group of data that need to be combined into one abstraction.  An array could be used to hold the number of runs that were scored in an inning of a baseball game where one would have an array of 1 to n.  A record could be used to store patient information in a clinic stating the name, address, birthday, etc.</P>
+
+<P>18.	A qualified identifier has the individual fields of a record preceded by the record name itself.  It is similar to a qualified import.  The former are unqualified by WITH, the latter by FROM.</P>
+
+<P>19.	The first and simplest way is using regular ASCII characters.  The record however can take up a lot of storage space.  A second way of storing records is as binary information.  The same idea is applied for this technique, but using a raw format to write instead of an ASCII format.  The third is to use a random access technique.  Here since memory size is similar to disk storage size, one can find a particular item by searching for a particular item or else, use the position markers and end-of-file markers.</P>
+
+<P>20.	Random access has the ability to calculate and set a position marker to read and write anywhere in the file.  ISO Modula-2 uses the module RndFile to implement the random access model.</P>
+
+<P>21.	A sequential file should be used when a file does not need large amounts of insertions in different parts of the file, or when few changes are needed for the file in the span of its life.  If the file is subject to frequent change, and requires insertions, then a random access file would be better.</P>
+
+<P>22.	A file position variable is a variable that marks a location in the file, whether it be at the beginning,  the middle, or the end of the file.  Manipulation of this variable is done automatically by procedures that read or write, and manually by StartPos, CurrentPos, EndPos, NewPos, and SetPos.</P>
+
+<P>23.	The end-of-file marker is important, because it tell the program where the end of the file is and it does not permit writing after that position.</P>
+
+<P>24.	OpenOld will open an existing file and set the read/write position to the start of the file.  Using OpenClean will truncate the file to zero length.</P>
+
+<P>25.	After reading the file, the position marker moves to the end of the last read.  If one were to write immediately after reading, the writing will be done in the incorrect position.  To overcome this problem,  one needs to reset the position marker to the position where the last record was read</P>
+
+<P>26.	Reading/writing to a position beyond the limits of a file produces a run time error.</P>
+
+<P>27.	Answer left to student.</P>
+
+<P>28.	Answer left to student.</P>
+
+<P>29.	Answer left to student.</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note: Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*   Created
+    June 17 1999
+    Chapter 9 Question 31  *)
+
+MODULE LetterCheck;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, WriteChar, ReadString, ReadChar, SkipLine;
+FROM SIOResult IMPORT
+  ReadResult, ReadResults;
+TYPE
+  CharSet = SET OF CHAR;
+  CharType = (const, vowel);
+  CharArray = ARRAY [65..90] OF BOOLEAN;
+
+VAR
+  VowelSet : CharSet;
+  CharList : CharArray;
+  type : CharType;
+  ch : CHAR;
+
+PROCEDURE Init (array : CharArray);
+(*  pre: none
+   post: initializes an array of boolean to FALSE;  *)
+
+VAR
+  count : CARDINAL;
+
+BEGIN
+  FOR count := 65 TO 90 DO
+    array[count] := FALSE;
+  END;
+END Init;
+
+PROCEDURE WriteType (list : CharArray; type : CharType);
+(*  pre: none
+   post: writes out the type indicated *)
+
+VAR
+  count, format : CARDINAL;
+
+BEGIN
+  format := 0;
+
+  FOR count := 65 TO 90 DO
+    IF list[count] THEN
+
+      IF type = vowel THEN
+
+        IF VAL(CHAR, count) IN VowelSet THEN
+          WriteChar (VAL(CHAR, count));
+          WriteString ("     ");
+          INC (format);  (* for formatting purposes *)
+        END;  (* end IF *)
+
+      ELSE
+
+        IF NOT ( VAL(CHAR, count) IN VowelSet) THEN
+          WriteChar (VAL(CHAR, count));
+          WriteString ("     ");
+          INC (format);  (* for formatting purposes *)
+        END;  (* end IF *)
+
+      END;  (* end IF *)
+
+    END;  (* end IF *)
+
+    IF format = 5 THEN
+      WriteLn;
+      format := 0;
+    END;
+
+  END;  (* end FOR *)
+END WriteType;
+
+
+BEGIN
+  (* set the vowels *)
+  VowelSet := CharSet {'A', 'E', 'I', 'O', 'U'};
+  WriteString ("Enter a string and I will show you which are consonats and which ");
+  WriteLn;
+  WriteString ("vowels.");
+  WriteLn; WriteLn; WriteLn;
+  WriteString ("Enter the string: ");
+  (* initialize the string *)
+  Init (CharList);
+  (* check and mark of vowels used *)
+
+  REPEAT
+    ReadChar(ch);
+      IF (ORD(CAP(ch)) >= 65) AND (ORD(CAP(ch)) <= 90) THEN
+        CharList[ORD(CAP(ch))] := TRUE;
+      END;
+  UNTIL ReadResult () # allRight;
+
+  SkipLine;
+  WriteLn; WriteLn;
+  (* write out the results *)
+  WriteString ("**********VOWELS**********");
+  WriteLn;
+  type := vowel;
+  WriteType (CharList, type);
+  WriteLn; WriteLn;
+  WriteString ("********CONSONANTS********");
+  WriteLn;
+  type := const;
+  WriteType (CharList, type);
+  WriteLn; WriteLn; WriteLn;
+  (* let user read results before killing program *)
+  WriteString ("Press ENTER to continue");
+  SkipLine;
+END LetterCheck.</pre>
+
+
+<pre>(*   Created
+    June.17.1999
+    Chapter 9 Question 37
+    NO ERROR TRAPPING
+
+    This program collects information about individuals and stores them in array
+    of records.  The student may elaborate on this an store the record to a file
+    NOTE: no error checking is done on the inputs. *)
+
+MODULE Collection;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, ReadString, ReadChar, WriteChar, SkipLine;
+FROM SRealIO IMPORT
+  ReadReal, WriteFixed;
+FROM SWholeIO IMPORT
+  ReadCard;
+
+CONST
+  max = 3;
+
+TYPE
+  String = ARRAY [0..30] OF CHAR;
+  sexType = (M, F);
+  List = ARRAY [1..max] OF CARDINAL;
+  person =
+    RECORD
+      name : String;
+      height : REAL;
+      mass : REAL;
+      sex : sexType;
+      hair : String;
+      eye : String;
+      church : String;
+    END;
+
+VAR
+    quit : BOOLEAN;
+    option, howmany : CARDINAL;
+    Person : person;
+    list : List;
+
+PROCEDURE FillPerson (VAR recType : person);
+(*  pre: none
+   post: fills a with given information *)
+
+VAR
+  tempnum : REAL;
+  tempsex : CHAR;
+
+BEGIN
+  WITH recType DO
+    WriteString ("Enter the name: ");
+    ReadString (name);
+    SkipLine;
+    WriteLn;
+    WriteString ("Enter the hight (in cm): "); (* since we use metric in canada *)
+    ReadReal (height);
+    SkipLine;
+    WriteLn;
+    WriteString ("Enter the weight (in kgs): ");  (* since we use metric in canada *)
+    ReadReal (mass);
+    SkipLine;
+    WriteLn;
+    WriteString ("Enter the sex: ");
+    ReadChar (sex);
+    SkipLine;
+
+    IF (tempsex = 'M') OR (tempsex = 'm') THEN
+      sex := M;
+    ELSE
+      sex := F;
+    END;
+
+    WriteLn;
+    WriteString ("Enter the hair colour: ");
+    ReadString (hair);
+    SkipLine;
+    WriteLn;
+    WriteString ("Enter the eye colour: ");
+    ReadString (eye);
+    SkipLine;
+    WriteLn;
+    WriteString ("Enter the church affiliation: ");
+    ReadString (church);
+    SkipLine;
+    WriteLn;
+  END (* end WITH *)
+END FillPerson;
+
+PROCEDURE menu (VAR option : CARDINAL);
+
+BEGIN
+  WriteString ("**************************************************");
+  WriteLn;
+  WriteString ("Select an option");
+  WriteLn; WriteLn;
+  WriteString ("1. Add an individual to the list");
+  WriteLn;
+  WriteString ("2. Display the list");
+  WriteLn;
+  WriteString ("3. Exit");
+  WriteLn;
+  WriteString ("***************************************************");
+  WriteLn; WriteLn;
+  WriteString ("Option desired: ");
+  WriteLn;
+  ReadCard (option);
+  SkipLine;
+END menu;
+
+PROCEDURE DisplayRec (list : List; recType : person);
+
+VAR
+  count : CARDINAL;
+BEGIN
+  FOR count := 1 TO howmany DO
+    WITH recType DO
+      WriteString ("Name: ");
+      WriteString (name);WriteLn;
+      WriteString ("Height: ");
+      WriteFixed (height, 2, 1);WriteLn;
+      WriteString ("Weight: ");
+      WriteFixed (mass, 2, 1);WriteLn;
+      WriteString ("Sex: ");
+
+      IF sex = M THEN
+        WriteChar ('M');
+      ELSE
+        WriteChar ('F');
+      END;
+
+      WriteLn;
+      WriteString ("Hair Colour: ");
+      WriteString (hair);WriteLn;
+      WriteString ("Eye Colour: ");
+      WriteString (eye);WriteLn;
+      WriteString ("Church Affiliaiton: ");
+      WriteString (church);WriteLn;
+
+    END; (* end WITH *)
+
+    WriteLn; WriteLn;
+  END; (* end FOR *)
+
+END DisplayRec;
+
+(* start main program *)
+
+BEGIN
+  WriteString ("This program will take input from the user and store it in a list.");
+  WriteLn; WriteLn; WriteLn;
+  howmany := 0;
+
+  REPEAT
+    menu(option);
+
+    IF option = 1 THEN
+      FillPerson (Person);
+      INC (howmany);
+    ELSIF option = 2 THEN
+      DisplayRec (list, Person);
+      WriteString ("Press ENTER to continue");
+      WriteLn;
+      SkipLine;
+    ELSE
+      quit := TRUE;
+    END;
+
+  UNTIL quit;
+
+END Collection.</pre>
+
+
+
+</BODY>
+
+</HTML>

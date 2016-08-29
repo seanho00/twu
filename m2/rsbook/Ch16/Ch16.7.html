@@ -1,0 +1,431 @@
+<HTML><HEAD><TITLE>16.7 Extended ADT Examples</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Extended ADT Examples">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>16.7 Extended ADT Examples</b></H2>
+<P>This section contains more complete examples of abstract data types realized in Generic Modula-2.  The design work for these modules was done in VDM-SL (Vienna Documentation Method-Specification Language) by Matt Suderman for an undergraduate thesis submitted in partial fulfillment of a B.Sc. degree at Trinity Western University in the Spring of 1997.  Only a general discussion and the end result in Generic Modula-2 is give here.</P>
+
+<H2><b><A NAME="16.7.1"></A>16.7.1 Generic Lists</b></H2>
+
+<A NAME="Lists"></A><P>For this example, the ADT <i>List</i> has been chosen. The generic aspects are the type of the data and a procedure to do assignments. In order to make a close fit with the design notation, a type has been introduced to model the <i>Natural Numbers</i>, that is, the positive whole numbers (not including zero). This is used to number the list. In addition, take note of the systematic use of preconditions and the provision of procedures to check those preconditions. As usual, various procedures are expressed in terms of the formal parameter names whose values are yet to be supplied.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Lists (Data: <b>TYPE</b>; AssignData: AssignProcType);
+
+<b>TYPE</b>
+  AssignProcType = <b>PROCEDURE</b> (<b>VAR</b> Data; Data);
+  (* ``Nat'' means ``Natural Number'' as in VDM-SL *)
+  Nat1 = [1 .. <b>MAX</b> (<b>CARDINAL</b>)];
+  Nat = <b>CARDINAL</b>;
+  Traversal = <b>PROCEDURE</b> (Data): Data;
+  List;
+
+<b>PROCEDURE</b> InitList (<b>VAR</b> list: List);
+(* Post: Empty (list) = TRUE *)
+   
+<b>PROCEDURE</b> CanInsert (list: List; position: Nat1): <b>BOOLEAN</b>; 
+(* Pre:  'memory available' AND position <= Length (list) + 1 *)
+<b>PROCEDURE</b> Insert (<b>VAR</b> list: List; data: Data; position: Nat1);
+(* Post: GetLength (list') + 1 = GetLength (list) 
+      AND GetElement (list', 1..position - 1) 
+         = GetElement (list, 1..position - 1)
+      AND GetElement (list', position..GetLength (list')) 
+         = GetElement (list, position + 1..GetLength (list))
+      AND GetElement (list, position) = data *)
+
+<b>PROCEDURE</b> CanUpdate (list: List; position: Nat1): <b>BOOLEAN</b>;
+(* Pre: position <= Length (list) *)
+<b>PROCEDURE</b> Update (<b>VAR</b> list: List; data: Data; position: Nat1);
+(* Post: GetLength (list') = GetLength (list) 
+      AND p <> position 
+         ==> GetElement (list', p) = GetElement (list, p) 
+      AND GetElement (list, position) = data *)
+
+<b>PROCEDURE</b> CanAppend (list: List; data: Data): <b>BOOLEAN</b>;
+(* Pre: 'memory available' AND NOT Empty (list) *)
+<b>PROCEDURE</b> Append (<b>VAR</b> list: List; data: Data);
+(* Post:  GetLength (list') + 1 = GetLength (list) 
+      AND GetElement (GetLength (list)) = data 
+      <b>AND</b> GetElement (list', 1..GetLength (list')) 
+         = GetLength (list, 1..GetLength (list')) *)
+
+<b>PROCEDURE</b> CanDelete (list: List; position: Nat1): <b>BOOLEAN</b>;
+(* Pre: position <= GetLength (list) *)
+<b>PROCEDURE</b> Delete (<b>VAR</b> list: List; position: Nat1);
+(* Post: GetLength (list') = GetLength (list) + 1  
+      AND GetElement (list', 1..position - 1) 
+         = GetElement (list, 1..position - 1)
+      AND  GetElement (list', position + 1..) 
+         = GetElement (list, position ..) *)
+ 
+<b>PROCEDURE</b> Traverse (<b>VAR</b> list: List; traversal: Traversal);
+(* Post: for all p GetElement (list, p) 
+         = traversal (GetElement (list', p)) *)
+   
+<b>PROCEDURE</b> GetLength (list: List): Nat;
+(* Post: the number of elements in the list *)
+
+<b>PROCEDURE</b> Empty (list: List): <b>BOOLEAN</b>;
+(* Post: GetLength (list) = 0  Empty (list) = TRUE *)   
+
+<b>PROCEDURE</b> CanGetElement (list: List; position: Nat1): <b>BOOLEAN</b>;
+(* Pre: position <= GetLength (list) *)
+<b>PROCEDURE</b> GetElement (list: List; position: Nat1): Data;
+(* Post: GetElement (list, position) = data at position in the list *)
+
+<b>END</b> Lists.</PRE>
+
+<P>The implementation part of this generic separate module supplies the code to make everything happen, again expressed in terms of the formal parameters. The formal design of this module included various preconditions, and implementation of these require  that one be able to determine ahead of time whether storage space is available.  To meet this requirement, a local module is employed that buffers one storage location. Whenever this is used, another one is requested. The function <i>StorageAvailable</i> can examine the buffered location and determine if a valid one is available, and calls to <i>MYNEW</i> return the location available and attempt to replenish the buffer for the next call. Matt has formulated his list design as an inherently recursive structure. A list points to another list (sometimes called its <i>tail</i>) recursively until there are no more data items.</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> Lists (Data: <b>TYPE</b>; AssignData: AssignProcType);
+
+<b>FROM</b> Storage <b>IMPORT</b> ALLOCATE, DEALLOCATE;
+
+<b>TYPE</b>
+  NodePtr = <b>POINTER</B> <B>TO</b> Node;
+  Node = <b>RECORD</b> 
+      data: Data;
+      next: NodePtr;
+    <b>END</b>;
+  List = NodePtr;
+
+<b>MODULE</b> MyStorage;
+(* Module ``MyStorage'' is necessary to implement the function
+ ``StorageAvailable''.  ``StorageAvailable'' returns true if
+ ``MYNEW'' will return a new non-NIL pointer to a node; otherwise,
+ if ``MYNEW'' will return a NIL pointer ``StorageAvailable'' returns
+ false. In other words, ``StorageAvailable'' returns true if another
+ ``Node'' can be allocated in the system heap and false otherwise. *)
+ 
+<b>IMPORT</b> ALLOCATE, DEALLOCATE, Node, NodePtr;
+
+<b>EXPORT</b> MYNEW, StorageAvailable;
+
+<b>VAR</b> temp: NodePtr;
+
+<b>PROCEDURE</b> StorageAvailable (): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> temp <> <b>NIL</b>;
+<b>END</b> StorageAvailable;
+
+<b>PROCEDURE</b> MYNEW (init: Node): NodePtr;
+(* return the buffered value, and if it was not NIL, get a new one *)
+<b>VAR</b>
+  new: NodePtr;
+<b>BEGIN</b>
+  <b>IF</b> temp = <b>NIL</b>
+    <b>THEN</b>
+      <b>RETURN</b> <b>NIL</b>
+  <b>ELSE</b>
+    new := temp;
+    new^ := init;
+    <b>NEW</b> (temp);
+    <b>RETURN</b> new
+  <b>END</b>
+<b>END</b> MYNEW; 
+
+<b>BEGIN</b> (* initialize one location in the buffer called temp *)
+  <b>NEW</b> (temp);
+<b>END</b> MyStorage; (* end f local module *)
+
+(* resume declarations in main module *)
+
+<b>PROCEDURE</b> InitList (<b>VAR</b> list: List);
+<b>BEGIN</b>
+  list := <b>NIL</b>;
+<b>END</b> InitList;
+
+<b>PROCEDURE</b> MkNode (data: Data; next: NodePtr): Node;
+<b>VAR</b>
+  node: Node;
+<b>BEGIN</b>
+  AssignData (node.data, data);
+  node.next := next;
+  <b>RETURN</b> node;
+<b>END</b> MkNode;
+
+<b>PROCEDURE</b> IsEmpty (list: List): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> list = <b>NIL</b>
+<b>END</b> IsEmpty; 
+
+<b>PROCEDURE</b> Length (list: List): Nat;
+(* observe his formulation of length as a recursive procedure. This may take longer to calculate, but he does not have to store and update a value *)
+<b>BEGIN</b>
+  <b>IF</B> <B>NOT</b> IsEmpty (list) <b>THEN</b>
+    <b>RETURN</b> 1 + Length (list^.next);
+  <b>ELSE</b>
+    <b>RETURN</b> 0;
+  <b>END</b>;
+<b>END</b> Length;
+
+<b>PROCEDURE</b> PtrToNode (list: List; position: Nat1): NodePtr;
+(* work along the list until the correct position is found, then return a pointer to the rest of the list *)
+<b>BEGIN</b>
+  <b>IF</b> position > 1
+    <b>THEN</b>
+      <b>RETURN</b> PtrToNode (list^.next, position - 1);
+    <b>ELSE</b>
+      <b>RETURN</b> list;
+    <b>END</b>;
+<b>END</b> PtrToNode;
+
+(* The next three procedures implement the typical inserting possibilities. *)
+
+<b>PROCEDURE</b> InsertAtBeginning (<b>VAR</b> list: List; data: Data); 
+<b>VAR</b>
+  new: NodePtr;
+<b>BEGIN</b>
+  new := MYNEW (MkNode (data, list));
+  list := new;
+<b>END</b> InsertAtBeginning;
+
+<b>PROCEDURE</b> InsertAfter (ptr: NodePtr; data: Data);
+<b>VAR</b>
+  new: NodePtr;
+<b>BEGIN</b>
+  new := MYNEW (MkNode (data, ptr^.next));
+  ptr^.next := new;
+<b>END</b> InsertAfter;
+
+(* This one is the exported procedure and must select one of the above. *)
+
+<b>PROCEDURE</b> Insert (<b>VAR</b> list: List; data: Data; position: Nat1);
+<b>BEGIN</b>
+  <b>IF</b> position = 1
+    <b>THEN</b>
+      InsertAtBeginning (list, data);
+    <b>ELSE</b>
+      InsertAfter (PtrToNode (list, position - 1), data);
+    <b>END</b>;
+<b>END</b> Insert;
+
+<b>PROCEDURE</b> CanInsert (list: List; position: Nat1): <b>BOOLEAN</b>; 
+<b>BEGIN</b>
+  <b>RETURN</b> (position <= Length (list) + 1) <b>AND</b> StorageAvailable (); 
+<b>END</b> CanInsert;
+
+<b>PROCEDURE</b> Append (<b>VAR</b> list: List; data: Data);
+<b>VAR</b>
+  ptr: NodePtr;
+<b>BEGIN</b>
+  ptr := list;
+  <b>IF</b> ptr = <b>NIL</b>
+    <b>THEN</b>
+      InsertAtBeginning (list, data);
+    <b>ELSE</b>
+      <b>WHILE</b> ptr^.next <> <b>NIL</b>
+        <b>DO</b> 
+          ptr := ptr^.next;
+        <b>END</b>;
+      InsertAfter (ptr, data);
+    <b>END</b>;
+<b>END</b> Append;
+
+<b>PROCEDURE</b> CanAppend (): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> StorageAvailable ();
+<b>END</b> CanAppend;
+
+<b>PROCEDURE</b> Update (<b>VAR</b> list: List; data: Data; position: Nat1);
+<b>VAR</b>
+  ptr: NodePtr;
+<b>BEGIN</b>
+  ptr := PtrToNode (list, position);
+  AssignData (ptr^.data, data);
+<b>END</b> Update;
+
+<b>PROCEDURE</b> CanUpdate (list: List; position: Nat1): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> (position <= Length (list)) <b>AND</b> StorageAvailable ();
+<b>END</b> CanUpdate;        
+
+(* The next three procedures implement the typical deleting possibilities. *)
+
+<b>PROCEDURE</b> DeleteAtBeginning (<b>VAR</b> list: List);
+<b>VAR</b>
+  temp: NodePtr;
+<b>BEGIN</b>
+  temp := list;
+  list := list^.next;
+  <b>DISPOSE</b> (temp);
+<b>END</b> DeleteAtBeginning;
+
+<b>PROCEDURE</b> DeleteAfter (ptr: NodePtr);
+<b>VAR</b>
+  temp: NodePtr;
+<b>BEGIN</b>
+  temp := ptr^.next;
+  ptr^.next := temp^.next;
+  <b>DISPOSE</b> (temp);
+<b>END</b> DeleteAfter;
+
+(* This one is the exported procedure and must select one of the above. *)
+
+<b>PROCEDURE</b> Delete (<b>VAR</b> list: List; position: Nat1);
+<b>BEGIN</b>
+  <b>IF</b> position = 1
+    <b>THEN</b>
+      DeleteAtBeginning (list);
+    <b>ELSE</b>
+      DeleteAfter (PtrToNode (list, position - 1));
+    <b>END</b>;
+<b>END</b> Delete;
+
+<b>PROCEDURE</b> CanDelete (list: List; position: Nat1): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> position <= Length (list);
+<b>END</b> CanDelete;
+
+<b>PROCEDURE</b> Traverse (<b>VAR</b> list: List; traversal: Traversal);
+<b>VAR</b>
+  ptr: NodePtr;
+<b>BEGIN</b>
+  ptr := list;
+  <b>WHILE</b> ptr <> <b>NIL</b>
+    <b>DO</b>
+      AssignData (ptr^.data, traversal (ptr^.data));
+      ptr := ptr^.next;
+  <b>END</b>;
+<b>END</b> Traverse;
+
+<b>PROCEDURE</b> GetLength (list: List): Nat;
+<b>BEGIN</b>
+  <b>RETURN</b> Length (list);
+<b>END</b> GetLength;
+
+<b>PROCEDURE</b> Empty (list: List): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> IsEmpty (list);
+<b>END</b> Empty;
+
+<b>PROCEDURE</b> GetElement (list: List; position: Nat1): Data;
+<b>VAR</b>
+  ptr: NodePtr;
+<b>BEGIN</b>
+  ptr := PtrToNode (list, position);
+  <b>RETURN</b> ptr^.data;
+<b>END</b> GetElement;
+
+<b>PROCEDURE</b> CanGetElement (list: List; position: Nat1): <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> position <= Length (list);
+<b>END</b> CanGetElement;
+
+<b>END</b> List.</PRE>
+
+<H3><b><A NAME="16.7.2"></A>16.7.2 Generic Queues</b></H3>
+<P>Here, Matt provides a generic definition module for the type <i>Queue</i>. Implementation is fairly simple and can be based directly on the List module in the previous subsection.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Queues (Data: <b>TYPE</b>; AssignData: List.AssignProcType);
+
+<b>TYPE</b>
+  Queue;
+  Nat = <b>CARDINAL</b>;
+
+<b>PROCEDURE</b> InitQueue (<b>VAR</b> q: Queue);
+(* Post: Empty (q) = <b>TRUE</b> *)
+
+<b>PROCEDURE</b> CanEnqueue (q: Queue; d: Data): <b>BOOLEAN</b>;
+(* Pre: 'memory available' *)
+<b>PROCEDURE</b> Enqueue (<b>VAR</b> q: Queue; d: Data);
+(* Post: the Length (q) time, Dequeue (q) is called, Dequeue (q) = d *)
+
+<b>PROCEDURE</b> CanDequeue (q: Queue): <b>BOOLEAN</b>;
+(* Pre: NOT Empty (q) *)
+<b>PROCEDURE</b> Dequeue (<b>VAR</b> q: Queue): Data;
+(* Post: Dequeue (q') = GetHead (q') *)
+
+<b>PROCEDURE</b> CanGetHead (q: Queue);
+(* Pre: NOT Empty (q) *)
+<b>PROCEDURE</b> GetHead (q: Queue): Data;
+(* Post: GetHead (q) = the oldest enqueued element *)
+ 
+<b>PROCEDURE</b> Length (q: Queue): Nat;
+(* Post: Length (q) = the number of elements enqueued - number dequeued *)
+
+<b>PROCEDURE</b> Empty (q: Queue): <b>BOOLEAN</b>;
+(* Post: Length (q) = 0  Empty (q) = <b>TRUE</b> *)
+
+<b>END</b> Queues.</PRE>
+
+<H3><b><A NAME="16.7.3"></A>16.7.3 Generic Stacks</b></H3>
+<P>Finally, he gives a generic definition module for the type <i>Stack</i>. Once again, implementation is fairly simple and is left to the student as an exercise.</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> Stacks (Data: <b>TYPE</b>; AssignData: List.AssignProcType);
+
+<b>TYPE</b>
+     Stack;
+     Nat = <b>CARDINAL</b>;
+
+<b>PROCEDURE</b> InitStack (<b>VAR</b> s: Stack);
+(* Post: Empty (s) = TRUE *)
+
+<b>PROCEDURE</b> CanPush (s: Stack; d: Data): <b>BOOLEAN</b>;
+(* Pre: 'memory available' *)
+<b>PROCEDURE</b> Push (<b>VAR</b> s: Stack; d: Data);
+(* Post: Pop (s) = d *)
+
+<b>PROCEDURE</b> CanPop (s:Stack): <b>BOOLEAN</b>;
+(* Pre: NOT Empty (s) *)
+<b>PROCEDURE</b> Pop (<b>VAR</b> s:Stack): Data;
+(* Post: Pop (s') = GetTop (s') *)
+
+<b>PROCEDURE</b> CanGetTop (s: Stack): <b>BOOLEAN</b>;
+(* Pre: NOT Empty (s) *)
+<b>PROCEDURE</b> GetTop (s: Stack);
+(* Post: GetTop (s) = the list element to be pushed *)
+
+<b>PROCEDURE</b> Length (s: Stack): Nat;
+(* Post: Length (s) = the number of elements pushed - number popped *)
+
+<b>PROCEDURE</b> Empty (s: Stack): <b>BOOLEAN</b>;
+(* Post: Length (s) = 0  Empty (s) *)
+
+<b>END</b> Stacks.</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

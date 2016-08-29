@@ -1,0 +1,179 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT14x Fall 2008 Midterm ch1-4, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 50
+
+<ol class="main">
+
+<li>
+Describe the five <b>software</b> flow/control
+abstractions mentioned in class. <u>[3]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>_<i>Sequence</i>__________</td>
+<td width=20%>_<i>Selection</i>__________</td>
+<td width=20%>_<i>Repetition</i>__________</td>
+<td width=20%>_<i>Composition</i>__________</td>
+<td width=20%>_<i>Parallelism</i>__________</td>
+</tr></table></center>
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[3]</u><br>
+
+<center><table width=80%><tr>
+<td width=20%>_<i>Write</i>__________</td>
+<td width=20%>_<i>Apprehend</i>__________</td>
+<td width=20%>_<i>Design</i>__________</td>
+<td width=20%>_<i>Execute</i>__________</td>
+<td width=20%>_<i>Scrutinize</i>__________</td>
+</tr></table></center>
+<br><br>
+
+<li>
+Show the <b>output</b> of the following Python loop:
+<u>[4]</u>
+<pre>
+for i in range(2):
+	for j in range(3):
+		print "(%d,%d)" % (i, j),
+	print
+</pre>
+<br>
+<i>
+  <tt>(0,0) (0,1) (0,2)<br>(1,0) (1,1) (1,2)</tt>
+</i><br><br>
+
+<li>
+Show the <b>output</b> of the following Python loop:
+<u>[4]</u>
+<pre>
+radius = 1
+pi = 3.0			# just to make the math easier!
+while radius &lt;= 10:
+	area = pi * radius**2
+	if radius == 4:
+		continue
+	print "r=%d: a=%.2f" % (radius, area)
+</pre>
+<br>
+<i>
+Infinite loop!  radius never incremented.  Prints "r=1: a=3.00" forever
+</i>
+
+<li>
+Show the <b>output</b> of the following Python loop:
+<u>[4]</u>
+<pre>
+i = 0
+while i &lt; 10:
+	print i,
+	if i**2 &gt; 10:
+		break
+	i += 1
+else:
+	print "done!"
+</pre>
+<br>
+<i>
+  <tt>0 1 2 3 4</tt>
+</i>
+
+<li>
+Use the Python <tt>range()</tt> function to create this list:
+<tt>[7, 5, 3, 1, -1]</tt>. <u>[3]</u>
+<br><i>range(7,-2,-2) or range(7,-3,-2)</i>
+<br><br>
+
+<li>
+Compare and contrast <b>static</b> typing versus <b>dynamic</b> typing.
+What are pros/cons of each?
+<u>[4]</u><br>
+<br><i>
+  (The key here is <b>type</b>: not whether the values of the variables can
+  change, but whether their <b>types</b> can change.)
+  Static typing: variables cannot change type
+  Must declare type of variable and initialize value
+  Compiler enforces correct type
+  Dynamic typing: can change type
+  More flexible, but usually we don't want variables to change type
+</i><br><br>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to indicate
+whether it can be used as a valid name for a user-defined Python variable.
+If "no", indicate why.
+<u>[6]</u><br>
+
+<center><table><tr>
+<td><tt>in		</tt></td><td width=90><i>no (reserved)</i>______</td>
+<td><tt>1st_place	</tt></td><td width=90><i>no (starts with digit)</i>______</td>
+<td><tt>FALSE		</tt></td><td width=90><i>yes</i>______</td>
+</tr><tr>
+<td><tt>twu@seanho	</tt></td><td width=90><i>no (punctuation)</i>______</td>
+<td><tt>IF		</tt></td><td width=90><i>yes</i>______</td>
+<td><tt>fill_in_the.blank</tt></td><td width=90><i>no (punctuation)</i>______</td>
+</tr></table></center>
+<br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume the following initialization:<u>[10]</u>
+<pre>	myApple = "Fuji"	</pre>
+  <ol class="subparts">
+<li><tt> len(myApple) = 3	</tt> <i>SyntaxError: can't assign</i>
+<li><tt> 2.0 + 14 / 4	</tt> <i>5.0</i>
+<li><tt> 7 / 4&lt;1.5 or (5/0 &lt; 1)	</tt> <i>True</i>
+<li><tt> "%04d%s" % (15.62, 'apples')	</tt> <i>'0015apples'</i>
+<li><tt> "%03.2f" % 3.1415926	</tt> <i>'3.14'</i>
+<li><tt> range(len(myApple))	</tt> <i>[0, 1, 2, 3]</i>
+<li><tt> string.upper(myApple[1])	</tt> <i>'U'</i>
+<li><tt> ord('f') - ord('d') </tt> <i>2</i>
+<li><tt> 'f' + 'd' </tt> <i>'fd'</i>
+<li><tt> 'f' - 'd' </tt> <i>TypeError: can't subtract string</i>
+</ol>
+<br><br><br>
+
+<li>
+Write a Python <b>function</b> <tt>sum_squares()</tt> that returns the
+sum of the first <em>n</em> squares -- e.g., <tt>sum_squares(4)</tt> returns
+the sum of 1+4+9+16.
+<u>[9]</u>
+
+<p>
+Docstrings, including pre- and post-conditions, <b>are</b> required on this 
+exam!  Comments are not required, 
+however if your code is incorrect, your comments may earn you partial
+credit if they show good design thinking.  Little partial credit will be
+given for uncommented incorrect code.
+<br>
+<i>
+  See <a href="http://twu.seanho.com/python/sumsquares.py"><tt>sumsquares.py</tt></a>.
+</i>
+
+</ol>
+
+</body></html>
+
+

@@ -1,0 +1,209 @@
+<HTML><HEAD><TITLE>Appendix 7--Required System Modules</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>Appendix 7<!--</B>‹<B>-->--ISO Required System Modules</B></H2>
+
+<P><!--revised 1995 06 08--></P>
+<P>All the modules in this section are pseudo-modules.  that is, they behave <I>as if</I> they had the definitions given, but are not actually separate library modules because their implementation is generally sufficiently low-level that they need to be part of the compiler itself.  Only the contents of SYSTEM may vary to suit the needs of an implementation; all the others are to be supplied <I>as is</I> by ISO conforming implementations.</P>
+<H3><B><A NAME="A7.1">A7.1</A> SYSTEM</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SYSTEM;
+
+  (* Gives access to system programming facilities that are probably non
+portable. *)
+
+  (* The constants and types define underlying properties of storage *)
+
+<B>CONST</B>
+  BITSPERLOC    = <!--<-->&lt;implementation-defined constant<!-->&gt; ;
+  LOCSPERWORD   = <!--<-->&lt;implementation-defined constant<!-->&gt; ;
+
+<B>TYPE</B>
+  LOC; (* A system basic type. Values are the uninterpreted contents of the
+smallest addressable unit of storage *)
+  ADDRESS = <B>POINTER</B> <B>TO</B> LOC;
+  WORD = <B>ARRAY</B> [0 .. LOCSPERWORD-1] <B>OF</B> LOC;
+
+  (* BYTE and LOCSPERBYTE are provided if appropriate for machine *)
+<B>CONST</B>
+  LOCSPERBYTE = --<-->&lt;implementation-defined constant<!-->&gt; ;
+
+<B>TYPE</B>
+  <B>BYTE</B> = <B>ARRAY</B> [0 .. LOCSPERBYTE-1] <B>OF</B> LOC;
+
+<B>PROCEDURE</B> ADDADR (addr: ADDRESS; offset: <B>CARDINAL</B>): ADDRESS;
+  (* Returns address given by (addr + offset), or may raise an exception if
+this address is not valid. *)
+
+<B>PROCEDURE</B> SUBADR (addr: ADDRESS; offset: <B>CARDINAL</B>): ADDRESS;
+  (* Returns address given by (addr - offset), or may raise an exception if this address is not valid. *)
+
+<B>PROCEDURE</B> DIFADR (addr1, addr2: ADDRESS): <B>INTEGER</B>;
+  (* Returns the difference between addresses (addr1 - addr2), or may raise an exception if the arguments are invalid or address space is non-contiguous. *)
+
+<B>PROCEDURE</B> MAKEADR (val: <some type>; ... ): ADDRESS;
+  (* Returns an address constructed from a list of values whose types are implementation-defined, or may raise an exception if this address is not valid. *)
+
+<B>PROCEDURE</B> ADR (<B>VAR</B> v: <!--<-->&lt;anytype<!-->&gt;): ADDRESS;
+  (* Returns the address of variable v. *)
+
+<B>PROCEDURE</B> ROTATE (val: <!--<-->&lt;a packedset type<!-->&gt;; num: <B>INTEGER</B>): <!--<-->&lt;type of first parameter<!-->&gt;;
+  (* Returns a bit sequence obtained from val by rotating up or down (left or right) by the absolute value of num.  The direction is down if the sign of num is negative, otherwise the direction is up. *)
+
+<B>PROCEDURE</B> SHIFT (val: <!--<-->&lt;a packedset type<!-->&gt;; num: <B>INTEGER</B>): <!--<-->&lt;type of first parameter<!-->&gt;;
+  (* Returns a bit sequence obtained from val by shifting up or down (left or right) by the absolute value of num, introducing zeros as necessary.  The direction is down if the sign of num is negative, otherwise the direction is up. *)
+
+<B>PROCEDURE</B> CAST (<!--<-->&lt;targettype<!-->&gt;; val: <!--<-->&lt;anytype<!-->&gt;): <!--<-->&lt;targettype<!-->&gt;;
+  (* CAST is a type transfer function.  Given the expression denoted by val, it returns a value of the type <!--<-->&lt;targettype<!-->&gt;.  An invalid value for the target value or a physical address alignment problem may raise an exception. *)
+
+<B>PROCEDURE</B> TSIZE (<!--<-->&lt;type<!-->&gt;; ... ): <B>CARDINAL</B>;
+  (* Returns the number of LOCS used to store a value of the specified <!--<-->&lt;type<!-->&gt;.  
+The extra parameters, if present, are used to distinguish variants in a variant record. *)
+
+<B>END</B> SYSTEM.</PRE>
+<H3><B><A NAME="A7.2">A7.2</A> COROUTINES</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> COROUTINES;
+
+(* Facilities for coroutines and the handling of interrupts *)
+
+<B>IMPORT</B> SYSTEM;
+
+<B>TYPE</B>
+  COROUTINE; (* Values of this type are created dynamically by NEWCOROUTINE  and identify the coroutine in subsequent operations *)
+  INTERRUPTSOURCE = <!--<-->&lt;implementation-defined<!-->&gt;;
+
+<B>PROCEDURE</B> NEWCOROUTINE (procBody: <B>PROC</B>; workspace: SYSTEM.ADDRESS; size: <B>CARDINAL</B>; <B>VAR</B> cr: COROUTINE[; initProtection: <B>PROTECTION</B>]);
+  (* Creates a new coroutine whose body is given by procBody, and returns the identity of the coroutine in cr.  workspace is a pointer to the work space allocated to the coroutine; size specifies the size of this workspace in terms of SYSTEM.LOC.
+     initProtection is an optional parameter that specifies the initial protection level of the coroutine. *)
+
+<B>PROCEDURE</B> TRANSFER (<B>VAR</B> from: COROUTINE; to: COROUTINE);
+  (* Returns the identity of the calling coroutine in from, and transfers control to the coroutine specified by to. *)
+
+<B>PROCEDURE</B> IOTRANSFER (<B>VAR</B> from: COROUTINE; to: COROUTINE);
+  (* Returns the identity of the calling coroutine in from and transfers control to the coroutine specified by to.  On occurrence of an interrupt, associated with the caller, control is transferred back to the caller, and the identity of the interrupted coroutine is returned in from.  The calling coroutine must be associated with a source of interrupts. *)
+    
+<B>PROCEDURE</B> ATTACH (source: INTERRUPTSOURCE);
+  (* Associates the specified source of interrupts with the calling coroutine. *)
+
+<B>PROCEDURE</B> DETACH (source: INTERRUPTSOURCE);
+  (* Dissociates the specified source of interrupts from the calling coroutine. *)
+
+<B>PROCEDURE</B> IsATTACHED (source: INTERRUPTSOURCE): <B>BOOLEAN</B>;
+  (* Returns TRUE if and only if the specified source of interrupts is
+currently associated with a coroutine; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> HANDLER (source: INTERRUPTSOURCE): COROUTINE;
+  (* Returns the coroutine, if any, that is associated with the source of interrupts. The result is undefined if IsATTACHED(source) = FALSE. *)
+
+<B>PROCEDURE</B> CURRENT (): COROUTINE;
+  (* Returns the identity of the calling coroutine. *)
+
+<B>PROCEDURE</B> LISTEN (p: <B>PROTECTION</B>);
+  (* Momentarily changes the protection of the calling coroutine to p. *)
+
+<B>PROCEDURE</B> PROT (): <B>PROTECTION</B>;
+  (* Returns the protection of the calling coroutine. *)
+
+<B>END</B> COROUTINES.</PRE>
+<H3><B><A NAME="A7.3">A7.3</A> EXCEPTIONS</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> EXCEPTIONS;
+
+(* Provides facilities for raising user exceptions and for making enquiries concerning the current execution state. *)
+
+<B>TYPE</B>
+  ExceptionSource;                (* values of this type are used within library modules to identify the source of raised exceptions *)
+  ExceptionNumber = <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> AllocateSource (<B>VAR</B> newSource: ExceptionSource);
+  (* Allocates a unique value of type ExceptionSource *)
+
+<B>PROCEDURE</B> <B>RAISE</B> (source: ExceptionSource; number: ExceptionNumber; message: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Associates the given values of source, number and message with the current context and raises an exception. *)
+
+<B>PROCEDURE</B> CurrentNumber (source: ExceptionSource): ExceptionNumber;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception from source, returns the corresponding number, and otherwise raises an exception. *)
+
+<B>PROCEDURE</B> GetMessage (<B>VAR</B> text: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* If the current coroutine is in the exceptional execution state, returns the possibly truncated string associated with the current context.
+     Otherwise, in normal execution state, returns the empty string. *)
+
+<B>PROCEDURE</B> IsCurrentSource (source: ExceptionSource): <B>BOOLEAN</B>;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception from source, returns TRUE, and otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> IsExceptionalExecution (): <B>BOOLEAN</B>;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception, returns TRUE, and otherwise returns FALSE. *)
+
+<B>END</B> EXCEPTIONS.</PRE>
+<H3><B><A NAME="A7.4">A7.4</A> TERMINATION</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> TERMINATION;
+
+(* Provides facilities for enquiries concerning the occurrence of termination events. *)
+
+<B>PROCEDURE</B> IsTerminating (): <B>BOOLEAN</B> ;
+  (* Returns true if any coroutine has started  program termination and false otherwise. *)
+
+<B>PROCEDURE</B> HasHalted (): <B>BOOLEAN</B> ;
+  (* Returns true if a call to HALT has been made and false otherwise. *)
+
+<B>END</B> TERMINATION.</PRE>
+<H3><B><A NAME="A7.5">A7.5</A> M2EXCEPTION</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> M2EXCEPTION;
+
+ (* Provides facilities for identifying language exceptions *)
+<B>TYPE</B>
+  M2Exceptions = 
+    (indexException, rangeException, caseSelectException,
+    invalidLocation, functionException, wholeValueException,
+    wholeDivException, realValueException, realDivException,
+    complexValueException, complexDivException, protException,
+    sysException, coException, exException *)
+
+<B>PROCEDURE</B> M2Exception () : M2Exceptions;
+(* If the current coroutine is in the exceptional execution state because of a language exception, returns the corresponding enumeration value, and otherwise raises an exception *)
+
+<B>PROCEDURE</B> IsM2Exception () : <B>BOOLEAN</B>;
+(* If the current coroutine is in the exceptional execution state because of a language exception, returns TRUE, and otherwise returns FALSE *)
+
+<B>END</B> M2EXCEPTION.</PRE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

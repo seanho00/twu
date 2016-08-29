@@ -1,0 +1,217 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT/ISYS 14x Fall2005 Stony Brook Modula-2 Orientation</title>
+</head><body>
+
+<h1>Stony Brook Modula-2 Orientation</h1>
+
+This first tutorial will help you become familiar with the Stony Brook 
+Modula 2 environment.  This is a tweaked version of the tutorial starting on
+page 9 of the Stony Brook Utilities Reference Manual available in the lab.
+
+<h2><em>Note for Mac Users</em></h2>
+The Modula-2 environment we have installed on the lab Macs is called MPW;
+the environment is slightly different, but the Modula-2 code you type will 
+be exactly the same.    There is <a href="../sutcliffe/Cmpt14xOrientation_Mac_OS.html">an old tutorial for the MPW Mac Modula-2 environment</a> 
+that may be of use.  I don't have the resources to officially endorse the 
+Mac environment; you're on your own, sorry!
+
+When backing up your work to an external drive (floppy,
+CD, USB keychain drive, etc.), beware that the name of the formatted disk
+must not have any spaces, periods, slashes, apostrophes, colons, or quotes
+in it.  This restriction does not apply to filenames, only the disk name.
+Store your files in a subdirectory on the disk, rather than in the root
+directory.
+Also, if you want to read your disk on a PC, you'll need to make sure it's
+formatted as a PC disk and not a Mac disk.  Macs can read PC disks, but PCs 
+can't read Mac disks.  C'est la vie.
+
+<h2>Windows</h2>
+Experiment using the Windows operating system until you can<ul>
+<li> open your user directory ("My Documents" or Z:),
+<li> create a subdirectory in your user directory,
+<li> copy and rename directories and files,
+<li> backup files from your user directory to a floppy/CD/DVD/USB-drive,
+<li> get to the command prompt, and
+<li> view the CMPT14x homepage and this page in a WWW browser.
+</ul>
+
+<h2>Starting Stony Brook Modula-2</h2>
+You are now ready to run Stony Brook Modula-2.
+<ul>
+<li> Navigate to your user directory and create a new subdirectory for your
+Modula-2 work.  You could call it, for instance, "M2".
+<li> <a href="M2Project.sbp">This link points to a sample Modula-2 project.</a>
+<li> Right-click the above link and select "Save Target As..."
+<li> Navigate to your new M2 directory and save the project file there.
+<li> From Windows Explorer, find the new <tt>M2Project.sbp</tt> file and
+double-click on it.  The Stony Brook Modula-2 user interface window should open.
+How exciting!
+</ul>
+
+<br/><center><img src="m2project.jpg" width="543" height="273"></center><br/>
+
+There's nothing special about the sample project file; you can also make your 
+own by selecting "File-&gt;New Project" from the Stony Brook menubar.
+You do need to make sure the project is set for a console program:
+"Options-&gt;Linker Options", Win32 tab, check Console Application.
+See p.11 in the Stony Brook Utilities Manual for more details.
+
+<h2>Creating and Editing a New Program</h2> <ul>
+<li> From the menubar, select "File-&gt;New Module".
+<li> In the popup dialog, type <tt>HelloWorld</tt> for the program name, and
+select "Program" as the Module Type.  Select the "OK" button.
+<br><center><img src="new-module.jpg" width=543 height=273></center>
+<li> Select the <tt>PGM HelloWorld-</tt> line and press Enter to edit this 
+program (or simply double-click on it).  The editor shows a <em>skeleton</em>
+program for our HelloWorld module that you can now edit.
+</ul>
+
+<h2>Typing the Program</h2> <ul>
+<li> Using the skeleton program as a starting point, complete the program 
+as follows:
+<br/><center><img src="helloworld-src.jpg" width=457 height=367></center><br/>
+<ul>
+  <li> The red <tt>&lt;&lt;eof&gt;&gt;</tt> in the edit window just
+  indicates the End Of File; it is not part of the program itself.
+  <li> There is an intentional typo in this code; don't fix it yet!
+  </ul>
+<li> From the menubar, select "File-&gt;Save" (or press the toolbar button with
+a floppy-disk icon) to save your work.  This <em>source code</em> will be saved
+in a file named <tt>HelloWorld.mod</tt> under the <tt>mod</tt> subdirectory of
+your <tt>M2</tt> directory.
+<li> From the menubar, select "File-&gt;Close" to close this edit window and
+return to the project environment view.
+</ul>
+
+<h2>Compiling and Debugging the Program</h2> <ul>
+<li> Select <tt>PGM HelloWorld-</tt> and press Alt-R to run this program.  <ul>
+  <li> You could also use "Build-&gt;Run selected or default" from the menubar
+  <li> Or you could press the toolbar button with the green traffic-light icon.
+  So many choices!
+  </ul>
+<li> The Stony Brook environment attempts to compile the program before it can
+run it.  However, the compile fails because of the typo in our program: we 
+typed <tt>WriteStr</tt> instead of the correct name for the function, 
+<tt>WriteString</tt>.  The compiler reports this error as an "Undeclared
+identifier" because it doesn't recognize <tt>WriteStr</tt> as a function.
+<br/><center><img src="error.gif" width=218 height=129></center><br/>
+<li> Edit the program to correct the typo, and press Alt-R to try running the
+program again.  You can run the program directly from the edit window.
+</ul>
+
+<h2>Running the Program</h2> <ul>
+<li> If all goes well, the Build Status window should show no errors in
+compiling the program.  (yay!)  Press the OK button to run the program.
+<li> The program (since it is a console application) pops up a new black DOS
+window for input and output.  The phrase <tt>Hello World!</tt> should appear.
+The program is now on the <tt>ReadChar()</tt> line, waiting for user input.
+<br/><center><img src="helloworld-output.gif" width=669 height=338></center><br/>
+<li> Press the Enter key in the DOS window to complete the <tt>ReadChar()</tt>
+function and allow the program to complete.
+<li> Congratulations, you've written your first "Hello World" Modula-2 program!
+Celebrate with a happy-dance, or maybe a moment of quiet contemplation.
+</ul>
+
+<h2>Files Created</h2><ul>
+<li> From the menubar, select "File-&gt;Exit environment" to quit Stony Brook.
+<li> Back in Windows Explorer, take a look at your <tt>M2</tt> directory. <ul>
+  <li> <tt>M2Project.sbp</tt> is your project file; it's the "glue" that 
+  holds all your modules and programs together.
+  <li> <tt>HelloWorld.exe</tt> is the executable HelloWorld program that you
+  compiled.  You can also double-click this file to run your program directly.
+  <li> <tt>win32sym</tt> and <tt>win32obj</tt> hold intermediate results of the
+  compilation for the 32-bit Windows platform.
+  <li> <tt>mod</tt> holds all your source code modules.  In this subdirectory
+  you should find <ul>
+    <li> <tt>HelloWorld.mod</tt>: This is a text file that holds the source
+    code that you typed in.  This is where much of your hard work goes, so
+    be sure you know how to back it up!
+    <li> <tt>HelloWorld.bak</tt>: When you re-edit your source code, Stony
+    Brook keeps a backup copy of your old file, just in case.  You can go
+    back to this old copy just by deleting the <tt>HelloWorld.mod</tt> file
+    and renaming <tt>HelloWorld.bak</tt> to <tt>HelloWorld.mod</tt>.
+    This doesn't replace doing your own backups, though!  What if something 
+    happens to your whole user directory?
+    </ul>
+  </ul>
+<li> Make sure you've closed the Stony Brook window before you manipulate
+the files in Windows Explorer; Stony Brook does some weird file locking that
+prevents you from doing stuff to your Modula-2 files while it's running.
+</ul>
+
+Take a rest for a day or two, but come back again this week and do
+the next part to continue your orientation. You need to get going on your first 
+assignment as it will be due next week.
+
+<h2>Printing Hard Copies</h2>
+
+There are some simple ways that you can use to get a copy of the output
+from your program onto a piece of paper.
+<ul>
+<li> The simplest is to copy the text from the terminal window into a word
+processor. This is a little awkward, but not impossible. First right-click
+on the title bar of the terminal window:
+<br/><center><img src="helloworld.gif" width=669 height=338></center>
+
+<p>
+Select Properties, click on the "Layout" tab, and change the height to a
+higher number (like 1000).  After clicking OK, make sure to choose the 
+"Modify shortcut which started this window" or "Save properties for future 
+windows with this title" option in the dialogue that appears. This will 
+assure that the next terminal window will have the new properties.
+
+<p>
+The next time you run a program in a terminal window, select 
+"Edit-&gt;Mark" from the MSDOS menu in the top left corner. Now you can 
+select some text, copy it, and paste it into another program.
+
+<li> A second, which you may find useful in conjunction with the first is to 
+redirect the output as the program is running. You do this by including the line
+<pre>
+FROM RedirStdIO IMPORT
+OpenInput, CloseInput, OpenOutput, CloseOutput;
+</pre>
+in the import section and the line
+<pre>
+OpenOutput;
+</pre>
+in your program before the first line of the part that you want to be
+sending to the file.  You also need the line
+<pre>
+CloseOutput;
+</pre>
+in your program after the last part of the program where you want output
+to go to the file.
+  <ul>
+  <li> When the program runs and encounters the OpenOutput command, a prompt 
+  will be printed on the screen. Type a file name, or use the default already 
+  in the box Output and that is where all WriteXX statements will send their 
+  output until the CloseOutput statement is encountered. If you choose the 
+  cancel box without giving a file name, the output will go to the screen as 
+  usual.
+  <li> Note that if the CloseOutput is not included in your program, this 
+  will not work, and you may not even be able to delete the flawed file from 
+  your disk until the next time you restart the computer.
+  <li> Note also that all output is sent to the file during this time, so no
+  prompts printed by WriteString will appear on the screen. We will improve 
+  on this limitation later.
+  <li> Note also that this is notstandard Modula-2; it has been provided
+  courtesy of TWU. You can now open the file you have created, and print it
+  just as you did your listings above.
+  </ul>
+</ul>
+Other methods will be discussed at a later date. These are the simple
+ones; more powerful and versatile ones take more work.
+
+<h2>Windows Stony Brook Menu Reference</h2>
+There are descriptions of all of the menu options that can be chosen from
+within Stony Brook starting on page 39 of the Utilities Reference Manual.
+
+<h2>Further Practice</h2>
+You can get some more familiarity with the Stony Brook interface and with the
+Modula-2 language by copying some material from the textbook and compiling and
+running it.  You're going to be spending a lot of cozy-time with the Stony Brook
+interface this semester, so get to know it and be friends!
+
+</body></html>

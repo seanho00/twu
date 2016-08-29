@@ -1,0 +1,246 @@
+<HTML>
+<HEAD>
+<TITLE>3.6 Analysis of Loops</TITLE>
+<meta NAME="keywords" CONTENT="analysis, loop, loops, repeat, while, until, bool, boolean, flag, flags, sentinel, value, variable, x-register, accumulator, operation, operand, cap, standard, identifier, readresult, skipline, readreal, done, iso, non-iso, inout, realinout, stextio, sioresult, srealio">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.6 Analysis of Loops</B></H2>
+<P>In some of the examples of repetition, REPEAT .. UNTIL was more appropriate than the WHILE loop, because it saved a few statements, and because the loop was to execute at least once.  Which of the two types of loop one uses depends on whether the test for repetition is to be at the top of the loop or at the bottom, that is, whether one needs to have the loop execute at least once in all cases.  This is, however, a minor design consideration, for as the examples showed, it is possible to use the WHILE construction all the time by initializing the value of the controlling variable before entering the loop.  Because this is so, some teachers discourage or even forbid their students from using the REPEAT..UNTIL construction at all.  That is, there may be considerations other than program design that determine the details of the code.  Local customs should be followed in such matters.  This text will use the WHILE construction most of the time, but REPEAT will be employed when it is more natural.  Many of the comments made in this section about the WHILE loops apply to the REPEAT loop as well.</P>
+<P>In any case, the principle of top-down-design as applied to this situation means that one should choose the type of loop before starting to code.  There must be a reason for putting each statement on paper, and the programmer must know what that reason is and be able to explain it.</P>
+<A NAME="3.6.1"></A><H2><B>3.6.1 Loops and Boolean Flags</B></H2>
+<P>In some programs, it may be necessary to execute the code in the loop indefinitely until some special condition is reached.  This was done in several of the earlier examples in this chapter when the bulk of the program code was surrounded by a <I>REPEAT..UNTIL NOT again</I>  construction.</P>
+<BLOCKQUOTE><I><A NAME="Sentinel">If</A> a loop can be exited only on some special value of the boolean expression controlling it, that value is called a <U>sentinel value</U>.  If a variable is used to hold the value, it may be called a <U>sentinel variable</U>.</I></BLOCKQUOTE>
+<H3><B>Example:</B></H3>
+<P>Write a module to simulate a simple four function calculator.</P>
+<H3><B>Discussion:</B></H3>
+<P>Such calculators maintain two values called the <I>x-register</I> and the <I>accumulator</I>.  The x-register holds the most recently entered value, and the accumulator holds the most recently obtained result.  Here, the code will expect an alternating sequence of one-character symbols (the operations) and numbers (the new x-register each time).  It will perform the binary operations as (x-register <I>operation</I> accumulator) ==<!-->&gt; accumulator.</P>
+<H3><B>Pseudocode:</B></H3>
+<PRE>  Print an informative heading
+  Print the instructions
+  Zero the x-register and the accumulator
+  Repeat
+    Print the accumulator
+    Read a character (the operation)
+    Set the flag opOk if it is a valid operation
+    If the operation is not exit then
+      Read the next x-register
+      Set the numOk flag if the number was read correctly
+    If the number was not ok then
+      set the x-register to zero
+    If the operation was ok, then
+      If it was +, then
+        add the x-register to the accumulator
+        else if - then
+          subtract the x-register from the accumulator
+        else if * then
+          multiply the accumulator by the x-register
+        else if /, then
+          if the x-register was not zero, then
+            divide the accumulator by the x-register
+            else print an error message
+      else assume that the operation was = and
+        set the accumulator to the value of the x-register
+  until the operation is exit</PRE>
+
+<PRE>
+<B>MODULE</B> FourBanger;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate Boolean flags in loops *)
+(* using P1 MPW Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 15 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+
+<B>VAR</B>
+  xReg, accum: <B>REAL</B>;
+  op : <B>CHAR</B>;
+  opOK, numOK : <B>BOOLEAN</B>;
+
+<B>BEGIN</B> 
+  (* write information *)
+  WriteString (<!--"-->&quot;FourBanger was written by R.J. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;to illustrate Boolean flags in loops<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;This program simulates a four function calculator.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;You enter an operation and then a number<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;The running result will be displayed.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;If you enter 'E' for the operation the program exits.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;The default operation is = which means 'display number.'<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+
+  (* Initialize *)
+  accum := 0.0;
+  xReg := 0.0;
+  
+  <B>REPEAT</B>
+    (* write out the accumulated value *)
+    WriteFixed (accum, 6 ,25);
+    WriteLn;
+    ReadChar (op); (* no end of line, expect number now *)
+    (* check for operation *)
+    opOK := (ReadResult() = allRight) <B>AND</B>
+           ((op = <!--"-->&quot;+<!--"-->&quot;) <B>OR</B> (op = <!--"-->&quot;-<!--"-->&quot;) <B>OR</B> (op = <!--"-->&quot;*<!--"-->&quot;) <B>OR</B> (op = <!--"-->&quot;/<!--"-->&quot;));
+    <B>IF</B> <B>CAP</B> (op) # <!--"-->&quot;E<!--"-->&quot;  (* not exit *)
+      <B>THEN</B>
+        (* obtain a number *)
+        ReadReal (xReg);
+        numOK := (ReadResult() = allRight);
+        SkipLine;
+        <B>IF</B> <B>NOT</B> numOK  (* num is bad for some reason *)
+          <B>THEN</B>
+            xReg := 0.0;
+          <B>END</B>;
+        <B>IF</B> opOK
+          <B>THEN</B>
+            (* go back and see what the operation was and do it *)
+            <B>IF</B> op = <!--"-->&quot;+<!--"-->&quot;
+              <B>THEN</B>
+                accum := accum + xReg;
+              <B>ELSIF</B> op = <!--"-->&quot;-<!--"-->&quot; <B>THEN</B>
+                accum := accum - xReg;
+              <B>ELSIF</B> op = <!--"-->&quot;*<!--"-->&quot; <B>THEN</B>
+                accum := accum * xReg;
+              <B>ELSIF</B> (op = <!--"-->&quot;/<!--"-->&quot;) <B>THEN</B>
+                <B>IF</B> (xReg # 0.0)
+                  <B>THEN</B>
+                    accum := accum / xReg;
+                  <B>ELSE</B>
+                    WriteString (<!--"-->&quot;*** Divide by zero error ***<!--"-->&quot;);
+                    WriteLn;
+                  <B>END</B>;
+              <B>END</B>;
+          <B>ELSE</B>
+            accum := xReg;
+          <B>END</B>;
+      <B>END</B>;
+    <B>UNTIL</B> <B>CAP</B> (op) = <!--"-->&quot;E<!--"-->&quot;;
+
+<B>END</B> FourBanger.</PRE>
+
+<P><B>NOTES</B>:  A new function procedure CAP has been introduced to replace such boolean expressions as <I>(op = <!--"-->&quot;e<!--"-->&quot; ) OR (op = <!--"-->&quot;E<!--"-->&quot;)</I> by <I>CAP (op) = <!--"-->&quot;E<!--"-->&quot;</I>.  CAP is a standard identifier.</P>
+<P>A run of FourBanger is recorded below, with some of the on-screen carriage returns deleted to save space.</P>
+<PRE>
+FourBanger was written by R.J. Sutcliffe
+to illustrate Boolean flags in loops
+
+This program simulates a four function calculator.
+You enter an operation and then a number
+The running result will be displayed.
+If you enter 'E' for the operation the program exits.
+The default operation is = meaning 'display number'.
+
+                 0.000000
+<B>+9.0</B>             9.000000
+<B>-8.8</B>             0.200000
+<B>*789.0</B>         157.799850
+<B>/8.0</B>            19.724981
+<B>/0.0</B>
+*** Divide by zero error ***
+                19.724981
+<B>*777.0</B>       15326.310547
+<B>e</B></PRE>
+
+<P>Observe the necessity of capturing the value returned by <I>ReadResult</I> before calling <I>SkipLine</I>.  If this were not done, and <I>SkipLine</I> were called first, the latter would reset the state obtained by <I>ReadResult</I> and the actual result of the operation <I>ReadReal</I> would be lost.</P>
+<P>Instead of having <I>ReadResult</I> in a separate module (as in the ISO standard) to indicate success in reading from the standard I/O channel, many older versions of Modula-2 have a boolean flag in the library module that is imported and checked after every read operation.  This is true of both the classical <I>InOut</I> and <I>RealInOut</I> modules.  In such versions, one might write:</P>
+<PRE>
+<B>FROM</B> InOut <B>IMPORT</B>
+  ReadInt, Done;</PRE>
+
+<P>and then in the program, one could use the value of <I>Done</I>, set by <I>InOut</I>, to determine whether a correct integer had been typed.  Indeed, one could so arrange things that <I>Done</I> served as a flag to the program to proceed.  If it were not TRUE, the user could be forced to try again until it were.  Code could look like this:</P>
+<PRE>
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;Enter the number here ==<!-->&gt; <!--"-->&quot;);
+  ReadInt (theNumber);
+  numOK := Done;  (* non-ISO version *)
+  <B>IF</B> <B>NOT</B> Done
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;error in number typed ; please try again);
+      WriteLn;
+    <B>END</B>;
+  Read (cr);
+  (* these versions read carriage return as a character *)
+<B>UNTIL</B> numOK;</PRE>
+
+<P>The classical module <I>RealInOut</I>, where available separately from <I>InOut</I>, also has a variable <I>Done</I> that can be imported into a program module and used by it.  The code</P>
+<PRE>
+      <B>IF</B> <B>CAP</B> (op) # <!--"-->&quot;E<!--"-->&quot;
+        <B>THEN</B>
+          ReadReal (xReg);
+          numOK := (ReadResult() = allRight);
+          SkipLine;
+        <B>END</B>;
+      <B>IF</B> <B>NOT</B> numOK</PRE>
+
+<P>in the example <I>FourBanger</I> would be written:</P>
+<PRE>
+      <B>IF</B> <B>CAP</B> (op) # <!--"-->&quot;E<!--"-->&quot;
+        <B>THEN</B>
+          ReadReal (xReg);
+          numOK := Done;
+          Read (cr); (* get carriage return following *)
+        <B>END</B>;
+      <B>IF</B> <B>NOT</B> Done</PRE>
+
+<P>See <A HREF="../Ch3/Ch3.9.html">section 3.9</A> for what to do if it is necessary to import both the <I>Done</I> from <I>InOut</I> and the <I>Done</I> from <I>RealInOut</I> into the same program.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,338 @@
+<HTML>
+<HEAD>
+<TITLE>3.12 An Extended Example (Day Number in a Year)</TITLE>
+<meta NAME="keywords" CONTENT="extended, example, problem, suitability, restatement, sameple, data, library, refinement, table, user, manual, formula, month, months, trun, dec, inc">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.12 An Extended Example (Day Number in a year)</B></H2>
+<H3><B>Problem:</B></H3>
+<P>Write a program that will calculate the consecutive date number of any day in the year.</P>
+<H3><B>Suitability:</B></H3>
+<P>This is a tedious calculation by hand.  It could be a component of a program that, say, computes interest on periods of time less than a year.</P>
+<H3><B>Restatement:</B></H3>
+<P>The program is to count January 1 as day number 1, and December 31 as either 365 or 366, depending on whether it is a leap year.  The input will be given as three cardinals representing the year, month, and date within the month.</P>
+<H3><B>Sample data:</B></H3>
+<P><I>Input</I>:</P>
+<Pre>	1990
+	4
+	15</Pre>
+<P><I>Output</I>:</P>
+<P>04 15 is day number 105 in 1990.</P>
+<H3><B>Library use:</B></H3>
+<P>The SWholeIO library will be employed to read and write the cardinal data.</P>
+<H3><B>Refinement:</B></H3>
+<P>The program DateCalc will:</P>
+<PRE>1. Read data in the form of three cardinals, representing the number of the year, of the month, and of the date in the month, respectively.
+2. The consecutive date in the month will be calculated.
+3. The result will be printed in the form
+mm dd is day number nnn in yyyy.
+4. The program will exit.</PRE>
+
+<H3><B>Second Refinement:</B></H3>
+<PRE>1.1 print a prompt to the screen for the year data
+      read the year
+1.2 print a prompt to the screen for the month data
+      read the month
+1.3 print a prompt to the screen for the date data
+      read the date
+2.0 Set the result to zero
+2.1 Add to the result the number of days to the end of the previous month
+  If month is 12 add 334
+    Else if month is 11 add 304
+    Else if month is 10 add 273
+    Else if month is 9 add 243
+    Else if month is 8 add 212
+    Else if month is 7 add 181
+    Else if month is 6 add 151
+    Else if month is 5 add 120
+    Else if month is 4 add 90
+    Else if month is 3 add 59
+    Else if month is 2 add 31
+2.2  Add the date in the month to the result
+2.3  Adjust for leap years
+    If the month is greater than 2 then
+      If the year is divisible by 4 but not by 100 (unless also by 400)
+        add one to the result</PRE>
+
+<H3><B>Data Table:</B></H3>
+<PRE>1. Imports required
+	From STextIO: WriteString, WriteLn, ReadChar, SkipLine
+	From SWholeIO :ReadCard, WriteCard
+2. Variables Required:
+	year, month, day, result : Cardinals
+	response : Char</PRE>
+
+<H3><B>User Manual:</B></H3>
+<P>DateCalc is a simple utility designed to compute the consecutive number in the year of any date entered.  DateCalc runs on any Macintosh computer.</P>
+<P>To use DateCalc, either type its name, followed by the <!--<-->&lt;enter<!-->&gt; key from the MPW worksheet, or double-click on its icon from the Macintosh desktop.</P>
+<P>You will be prompted to enter the year, the month and the date.  These should all be whole numbers; that is, use 2 for February, 12 for December, etc.</P>
+<P>At this point, the result will be printed on the screen, followed by the message:</P>
+<PRE>
+	Press a key to continue ====<!-->&gt;</PRE>
+
+<P>After noting the information, press a key and the program will exit.</P>
+<P><I>Errors</I>:</P>
+<P>DateCalc will not check to see if you have entered a valid date; the responsibility is the user's to avoid such things as 1990 02 34.</P>
+<P><I>Possible future enhancements</I>:</P>
+<P>Add the option of reading the data from a disk file</P>
+<P>Add checking for the validity of the date.</P>
+<P>Improve the efficiency of the computation by devising a formula.</P>
+<H3><B>Code:</B></H3>
+<A NAME="DateCalc"></A><PRE>(* Name: Daniella Christian
+   Student Number: 052001
+   CMPT 141 Fall 2008
+   Assignment #2
+   Calculating date numbers
+*)
+
+<B>MODULE</B> DateCalc;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+
+<B>VAR</B>
+  day, month, year, result : <B>CARDINAL</B>;
+  usingFile, again : <B>BOOLEAN</B>;
+  response : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  (* write out header information *)
+  WriteString (<!--"-->&quot;Name: Daniella Christian<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Student Number: 052001<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;CMPT 141 Fall 2008<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Assignment #2<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Calculating consecutive date numbers<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;This program calculates the consecutive <!--"-->&quot;);
+  WriteString (<!--"-->&quot;date in the year <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;from user supplied information<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+
+  <B>REPEAT</B> (* main repeat loop *) 
+    WriteString (<!--"-->&quot;Enter the year number here ====<!-->&gt;<!--"-->&quot;);
+    ReadCard (year);
+    SkipLine; 
+    WriteLn;
+    WriteString (<!--"-->&quot;Enter the month number (1 - 12) here ====<!-->&gt;<!--"-->&quot;);
+    ReadCard (month);
+    SkipLine;
+    WriteLn;
+    WriteString (<!--"-->&quot;Enter the day number here ====<!-->&gt;<!--"-->&quot;);
+    ReadCard (day);
+    SkipLine;
+    WriteLn;
+
+    (* do the calculation *)
+    result := 0;  (* initialize the result *)
+    
+    (* add on right number of days to end of last month *)
+    <B>IF</B> month = 12
+      <B>THEN</B>
+         result := result + 334
+      <B>ELSIF</B> month = 11 <B>THEN</B>
+        result := result + 304
+      <B>ELSIF</B> month = 10 <B>THEN</B>
+        result := result +  273
+      <B>ELSIF</B> month = 9 <B>THEN</B>
+        result := result +  243
+      <B>ELSIF</B> month = 8 <B>THEN</B>
+        result := result +  212
+      <B>ELSIF</B> month = 7 <B>THEN</B>
+        result := result +  181
+      <B>ELSIF</B> month = 6 <B>THEN</B>
+        result := result +  151
+      <B>ELSIF</B> month = 5 <B>THEN</B>
+        result := result +  120
+      <B>ELSIF</B> month = 4 <B>THEN</B>
+        result := result +  90
+      <B>ELSIF</B> month = 3 <B>THEN</B>
+        result := result + 59
+      <B>ELSIF</B> month = 2 <B>THEN</B>
+        result := result + 31
+      <B>END</B>;
+    
+    (* now add the day in the month *)
+    result := result + day;
+    
+    (* finally, adjust for leap years *)
+    <B>IF</B> (month <!-->&gt; 2) <B>AND</B> ((year <B>MOD</B> 400 = 0) <B>OR</B>
+       ((year <B>MOD</B> 4 = 0) <B>AND</B> (year <B>MOD</B> 100 # 0)) ) 
+      <B>THEN</B>
+         <B>INC</B> (result)
+       <B>END</B>;
+    
+    (* Output the result in the required form *)
+    WriteCard (year, 4);
+    WriteCard (month, 3); (* ensure one space between *)
+    WriteCard (day, 3);
+    WriteString (<!--"-->&quot; is day number <!--"-->&quot;);
+    WriteCard (result, 4);
+    WriteString (<!--"-->&quot; in that year.<!--"-->&quot;);
+    WriteLn;
+    WriteLn;
+
+    WriteString ( <!--"-->&quot;Do you wish to do another? Y or N ==<!-->&gt; <!--"-->&quot;);
+    ReadChar (response);
+    again := <B>CAP</B> (response) = <!--"-->&quot;Y<!--"-->&quot;;
+    SkipLine;
+    WriteLn;
+  <B>UNTIL</B> <B>NOT</B> again;
+<B>END</B> DateCalc.</PRE>
+
+<H3><B>Results:</B></H3>
+<P>This module was run with the following result:</P>
+<PRE>
+Name: Daniella Christian
+Student Number: 052001
+CMPT 141 Fall 2008
+Assignment #2
+Calculating consecutive date numbers
+This program calculates the consecutive date in the year 
+from user supplied information
+
+Enter the year number here ====<!-->&gt;<B>1992</B>
+Enter the month number (1 - 12) here ====<!-->&gt;<B>3</B>
+Enter the day number here ====<!-->&gt;<B>1</B>
+1992  3  1 is day number   61 in that year.
+
+Do you wish to do another? Y or N ==<!-->&gt; <B>y</B>
+Enter the year number here ====<!-->&gt;<B>1993</B>
+Enter the month number (1 - 12) here ====<!-->&gt;<B>12</B>
+Enter the day number here ====<!-->&gt;<B>31</B>
+1993 12 31 is day number  365 in that year.
+
+Do you wish to do another? Y or N ==<!-->&gt; <B>n</B></PRE>
+
+<H3><B>Further refinement:</B></H3>
+<P>There is an algorithm that allows the calculation to be done in a formula rather than by using the IF ... THEN construction.  To see how this works, consider first the <!--"-->&quot;rough estimate<!--"-->&quot; that each month has 30 days, and consider how the 31 day months affect the total number of days to be added for the following month.  We ignore February for the moment.</P>
+<PRE>
+Mon: Jan	Feb	Mar	Apr	May	Jun	Jul	Aug	Sep	Oct	Nov	Dec
+No.:	1	2	3	4	5	6	7	8	9	10	11	12
+Adj:	0	1	1	2	2	3	3	4	5	5	6	6</PRE>
+
+<P>Each time there is a 31 day month, one must adjust the total by 1.  Now, up to August, the adjustment formula is: month DIV 2, but after that it is: (month +1) DIV 2.  This can be expressed in a single adjustment as: (month + month DIV 9) DIV 2.</P>
+<P>From this one must subtract 2 if the month is after February, and this quantity can be expressed in a formula as: <I>2*((month + 9) DIV 12)</I>.  Try it!</P>
+<P>The leap year adjustment changes the <!--"-->&quot;2<!--"-->&quot; in front of this expression to: <I>2 - (4 - year MOD 4) DIV 4) + (100 - year MOD 100) DIV 100) -  (400 - year MOD 400) DIV 400)</I> [The first term of this produces a 1 when the year is divisible by 4, the second removes it when the year is divisible by 100; and the third adds it back in when it is divisible by 400.  Thus the two day adjustment for an ordinary February is altered as appropriate to a one day adjustment.]</P>
+<P>Combining all these gives the result in a single Modula-2 expression:</P>
+<PRE>
+    result := 30 * (month -1) + day +
+            (month + (month <B>DIV</B> 9)) <B>DIV</B> 2 - 
+              (2 - (4 - (year <B>MOD</B> 4)) <B>DIV</B> 4 +
+			  (100 - (year <B>MOD</B> 100)) <B>DIV</B> 100 -
+			  (400 - (year <B>MOD</B> 400)) <B>DIV</B> 400) * 
+			      ((month + 9) <B>DIV</B> 12);	  </PRE>
+
+<P>and this does the entire calculation, eliminating the two IF..THEN constructions in the original code.</P>
+<H3><B>Yet another refinement:</B></H3>
+<P>The formula used in the second version is rather cumbersome, and may be difficult to understand, especially if the code is examined without the analysis leading up to it (and perhaps even then).  Perhaps a compromise ought to be struck between the easy low-technology method with its long IF .. THEN statement, and the high-technology method with its complex formula.  Consider a further analysis of the problem.  Starting in March, and going through to the following February, the total number of days and the average number of days from March first to the end of the previous month is given by:</P>
+<PRE>
+Mon:	Mar	Apr	May	Jun	Jul	Aug	Sep	Oct	Nov	Dec	Jan	Feb
+No.:	0	31	61	92	122	153	184	214	245	275	306	337
+Av:	0	31	30.5	30.7	30.5	30.6	30.7	30.6	30.6	30.6	30.6	30.6</PRE>
+
+<P>This chart suggests numbering the months starting in March and multiplying this number by 30.6 to get the number of days elapsed to the first of the current month.  Using a method similar to that above, the month number is adjusted by adding 12 if it starts out at 1 or 2.  This initial adjustment changes the range of months from 1 .. 12 to 3 .. 14.</P>
+<PRE>
+  month := month + 12 * ( 12 - month) <B>DIV</B> 10</PRE>
+
+<P>The expression</P>
+<PRE>
+  (month - 3)</PRE>
+
+<P>is needed in the final formula to change this range to 0 .. 12, counting from March to February.</P>
+<P>The chart below of the revised month numbers gives the result of doing this, first as a raw answer, (*Av) then rounded off to the nearest day (#).  The latter are exactly what are desired.</P>
+<PRE>
+Mon:	Mar	Apr	May	Jun	Jul	Aug	Sep	Oct	Nov	Dec	Jan	Feb
+MNo.:	0	1	2	3	4	5	6	7	8	9	10	11
+*Av:	0	30.6	61.2	91.8	122.4	153	183.6	214.2	244.8	275.4	306	336.6
+#	0	31	61	92	122	153	184	214	245	275	306	337</PRE>
+
+<P>Rounding a number off to the nearest whole number can be expressed as:</P>
+<PRE>
+  cardNum := <B>TRUNC</B> (realNum + 0.5)</PRE>
+
+<P>This gives, for the number of days from last March 1:</P>
+<PRE>
+  daysSinceMarch := <B>TRUNC</B> (30.6 * (month -3) + 0.5);
+      (* with revised month *)</PRE>
+
+<P>Adding 59 to the result for the first two months, and then removing the excess days (January and February have, in effect been moved to the following year), produces:</P>
+<PRE>
+  result = (59  + daysSinceMarch + day)</PRE>
+
+<P>followed by a reduction if greater than 365 (because January and February are not really in the next year, it just made it an easier formula to consider them that way for the moment) and an increase if a leap year.</P>
+<P>The code can be revised to have three more variables, <I>adjMonth</I>, <I>daysSinceMarch</I>, and leap and then modularized into a series of steps, instead of rolling everything into a single formula.  That is, the algorithm can be expressed on several lines instead of one:</P>
+<PRE>
+    leap:= (year <B>MOD</B> 400 = 0)
+            <B>OR</B> ((year <B>MOD</B> 4 = 0) <B>AND</B> (year <B>MOD</B> 100 # 0));
+    adjMonth := month + 12 * (( 12 - month) <B>DIV</B> 10);
+    daysSinceMarch := <B>TRUNC</B> (30.6 * <B>FLOAT</B> (adjMonth - 3) + 0.5);
+    result := (59 + daysSinceMarch + day);
+    <B>IF</B> result <!-->&gt; 365 
+      <B>THEN</B>
+        <B>DEC</B> (result, 365)
+      <B>END</B>;
+    <B>IF</B> leap <B>AND</B> (month <!-->&gt; 2)
+      <B>THEN</B>
+        <B>INC</B> (result);
+      <B>END</B>;</PRE>
+
+<P><B>NOTE</B>: DEC is a standard identifier similar to INC.</P>
+<P>There are other ways of doing this as well.  It would be nice, for instance, to have a procedure for rounding real numbers off to the nearest integer or cardinal.  No such procedure is built in to Modula-2, though there are some in the <i>RealMath</i> and <i>LongMath</i> libraries, and in the next chapter, directions will be given for writing one.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

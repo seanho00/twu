@@ -1,0 +1,187 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>HW/Labs :: CMPT140 10FA :: TWU</title>
+<style type="text/css"><!--
+body, p, td, th { font-size: 14pt; }
+--></style>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/10fall/cmpt140/">CMPT 140 Fall 2010</a>
+  Extra HW/Lab Assignments</h1>
+
+<center>
+<p>Most homework and lab assignments are taken from the Python or M2 textbooks.
+This page lists amendments and assignments not taken from the textbooks.
+</center>
+
+<a name="Lab0"></a>
+<h2>Lab 0: Python/IDLE Intro <em>(due Thu 16Sep)</em></h2>
+
+The point of this "Lab 0" is to ensure you have a working development 
+environment for Python and have familiarity with creating Python (.py) files
+and executing them.  There is nothing to turn in for this lab, but you need
+to make sure you have completed it on time so that you can move on to the first
+"real" lab, Lab 1.<ol>
+  <li> Fire up Python! <ul>
+    <li> Python 3 is pre-installed in Windows on the computers in the CSI lab:
+    go to the Start Menu &rarr; Programs &rarr; Python &rarr; IDLE.
+    <li> Python is free for you to download and install on your own computer:
+    go to <a href="http://www.python.org/">Python.org</a> and on the left-hand 
+    side, under "Quick Links (3.1.2)", select
+    <a href="http://python.org/ftp/python/3.1.2/python-3.1.2.msi">"Windows Installer"</a>.
+    There is also a Mac version.
+    <li> <b>Make sure you have version 3.1.2</b>, not version 2.7!
+    The differences are slight but noticeable.  Our textbook is using Python 3.
+    <li> You do not have to use IDLE to edit your Python programs if you are
+    more comfortable with another editor like
+    <a href="http://www.vim.org/">VIM</a> or
+    <a href="http://www.eclipse.org/">Eclipse</a>.
+    But IDLE is highly recommended.
+    <li> If you choose to install Python on your own computer, you do so at your
+    own risk, and there will be no "official" support for helping you install it.
+  </ul>
+  <li> Walk through all the examples in the textbook, sections 1.6-1.7
+  (it's not much!).  In particular, make sure you understand how to create a
+  Python program (in this example, <tt>chaos.py</tt>), save it, open it, and
+  run it in IDLE.
+  <li> That's it!  Get ready for Lab 1, the first "real" lab you have to turn in.
+</ol>
+
+<a name="Lab1"></a>
+<h2>Lab 1: Interactive Programs in Python <em>(due Thu 23Sep)</em></h2>
+
+This is your first lab for which you need to turn something in.  Make sure you have
+completed Lab 0 before starting on this.  The options for this assignment are in
+the Modula-2 supplemental textbook, available online: 
+<a href="m2/Ch2/Ch2.14.html">see M2 ch2 &sect;14</a>.
+Choose <b>one</b> of the following, but implement it in Python instead of Modula-2:<ul>
+  <li> #35
+  <li> #36
+  <li> #40 (just use 3 purchases; no looping required)
+  <li> #41
+</ul>
+
+You must also write a short lab write-up to go with your Python program;
+<a href="lab_template.html">see the template lab write-up</a> and
+<a href="lab_rubric.html">rubric of how write-ups are marked</a>.
+For this first lab, a simplified write-up is sufficient: you may include just
+the sections titled, "Problem", "Problem Suitability", "Problem Restatement",
+and output from a few sample runs of your program.
+The point breakdown is listed at the very end of the lab write-up rubric page,
+under "simplified write-up".
+
+Upload both your program (.py file) and your writeup
+(.doc, .odt, .html, .pdf, etc. -- as long as your TA can read it)
+to myCourses before 10pm on the due date.
+You will want to get started early on this!
+
+<a name="Lab2"></a>
+<h2>Lab 2: Control Structures <em>(due Thu 30 Sep)</em></h2>
+From <a href="m2/Ch3/Ch3.14.html">M2 ch3 &sect;14</a>,
+choose <b>one</b> of the following, implementing it in Python:<ul>
+  <li> #17
+  <li> #29
+  <li> #37
+  <li> #38
+</ul>
+
+Again for this lab, a simplified write-up is all that's required.
+But be prepared, starting from Lab3, all labs must have a complete write-up
+with something in every section of the write-up template!
+
+Upload both your program (.py file) and your writeup
+(.doc, .odt, .html, .pdf, etc. -- as long as your TA can read it)
+to myCourses before 10pm on the due date.
+
+<a name="Lab3"></a>
+<h2>Lab 3: Functions <em>(due Thu 14 Oct)</em></h2>
+From <a href="m2/Ch4/Ch4.11.html">M2 ch4 &sect;11</a>,
+choose <b>one</b> of the following, implementing it in Python:<ul>
+  <li> #34
+  <li> #37
+  <li> #40
+  <li> #41
+  <li> Python ch5 (p.162) Programming Exercise #4 (write a function that returns
+  an acronoym)
+  <li> Python ch5 (p.163) Programming Exercise #6 (write a function that returns
+  the numeric value)
+</ul>
+
+Starting from this lab an onward, every lab must have a <b>full</b> lab
+write-up, following the format in 
+<a href="lab_template.html">the template lab write-up</a>.
+You should have something in <b>every</b> section of the template!
+Be sure to include output from a few sample runs of your working program,
+and try to choose tricky test cases to see how your program behaves with weird
+input.
+
+<a name="Lab4"></a>
+<h2>Lab 4: Drawing <em>(due Thu 28 Oct)</em></h2>
+The objective of this lab is to gain practice in using Zelle's
+<tt>graphics.py</tt> library to draw basic graphics.
+Choose <b>one</b> of the following from the Python textbook ch4 Programming
+Exercises: <ul>
+  <li> #2: allow the user to click once to specify the centre of the target,
+  and click again to specify the radius.
+  <li> #4
+  <li> #6
+  <li> #10
+  <li> #11
+  <li> Or programmatically draw a scene of your own design!
+  There should be some aspect of the scene which depends on user input,
+  either via clicks or <tt>Entry</tt> boxes.  If in doubt as to whether
+  your design is of appropriate scope for this lab, just check with me
+  in advance.
+</ul>
+
+<a name="Lab5"></a>
+<h2>Lab 5: Lists and File I/O <em>(due Wed 10 Nov)</em></h2>
+
+For this lab, you will be building complex data structures like Python
+lists and also using file I/O to read or save results to file.
+Choose one of the following options:<ul>
+
+<li> <b><a href="m2/Ch7/Ch7.14.html">M2 &sect;7.14 #22</a></b>:
+Your program should read in the list of words from a file specified
+by the user (this can also help a lot for debugging!).
+
+<li> <b><a href="m2/Ch7/Ch7.14.html">M2 &sect;7.14 #43</a></b>:
+Also write a testbed program that can encrypt/decrypt a whole
+(text) file, outputting to a new file.
+
+<li> <b><a href="m2/Ch9/Ch9.14.html">M2 &sect;9.14 #39</a></b>:
+You can use a Python list instead of a "record".
+Read the student data in from a file (filename given by user)
+rather than getting it interactively from the user.
+You don't need to do the median.
+
+<li> <b><a href="m2/Ch9/Ch9.14.html">M2 &sect;9.14 #40</a></b>:
+Note that your program needs not only to read previous balance
+from file, but also to write the new transaction and new balance
+to the end of the file -- the file should be a log of all transactions.
+
+<li> Or <b>come up with your own</b> idea which reads in data
+from file (storing it in lists), allows adding/deleting/editing
+entries, and writes it back out to file.  If you want to do your
+own idea, please run it by me first (send me an email).
+
+</ul>
+
+<a name="Lab6"></a>
+<h2>Lab 6: Object-oriented Class <em>(due Thu 2 Dec)</em></h2>
+
+Define an appropriate <b>class</b> and use it to solve one of the following
+problems from the Python textbook ch12 Programming Exercises: <ul>
+
+  <li> <b>#3</b>: define an Attendee class
+  <li> <b>#4</b>: define a User class; you may also want to define an Account class
+  <li> <b>#5, #6, or #8</b>: it should be an interactive game, and should use
+  a class that you define
+  <li> Or <b>come up with your own</b> idea which involves defining and using
+  at least one class to store data.  If you want to do your own idea, please
+  run it by me first (send me an email).
+
+</ul>
+
+
+</body></html>

@@ -1,0 +1,108 @@
+<HTML>
+<HEAD>
+<TITLE>Chapter 1: Planning for the Solution of Problems</TITLE>
+
+<meta NAME="keywords" CONTENT="planning, introduction, problem, solution, solving, example, problems, modula, modula-2, pseudo code, pseudocode">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<CENTER><H1><B>Chapter 1<BR>
+Planning for the Solution of Problems</B></H1></CENTER>
+<HR>
+
+
+<BR><A class = navgrn HREF="Ch1.1.html">1.1 What is Problem Solving?</A><!-- 	2-->
+<BR><A class = navgrn HREF="Ch1.2.html">1.2 Problem Solving and Computing</A><!--	2-->
+<BR><A class = navgrn HREF="Ch1.3.html">1.3 Top Down Analysis</A><!--	3-->
+<BR><A class = navgrn HREF="Ch1.4.html">1.4 Tools for Problem Solving</A><!--	4-->
+<BR><A class = navgrn HREF="Ch1.5.html">1.5 The Role of Abstraction</A><!--	6-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.5.html#1.5.1">  1.5.1 Abstractions and Computing</A><!--	8-->
+<BR><A class = navgrn HREF="Ch1.6.html">1.6 Data Representation Abstractions</A><!--	9-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.6.html#1.6.1">  1.6.1 Data and Information</A><!--	9-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.6.html#1.6.2">  1.6.2 Encoding (Representing) Data</A><!--	9-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.6.html#1.6.3">  1.6.3 Atomic and Compound Entities</A><!--	9-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.6.html#1.6.4">  1.6.4 The Concept of Type</A><!--	10-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.6.html#1.6.5">  1.6.5 Variables and Constants</A><!--	11-->
+<BR><A class = navgrn HREF="Ch1.7.html">1.7 Data Manipulation Abstractions (Expressions)</A><!--	12-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.7.html#1.7.1">  1.7.1 Precedence</A><!--	13-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.7.html#1.7.2">  1.7.2  Expression compatibility</A><!--	13-->
+<BR><A class = navgrn HREF="Ch1.8.html">1.8 Abstractions for Computing Machines</A><!--	14-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.8.html#1.8.1">  1.8.1 Computer Hardware Organization</A><!--	14-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.8.html#1.8.2">  1.8.2 Computer Software Organization</A><!--	15-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.8.html#1.8.3">  1.8.3 Computing Notations</A><!--	16-->
+<BR><A class = navgrn HREF="Ch1.9.html">1.9 Abstractions for Instructing Machines<!--‹-->--Program Structures</A><!--	18-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.9.html#1.9.1">  1.9.1 Program Control Abstractions</A><!--	18-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.9.html#1.9.2">  1.9.2 Encoding (Representing) Programs<!--‹-->--Pseudocode</A><!--	19-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.9.html#1.9.3">  1.9.3 Syntax, and Semantics</A><!--	23-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch1.9.html#1.9.4">  1.9.4 The Control of Errors</A><!--	24-->
+<BR><A class = navgrn HREF="Ch1.10.html">1.10 Chapter Summary</A><!--	25-->
+<BR><A class = navgrn HREF="Ch1.11.html">1.11 Assignments</A><!--	25-->
+
+<!--Version History:
+Version 3.0 released to MS 93 07 19 to Deane 94 01 04
+Version 3.0.1 with character graphics 1994 01 24
+Version 3.0.2 with table of contents 1994 08 25
+Version 4.0 with HTML markup by G Tisher 1995 05 15
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 06 11 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+Version 5.1 corrected and revised 2004 01 08 by R. Sutcliffe-->
+<!--«INCLUDE Ch1.1.html»
+«INCLUDE Ch1.2.html»
+«INCLUDE Ch1.3.html»
+«INCLUDE Ch1.4.html»
+«INCLUDE Ch1.5.html»
+«INCLUDE Ch1.6.html»
+«INCLUDE Ch1.7.html»
+«INCLUDE Ch1.8.html»
+«INCLUDE Ch1.9.html»
+«INCLUDE Ch1.10.html»
+«INCLUDE Ch1.11.html»-->
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

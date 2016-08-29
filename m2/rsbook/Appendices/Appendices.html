@@ -1,0 +1,205 @@
+<HTML><HEAD><TITLE>Appendices</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<!--
+
+
+
+
+
+
+
+
+Modula-2:
+Abstractions for Data and Programming Structures
+(Using ISO-Standard Modula-2)
+
+Appendices
+
+by
+
+
+
+Richard J. Sutcliffe
+
+2002-2003 Edition
+(corrected and extended)
+--><H1><CENTER><B>Appendices</B></CENTER></H1><HR>
+
+<P><A class = navgrn HREF="Ap1.html">Appendix 1<!--‹-->--The Lexis of Modula-2</A><!--	5--></P>
+<OL>
+<A class = navgrn HREF="Ap1.html#A1.1">  A1.1 Reserved Words (Keywords)</A><!--	5--><BR>
+<A class = navgrn HREF="Ap1.html#A1.2">  A1.2 Standard (Pervasive) Identifiers</A><!--	5--><BR>
+<A class = navgrn HREF="Ap1.html#A1.3">  A1.3 Standard Symbols</A><!--	5--><BR>
+<A class = navgrn HREF="Ap1.html#A1.4">  A1.4 Standard Operators</A><!--	5--><BR>
+</OL><P><A class = navgrn HREF="Ap2.html">Appendix 2<!--‹-->--Syntax Diagrams</A><!--	7--></P>
+<OL>
+<A class = navgrn HREF="Ap2real.html#A2.1">  A2.1 Lexis</A><!--	7--><BR>
+<A class = navgrn HREF="Ap2real.html#A2.2">  A2.2 Syntax</A><!--	11--><BR>
+</OL><P><A class = navgrn HREF="Ap3.html">Appendix 3<!--‹-->--The Syntax of Modula-2</A><!--	32--></P>
+<OL>
+<A class = navgrn HREF="Ap3.html#A3.1">  A3.1 A Notation to Describe Languages</A><!--	32--><BR>
+<A class = navgrn HREF="Ap3.html#A3.2">  A3.2 Some Examples of EBNF</A><!--	32--><BR>
+<A class = navgrn HREF="Ap3.html#A3.3">  A3.3 The Syntax of Modula-2 in EBNF</A><!--	32--><BR>
+</OL><P><A class = navgrn HREF="Ap4.html">Appendix 4<!--‹-->--Classical Library Modules</A><!--	33--></P>
+<OL>
+<A class = navgrn HREF="Ap4.html#A4.1">  A4.1 High Level Input and Output</A><!--	40--><BR>
+<A class = navgrn HREF="Ap4.html#A4.2">  A4.2 Mathematical Functions</A><!--	40--><BR>
+<A class = navgrn HREF="Ap4.html#A4.3">  A4.3 SYSTEM and Other Low Level and System Access Modules</A><!--	41--><BR>
+<A class = navgrn HREF="Ap4.html#A4.4">  A4.4 Storage</A><!--	42--><BR>
+<A class = navgrn HREF="Ap4.html#A4.5">  A4.5 String Handling</A><!--	42--><BR>
+<A class = navgrn HREF="Ap4.html#A4.6">  A4.6 File I/O</A><!--	43--><BR>
+<A class = navgrn HREF="Ap4.html#A4.7">  A4.7 Character Information<!--‹-->--ASCII</A><!--	45--></P>
+</OL><P><A class = navgrn HREF="Ap5.html">Appendix 5<!--‹-->--ISO I/O Library</A><!--	46--></P>
+<OL>
+<A class = navgrn HREF="Ap5.html#A5.1">  A5.1 An Overview of the ISO I/O Library</A><!--	46--><BR>
+<A class = navgrn HREF="Ap5.html#A5.2">  A5.2 I/O On Standard Channels</A><!--	46--><BR>
+<A class = navgrn HREF="Ap5.html#A5.3">  A5.3 Supplied Channels</A><!--	50--><BR>
+<A class = navgrn HREF="Ap5.html#A5.4">  A5.4 Specified Channels</A><!--	50--><BR>
+<A class = navgrn HREF="Ap5.html#A5.5">  A5.5 Channel Constants<!--‹-->--IOConsts</A><!--	55--><BR>
+<A class = navgrn HREF="Ap5.html#A5.6">  A5.6 Device Independent Channel I/O<!--‹-->--IOChan</A><!--	55--><BR>
+<A class = navgrn HREF="Ap5.html#A5.7">  A5.7 Device Drivers</A><!--	57--><BR>
+<A class = navgrn HREF="Ap5.html#A5.8">  A5.8 Device Module Constants<!--‹-->--ChanConsts</A><!--	63--><BR>
+<A class = navgrn HREF="Ap5.html#A5.9">  A5.9 Linking Drivers to Channels<!--‹-->--IOLink</A><!--	63--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap6.html">Appendix 6<!--‹-->--ISO Support Modules for This Text</A><!--	66--></P>
+<OL>
+<A class = navgrn HREF="Ap6.html#A6.1">  A6.1 RedirStdIO</A><!--	66--><BR>
+<A class = navgrn HREF="Ap6.html#A6.2">  A6.2 Files</A><!--	66--><BR>
+<A class = navgrn HREF="Ap6.html#A6.3">  A6.3 Keyboard</A><!--	70--><BR>
+<A class = navgrn HREF="Ap6.html#A6.4">  A6.4 CharBuffer</A><!--	71--><BR>
+<A class = navgrn HREF="Ap6.html#A6.5">  A6.5 STerminal</A><!--	72--><BR>
+<A class = navgrn HREF="Ap6.html#A6.6">  A6.6 ACSCI</A><!--	72--><BR>
+<A class = navgrn HREF="Ap6.html#A6.7">  A6.7 SComplexIO</A><!--	72--><BR>
+<A class = navgrn HREF="Ap6.html#A6.8">  A6.8 SLongComplexIO</A><!--	73--><BR>
+<A class = navgrn HREF="Ap6.html#A6.9">  A6.9 ComplexIO</A><!--	74--><BR>
+<A class = navgrn HREF="Ap6.html#A6.10">  A6.10 LongComplexIO</A><!--	75--><BR>
+<A class = navgrn HREF="Ap6.html#A6.11">  A6.11 GraphPaper</A><!--	75--><BR>
+<A class = navgrn HREF="Ap6.html#A6.12">  A6.12 GraphWindow</A><!--	77--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap7.html">Appendix 7<!--‹-->--ISO Required System Modules</A><!--	79--></P>
+<OL>
+<A class = navgrn HREF="Ap7.html#A7.1">  A7.1 SYSTEM</A><!--	79--><BR>
+<A class = navgrn HREF="Ap7.html#A7.2">  A7.2 COROUTINES</A><!--	80--><BR>
+<A class = navgrn HREF="Ap7.html#A7.3">  A7.3 EXCEPTIONS</A><!--	81--><BR>
+<A class = navgrn HREF="Ap7.html#A7.4">  A7.4 TERMINATION</A><!--	81--><BR>
+<A class = navgrn HREF="Ap7.html#A7.5">  A7.5 M2EXCEPTION</A><!--	82--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap8.html">Appendix 8<!--‹-->--ISO Utility and Information Modules</A><!--	83--></P>
+<OL>
+<A class = navgrn HREF="Ap8.html#A8.1">  A8.1 Characters and Strings</A><!--	83--><BR>
+<A class = navgrn HREF="Ap8.html#A8.2">  A8.2 High Level String Conversion Modules</A><!--	85--><BR>
+<A class = navgrn HREF="Ap8.html#A8.3">  A8.3 Low Level String Conversion Modules</A><!--	88--><BR>
+<A class = navgrn HREF="Ap8.html#A8.4">  A8.4 SysClock<!--‹-->--The Date and Time</A><!--	90--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap9.html">Appendix 9<!--‹-->--ISO Mathematics Library Module</A><!--	92--></P>
+<OL>
+<A class = navgrn HREF="Ap9.html#A9.1">  A9.1 RealMath</A><!--	92--><BR>
+<A class = navgrn HREF="Ap9.html#A9.2">  A9.2 LongMath</A><!--	92--><BR>
+<A class = navgrn HREF="Ap9.html#A9.3">  A9.3 ComplexMath</A><!--	93--><BR>
+<A class = navgrn HREF="Ap9.html#A9.4">  A9.4 LongComplexMath</A><!--	95--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap10.html">Appendix 10<!--‹-->--ISO Process Support</A><!--	97--></P>
+<OL>
+<A class = navgrn HREF="Ap10.html#A10.1">  A10.1 Processes</A><!--	97--><BR>
+<A class = navgrn HREF="Ap10.html#A10.2">  A10.2 Semaphores</A><!--	98--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap11.html">Appendix 11<!--‹-->--Modula-2 and Pascal</A><!--	100--></P>
+<OL>
+<A class = navgrn HREF="Ap11.html#A11.1">  A11.1 Statement Syntax Differences</A><!--	100--><BR>
+<A class = navgrn HREF="Ap11.html#A11.2">  A11.2 Symbols</A><!--	100--><BR>
+<A class = navgrn HREF="Ap11.html#A11.3">  A11.3 Overall Structure</A><!--	100--><BR>
+</OL>
+<P>
+<A class = navgrn HREF="Ap12.html">Appendix 12<!--‹-->--Generic Modula-2 Syntax</A><!--	102--></P>
+<OL>
+<A class = navgrn HREF="Ap12.html#A12.1">  A12.1 Keywords</A><!--	102--><BR>
+<A class = navgrn HREF="Ap12.html#A12.2">  A12.2 Diagrams of Changes to Base Language Syntax</A><!--	102--><BR>
+<A class = navgrn HREF="Ap12.html#A12.3">  A12.3 Generic Modula-2 Syntax Diagrams</A><!--	102--><BR>
+<A class = navgrn HREF="Ap12.html#A12.4">  A12.4 Changes To the Syntax of the Base Language in EBNF</A><!--	105--><BR>
+<A class = navgrn HREF="Ap12.html#A12.5">  A12.5 The Syntax of Generic Modula-2 in EBNF</A><!--	105--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap13.html">Appendix 13<!--‹-->--Object Oriented Modula-2 Syntax</A><!--	106--></P>
+<OL>
+<A class = navgrn HREF="Ap13.html#A13.1">  A13.1 Keywords and Pervasive Identifiers</A><!--	106--><BR>
+<A class = navgrn HREF="Ap13.html#A13.2">  A13.2 Diagrams of Changes to Base Language Syntax</A><!--	106--><BR>
+<A class = navgrn HREF="Ap13.html#A13.3">  A13.3 Object Oriented Modula-2 Syntax Diagrams</A><!--	106--><BR>
+<A class = navgrn HREF="Ap13.html#A13.4">  A13.4 Changes To the Syntax of the Base Language in EBNF</A><!--	117--><BR>
+<A class = navgrn HREF="Ap13.html#A13.5">  A13.5 The Syntax of Object Oriented Modula-2 in EBNF</A><!--	117--><BR>
+<A class = navgrn HREF="Ap13.html#A13.6">  A13.6 Other Changes to the Base Language</A><!--	120--><BR>
+<A class = navgrn HREF="Ap13.html#A13.7">  A13.7 ISO Libraries Supporting Object Oriented Modula-2</A><!--	121--><BR>
+</OL>
+<P><A class = navgrn HREF="Ap14.html">Appendix 14<!--‹-->--Bibliography</A><!--	123--><BR>
+</OL>
+<P class = l><A class = navgrn HREF="../Answers/Answers.html">Answers to Questions and Selected Problems</A><!--	125--><BR>
+</OL></P><!--
+
+«INCLUDE Ap1.html»
+
+
+
+
+«INCLUDE Ap2real.html»
+
+
+
+«INCLUDE Ap3.html»
+
+«INCLUDE Ap4.html»
+
+«INCLUDE Ap5.html»
+
+«INCLUDE Ap6.html»
+
+«INCLUDE Ap7.html»
+
+«INCLUDE Ap8.html»
+
+«INCLUDE Ap9.html»
+
+«INCLUDE Ap10.html»
+
+«INCLUDE Ap11.html»
+
+«INCLUDE Ap12.html»
+«INCLUDE Ap13.html» 
+«INCLUDE Ap14.html» --><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

@@ -1,0 +1,250 @@
+<HTML>
+<HEAD>
+<TITLE>7.2 Communicating in English</TITLE>
+<meta NAME="keywords" CONTENT="string, strings, terminator, terminators, character, null, array, char, zero, based, base, zero-based, terminated, implied, abstract, type, literal, literals, s-type, length, concatenation, join, end, constant, constants, concat, module, assign, extract, delete, insert, replace, append, canassignall, canextractall, candeleteall, caninsertall, canreplaceall, canappendall, canconcatall, can, assign, extract, delete, insert, replace, append, concat, all, copy, compare, find, next, previous, difference, findprev, findnext, finddif, capitalize, capital, fetchchar, assignchar">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><CENTER><B>Part A<!--</B>‹<B>-->--Strings</CENTER><BR>
+7.2 Communicating in English</B></H2>
+<P>The data type String (an ARRAY [0 .. n - 1] OF CHAR) has been mentioned several times, and previous programs have made considerable use of string literals.  This data type is neither a part of the Modula-2 language proper nor is it part of the predefined standard operating environment.  However strings have a wide variety of uses, and all implementations of the language include a module implementing specific instances of this data type, as well as a number of procedures to act on such arrays.</P>
+<P>Even if that were not the case, programs are free to use such arrays for their own purposes, and programmers may devise their own procedures to operate upon them.</P>
+<P>Some things are built in.  Any literal or constant string can be directly assigned (using the := operator) to an ARRAY [0 .. n - 1] OF CHAR provided that the length of the string (number of characters) being assigned is less than or equal to n.  If it is equal, the array is filled entirely; if it is not, then a special <I>string terminator character</I> is automatically appended to the string when it is placed in the array.  The latter is done so that programs using these arrays will know when they have encountered the last valid character.</P>
+<P><B>NOTE</B>:   In classical versions of Modula-2 the string terminator character was always the null character (CHR (0)).  In the ISO standard, the value of this character is implementation defined, but it is always equal to the character literal '' or, <!--"-->&quot;<!--"-->&quot; (i.e. two single of two double quotes with no characters between them).  In most, however, it will still likely be CHR (0).</P>
+<P>Once such an assignment to an ARRAY OF CHAR is done, a procedure like <I>WriteString</I> is able to write out the array just as it does a literal string.  In anticipation of this, the code for <I>WriteString</I> is arranged so that it will terminate the output of characters if it should arrive at the string terminator character before it reaches the end of the array.</P>
+<P>Naturally, the corresponding procedure such as <I>ReadString</I> also places a string terminator character after any string that it reads into a longer array.  Thus, some string operations are included in the Modula-2 system (language and standard modules) and, as mentioned above there are always more in a utility module designed expressly for the purpose of manipulating this data type.  Indeed, the ISO standard for the language mandates that conforming implementations shall supply such a utility module.</P>
+<P>Summarizing to this point, it is worth taking note of the following definitions:</P>
+<BLOCKQUOTE><I><A NAME="String">A</A> Modula-2 <U>string</U> is an ARRAY [0 .. n - 1] OF CHAR.  Because the range must start at zero, they are said to be <U>zero-based</U>.  Because an array that is not entirely full has a string terminator character to mark the last-used position, a Modula-2 string is said to be <U>terminated</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>When the basic structure of a data type is visible, and specific instances of it have to be instantiated, but it can otherwise be treated abstractly, perhaps because library modules or built-in routines are available for manipulations, it may be termed an <U>implied abstract type</U>.</I></BLOCKQUOTE>
+<P>That is, the whole collection of potential string types taken together can be thought of as constituting an implied abstract type STRING, even though, strictly speaking, Modula-2 does not have an abstract string type <I>per se</I>.  One is permitted to define string constants, and to assign string constants and literals to string variables, provided the target being assigned to has at least as many components as the source being assigned from.  Moreover, in the ISO standard version of Modula-2, there is a type for the entire collection of string literals.</P>
+<BLOCKQUOTE><I><A NAME="SType">All</A> string literals are said to be of <U>S-type</U>.</I></BLOCKQUOTE>
+<P>Here are a few examples.  Given the following declarations:</P>
+<PRE>
+<B>CONST</B>
+  mesg = <!--"-->&quot;Hello there<!--"-->&quot;;
+  name = <!--"-->&quot;Fred<!--"-->&quot;;
+<B>TYPE</B>
+  String10 = <B>ARRAY</B> [0..10] <B>OF</B> <B>CHAR</B>;
+  String11 = <B>ARRAY</B> [0..11] <B>OF</B> <B>CHAR</B>;
+<B>VAR</B>
+  string1, string2 : String10;
+  string3 : String11;</PRE>
+<P>then, in a program, the following assignments and statements have the indicated effect:  (The spaces indicate positions in the string and the symbol ø indicates the string terminator character.)</P>
+<PRE>
+string1 := mesg;	 <IMG SRC="Figure/Eq7.2.1.GIF"><!----> (exactly filled)
+
+string2 := name;	 <IMG SRC="Figure/Eq7.2.2.GIF"><!----> (last part undefined)
+
+WriteString (mesg);
+ReadString (string1);  </PRE>
+<P>Suppose the person answered by typing the string <!--"-->&quot;Yes.<!--"-->&quot;</P>
+<P><I>string1</I> would now hold:	 <IMG SRC="Figure/Eq7.2.3.GIF"><!----> </P>
+<P>Note that the assignment rule mentioned above means that</P>
+<PRE>
+string3 := <!--"-->&quot;Now is then<!--"-->&quot;;</PRE>
+<P>is a valid assignment because the literal being assigned has eleven characters,  but that all of</P>
+<PRE>
+string2 := <!--"-->&quot;Now is then<!--"-->&quot;;
+string2 := string3;
+string3 := string2;</PRE>
+<P>are not valid, the first because the target type is too small, and the other two because the entities are of different types, and the normal rule for array assignment comes into effect.</P>
+<P>In addition, zero character literals are regarded as strings according to this definition, and single character literals can be taken as either type CHAR or as type ARRAY[0..0] OF CHAR.  The latter can also be defined by writing out their ASCII number in <I>Octal</I> (base eight) notation followed by the symbol <I>C</I>.  For more details on number bases, see Chapter eight.  On the other hand, constants declared with the CHR are just of the type CHAR, not strings.  Thus, if in addition to the last set of declarations, we had:</P>
+<PRE>
+<B>CONST</B>
+  CR = 15C;
+  space = <!--"-->&quot; <!--"-->&quot;;
+  empty = <!--"-->&quot;<!--"-->&quot;;
+  LF = CHR (10);</PRE>
+<P>then the following assignments are valid:</P>
+<PRE>
+string 1 := CR;
+string 1 := space;
+string 1 := empty;</PRE>
+<P>but</P>
+<PRE>
+string 1 := LF;</PRE>
+<P>is invalid, because LF is of type CHAR only.</P>
+<P>Notice that the assignment to the string variable does not affect any positions in the array beyond those necessary to do the assignment.  The characters after the string terminator are no longer of any interest, for even though the history of this particular variable's use does tell us what those characters are, they should be regarded as undefined insofar as the string variable is concerned.</P>
+<P>The details just described affect the way that string operations are coded, whether these are imported from modules, or are user-devised.</P>
+<P>To see how this is so, consider how a programmer could write some typical string operations.  Two fairly easy things one might like to be able to do are:</P>
+<P>1. compute the number of active characters in a string, and<BR>
+2. join two strings together.</P>
+<BLOCKQUOTE><I><A NAME="Strings">The</A> number of characters in a string is called its <U>length</U>. </BLOCKQUOTE>
+<BLOCKQUOTE>When two strings are joined end-to-end to make a new string whose length is the sum of the first two this process is called <U>concatenation</U>.</I></BLOCKQUOTE>
+<H3><B>Example: </B></H3>
+<P><!--"-->&quot;HOW TO<!--"-->&quot; is a string of length six and <!--"-->&quot; PROGRAM<!--"-->&quot; has length eight (note the spaces).  The concatenation is <!--"-->&quot;HOW TO PROGRAM<!--"-->&quot; and has length fourteen.</P>
+<P>When using <i>string literals</i> and <i>string constants</i> only (not variables) ISO standard Modula-2, implements within the language proper a concatenation operator <!--"-->&quot;+<!--"-->&quot; so that one may write:</P>
+<PRE>
+<B>CONST</B>
+  CR = 15C
+  LF = 12C;
+  DOSLineEnd = CR + LF;
+  strConst = <!--"-->&quot;Hi<!--"-->&quot; + <!--"-->&quot; There<!--"-->&quot;
+  strConst2 = strConst + DOSLineEnd;</PRE>
+<P>or an assignment such as</P>
+<PRE>  
+  strVar := <!--"-->&quot;Hello<!--"-->&quot; + <!--"-->&quot; world<!--"-->&quot;</PRE>
+<P>but may not write:</P>
+<PRE>
+  string1 := string1 + string2;</PRE>
+<P>or even</P>
+<PRE>
+<B>CONST</B>
+  return = <B>CHR</B> (13);
+  strConst = <!--"-->&quot;Hello<!--"-->&quot; + return;</PRE>
+<P>because this last constant can not be used as a string of length one, but is a CHAR.</P>
+<P>Likewise, if in addition to the above, one has:</P>
+<PRE>
+<B>TYPE</B>
+  String80 = <B>ARRAY</B> [0..79] <B>OF</B> <B>CHAR</B>;
+<B>VAR</B>
+  str : String80;</PRE>
+<P>then the assignment</P>
+<PRE>
+str := strConst + str;</PRE>
+<P>is also illegal, because the concatenation operator cannot be used with strings of a specified type, only with literals (that is, of  the S-type.)</P>
+<P>Otherwise, one may use +  with the same meaning as indicated above for <I>Concat</I>.  The function <I>Concat</I> must still be included in a library module for operations on string variables.</P>
+<P>What follows is a portion of a library module that could implement an instance data type and these two operations.</P>
+<P>The procedure <I>Length</I> works by examining each character in the array passed to it until it either reaches the last index of the array or to a string terminator, whichever comes first.  The number of characters checked by the time this loop is exited is the length of the string.</P>
+<P>The procedure <I>Concat</I> starts by placing the first string into the result; then, if there is room left, it puts as much of the second one in as possible.  The result will either be entirely filled, or will end with the string terminator taken from the end of the second string put into it.  If the concatenation of the two strings would contain too many characters to fit into the array being used to hold the result, the extra characters are quietly discarded with no error being generated.  One says that it is <!--"-->&quot;silently truncated.<!--"-->&quot;</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Strings;
+
+<B>TYPE</B>
+  String = <B>ARRAY</B> [0 .. 79] <B>OF</B> <B>CHAR</B>; (* convenience type *)
+
+<B>PROCEDURE</B> Length (str : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : <B>CARDINAL</B>;
+(* returns the number of characters in a string up to a string terminator, or the end of the array, whichever is less *)
+
+<B>PROCEDURE</B> Concat (str1, str2 : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+          <B>VAR</B> result : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* This procedure concatenates two strings.  It will use as much of the two as possible, silently truncating the result if there is not enough room. *)
+
+<B>END</B> Strings.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> Strings;
+
+<B>CONST</B>
+  terminator = <!--"-->&quot;<!--"-->&quot;;
+
+<B>PROCEDURE</B> Length (stringVal: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* Returns the length of stringVal *)
+  
+<B>VAR</B>
+  count : <B>CARDINAL</B>; (* Counting Variable *)
+  hiStr : <B>CARDINAL</B>; (* hold high of string for comparisons *)
+  
+<B>BEGIN</B>
+  hiStr := <B>HIGH</B> (stringVal);
+  count := 0; 
+  <B>WHILE</B> (count <!--<-->&lt;= hiStr) <B>AND</B> (stringVal[count] # terminator)
+    <B>DO</B>
+      <B>INC</B>(count);
+    <B>END</B>;
+  <B>RETURN</B> count;
+<B>END</B> Length;
+
+<B>PROCEDURE</B> Concat (str1, str2 : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+          <B>VAR</B> result : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+
+<B>VAR</B>
+  max, rcount, scount : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  max := <B>HIGH</B> (result);
+    (* max is the maximum number of places available in the result*)
+  rcount := 0;    (* initialize result string count *)
+  <B>WHILE</B> (rcount <!--<-->&lt;= <B>HIGH</B> (str1))
+               <B>AND</B> (str1 [rcount] # terminator) 
+               <B>AND</B> (rcount <!--<-->&lt;= max)
+    <B>DO</B>
+      result [rcount] := str1 [rcount];
+      <B>INC</B> (rcount)   (* Put in as much of str1 *)
+    <B>END</B> ;   (* as will fit *)
+  <B>IF</B> rcount <!--<-->&lt;= max   (* room left? *)
+    <B>THEN</B>   (* yes, so, reusing last position with terminator *)
+      scount := 0;    (* set counter for second string *)
+      <B>WHILE</B> (scount <!--<-->&lt;= <B>HIGH</B> (str2))
+               <B>AND</B> (str2 [scount] # terminator)
+              <B>AND</B>  (rcount <!--<-->&lt;= max)
+        <B>DO</B>
+          result [rcount] := str2 [scount];  (* and put in as *)
+          <B>INC</B> (rcount);    (* much of it as will fit too *)
+          <B>INC</B> (scount);
+        <B>END</B>; 
+    <B>END</B>;   (* if *)
+  <B>IF</B> rcount <!--<-->&lt;= max   (* still room left? *)
+    <B>THEN</B>
+      result [rcount] := terminator; (* put in terminator *)
+    <B>END</B>;
+<B>END</B> Concat;
+
+<B>END</B> Strings.</PRE>
+<P>Notice that HIGH (str1) and HIGH (str2) do <I>not</I> return a number corresponding to the <I>length</I> of the string.  Instead (as always) they produce the highest index used when the actual parameter array is assigned to the open formal parameter array.  If one passes a literal string instead of an array variable, then HIGH (str1) would be one less than the length of the string, but if one is passing objects of the type <I>String</I> (above) then eighty places are assigned to the formal parameter.  This would be reflected by HIGH (str1), which would therefore be 79 for this data type even if not all eighty CHARs are actually being used (there is a string terminator somewhere before position 79).</P>
+<H3><B>Example:</B></H3>
+<P>If one had:</P>
+<PRE>
+  <B>VAR</B>
+    str : String;
+
+  <B>PROCEDURE</B> PrintMax (str : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+
+  <B>BEGIN</B>
+    WriteCard (<B>HIGH</B> (str), 1)
+  <B>END</B> PrintMax;</PRE>
+<P>then</P>
+<PRE>
+  PrintMax (<!--"-->&quot;<B>HELLO</B><!--"-->&quot;); would print 4</PRE>
+<P>whereas</P>
+<PRE>
+  str := <!--"-->&quot;HELLO<!--"-->&quot;;
+  PrintMax (str);</PRE>
+<P>would print 79, as it is assigned <!--"-->&quot;str<!--"-->&quot;, not <!--"-->&quot;HELLO<!--"-->&quot; directly. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+<TITLE>5.3 Indexed Data Types</TITLE>
+<meta NAME="keywords" CONTENT="indexed, data, types, arrays, array, numeric, identifier, sequence, closed, form, forula, formulas, formulae, order, indices, index, subscript, subscripts, sub, script, scripts, underlying, var, assignment, assign, assignments, expression, expressions, declaration, declare, complexity, model, real-life, real, life, anonymous, ordinal, enumerated, range, type, notations, notations, minimum, maximum, index, selector, selectors, base, name, named. define, defined, string, strings, char, assignment, assignments, expression, expressions, s-type, supertype, manipulate, declare, declaration, literals, input, output">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.3 Indexed Data Types<!--‹-->--Arrays</B></H2>
+<P>Several examples and problems thus far have involved the use of two or more related identifiers.  These can be distinguished by including a numeric character in the identifier.  One can employ x<sub>1</sub>, x<sub>2</sub>, y<sub>1</sub>, y<sub>2</sub>, or  num<sub>1</sub>, num<sub>2</sub>, num<sub>3</sub>, or item<sub>1</sub> and item<sub>2</sub> for example.</P>
+<P>Some of the mathematical ideas that were being modeled also had numbered data items, even though it was possible to avoid a requirement for using this idea in programs.  For instance, the terms of a sequence are numbered a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>, ... a<sub>j</sub>. This numbering scheme did not find its way into any of the examples because the abstractions of interest<!--‹-->--the n<sup>th</sup> term and n<sup>th</sup> partial sum<!--‹-->--could be computed by a closed form (formula) without needing to keep all the terms as program data items. There are times when this might be a good idea, especially if the data were to be stored in a file for later reference. For example, in the module <I>SimplePay</I> in <A HREF="../Ch5/Ch5.2.html#5.2.1">section 5.2.1</A>, it might have been a good idea to have variables with which to refer to the hours worked, one day at a time. The desired Modula-2 entities would model pay<sub>Monday</sub>, pay<sub>Tuesday</sub>, pay<sub>Wednesday</sub>, and so on.</P>
+<BLOCKQUOTE><I><A NAME="Indexed">Data</A> that is referred to with a single name along with an ordinal subscript is said to be <U>indexed</U>.</I></BLOCKQUOTE>
+<P>Most computing notations, including Modula-2, have a means to group together and refer to such collections of related items under a single identifier in this manner.  The data structure employed has an inherent order imposed by the indices, and the latter are enclosed in brackets, because programming notations are not designed to recognize and attach meaning to subscripts, nor can they be typed on many machines.  One writes, say, item [1], item[2], item [3], ... item [n] to refer to the specific objects in such a data structure.</P>
+<BLOCKQUOTE><I><A NAME="Array">A</A> Modula-2 <U>array</U> is a collection of objects of the same underlying data type that is indexed by an ordinal type.</I></BLOCKQUOTE>
+<P>One declares an array in a TYPE statement by giving the range of indices that are permitted for the items, and by stating the underlying type of the entities that can be entered into the array.  A single array may be declared in a VAR statement, but this is not recommended.  Here are some examples to demonstrate the correct syntax:</P>
+<PRE>
+  <B>TYPE</B>
+    SmallArray = <B>ARRAY</B> [0 .. 10] <B>OF</B> <B>INTEGER</B>;
+    Data  = <B>ARRAY</B> ['A' .. 'D'] <B>OF</B> <B>REAL</B>;
+    Range = [1 .. 31];
+    MonthPayGrid = <B>ARRAY</B> Range <B>OF</B> <B>REAL</B>;
+
+  <B>VAR</B>
+    smallArray1, smallArray2 : SmallArray;
+    realArray : <B>ARRAY</B> ['A' .. 'D'] <B>OF</B> <B>REAL</B>; (* not a good idea *)
+    dataArray1, dataArray2 : Data;
+    payDays : MonthPayGrid;
+    </PRE>
+
+<P>and here are some assignments and expressions:</P>
+<H3><B>Correct:</B></H3>
+<PRE>  smallArray1 [1] := 0;
+  payDays [12] := 12.34;
+  dataArray1 ['A'] := 4.5;
+  smallArray1 := smallArray2;	(* whole arrays can be assigned *)</PRE>
+
+<H3><B>Incorrect:</B></H3>
+<PRE>  smallArray1 [11] := 5;	(* out of range, no item #11 allowed*)
+  dataArray1 ['A'] := realArray;	(* Error<!--‹-->--Not of same type.*)
+  dataArray1 := realArray;	(* Error<!--‹-->--Not of same type.*)
+  payDays [12] := 100;	(* wrong data type entered into array *)
+  <B>IF</B> smallArray1 = smallArray2 	(* cannot be tested for equality. *)
+</PRE>
+
+<P><B>NOTES</B>: 1. The range of an array, which is enclosed in brackets in the declaration, gives the minimum and maximum index numbers or <I>selectors</I> that are allowed for the array type.  A reference outside this range in the program generates an error.</P>
+<P>	 2. All elements in an array must be of the same base type, but this can be any built-in or previously defined type, including another array.  The complexity of a data type is up to the programmer trying to model a real-life situation.</P>
+<P>	 3. When a variable is declared as an ARRAY without using a previously defined type name, its type is said to be <I>anonymous</I>.  As the third example above shows, such a variable is not compatible with a named type, even if they are of the same underlying structure.  This at least, is the Modula-2 rule; other notations have different rules.</P>
+<P>	 4. The identifier of a range type can be used wherever a range is required.  Such a range identifier is not enclosed in brackets, because it already has them.</P>
+<P>Notice from the definition that any ordinal type, including an enumerated type, can be used as an array range.  Thus,</P>
+<PRE>
+  <B>TYPE</B>
+    HoursArray = <B>ARRAY</B> [Mon .. Sat] <B>OF</B> <B>REAL</B>;
+  <B>VAR</B>
+    hours : HoursArray;
+
+  <B>BEGIN</B>
+    hours [Mon] := 4.51;</PRE>
+
+<P>is a legal definition and use, provided that <I>Mon .. Sat</I>  is a correct subrange of some previously defined enumerated type.</P>
+<P>It is also worth noting that a function procedure cannot return an anonymous ARRAY type  (one with no defined type).  That is, one <I>cannot</I> write:</P>
+<PRE>
+<B>PROCEDURE</B> ProcName(a : <B>CARDINAL</B>) : <B>ARRAY</B> [1 .. 5] <B>OF</B> <B>CARDINAL</B>; (* illegal *)</PRE>
+
+<P>To achieve the desired result, it is necessary to write:</P>
+<PRE>
+<B>TYPE</B>
+  CardArray = <B>ARRAY</B> [1 .. 5] <B>OF</B> <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> ProcName (a : <B>CARDINAL</B>) : CardArray;</PRE>
+
+<H3><B><A NAME="5.3.1">5.3.1</A> A First Look at String Variables</B></H3>
+<P>Some computing notations have a built-in type for string variables.  Modula-2 lacks this type (which is why string variables have not previously been used in this text).  However, Modula-2 does allow the user to declare an ARRAY [0 .. n] OF CHAR, to assign string literals to such arrays, and to use such arrays with input/output procedures such as <I>ReadString</I> and <I>WriteString</I>.  The minimum selector in the range should be zero, and the maximum selector is then one less than the maximum number of characters in the string.  Given the declarations</P>
+<PRE>
+  <B>TYPE</B>
+    String  = <B>ARRAY</B> [0 .. 80] <B>OF</B> <B>CHAR</B>;
+    Range = [1 .. 10];
+    SmallString = <B>ARRAY</B> [0 .. 5] <B>OF</B> <B>CHAR</B>;
+    Paragraph = <B>ARRAY</B> Range <B>OF</B> String;
+
+  <B>VAR</B>
+    string1, string2 : String;
+    sString : SmallString;
+    ch : <B>CHAR</B>;
+    para : Paragraph;</PRE>
+
+<P>here are some assignments and expressions:</P>
+<H3><B>Correct:</B></H3>
+<PRE>  string1 := <!--"-->&quot;Hello there<!--"-->&quot;;
+  string2 := string1;
+  sString := <!--"-->&quot;Hello<!--"-->&quot;;
+  sString := <!--"-->&quot;H<!--"-->&quot;; (* see warning below *)
+  sString := ch;
+  ReadString (string1);	(* allowed for any <B>ARRAY</B> range <B>OF</B> <B>CHAR</B> *)
+  Write (string1 [2]);  (* individual array items are type <B>CHAR</B> *)
+  WriteString (para [3]);
+  para [1] := string1;</PRE>
+
+<H3><B>Incorrect:</B></H3>
+<PRE>  sString := <!--"-->&quot;Hi there<!--"-->&quot;;	(* too long *)
+  sString := string1; (* not the same type; one is too long for the other *)</PRE>
+
+<P>In ISO Standard Modula-2 an ARRAY [0..0] OF CHAR (string of length one) is compatible with the type CHAR.  The following is correct:</P>
+<PRE>
+  <B>TYPE</B>
+    string = <B>ARRAY</B> [0 .. 50] <B>OF</B> <B>CHAR</B>;
+
+  <B>VAR</B>
+    key : <B>CHAR</B>;
+    str : string;
+
+  <B>BEGIN</B>
+    str := <!--"-->&quot;Hi there fellow, how are you doing?<!--"-->&quot;;
+    WriteString (str);
+    WriteChar (str [1]);
+    WriteString (str [1]);
+    key := str [5];
+    WriteChar (key);
+    WriteString (key);</PRE>
+
+<P><B>WARNING</B>: Even though it is in ISO Modula-2, a single CHAR is not interpreted as a string of length one by some older or non-standard versions of Modula-2, and may not be assignable to a string variable (ARRAY range OF CHAR) in this way in such versions.</P>
+<P>String literals and constants are said to be of the S-type, a supertype thought of as including all strings, of whatever length.  Much more detail about strings will be provided in chapter 7.  The student should consult that material before attempting to manipulate strings in any extensive way.  If the only needs are for declaration, assignment of string literals, input and output, the information given in this section will suffice.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,9 @@
+<IfModule mod_autoindex.c>
+  IndexIgnore *.odp *.png
+</IfModule>
+
+<FilesMatch "\.odp$">
+  Order deny,allow
+  Deny from all
+</FilesMatch>
+

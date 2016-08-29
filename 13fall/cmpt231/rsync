@@ -1,0 +1,2 @@
+#! /bin/sh
+/usr/bin/rsync -Chauzi --delete-after --stats -e "ssh -p 26" . twu.seanho.com:/var/www/twu/13fall/cmpt231/

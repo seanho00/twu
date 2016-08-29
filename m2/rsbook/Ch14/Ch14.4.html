@@ -1,0 +1,102 @@
+<HTML><HEAD><TITLE>14.4 Stacks</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Stacks">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.4 Stacks</B></H2>
+<P>A similar type of data structure is used in situations where the last item entered will be the next item served.  Consider the example of the previous section, but with another column added to contrast the action of a stack with that of a queue. </P>
+<H3><B>Example:</B></H3><PRE>
+Action	Resulting Queue	Resulting Stack
+A arrives	A	A
+B arrives	AB	AB
+C arrives	ABC	ABC
+service  	BC	AB
+D arrives	BCD	ABD
+service  	CD	AB</PRE>
+<P>Item A will not be served until it is the only remaining item on the stack.</P>
+<BLOCKQUOTE><I><A NAME="Stack">A</A> last-in-first-out data structure is called a <U>stack</U>.</I></BLOCKQUOTE>
+<P>The classic everyday instance of a stack is the pile of dinner plates in the university cafeteria.  Plates are added to the top of the stack, and they are also removed from the top<!--‹-->--the opposite end to queue serving.  Here, the two basic operations are called <I>Push</I> (add something to the stack) and <I>Pull</I> (take something off the stack).</P>
+<P>What follows is the definition of a module designed to stack cardinals:</P>
+<PRE>
+<A NAME="anADTStacks"></A><B>DEFINITION</B> <B>MODULE</B> anADTStacks;
+
+(* a simple semi-generic stack 
+  by  R. Sutcliffe
+  last modified 1995 05 29  *)
+
+<B>FROM</B> ItemADT <B>IMPORT</B>
+  ItemType;
+<B>TYPE</B>
+  DataType (* local name *) = ItemType;
+  ActionProc = <B>PROCEDURE</B> (DataType);
+  Stack;   (* details in implementation *)
+  
+<B>PROCEDURE</B> Init (<B>VAR</B> s : Stack) ;
+(* Pre: none
+   Post: Establish an empty stack *)
+<B>PROCEDURE</B> Destroy (s : Stack);
+(* Pre: s is a previously established stack.  
+   Post: any memory previously allocated to q is now returned. *)
+<B>PROCEDURE</B> Full (s : Stack) : <B>BOOLEAN</B>;
+(* Pre: s is a previously established stack.  
+   Post: if no more items can be stacked, returns <B>TRUE</B>; otherwise returns <B>FALSE</B>. *)
+<B>PROCEDURE</B> Empty (s : Stack) : <B>BOOLEAN</B>;
+(* Pre: s is a previously established stack.  
+   Post: if the number of active items in the stack is zero, returns <B>TRUE</B>; otherwise returns <B>FALSE</B>. *)
+<B>PROCEDURE</B> Push  (s : Stack; item : DataType);
+(* Pre: s is a previously established stack.  
+   Post: if the stack is not full the given item is added to the stack; otherwise no action is taken. *)
+<B>PROCEDURE</B> Pull (s : Stack; <B>VAR</B> item : DataType);
+(* Pre: s is a previously established stack.  
+   Post: if the number of active items in the stack is greater than zero, an item is removed from the stack and returned on a last-in-first-out basis; otherwise no action is taken. *)
+<B>PROCEDURE</B> Traverse (s : Stack; Proc : ActionProc);
+(* Pre: s is a previously established stack.  
+   Post: The action specified by Proc is taken on each item in the stack from the head to the tail without affecting the stack itself. *)
+
+<B>END</B> anADTStacks.</PRE>
+<P>The implementation can be with an array as in the example for <I>TextQueues</I> or it can be as a linked structure in the same manner as that for <I>anADTQueues</I>.  In the latter case, the code can be identical, with <I>Push</I> substituted for <I>Enqueue</I> and <I>Pull</I> written like <I>Serve</I> but removing things at the other end.  There is no need for a tail pointer, only for a head pointer.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

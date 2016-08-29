@@ -1,0 +1,287 @@
+<HTML><HEAD><TITLE>19.3 Getting Started with Object Oriented Modula-2</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Object Oriented Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.3 Getting Started with Object Oriented Modula-2</b></H2>
+
+<H3><b><A NAME="19.3.1"></A>19.3.1 A Little History</b></H3>
+
+<P>Classical Modula-2 as originally defined by Wirth did not have any object notation whatsoever. Later, Wirth himself devised some simple object extensions for Pascal, and this Object Oriented Pascal became the language in which the entire Macintosh operating system was written. Because of the surface similarities between Pascal and Modula-2, some vendors adopted these extensions for their versions of Modula-2 as well.</P>
+<P>When the ISO committee produced the initial base standard (ISO/IEC 10514-1) for the Modula-2 notation, it also lacked any object notation. However, by the time this standard was published WG13 (modula-2) was already developing the supplementary standards for Generic Modula-2 (ISO/IEC 10514-2) and Object Oriented Modula-2 (ISO/IEC 10514-3), and these were subsequently approved as supplementary and independent standards. That is, vendors could implement only the base standard if they wished, or they could include in their package either or both of the additional parts. Most are expected to include both.</P>
+<P>In the light of the introductory discussions, it is worthwhile noting some of the decisions the committee took with respect to Object Oriented Modula-2 (often abbreviated to OOM-2).</P>
+
+<UL><LI><!--…--> objects are always references, never values</LI>
+<LI><!--…--> both traced and untraced objects are available, hence both safeguarded and unsafeguarded modules exist</LI>
+<LI><!--…--> safety of traced modules is enforced; threatening is not allowed</LI>
+<LI><!--…--> garbage collection is available for traced classes</LI>
+<LI><!--…--> all attributes and methods of the object are hidden unless they are marked <i>reveal</i></LI>
+<LI><!--…--> syntax differs from both that of records and that of modules</LI>
+<LI><!--…--> initialization of objects is via an object body</LI>
+<LI><!--…--> an object body is a block body so it can have an exception clause</LI>
+<LI><!--…--> the term <i>component</i> was used for an item declared within a class declaration</LI>
+<LI><!--…--> the term <i>member</i> was selected for the relationship between an object and its class</LI></UL>
+<P>There are several other issues on which the committee had to make decisions, but these will be pointed out when the related concepts are introduced later in the chapter.</P>
+
+<H3><b><A NAME="19.3.2"></A>19.3.2 Some Simple OOM-2 Programs</b></H3>
+
+<P><b>Example 1:</b><BR>
+The purpose of this example is to illustrate some of the simple syntax for declaring and using OOM-2 classes and objects. The module establishes a class of objects called <i>rectangle</i> with some attribute and method components, and generates two messages to those components. Its only output is to print the area before (0) and after (12) the call to <i>SetDims.</i></P>
+<P>The keyword CLASS is used to declare a class, in like manner to the use of TYPE in the base language. Observe that the keyword REVEAL is used to allow visibility outside the class, and that the class maintains the hidden variables length and width internally. In Modula-2 classes are untraced unless marked with TRACED, and modules are safeguarded unless marked with UNSAFEGUARDED. Note the initialization code, which is automatically applied whenever an object of this class is instantiated with the OOM-2 pervasive CREATE. It is important to remember that the declaration of entities of the class rectangle in a VAR clause only sets aside enough static memory for the reference variable; no dynamic memory is allocated until the object is instantiated with the CREATE statement.</P>
+
+<PRE><b>MODULE</b> TestRectangleClass1;
+(* to demonstrate simple traced class syntax
+  by R. Sutcliffe 1998 09 24 *)
+
+<b>IMPORT</b> SWholeIO;
+
+<b>TRACED</b> <b>CLASS</b> rectangle;
+  <b>REVEAL</b> SetDims, Area, sides;
+  (* declare components of class *)
+  (* first the attribute components *)
+  <b>CONST</b>
+    sides = 4;
+  <b>VAR</b>
+   length, width : <b>INTEGER</b>;
+   
+  (* and then the method components *)
+  <b>PROCEDURE</b> SetDims (len, wid : <b>INTEGER</b>);
+  
+  <b>BEGIN</b>
+    length := len;
+    width := wid;
+  <b>END</b> SetDims;
+  
+  <b>PROCEDURE</b> Area () : <b>INTEGER</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> length * width;
+  <b>END</b> Area;
+  
+<b>BEGIN</b> (* initialization *)
+  SetDims (0,0);
+<b>END</b> rectangle;
+
+<b>VAR</b>
+  theRect : rectangle;
+<b>
+BEGIN</b> (* main *)
+  <b>CREATE</b> (theRect);
+  (* print out initial area *)
+  SWholeIO.WriteInt (theRect.Area(), 10);
+  theRect.SetDims (4, 3);
+  (* print out area after new dimensions set *)
+  SWholeIO.WriteInt (theRect.Area(), 10);
+  
+<b>END</b> TestRectangleClass1.</PRE>
+
+<P>Observe the prettyprinting style. Here, the components of the class (but not its body) have been indented for easy reading, and the first line has been treated somewhat like a procedure heading by putting it all on one line, rather than as a type heading and starting a new line. This is because TYPE introduces a whole section that could include several declarations, whereas CLASS heads only one such declaration at a time.</P>
+
+<P><b>Example 2:</b><BR>
+Here is an implementation in OOM-2 of the declaration of the <i>Account</i> class discussed in earlier sections. No code has been written to declare and instantiate individual accounts at this time.</P>
+
+<PRE><b>MODULE</b> TestAccount1;
+(* to demonstrate simple traced class syntax
+  by R. Sutcliffe 1998 09 24 *)
+
+<b>TRACED</b> <b>CLASS</b> Account;
+  <b>REVEAL</b> Credit, Debit, <b>READONLY</b> balance;
+  <b>VAR</b>
+    balance : <b>REAL</b>;
+    overdrawn : <b>BOOLEAN</b>;
+  
+  <b>PROCEDURE</b> Credit (amount : <b>REAL</b>);
+  <b>BEGIN</b>
+    balance := balance + amount;
+    CheckOverdraw;
+  <b>END</b> Credit;
+  
+  <b>PROCEDURE</b> Debit (amount : <b>REAL</b>);
+  <b>BEGIN</b>
+    balance := balance - amount;
+    CheckOverdraw;
+  <b>END</b> Debit;
+  
+  <b>PROCEDURE</b> CheckOverdraw;
+  <b>BEGIN</b>
+    <b>IF</b> balance < 0.0 
+      <b>THEN</b>
+        overdrawn := <b>TRUE</b>
+      <b>ELSE</b>
+        overdrawn := <b>FALSE</b>;
+      <b>END</b>;
+  <b>END</b> CheckOverdraw;
+
+<b>BEGIN</b> (* initialization *)
+  balance := 0.0;
+  overdrawn := <b>FALSE</b>;
+<b>END</b> Account;
+
+<b>END</b> TestAccount1.</PRE>
+
+<P>Any number of accounts can be declared in a VAR clause and then instantiated by a CREATE statement. Each one has its own copies of the attribute components, so that when any of these is used in a method component or is referred to by a client, the data obtained is that belonging to the object that invoked the member. The reader should observe that this is a major difference between classes and modules, for any data global to an ADT declared in a module is global to all entities of the type that are declared, not associated with each one individually.</P>
+
+<H3><b><A NAME="19.3.3"></A>19.3.3 Summary of Basic OOM-2 Traced Class Semantics</b></H3>
+
+<P>Both examples in the previous section were of traced classes. The reserved word TRACED must precede any such class to indicate to the garbage collector that it is to trace objects of this class from the time they are instantiated and, if all references to the object cease to exist, it may destroy the object by reclaiming its memory.</P>
+<P>A traced class declaration may contain constant, type, variable, and method (procedure) declarations. It also defines a scope of visibility for these items, and unless one or more of them is revealed outside that scope, they are not visible in the surrounding module. Thus, REVEAL serves a purpose in the context of a class within a module similar to that served by EXPORT in the context of a module within a module.</P>
+<P>On the other hand, Modula-2 class declarations clearly have some similarity to records. The components of a class are in a sense similar to the fields of a record.</P>
+<P>Constants and types declared in a class declaration can be referred to by using the appropriate identifier qualified by the class name in the surrounding scope, provided they have been revealed there. Of course, constants can also be referred to qualified by any object name instantiated from that class.  However, the base rules of the language prohibit use of a type name qualified by a variable name, so such references are not useful. Moreover, OOM-2 states that the reference to a constant qualified by an object name is not a constant expression, so it cannot be used in such situations.</P>
+<P>However, variables declared in a class differ from variables declared in a module in that there is no memory associated with them until an instance of the class has been created. The memory is associated with each individual instance or member, not with the class as a whole, and it is reserved by a call to CREATE. They cannot be referred to qualified by the class name, only qualified by an object instance name of that class. This memory also cannot be manually returned by a corresponding destructor; it is completely under the control of the garbage collector thereafter.</P>
+<P>Moreover, although methods are declared with the reserved word PROCEDURE, and they do look and behave very much like procedures, they are useful only with members of the class in which they are declared. Unlike procedures declared elsewhere in a module, they do not have a type; therefore, there are no method variables or method constants like there are procedure variables and constants, and method names also cannot be referred to qualified by the class name, only by an object name.</P>
+<P>Not only do Modula-2 object references get their memory when CREATE is called, the data fields of the object can be initialized automatically at that time by placing statements in the body of the class declaration.</P>
+<P>Should the programmer decide to re-use a traced object reference, say, in a loop, by calling CREATE on an object reference a second time, a new memory allocation is done, just as when doing this with NEW on a pointer. Thus,</P>
+
+<PRE><b>CREATE</b> (thingy);
+ (* some code here *)
+<b>CREATE</b> (thingy); (* again *)</PRE>
+
+<P>results in a different reference for <i>thingy</i>. As with pointers, unless the previous value has been stored elsewhere, garbage may now have been generated, for the first memory set aside for <i>thingy</i> no longer has this reference (unless it has been assigned.) For traced objects, this is of no consequence. The garbage collector merely takes note of the fact that this reference no longer accesses the memory in question, and when it next activates, if it finds the memory has no references at all, the memory is collected. </P>
+<P>To illustrate a few of the things that <i>cannot</i> be done, consider the following (erroneous) module.</P>
+
+<PRE><b>MODULE</b> TestObjectErrors;
+
+<b>CLASS</b> Bad; (* because it is not marked as traced *)
+<b>END</b> Bad;
+
+<b>TRACED</b> <b>CLASS</b> One;
+  <b>MODULE</b> NotAllowed; (* only const, var, type and procedure *)
+  <b>END</b> NotAllowed;
+  
+  <b>PROCEDURE</b> Hit;
+    <b>MODULE</b> Allowed; (* but a dynamic module in method is ok *)
+    <b>END</b> Allowed;
+  <b>END</b> Hit;
+
+<b>END</b> One;
+  
+<b>TRACED</b> <b>CLASS</b> Two;
+  <b>CONST</b>
+    secret = 3;      
+<b>END</b> Two;
+
+<b>CONST</b>
+  badConstant1 = 2 * secret; (* didn't reveal secret *)
+
+<b>TRACED</b> <b>CLASS</b> Three;
+  <b>REVEAL</b> secret, thingy;
+  <b>CONST</b>
+    secret = 3;
+  <b>VAR
+   </b>thingy: <b>CARDINAL</b>;
+  <b>PROCEDURE</b> Empty ();
+  <b>END</b> Empty;     
+<b>END</b> Three;
+
+<b>CONST</b>
+  badConstant2 = 2 * secret; (* even if we had, it can't be referred to like this *)
+  goodConstant = 2 * Three.secret; (* but rather this way *)
+<b>VAR</b>
+  three : Three;
+<b>CONST</b>
+  badConstant3 = 2 * three.secret; (* reference to such a constant not allowed in constant expression *)
+<b>
+TRACED CLASS</b> Four;
+  <b>REVEAL</b> inClassType;
+  <b>TYPE</b>
+    inClassType = CARDINAL;      
+<b>END</b> Four;
+<b>
+VAR</b>
+  mine : Four.inClassType; (* ok to do this with a type *)
+<b>VAR
+ </b> four : Four;
+<b>VAR</b>
+  another : four.inClassType; (* but base language rules don't allow this *)
+  
+<b>BEGIN</b>
+  mine := 5;
+  mine := three.secret; (* this reference OK *)
+  Three.thingy := 5; (* can't refer to a variable by class name*)
+  Three.Empty ();  (* or to a method, whether revealed or not *)
+  three.thingy := 5; (* can refer to a variable by object name *)
+  three.Empty ();  (* or to a method *)
+<b>END</b> TestObjectErrors.</PRE>
+
+<P>When this piece of "code" was fed to the compiler, it responded as follows:</P>
+
+<PRE>#    3  CLASS Bad; (* because it is not marked as traced *)
+#####           ^ 188: untraced classes not allowed in safeguarded modules
+ File "TestObjectErrors.MOD"; Line 3
+#    7    MODULE NotAllowed; (* only const, var, type and procedure *)
+#####          ^ 173: module declaration not allowed in class declaration
+ File "TestObjectErrors.MOD"; Line 7
+#   23    badConstant1 = 2 * secret; (* didn't reveal secret *)
+#####                             ^  73: identifier not declared
+ File "TestObjectErrors.MOD"; Line 23
+#   36    badConstant2 = 2 * secret; (* even if we had, it can't be referred to like this *)
+#####                             ^  73: identifier not declared
+ File "TestObjectErrors.MOD"; Line 36
+#   41    badConstant3 = 2 * three.secret; (* reference to such a constant not allowed in constant expression *)
+#####                            ^  74: wrong class of identifier
+ File "TestObjectErrors.MOD"; Line 41
+#   54    another : four.inClassType; (* but base language rules don't allow this *)
+#####                  ^  74: wrong class of identifier
+ File "TestObjectErrors.MOD"; Line 54
+#   59    Three.thingy := 5; (* can't refer to a variable by class name*)
+#####                ^ 170: variable attributes cannot be accessed via class type
+ File "TestObjectErrors.MOD"; Line 59
+#   60    Three.Empty ();  (* or to a method, whether revealed or not *)
+#####               ^ 171: entity not revealed in defining class
+ File "TestObjectErrors.MOD"; Line 60
+#   62    three.Empty ();  (* or to a method *)
+#####               ^ 171: entity not revealed in defining class
+ File "TestObjectErrors.MOD"; Line 62
+Modula2 - Execution terminated!
+### MPW Shell - Execution of makeout terminated.</PRE>
+
+<P>The reasons for most of the error messages should be obvious in the light of the discussion. One that may escape the reader with no previous experience of objects is the second to last one. Just as the use of items from an unrefined generic module on their own is meaningless, so also is the use of variables and methods qualified by only their class name outside the class. However, it is acceptable to refer to constants and types this way. Only if an object of class <i>Three</i> has been instantiated with a declaration and <i>CREATE</i> does it make sense to refer to <i>Entity.secret.</i> No reference to <i>Secret</i> on its own is valid outside the class declaration.</P>
+<P>Experimentation (or the writing of bad code) ought to reveal some other things that are forbidden<!--‹-->--specifically things that might threaten a traced object reference.</P>
+
+<P><b>One cannot:</b></P>
+<UL><LI><!--…--> declare a pointer to an object of a traced class reference</LI>
+<LI><!--…--> declare a pointer to a structure that contains an object of a traced class reference</LI>
+<LI><!--…--> make a reference to an object of a traced class in a variant field of a record</LI>
+<LI><!--…--> manually deallocate or destroy an object of a traced class</LI></UL>
+<P><b>One cannot in a safeguarded module:</b></P>
+<UL><LI><!--…--> declare or import an object of an untraced class type</LI>
+<LI><!--…--> take the ADR of a reference to an object of a traced class</LI>
+<LI><!--…--> CAST a traced object</LI>
+<LI><!--…--> pass a reference to an object of a traced class (or a component thereof) to an ARRAY OF LOC parameter</LI></UL>
+
+<P>If the programmer does subvert the safety of traced objects using something from the module SYSTEM to obtain a reference to a traced object in an unsafeguarded module, the reference so obtained is not tracked by the garbage collector, and the validity of the program becomes questionable (a supposedly traced object has an untraced reference). Such attempts should not therefore be made.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

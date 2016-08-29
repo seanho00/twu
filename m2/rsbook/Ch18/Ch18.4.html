@@ -1,0 +1,457 @@
+<HTML><HEAD><TITLE>18.4 Recursive Drawing</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Recursive Drawing">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>18.4 Recursive Drawing<!--‹-->--Fractals</b></H2>
+
+<P>Recursively repetitive figures arise naturally and in a variety of pattern and design work. Such figures are called fractals. The essence of a fractal is that is has the same kind of micro structure as it has a macro structure. </P>
+<P>For instance, if the West coast of British Columbia, Canada is viewed from outer space, it has an irregular shape with numerous inlets folded into the larger outline throughout this length. Looked at from a lower altitude airplane, these larger inlets themselves have an irregular and folded structure, and if one were to look closer still down on the ground, these too would be seen to have inlets and folds. That is to say, a fractal is recursive, at least to some number of levels. (In the case of the coastline, the recursion would break down to some extent after one began looking at individual grains of sand under sufficient magnification.)</P>
+<P>A number of  standard fractal designs can be constructed using recursive drawing techniques, and these are detailed below.</P>
+
+<H3><b><A NAME="18.4.1"></A>18.4.1 Snowflake Fractals</b></H3>
+
+<P>One of the easiest types of fractals to draw is a snowflake.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.5.GIF" WIDTH=247 HEIGHT=295 BORDER="1"></CENTER></P><!---->
+
+<P>The snowflake fractal shown in figure 18.5 is based on triangles and has four levels of recursion or sizes of triangle. Assuming that the drawing starts at the lower left corner and with the direction to the right or East, the drawing of this fractal could be formulated in terms of pseudocode for a three sided figure as follows:</P>
+
+<PRE>draw fractal = 
+  select standard coordinates
+  select levelsofrecursion
+  select mainlength
+  select starting point on screen
+  calculate turn angle based on number of sides (60 degrees for triangles)
+  drawfigure
+
+drawfigure (mainlength, recursionlevel) =
+  save current position and direction
+  turnby -60 degrees; (* turn out and away first *)
+  drawsegment (sidelen, curreclevel); (* go draw a side *)
+  for count := 2 to numsides - 1
+    do  (* then turn and draw each successive side except the last *)
+      turnby 120 degrees; (* turn back in *)
+      drawsegment (sidelen, curreclevel);
+    end;
+  
+  if curreclevel < recursionlevel
+    then (* fill in the missing side -- central third *)
+      turnto (olddir);
+      moveto (oldx, oldy);
+      lineto (curx, cury);
+    else  (* go draw the last side *)
+      turnby 120 degrees;
+      drawsegment (sidelen, curreclevel);
+    end;
+
+drawsegment (dist, curreclevel) =
+  disttodraw := dist / 3.0;
+  if curreclevel = 0
+    then
+      lineby (dist);
+    else
+      drawsegment (disttodraw, curreclevel - 1);
+      drawfigure (disttodraw, curreclevel - 1);
+      drawsegment (disttodraw, curreclevel - 1);
+    end;</PRE>
+
+<P>The basic idea is that drawing a figure (say, a triangle) consists of drawing three successive segments with the appropriate angle between. Drawing each segment consists of drawing a third of that segment, then drawing the original figure at one third size as the middle third (unless one is past the appropriate number of recursion levels) then drawing the last third of the segment. In the code that follows, however, this has been modified to allow for the angle to be calculated for the number of sides. The number of recursion levels and number of sides is initially set to reproduce the drawing above, but both can easily be changed. Here is the code:</P>
+
+<PRE><b>MODULE</b> Snowflake;
+
+(* by R. Sutcliffe 1996 01 29
+  to illustrate Macintosh quickdraw
+  revised by Joel Schwartz and R. Sutcliffe to depend on GraphPaper.
+  This program draws a recursive snowflake with a specified number of sides and level of recursion. Last revision 1998 06 16 *)
+
+<b>FROM</b> GraphPaper <b>IMPORT</b>
+  LineBy, LineTo, TurnTo, MoveTo, GetDimensions, SetCoordSystem, CoordSystem, GetLocation;
+
+<b>CONST</b>
+  (* set up these first two constants; the rest depend on them. *)
+  recursionLevel = 3;
+  numSides = 3;
+
+  degreesAvailable = 180 * (numSides - 2);
+      (* how many degrees around and back *)
+  turnAngle = degreesAvailable <b>DIV</b> numSides;
+       (* turn for each corner *)
+<b>VAR</b>
+  curDir : <b>INTEGER</b>;
+  curX, curY : <b>INTEGER</b>; (* to globally store position and direction *)
+  dimX, dimY : <b>INTEGER</b>; (* the dimensions *)
+
+<b>PROCEDURE</b> DrawSegment (dist : <b>REAL</b>; curRecLevel : <b>INTEGER</b>); <b>FORWARD</b>;
+(* omit if compiler is multi pass *)
+
+<b>PROCEDURE</b> DrawFigure (sideLen : <b>REAL</b>; curRecLevel :<b>INTEGER</b>);
+
+<b>VAR</b>
+  oldX, oldY : <b>INTEGER</b>;
+  oldDir : <b>INTEGER</b>;
+  count : <b>CARDINAL</b>;
+
+<b>BEGIN</b>
+  (* store current directions *)
+  oldX := curX;
+  oldY := curY;
+  oldDir := curDir;
+  curDir := curDir - turnAngle;
+  TurnTo (<b>FLOAT</b> (curDir)); (* turn out and away first *)
+  DrawSegment (sideLen, curRecLevel); (* go draw a side length *)
+  <b>FOR</b> count := 2 <b>TO</b> numSides - 1
+    <b>DO</b>  (* then turn and draw each successive one but the last *)
+      curDir := curDir - turnAngle + 180;
+      TurnTo (<b>FLOAT</b> (curDir));
+      DrawSegment (sideLen, curRecLevel);
+   <b>END</b>;
+
+<b>IF</b> curRecLevel < recursionLevel
+  <b>THEN</b> (* fill in the missing side -- central third *)
+    curDir := oldDir; (* go back to old position *)
+    TurnTo (<b>FLOAT</b> (curDir));
+    MoveTo (oldX, oldY);
+    LineTo (curX, curY); (* and draw to new one *)
+  <b>ELSE</b> (* draw another side like the ones in the loop above *)
+     curDir := curDir - turnAngle + 180;
+     TurnTo (<b>FLOAT</b> (curDir));
+     DrawSegment (sideLen, curRecLevel);
+   <b>END</b>;
+<b>END</b> DrawFigure;
+
+<b>PROCEDURE</b> DrawSegment (dist : <b>REAL</b>; curRecLevel : <b>INTEGER</b>);
+(* recursively draw a third of the segment as another one
+   then a third size figure on the next segment
+   then another segment after that. *)
+
+<b>VAR</b>
+   distToDraw : <b>REAL</b>;
+<b>BEGIN</b>
+  distToDraw := dist / 3.0;
+  <b>IF</b> curRecLevel = 0
+    <b>THEN</b>
+      LineBy (<b>TRUNC</b>(dist));
+      GetLocation (curX, curY); (* reset local storage of position *)
+    <b>ELSE</b>
+      DrawSegment (distToDraw, curRecLevel - 1);
+      DrawFigure (distToDraw, curRecLevel - 1);
+      DrawSegment (distToDraw, curRecLevel - 1);
+    <b>END</b>;
+<b>END</b> DrawSegment;
+
+<b>VAR</b>
+ mainLength : <b>INTEGER</b>;
+
+<b>BEGIN</b> (* main *)
+  (* calculate a length that will fill the screen nicely *)
+  SetCoordSystem (MacWin);
+  GetDimensions (dimX, dimY);
+
+  mainLength := 3 * dimY/(2 * numSides); (* arrived at by experimenting *)
+
+  (* starting point is "lower left" of first level recursive figure. *)
+  curDir := 0;
+  curX := (dimX - mainLength) / 2;
+  curY := (dimY + mainLength) / 2;
+
+  (* above formula not bad except for three sides, so adjust *)
+  <b>IF</b> numSides = 3
+    <b>THEN</b>
+      curY := curY - 75;
+    <b>END</b>;
+  MoveTo (curX, curY);
+  DrawFigure (<b>FLOAT</b> (mainLength), recursionLevel);
+
+<b>END</b> Snowflake.</PRE>
+
+<H3><b><A NAME="18.4.2"></A>18.4.2 A Tree Fractal</b></H3>
+
+<P>The program in this section recursively draws a tree fractal. The idea is that it draws a trunk in the current direction, then two trees at half size at forty-five degrees on either side of the top of the trunk, then a tree  at three-quarters size in the same direction as the original trunk. After the first vertical trunk, the remaining trees can be thought of as branches. Recursion is exited if the length of the trunk is less than two units.</P>
+
+<PRE><b>MODULE</b> DrawTree;
+(* Program by R. Sutcliffe
+  to illustrate GraphPaper
+  revised 1998 06 16 
+  recursively draws a fractal based tree. *)
+  
+<b>FROM</b> GraphPaper <b>IMPORT</b>
+  MoveTo, LineBy, Turn, TurnTo, GetLocation;
+
+<b>PROCEDURE</b> DrawATree (trunkLength : <b>CARDINAL</b>);
+<b>VAR</b>
+  baseX, baseY : <b>INTEGER</b>;
+  
+<b>BEGIN</b>
+  <b>IF</b> trunkLength < 2
+    <b>THEN</b>
+      <b>RETURN</b>
+    <b>END</b> (* if *);
+  LineBy (trunkLength);
+  GetLocation (baseX, baseY);
+  Turn (45.0);
+  DrawATree (trunkLength <b>DIV</b> 2);  (* 1/2 current size right *)
+  MoveTo (baseX, baseY);
+  Turn (-90.0);
+  DrawATree (trunkLength <b>DIV</b> 2); (* 1/2 current size left *)
+  MoveTo (baseX, baseY);
+  Turn (45.0);
+  DrawATree (3 * (trunkLength <b>DIV</b> 4)); (* 3/4 current size up *)
+  MoveTo (baseX, baseY);
+<b>END</b> DrawATree;
+
+<b>BEGIN</b>
+  (* Find a good place to start drawing the tree. *)
+  MoveTo (0,-250);
+  TurnTo (90.0);
+  DrawATree (128);
+<b>END</b> DrawTree.</PRE>
+
+<P>Here is a screen shot of the tree that is drawn:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.6.GIF" WIDTH=321 HEIGHT=478 BORDER="1"></CENTER></P><!---->
+
+<H3><b><A NAME="18.4.3"></A>18.4.3 Singly-Recursive Snowflake-like Fractals</b></H3>
+
+<P>The tree fractal was drawn in a different way than the snowflake that preceded it. Rather than use a pair of mutually recursive procedures, it employed only a single procedure that drew segment-right fractal-left fractal-central fractal. Snowflakes can be drawn in a similar manner, without the filled in sides, and by using a singly-recursive procedure as in the following:</P>
+
+<PRE><b>MODULE</b> DrawFractal;
+
+(* Program to draw a fractal
+   by R. Sutcliffe
+   revised 1998 06 16 *)
+
+<b>FROM</b> GraphPaper <b>IMPORT</b>
+  LineBy, Turn, TurnTo, MoveTo;
+<b>TYPE</b>
+  CardArray = <b>ARRAY</b> [0..12] <b>OF</b> <b>CARDINAL</b>;
+<b>CONST</b>   
+  order = 6; (* fits on most screens *)
+	(* make a constant array with the powers of two for the line lengths. *)
+  Power = CardArray {1,2,4,8,16,32,64,128,256,512,1024,2048,4096}; 
+      
+<b>PROCEDURE</b> Fractal (level: <b>CARDINAL</b>);
+ (* Recursive drawing of levelth fractal *)  
+<b>BEGIN</b>
+  Turn (-60.0);
+  (* at all but the outer level, we do segment-fractal-segment *)
+  LineBy (Power [level]);
+  <b>IF</b> level > 1
+    <b>THEN</b>
+      Fractal (level - 1);
+    <b>END</b>;  (* if *)
+  LineBy (Power [level]);
+  Turn (120.0);
+  LineBy (Power [level]);
+  <b>IF</b> level > 1
+    <b>THEN</b>
+      Fractal (level - 1);
+    <b>END</b>;  (* if *)
+  LineBy (Power [level]);
+  
+  (* at the outer level we complete the figure so it is closed *)
+  <b>IF</b> level = order
+    <b>THEN</b>
+      Turn (120.0);
+      LineBy (Power [level]);
+      <b>IF</b> level > 1
+        <b>THEN</b>
+          Fractal (level - 1);
+        <b>END</b>;  (* if *)
+      LineBy (Power [level]);
+    <b>END</b>;
+  Turn (-60.0);
+<b>END</b> Fractal;
+
+<b>VAR</b>
+  ch : <b>CHAR</b>;
+
+<b>BEGIN</b>  (* DrawFractal *)
+  (* orient on the page the way we want *)
+  TurnTo  (180.0);
+  MoveTo  (100, -50);
+  Fractal (order);
+<b>END</b> DrawFractal.</PRE>
+
+<P>This program produces the following version of the snowflake fractal:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.7.GIF" WIDTH=367 HEIGHT=337 BORDER="1"></CENTER></P><!---->
+
+<H3><b><A NAME="18.4.4"></A>18.4.4 Sierpinski's Curve</b></H3>
+
+<P>The most basic form of the fractal known as Sierpinski's curve consists of a square with squares on its corners in the manner shown in figure 18.8. Assuming standard coordinates with the origin at the centre, and given that the basic length on one of the corners is <i>dist</i>, drawing is done in four steps starting from the indicated point. (Recall that <i>Line</i> draws to a point with the given displacement from the current point.)</P>
+<P><i>top</i>: Line (dist, -dist); Line (2 * dist, 0); Line (dist, dist);<BR>
+        followed by Line (dist, -dist) to glue to the next piece</P>
+<P><i>right</i>: Line (-dist, -dist); Line (0, -2 * dist); Line (dist, -dist);<BR>
+        followed by Line (-dist, -dist) to glue to the next piece</P>
+<P><i>bottom</i>: Line (-dist, dist); Line (-2 * dist, 0); Line (-dist, -dist);<BR>
+        followed y Line (-dist, dist) to glue to the next piece</P>
+<P><i>left</i>: Line (dist, dist); Line (0, 2 * dist); Line (-dist, dist);<BR>
+        followed by Line (dist, dist) to glue to the next piece</P>
+
+
+<P><CENTER><IMG SRC="Figure/Figure_18.8.GIF" WIDTH=396 HEIGHT=407 BORDER="1"></CENTER></P><!---->
+
+<P>That is, each procedure has three steps that draw a copy (in one of four rotations) of what is shown in figure 18.9, followed by a connector to the next part.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.9.GIF" WIDTH=374 HEIGHT=104 BORDER="1"></CENTER></P><!---->
+
+<P>The fun begins when this process is made recursive, in the sense that the prototype procedure <i>Top</i> becomes:</P>
+
+<PRE>Top =
+  IF level > 0
+    THEN
+      Top (level - 1);   Line (dist, -dist);
+      Right (level - 1); Line (2 * dist, 0);
+      Left (level - 1);  Line (dist, dist);
+      Top (level - 1)
+    END</PRE>
+
+<P>If this is drawn at level two, the top (including the glue)  becomes figure 18.10, and this pattern can be replicated around the basic square using the other three procedures in turn.</P>
+
+
+<P><CENTER><IMG SRC="Figure/Figure_18.10.GIF" WIDTH=429 HEIGHT=174 BORDER="1"></CENTER></P><!---->
+
+<P>With a careful calculation of starting points, the level two diagram can be superimposed on top of the level one diagram, and indeed as many levels can be drawn as desired. In the code that is given below, three levels have been drawn by the main loop. Care must be taken not to ask for too many levels, or one could find the program in an infinite loop unable to compute the next smaller side length. </P>
+
+<PRE><b>MODULE</b> Sierpinski;
+(* Heavily adapted from a version in Wirth's PIM-2
+   by R. Sutcliffe to illustrate GraphPaper
+   last revision: 1998 06 22 *)
+	 
+<b>FROM</b> GraphPaper <b>IMPORT</b>
+  Line, LineTo, MoveTo; 
+
+<b>CONST</b>
+  size = 512; (* use a power of two that fits on screen. *)
+  numOfLevels = 3; (* set to number smaller than the power in the last line; if 512; use 8 or less here *)
+
+<b>VAR</b>
+  dist : <b>INTEGER</b>;
+  
+(* Each of the mutually recursive procedures draws one side of the basic square figure in the orientation given by its name. At the lowest level, this is an angled part, a straight part, and then an angled part, concluding with a "larger" copy of itself at a lower level to glue to the next piece. *)
+
+<b>PROCEDURE</b> Top (level: <b>CARDINAL</b>);
+<b>BEGIN</b>
+  <b>IF</b> level > 0
+    <b>THEN</b>
+      Top (level - 1);   Line (dist, -dist);
+      Right (level - 1); Line (2 * dist, 0);
+      Left (level - 1);  Line (dist, dist);
+      Top (level - 1)
+    <b>END</b>
+<b>END</b> Top;
+
+<b>PROCEDURE</b> Right (level: <b>CARDINAL</b>);
+<b>BEGIN</b>
+  <b>IF</b> level > 0
+    <b>THEN</b>
+      Right (level - 1);   Line (-dist, -dist);
+      Bottom  (level - 1); Line (0, -2 * dist);
+      Top (level - 1);     Line (dist, -dist);
+      Right (level - 1)
+    <b>END</b>
+<b>END</b> Right;
+
+<b>PROCEDURE</b> Bottom  (level: <b>CARDINAL</b>);
+<b>BEGIN</b>
+  <b>IF</b> level > 0
+    <b>THEN</b>
+      Bottom  (level - 1); Line (-dist, dist);
+      Left (level - 1);    Line (-2 * dist, 0);
+      Right (level - 1);   Line (-dist, -dist);
+      Bottom  (level - 1)
+    <b>END</b>
+<b>END</b> Bottom;
+
+<b>PROCEDURE</b> Left (level: <b>CARDINAL</b>);
+<b>BEGIN</b>
+  <b>IF</b> level > 0
+    <b>THEN</b>
+      Left (level - 1);    Line (dist, dist);
+      Top (level - 1);     Line (0, 2 * dist);
+      Bottom  (level - 1); Line (-dist, dist);
+      Left (level - 1);
+    <b>END</b>
+<b>END</b> Left;
+  
+<b>VAR</b>
+  level  : <b>CARDINAL</b>;
+  startX, startY : <b>INTEGER</b>;
+
+<b>BEGIN</b>
+  dist := size <b>DIV</b> 4; (* initial segment distance *)
+  startX :=  0;
+  startY :=  dist;
+  level := 0; 
+
+ (* The following loop draws the level one figure and then overlays it with the level two figure, and so on until the number of specified levels have all been drawn. *)
+
+  <b>REPEAT</b>
+    <b>INC</b> (level);        (* begin at one and work up to max set. *)
+    <b>DEC</b> (startX, dist); (* set up new corner to start *)
+    dist := dist / 2;   (* and basic distance for next level *)
+    <b>INC</b> (startY, dist);
+    MoveTo (startX, startY);
+    (* We end up d units left and d/2 units up from last start for next one.*) 
+
+    (* In the main program the figure is drawn with the four "sides" in succession, each followed by a line segment to glue to the next piece. *)
+    Top (level);     Line (dist, -dist); 
+    Right (level);   Line (-dist, -dist);
+    Bottom  (level); Line (-dist, dist); 
+    Left (level);    Line (dist, dist);
+  <b>UNTIL</b> level = numOfLevels
+   
+<b>END</b> Sierpinski.</PRE>
+
+<P>When this version of the code was compiled and run, the following figure was produced.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.11.GIF" WIDTH=490 HEIGHT=511 BORDER="1"></CENTER></P><!---->
+
+<P>Careful examination will reveal the three levels drawn. More can be called for, but the diagram becomes somewhat cluttered for illustrative purposes.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

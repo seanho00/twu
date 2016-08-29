@@ -1,0 +1,308 @@
+<HTML>
+<HEAD>
+<TITLE>13.2 Introduction to Sorting</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.2 Introduction to Sorting</B></H2>
+<P>In the last section, the efficient routine for finding data in an array was based on the premise that the data being searched was already sorted.  Indeed, computers are used so extensively to process data collections that in many installations, a great deal of their time is spent maintaining that data in sorted order in the first place.  It turns out that methods of searching a sorted list have much in common with methods of achieving that sorted condition.</P>
+<P>In order to concentrate on sorting abstractions without having to be concerned with the type of data being sorted, most of the code presented in the rest of this chapter will be designed to sort only a single kind of data, namely arrays of cardinals.  Only minor modifications in a few places are necessary to use the code presented in the next few sections for other kinds of data.  The sorts presented here can be made generic enough to sort any kind of data, but that step requires some programming abstractions that will not be taken until chapter twelve, so the topic will be revisited in chapter thirteen with that aspect in view.</P>
+<P>The basic premise behind sorting an array is that its elements start out in some (presumably) random order and need to be arranged from lowest to highest.  If the number of items to be sorted is small, a human reader may be able to tell at a glance what the correct order ought to be.  If there are a large number of items, a more systematic approach is required.  To do this, it is necessary to think about what it means for an array to be sorted.  It is easy to see that the list</P>
+<P>1, 5, 6, 19, 23, 45, 67, 98, 124, 401</P>
+<P>is sorted, whereas the list</P>
+<P>4, 1, 90, 34, 100, 45, 23, 82, 11, 0, 600, 345</P>
+<P>is not.  The property that makes the second one <!--"-->&quot;not sorted<!--"-->&quot; is that there are adjacent elements that are out of order.  The first item is greater than the second instead of less, and likewise the third is greater than the fourth and so on.</P>
+<P>Once this observation is made, it is not very hard to devise a sort that proceeds by examining adjacent elements to see if they are in order, and swapping them if they are not.</P>
+<H3><B><A NAME="13.2.1">13.2.1</A> The Bubble Sort</B></H3>
+<P>This most elementary sorting method proceeds by scanning through the elements a pair at a time, and swapping any adjacent pairs it finds to be out of order.  Thus, for the list in the example above, the first two items are swapped, then the (new) second item is compared to the third (and not swapped,) the third is compared to the fourth, and so on to the end.  The list would be altered as follows (comparisons are <!--underlined-->emphasized.)</P>
+<PRE><EM><U>
+4, 1</U></EM>, 90, 34, 100, 45, 23, 82, 11, 0, 600, 345
+1, <U><EM>4, 90</U></EM>, 34, 100, 45, 23, 82, 11, 0, 600, 345
+1, 4, <U><EM>90, 34</U></EM>, 100, 45, 23, 82, 11, 0, 600, 345
+1, 4, 34, <U><EM>90, 100</U></EM>, 45, 23, 82, 11, 0, 600, 345
+1, 4, 34, 90, <U><EM>100, 45</U></EM>, 23, 82, 11, 0, 600, 345
+1, 4, 34, 90, 45, <U><EM>100, 23</U></EM>, 82, 11, 0, 600, 345
+1, 4, 34, 90, 45, 23, <U><EM>100, 82</U></EM>, 11, 0, 600, 345
+1, 4, 34, 90, 45, 23, 82, <U><EM>100, 11</U></EM>, 0, 600, 345
+1, 4, 34, 90, 45, 23, 82, 11, <U><EM>100, 0</U></EM>, 600, 345
+1, 4, 34, 90, 45, 23, 82, 11, 0, <U><EM>100, 600</U></EM>, 345
+1, 4, 34, 90, 45, 23, 82, 11, 0, 100, <U><EM>600, 345
+</U></EM>1, 4, 34, 90, 45, 23, 82, 11, 0, 100, 345, 600</PRE>
+<P>Unfortunately, the list is not yet sorted, as there are still several places where adjacent items are out of order.  The number 0, for instance, which should be first, is in the ninth slot.  Notice, however, that the largest item worked its way to the top position, and indeed, this algorithm will always force this to happen.  Thus, if at this point the same strategy is continued, it is only the first n-1 items that need to be scanned.  On the second pass, the second largest item will move to its correct position, and on the third pass (stopping at item n-3) the third largest will be in place.  It is this gradual percolation, or <I>bubbling</I> of the larger items to the top end that gives this sorting technique its name.</P>
+<P>There are two ways in which the sort can terminate with everything in the right order. It could complete by reaching the n-1st pass and placing the second smallest item in its correct position.  Alternately, it could find on some earlier pass that nothing needs to be swapped.  That is, all adjacent pairs are already in the correct order.  In this case, there is no need to go on to subsequent passes, for the sort is complete already.  If the list started in sorted order, this would happen on the very first pass.  If it started in reverse order, it would not happen until the last one.</P>
+<P>The code that follows embodies one way of expressing this algorithm.  It requires a separate swap procedure, which is included here for the sake of completeness, and for a reminder of how swapping is done.  Here, the type cardinal is used, but other types could also be employed.  Note that the array may not be full, and unused items at the end are not to be included in the sort, so a cardinal parameter must be passed to inform the bubble sort how many items are active.  This procedure does no error checking on the passed parameter; it is a precondition that the number passed be valid.  Also note that the array being sorted is numbered [1 .. n], [0 .. n - 1], or in general [a .. a + (n - 1)] exterior to the bubble sort procedure, but only [0 .. n - 1] inside it.  The procedure will therefore be informed where to begin sorting and where to stop , both as an offset from the first index.  These will be passed in parameters <I>lBound</I> and <I>uBound</I> respectively, and there will be the least confusion, of course, if the arrays are numbered by the caller as [0 .. last].</P>
+<PRE>
+<B>PROCEDURE</B> Swap (<B>VAR</B> first, second : <B>CARDINAL</B>);
+ 
+ (* Exchange values in first and second. *)
+
+  <B>VAR</B>
+    temp : <B>CARDINAL</B>;
+    
+  <B>BEGIN</B>
+    temp := first;
+    first := second;
+    second := temp;
+  <B>END</B> Swap;
+
+<B>PROCEDURE</B> BubbleSort (<B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+      lBound, uBound : <B>CARDINAL</B>);
+
+   (* sorts beginning at item # lBound and ending at item #uBound, as numbered inside the procedure [0..HIGH], not as on the outside. *)
+
+(* Pre: uBound <!--<-->&lt;= HIGH (source)
+   Post : source is bubble sorted *)
+   
+<B>VAR</B>
+  switch, count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>IF</B> uBound <!-->&gt; lBound (* otherwise, there is nothing to do *)
+    <B>THEN</B>
+      <B>REPEAT</B> (* start a new pass here *)
+        switch := 0; (* reset number of swaps for this pass *)
+        <B>FOR</B> count := lBound <B>TO</B> (uBound - 1)
+        (* scan only as far as necessary *)
+          <B>DO</B> 
+            <B>IF</B> source [count] <!-->&gt; source [count + 1]
+            (* compare adjacent pairs *)
+              <B>THEN</B>
+                Swap (source [count], source [count + 1]);
+                <B>INC</B> (switch);
+              <B>END</B>; (* if *)
+          <B>END</B>; (* for *)
+        <B>DEC</B> (uBound); (* for the next pass, examine one less item *)
+      <B>UNTIL</B> (switch = 0) <B>OR</B> (uBound = 0);
+      (* till no pairs swapped, or at first *)
+    <B>END</B>; (* if *)
+<B>END</B> BubbleSort;</PRE>
+<P>When this sort was tested, statements were included to print the array after each comparison, and to print the number of swaps on each pass.  The original data is given first, and the items that are compared are <!--underlined-->emphasized.</P>
+<PRE>
+  234   77    0  113  404   94  900  113   15  300   13  135
+
+Pass number  1
+   <U><EM>77  234</U></EM>    0  113  404   94  900  113   15  300   13  135
+   77    <U><EM>0  234</U></EM>  113  404   94  900  113   15  300   13  135
+   77    0  <U><EM>113  234</U></EM>  404   94  900  113   15  300   13  135
+   77    0  113  <U><EM>234  404</U></EM>   94  900  113   15  300   13  135
+   77    0  113  234   <U><EM>94  404</U></EM>  900  113   15  300   13  135
+   77    0  113  234   94  <U><EM>404  900</U></EM>  113   15  300   13  135
+   77    0  113  234   94  404  <U><EM>113  900</U></EM>   15  300   13  135
+   77    0  113  234   94  404  113   <U><EM>15  900</U></EM>  300   13  135
+   77    0  113  234   94  404  113   15  <U><EM>300  900</U></EM>   13  135
+   77    0  113  234   94  404  113   15  300   <U><EM>13  900</U></EM>  135
+   77    0  113  234   94  404  113   15  300   13  <U><EM>135  900</U></EM>
+Swaps on this pass = 9
+
+Pass number  2
+    <EM><U>0   77</U></EM>  113  234   94  404  113   15  300   13  135  900
+    0   <EM><U>77  113</U></EM>  234   94  404  113   15  300   13  135  900
+    0   77  <EM><U>113  234</U></EM>   94  404  113   15  300   13  135  900
+    0   77  113   <EM><U>94  234</U></EM>  404  113   15  300   13  135  900
+    0   77  113   94  <EM><U>234  404</U></EM>  113   15  300   13  135  900
+    0   77  113   94  234  <EM><U>113  404 </U></EM>  15  300   13  135  900
+    0   77  113   94  234  113   <EM><U>15  404</U></EM>  300   13  135  900
+    0   77  113   94  234  113   15  <EM><U>300  404</U></EM>   13  135  900
+    0   77  113   94  234  113   15  300   <EM><U>13  404</U></EM>  135  900
+    0   77  113   94  234  113   15  300   13  <EM><U>135  404</U></EM>  900
+Swaps on this pass = 7
+
+Pass number  3
+    <EM><U>0   77</U></EM>  113   94  234  113   15  300   13  135  404  900
+    0   <EM><U>77  113</U></EM>   94  234  113   15  300   13  135  404  900
+    0   77   <EM><U>94  113</U></EM>  234  113   15  300   13  135  404  900
+    0   77   94  <EM><U>113  234</U></EM>  113   15  300   13  135  404  900
+    0   77   94  113  <EM><U>113  234</U></EM>   15  300   13  135  404  900
+    0   77   94  113  113   <EM><U>15  234</U></EM>  300   13  135  404  900
+    0   77   94  113  113   15  <EM><U>234  300</U></EM>   13  135  404  900
+    0   77   94  113  113   15  234   <EM><U>13  300</U></EM>  135  404  900
+    0   77   94  113  113   15  234   13  <EM><U>135  300</U></EM>  404  900
+Swaps on this pass = 5
+
+Pass number  4
+    <EM><U>0   77</U></EM>   94  113  113   15  234   13  135  300  404  900
+    0   <EM><U>77   94</U></EM>  113  113   15  234   13  135  300  404  900
+    0   77   <EM><U>94  113</U></EM>  113   15  234   13  135  300  404  900
+    0   77   94  <EM><U>113  113</U></EM>   15  234   13  135  300  404  900
+    0   77   94  113   <EM><U>15  113</U></EM>  234   13  135  300  404  900
+    0   77   94  113   15  <EM><U>113  234</U></EM>   13  135  300  404  900
+    0   77   94  113   15  113   <EM><U>13  234</U></EM>  135  300  404  900
+    0   77   94  113   15  113   13  <EM><U>135  234</U></EM>  300  404  900
+Swaps on this pass = 3
+
+Pass number  5
+    <EM><U>0   77</U></EM>   94  113   15  113   13  135  234  300  404  900
+    0   <EM><U>77   94</U></EM>  113   15  113   13  135  234  300  404  900
+    0   77   <EM><U>94  113</U></EM>   15  113   13  135  234  300  404  900
+    0   77   94   <EM><U>15  113</U></EM>  113   13  135  234  300  404  900
+    0   77   94   15  <EM><U>113  113</U></EM>   13  135  234  300  404  900
+    0   77   94   15  113   <EM><U>13  113</U></EM>  135  234  300  404  900
+    0   77   94   15  113   13  <EM><U>113  135</U></EM>  234  300  404  900
+Swaps on this pass = 2
+
+Pass number  6
+    <EM><U>0   77</U></EM>   94   15  113   13  113  135  234  300  404  900
+    0   <EM><U>77   94</U></EM>   15  113   13  113  135  234  300  404  900
+    0   77   <EM><U>15   94</U></EM>  113   13  113  135  234  300  404  900
+    0   77   15   <EM><U>94  113</U></EM>   13  113  135  234  300  404  900
+    0   77   15   94   <EM><U>13  113</U></EM>  113  135  234  300  404  900
+    0   77   15   94   13  <EM><U>113  113</U></EM>  135  234  300  404  900
+Swaps on this pass = 2
+
+Pass number  7
+    <EM><U>0   77</U></EM>   15   94   13  113  113  135  234  300  404  900
+    0   <EM><U>15   77</U></EM>   94   13  113  113  135  234  300  404  900
+    0   15   <EM><U>77   94</U></EM>   13  113  113  135  234  300  404  900
+    0   15   77   <EM><U>13   94</U></EM>  113  113  135  234  300  404  900
+    0   15   77   13   <EM><U>94  113</U></EM>  113  135  234  300  404  900
+Swaps on this pass = 2
+
+Pass number  8
+    <EM><U>0   15</U></EM>   77   13   94  113  113  135  234  300  404  900
+    0   <EM><U>15   77</U></EM>   13   94  113  113  135  234  300  404  900
+    0   15   <EM><U>13   77</U></EM>   94  113  113  135  234  300  404  900
+    0   15   13   <EM><U>77   94</U></EM>  113  113  135  234  300  404  900
+Swaps on this pass = 1
+
+Pass number  9
+    <EM><U>0   15</U></EM>   13   77   94  113  113  135  234  300  404  900
+    0   <EM><U>13   15</U></EM>   77   94  113  113  135  234  300  404  900
+    0   13   <EM><U>15   77</U></EM>   94  113  113  135  234  300  404  900
+Swaps on this pass = 1
+
+Pass number 10
+    <EM><U>0   13</U></EM>   15   77   94  113  113  135  234  300  404  900
+    0   <EM><U>13   15</U></EM>   77   94  113  113  135  234  300  404  900
+Swaps on this pass = 0</PRE>
+<H3><B><A NAME="13.2.2">13.2.2</A> The Selection Sort</B></H3>
+<P>It is not difficult to see that some additional efficiency can be obtained for the bubble sort.  It uses many swaps to get the largest item into its correct position on each pass, and some of these are wasted.  If the scan is modified so that it simply finds the largest item in the range being scanned and no interchanges are done until the scan is finished, all the intermediate swaps can be eliminated.  Then, when the pass is complete, the largest item can be swapped into the top position for that pass.  For instance, starting with the list</P>
+<P>4, 1, 90, 34, 100, 45, 23, 82, 11, 0, 600, 345</P>
+<P>one would find the number 600 to be largest on the first pass (as with the bubble sort,) but do only the swap from its present position to the last spot for the pass.  Successive passes would produce the lists:</P>
+<PRE>
+4, 1, 90, 34, 100, 45, 23, 82, 11, 0, 345, <EM><U>600</U></EM>
+4, 1, 90, 34, 100, 45, 23, 82, 11, 0, <EM><U>345</U></EM>, 600
+4, 1, 90, 34, 0, 45, 23, 82, 11, <EM><U>100</U></EM>, 345, 600
+4, 1, 11, 34, 0, 45, 23, 82, <EM><U>90</U></EM>, 100, 345, 600
+4, 1, 11, 34, 0, 45, 23, <EM><U>82</U></EM>, 90, 100, 345, 600
+4, 1, 11, 34, 0, 23, <EM><U>45</U></EM>, 82, 90, 100, 345, 600
+4, 1, 11, 23, 0, <EM><U>34</U></EM>, 45, 82, 90, 100, 345, 600
+4, 1, 11, 0, <EM><U>23</U></EM>, 34, 45, 82, 90, 100, 345, 600
+4, 1, 0, <EM><U>11</U></EM>, 23, 34, 45, 82, 90, 100, 345, 600
+0, 1, <EM><U>4</U></EM>, 11, 23, 34, 45, 82, 90, 100, 345, 600
+0, <EM><U>1</U></EM>, 4, 11, 23, 34, 45, 82, 90, 100, 345, 600</PRE>
+<P>In each pass, the number successfully placed is underlined.  Here is the code to express these ideas:</P>
+<PRE>
+<B>PROCEDURE</B> SelectSort (<B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+        lBound, uBound : <B>CARDINAL</B>);
+(* Pre: uBound <!--<-->&lt;= HIGH (source) and uBound <!-->&gt; 0
+    Post : source is selection sorted *)
+
+(* sorts beginning at item # lBound and ending at item #uBound, as numbered inside the procedure [0..HIGH], not as on the outside. *)
+
+<B>VAR</B>
+  count, iLarge : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>IF</B> uBound <!-->&gt; lBound (* otherwise, there is nothing to do *)
+    <B>THEN</B>
+      <B>REPEAT</B>  (* start a new pass here *)
+        iLarge := uBound;
+        (* assume last index is of the largest one *)
+        <B>FOR</B> count := uBound <B>TO</B> lBound <B>BY</B> -1
+        (* scan from current end of list *)
+          <B>DO</B>
+            <B>IF</B> source [count] <!-->&gt; source [iLarge]
+            (* look for anything larger *)
+              <B>THEN</B>
+                iLarge := count;
+              <B>END</B>; (* if *)
+          <B>END</B>; (* for *)
+          <B>IF</B> iLarge # uBound
+          (* if equal, its already in right spot *)
+            <B>THEN</B>
+              Swap (source [uBound], source [iLarge]);
+            <B>END</B>; (* if *)
+          <B>DEC</B> (uBound);  (* for next pass examine one less item *)
+        <B>UNTIL</B> uBound = lBound;
+    <B>END</B>; (* if *)
+<B>END</B> SelectSort;</PRE>
+<P>Notice that a small change was made in the structure of the sort.  The scan for the largest on each pass is conducted starting at the last index rather than at the low end.  This is done to maximize the efficiency of the sort in cases where the list is already sorted.  The index <I>iLarge</I> would in such cases hold the position of the largest item right from the start of the scan; no changes of index would take place, and there would be no swap.  Of course, if the list were reverse sorted to begin with, this choice would reduce efficiency, but that possibility is less likely than that it may be sorted prior to beginning.</P>
+<P>This procedure was run with the same test data as the bubble sort and with suitable print statements to monitor the progress of the sort.  It produced the output below, with the original data first.  The item correctly placed on each pass is <!--underlined-->emphasized.</P>
+<PRE>
+  234   77    0  113  404   94  900  113   15  300   13  135
+
+Pass number  1
+  234   77    0  113  404   94  135  113   15  300   13  <EM><U>900</U></EM>
+Pass number  2
+  234   77    0  113   13   94  135  113   15  300  <EM><U>404</U></EM>  900
+Pass number  3
+  234   77    0  113   13   94  135  113   15  <EM><U>300</U></EM>  404  900
+Pass number  4
+   15   77    0  113   13   94  135  113  <EM><U>234</U></EM>  300  404  900
+Pass number  5
+   15   77    0  113   13   94  113  <EM><U>135</U></EM>  234  300  404  900
+Pass number  6
+   15   77    0  113   13   94  <EM><U>113</U></EM>  135  234  300  404  900
+Pass number  7
+   15   77    0   94   13  <EM><U>113</U></EM>  113  135  234  300  404  900
+Pass number  8
+   15   77    0   13   <EM><U>94</U></EM>  113  113  135  234  300  404  900
+Pass number  9
+   15   13    0   <EM><U>77</U></EM>   94  113  113  135  234  300  404  900
+Pass number 10
+    0   13   <EM><U>15</U></EM>   77   94  113  113  135  234  300  404  900
+Pass number 11
+    0   <EM><U>13</U></EM>   15   77   94  113  113  135  234  300  404  900</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

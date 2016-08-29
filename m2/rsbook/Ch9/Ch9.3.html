@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<TITLE>9.3 Set Comparisons</TITLE>
+<meta NAME="keywords" CONTENT="set, comparison, comparisons, equality, inequality, overload, overloaded, overloading, operator, operators, subset, proper, superset, super">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.3 Set Comparisons</B></H2>
+<H3><B><A NAME="9.3.1">9.3.1</A> Set Equality and Inequality</B></H3>
+<P>Two sets are equal when their list of elements is identical.  In mathematics, one simply writes A = B to express equality, and A <!--¼-->&lt;&gt; B to express set inequality. Both may also be used in the sense of Boolean expressions.</P>
+<BLOCKQUOTE><I>The Modula-2 notation for the boolean expression <!--"-->&quot;A is equal to B<!--"-->&quot; is written A = B, and the Modula-2 notation for the boolean expression <!--"-->&quot;A is not equal to B<!--"-->&quot; is written A <!--<-->&lt;<!-->&gt; B  or A # B.</I></BLOCKQUOTE>
+<P>Of course, the two sets being compared must be of the same type, or a compiler error results.  Here are some examples:</P>
+<P>If one has:</P>
+<PRE>
+<B>TYPE</B>
+  CharSet = <B>SET</B> <B>OF</B> <B>CHAR</B>;
+  CapSet = <B>SET</B> <B>OF</B> ['A' .. 'Z'];
+
+<B>VAR</B>
+  firstCharSet, secondCharSet : CharSet;
+  firstCapSet, secondCapSet : CapSet;
+
+<B>BEGIN</B>
+  firstCharSet := CharSet {'A', 'B'};
+  secondCharSet := CharSet {'B', 'C'};
+  firstCapSet := CapSet {'A', 'B'};
+  secondCapSet := CapSet {'A', 'B', 'C'};</PRE>
+<P>then here are some comparisons with the outcome:</P>
+<PRE>
+<B>IF</B> firstCapSet = firstCharSet ..  (* error, wrong types *)
+<B>IF</B> firstCapSet <!--<-->&lt;<!-->&gt; secondCapSet..  (* not equal, so acts on <B>TRUE</B> *)</PRE>
+<P>Notice that the <!--"-->&quot;=<!--"-->&quot; and <!--"-->&quot;<!--<-->&lt;<!-->&gt;<!--"-->&quot; (or #) symbols have been used for equality/inequality tests of both individual numerical equality <I>and</I> for equality  of sets.  The symbol <!--"-->&quot;=<!--"-->&quot; used to compare two sets has a different meaning than the symbol <!--"-->&quot;=<!--"-->&quot; used to compare two numbers.  The compiler must sort out which meaning is intended by the programmer according to the correct context in which the symbol is used.</P>
+<BLOCKQUOTE><I><A NAME="Overload">Whenever</A> a symbol or operator is used with two or more different meanings in different contexts, it is said to be <U>overloaded</U>.</I></BLOCKQUOTE>
+<P>Sometimes overloading is less obvious.  Strictly speaking, the <!--"-->&quot;+<!--"-->&quot; operator is overloaded just because it can be used with all three of the cardinal, integer, and real types, even though the mathematical meaning of the symbol is essentially the same for all three.  However, the overloading of operators like <!--"-->&quot;+<!--"-->&quot; is more obvious when it is also used to represent set union.  As the following sections illustrate, the <!--"-->&quot;=<!--"-->&quot; and <!--"-->&quot;#<!--"-->&quot; are not the only relational operators to be overloaded.</P>
+<H3><B><A NAME="9.3.2">9.3.2</A> Subset</B></H3>
+<P>If all the elements of a set A are contained in a set B one says that A is a <I>subset</I> of B.  The mathematical notation is A <IMG SRC="Figure/subset.GIF"><!--Õ--> B, and the relationship is illustrated in figure 9.2.</P>
+<BLOCKQUOTE><I>The Modula-2 notation for the boolean expression <!--"-->&quot;A is a subset of B<!--"-->&quot; is written A <!--<-->&lt;= B.</I></BLOCKQUOTE>
+<P><CENTER><IMG SRC="Figure/Figure_9.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>For example, {1,2,4} <IMG SRC="Figure/subset.GIF"><!--Õ--> {1,2,4,7} and {a,b} <IMG SRC="Figure/subset.GIF"><!--Õ--> {a,b,c,d}, or, to put it in Modula-2 notation, if <I>result</I> is a boolean variable, then</P>
+<PRE>
+result := DigitSet{1,2,4} <!--<-->&lt;= DigitSet{1,2,4,7};</PRE>
+<P>or</P>
+<PRE>
+result := DigitSet{1,2,4} <!--<-->&lt;= DigitSet{1,2,4};</PRE>
+
+<P>leaves <I>result</I> holding TRUE, and</P>
+<PRE>
+result := DigitSet{1,2,4,5} <!--<-->&lt;= DigitSet{1,2,4,7};</PRE>
+<P>or</P>
+<PRE>
+result := <B>NOT</B> (Charset{<!--"-->&quot;a<!--"-->&quot;,<!--"-->&quot;b<!--"-->&quot;} <!--<-->&lt;= Charset{<!--"-->&quot;a<!--"-->&quot;,<!--"-->&quot;b<!--"-->&quot;,<!--"-->&quot;c<!--"-->&quot;,<!--"-->&quot;d<!--"-->&quot;});</PRE>
+
+<P>leaves <I>result</I> holding FALSE.</P>
+<P>If, in addition to A being a subset of B, B and A are known not to be equal, then A is a <I>proper subset</I> of B.  The mathematical notation is A <IMG SRC="Figure/prsubset.GIF"><!--Ã--> B. Although one might expect the Modula-2 notation for the boolean expression <!--"-->&quot;A is a proper subset of B<!--"-->&quot; to be written A <!--<-->&lt; B, this notation is not in fact used, and it is necessary to employ (A <!--<-->&lt; B) AND (A # B) for proper subset.</P>
+<H3><B><A NAME="9.3.3">9.3.3</A> Superset</B></H3>
+<P>Sometimes the set containment symbols are written the other way around.  One might have occasion to write B <IMG SRC="Figure/superset.GIF"><!-- --> A rather than A <IMG SRC="Figure/subset.GIF"><!--Õ--> B, for instance.  Rather than read this from right to left, it is quite in order to say <!--"-->&quot;B is a superset of A.<!--"-->&quot;</P>
+<BLOCKQUOTE><I>The Modula-2 notation for the boolean expression <!--"-->&quot;A is a superset of B<!--"-->&quot; is written A <!-->&gt;= B.</I></BLOCKQUOTE>
+<P>Likewise, one might have occasion to say B <IMG SRC="Figure/prsuperset.GIF"><!--Š--> A rather than A <IMG SRC="Figure/prsubset.GIF"><!--Ã--> B.  This could be read <!--"-->&quot;B is a proper superset of A.<!--"-->&quot;  There is no single Modula-2 notation for proper superset; it must be written as a compound Boolean expression as above.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

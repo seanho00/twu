@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<TITLE>1.7 Data Manipulation Abstractions (Expressions)</TITLE>
+<meta NAME="keywords" CONTENT="manipulation, manipulate, abstract, abstraction, expression, expressions, data, adt, type, expression, evaluate, evaluating, evaluation, produce, produced, connectives, precidence, express, compatibility, compatible, incompatible, overloaded, operator
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>1.7 Data Manipulation Abstractions (Expressions)</B></H2>
+<P>Along with the concept of an ADT (data and operations) comes the idea of writing down combinations of data items using some notation for the operation. The notational abstractions used for such operations as, say, addition, depend somewhat on those used to represent the data. For instance the operation <I>eleven plus twenty</I> could be represented as:</P>
+<P>(|||||||||||)  (||||||||||||||||||||)</P>
+<P>This is what children do when they are learning how to make number abstractions and they count with sticks, marbles, pictures of teddy bears or jars of jelly beans.</P>
+<P>At a higher level of abstraction, one combines several symbols into one, and could write:</P>
+<P>XI + XX,</P>
+<P>a notation that, despite its inconveniences, served Europe for many centuries.</P>
+<P>Later, the concept of place value, and the idea of using zero as a place holder became accepted. With the adoption of this Arabic system, the modern numeric representation came into being, and along with it came streamlined rules for performing operations<!--‹-->--all of which transfers more or less directly into most computing notations. Thus, we write</P>
+<P>3 + 5 + 16	(addition)</P>
+<P>7 - 2		(subtraction)</P>
+<P>-4 * 6		(multiplication)</P>
+<P>3.0 / 7.0	(division)</P>
+<P>for various numeric data types. Note the use of * and / for multiplication and division, respectively. This practice is all but universal, for most keyboards lack the usual mathematical symbols for these operations.</P>
+<BLOCKQUOTE><I><A NAME="Expression">A</A> combination of data items with various operators that are available for that data type is called an <U>expression</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>Performing the operations and extracting a single numeric result is called <U>evaluating the expression</U>.</I></BLOCKQUOTE>
+<P>Thus the evaluation of 3 + 5 + 16 produces 24, of -4 * 6 produces -24, and so on.</P>
+<P>Of course, the concept of type attaches to the result of evaluating the expression, as well as to the individual items that make it up. Thus, all the expressions above are evidently of numeric types.</P>
+<P>Now consider expressions such as:</P>
+<P>15 <!-->&gt; 6</P>
+<P>3.0 <!--<-->&lt; 2.0, or</P>
+<P>-3 = 7</P>
+<P>These contain numeric data connected by comparisons rather than arithmetic operations. They produce the values <I>True</I>, <I>False</I>, and <I>False</I>, respectively, and are classified as Boolean expressions. We say:</P>
+<BLOCKQUOTE><I><A NAME="ExpressionType">The</A> <U>type of an expression</U> is the same as the type of the data produced when the expression is evaluated.</I></BLOCKQUOTE>
+<P>Naturally, this applies to expressions with named symbols for constants or variables as well. One often writes formulas, with a variable on the left hand side, and an expression on the right hand side to mean that the expression is to be evaluated and the result (with its type) will have the name given on the left. Examples include:</P>
+<P>interest = principal * rate * time</P>
+<P>distance = speed * time</P>
+<P>The intent in using such formulas is that they stand abstractly for a whole class of possible computations, the actual numeric details for which can be filled in later. Naturally, such facilities are available in most computing notations as well. In such cases, the name also represents a memory location, and one can think of the value as being deposited in that named location for later reference.</P>
+<P>Like algebraic expressions, Boolean ones may also be represented by names, and combined to form more complex expressions. For instance, if <I>p</I> and <I>q</I> are Boolean expressions, then:</P>
+<P><I>not p</I> is false whenever <I>p</I> is true, and vice versa,</P>
+<P><I>p and q</I> is true whenever both <I>p</I> and <I>q</I> are true, and</P>
+<P><I>p or q</I> is true whenever either of <I>p</I> or <I>q</I> (or perhaps both) is true.</P>
+<BLOCKQUOTE><I><A NAME="Connectives">In </A>forming boolean expressions, <!--"-->&quot;and,<!--"-->&quot; <!--"-->&quot;or,<!--"-->&quot; and <!--"-->&quot;not<!--"-->&quot; are called <U>connectives</U>.</I></BLOCKQUOTE>
+<H3><B><A NAME="1.7.1">1.7.1</A> Precedence</B></H3>
+<P>Some expressions are ambiguous unless rules are adopted to make their meaning clear. Thus </P>
+<P>3 + 4 * 5</P>
+<P>could produce <I>35</I> or <I>23</I>, depending on whether the addition or the multiplication is performed first. To ensure that such problems do not arise, mathematicians adopt a <!--"-->&quot;convention<!--"-->&quot; or set of rules to evaluate otherwise ambiguous expressions.</P>
+<P>By this convention, multiplication and division are performed before addition and subtraction, but parentheses can modify this order. Otherwise, evaluation is done left to right. That is, the correct evaluation of the expression above produces <I>23</I>. Such rules are not followed by many calculators, which evaluate expressions as one enters them. However, computers are more expensive than calculators, and one can reasonably expect that their programming notations can handle the mathematically correct order of operations.</P>
+<P>Here are a number of evaluations, with the results shown at right:</P>
+<PRE>	x = 2 + 6 / 3 	 	4 <!--Þ-->==&gt; x
+	x = 3 - 6 * (7 + 3)	-57 <!--Þ-->==&gt; x
+	x = 3 - 4 + 6 * 7	 	41 <!--Þ-->==&gt; x</PRE>
+
+<P>When expressions contain booleans, numeric comparisons have the lowest priority, the <I>or</I> connective has the precedence of addition, the <I>and</I> connective has the precedence of multiplication, and the <I>not</I> has a higher precedence than either. Again, parentheses can modify this order.</P>
+
+<PRE>	2 + 3 <!--¾-->&lt;= 5   	true
+	(1 <!--<-->&lt; 2) and (-4 <!--<-->&lt; 7)	true
+	(2 <!--„-->&gt;= 5) or (8 <!--<-->&lt; 6) 	false
+	not (1 = 1)  	false
+	(4 <!-->&gt; 2 + 2) 	false
+	5 <!--<-->&lt; 1 and 3 <!--<-->&lt; 4	cannot evaluate. <I>1 and 3</I> makes no sense.</PRE>
+
+<H3><B><A NAME="1.7.2">1.7.2</A> Expression compatibility</B></H3>
+<P>As the last example illustrates, it makes little sense to mix data items of different types in the same expression. (What operator could be used? What type would result?) Thus <I>4.0 <!--<-->&lt; True</I> or <I>3 - False</I> are rather obvious errors.</P>
+<P>On the other hand, the numeric operations are defined (with essentially the same meaning) for several types. For example, one can write whole number or real addition expressions. This leads to some interesting difficulties when writing mixed expressions (containing more than one type.)</P>
+<P>An expression like <I>-2 + 5</I> can be evaluated mathematically to <I>3</I> without giving any thought to such issues, but in a computing machine things are not so simple. Some notations take a very strict view of mixed expressions. Because there is one signed whole number in the expression, they would assume that the 5 be taken from the signed whole number type rather than the unsigned whole number type. The result would be of the signed whole number type. On the other hand, if there is no context it is impossible to tell whether the underlying nature of symbols like <I>5</I> arise indeed signed or unsigned<!--‹-->--they can be written in either type of expression.</P>
+<BLOCKQUOTE><I><A NAME="Compatible">When </A>two ADTs share a common range and operation and instances of their symbols can be used together in a single expression, they are called <U>expression compatible</U> (over the common range). Otherwise, they are <U>expression incompatible</U>.</I></BLOCKQUOTE>
+<P>Expressions like 4.5 + 3 are also easy to handle abstractly. This evaluates to 7.5 and so is a real expression. The fact that the 3 is converted into 3.0 (from an unsigned whole number or signed whole number to a real) is often ignored<!--‹-->--outside the computer. Within the computing environment however, this conversion cannot be ignored, for the two data types may well be stored in very different ways and therefore be expression incompatible. In some notations, this conversion is performed automatically, making these types (at least appear to be) expression compatible. In others, the user is responsible to do conversions when data is not expression compatible. This particular conversion is called <!--"-->&quot;floating<!--"-->&quot; (for converting to floating point) and the expression may be written as 4.5 + float (3).</P>
+<P>Similar explicit conversions may be required if it is known that data is of one type and the result is of another. For instance:</P>
+<P>card (-3 - -7)</P>
+<P>might be used to produce an unsigned whole number result, and</P>
+<P>int (10 - 5)</P>
+<P>might indicate this result is of signed whole number type.</P>
+<P>It is also worth observing that although certain operators (+,-,*, /) work on several types, they mean slightly different things for each. (Internally to the machine, they could mean very different things. )</P>
+<BLOCKQUOTE><I><A NAME="Overloaded">An </A>operator that is defined for expressions of more than one type is said to be <U>overloaded.</U></I></BLOCKQUOTE>
+
+<CENTER>
+<A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

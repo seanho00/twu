@@ -1,0 +1,64 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cpp}
+decl {\#include "Server.h"} {} 
+
+decl {\#include "fl_threads.h"} {global
+} 
+
+decl {Server *theServer;} {} 
+
+decl {Fl_Text_Buffer *outputBuffer;} {} 
+
+Function {appendOutput(const char* txt)} {open return_type void
+} {
+  code {Fl::lock();
+outputBuffer->append(txt);
+outputBuffer->append("\\n");
+Fl::unlock();
+Fl::awake((void*) 0);} {}
+} 
+
+Function {serverListen(void *svr)} {open private return_type {void *}
+} {
+  code {((Server*) svr)->listenLoop();} {}
+} 
+
+Function {} {open return_type int
+} {
+  Fl_Window {} {
+    label Server open
+    xywh {686 232 300 260} type Double resizable visible
+  } {
+    Fl_Input input {
+      label {Type a message to the client:}
+      callback {theServer->sendMsg(o->value(), o->size());}
+      private xywh {15 230 275 25} labelfont 1 align 5 when 8 deactivate resizable
+    }
+    Fl_Text_Display output {
+      label {Messages from client:}
+      private xywh {15 20 275 185} color 53 labelfont 1 align 5
+    }
+  }
+  code {Fl::lock(); // enable multithreading
+outputBuffer = new Fl_Text_Buffer();
+output->buffer(outputBuffer);
+theServer = new Server();
+theServer->init(4410);
+Fl_Thread listenerThread;
+fl_create_thread( listenerThread, serverListen, theServer );} {selected
+  }
+} 
+
+Function {updateConnectStatus()} {open return_type void
+} {
+  code {Fl::lock();
+if (theServer->isConnected()) {
+  input->activate();
+} else {
+  input->deactivate();
+}
+Fl::unlock();
+Fl::awake((void*) 0);} {}
+} 

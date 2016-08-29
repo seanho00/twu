@@ -1,0 +1,369 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.5em; } 
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+--></style>
+
+<title>CMPT14x Fall2006 Final KEY, Trinity Western.  9Dec2006</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>______K E Y_______</td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<br>Total points: 115
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b> <br>
+problem solving as described in the text.
+<br>(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[5]</u><br><br>
+
+<center><table width=80%><tr>
+			<td width=20%><i>Write______</i></td>
+			<td width=20%><i>Apprehend__</i></td>
+			<td width=20%><i>Design_____</i></td>
+			<td width=20%><i>Execute____</i></td>
+			<td width=20%><i>Scrutinize_</i></td>
+</tr></table></center>
+
+<li> Fill in the blank: <u>[22]</u> <ol class="subparts">
+  <li> "<b>Computers</b> are <i>tools</i>, and computing scientists are
+  <i>toolsmiths</i>."
+  <li> How many bits are in a <b>nibble</b>? <i>4</i>
+  <li> 1011 0110 <b>shifted</b> two right, in binary, is <i>101101</i>
+  <li> Convert <b>0x1BE</b> to decimal: <i>446</i>
+  <li> Convert 1100 0110 from binary to <b>octal</b>:  <i>0306</i>
+  <li> What word describes functions which <b>invoke</b> themselves?
+  <i>recursion</i>
+  <li> The Python command used to trigger a user-defined <b>exception</b> is
+  <i>raise</i>
+  <li> <i>False</i> : The word <tt>Apples_For_Dr.Ho</tt> 
+    is a legal Python <b>identifier</b>.
+  <li> What is the <b>type</b> of the Python expression 5**2 ? <i>int</i>
+  <li> What Python command is used to convert an integer into a <b>real</b> value?
+  <i>float()</i>
+  <li> Name the two optional reserved words used in the Python program control
+  construct which corresponds to <b>selection</b>: <i>elif, else</i>
+  <li> The first <b>assignment</b> of a value to a variable is called 
+  <i>initializing</i> it.
+  <li> A cable modem connection runs at <b>4Mb/s</b>.  Assuming full utilization of
+  the bandwidth (which never happens in reality), how long would it take to
+  download a <b>2GB</b> file?  Use binary units.  <i>4096 seconds</i>
+  <li> The standard Python function which produces a <b>pseudorandom</b> real number
+  between 0 and 1 is in the 
+  <br><i>random</i> standard library and is named <i>random()</i>.
+  <li> The Python function which counts the <b>number of characters</b> in a string
+  is named <i>len()</i>.
+  <li> What English part of speech should a <b>function</b> name be?
+  <i>verb</i>
+  <li> What symbol is used to separate statements in a <b>sequence</b> in C or M2?
+  <i>; (semicolon)</i>
+  <li> What symbol is used to indicate logical <b>negation</b> in Python?
+  <i>not</i>
+  <li> A <b>requirement</b> imposed by a function upon its parameters, such that
+    the correctness of the result is not guaranteed if the requirement is
+    not met, is called a <i>precondition</i>
+</ol>
+
+<li class="break">
+Name the five computer <b>program flow</b> abstractions described in the text,
+and for the four which we covered in class, show how each is done in Python.
+<u>[9]</u><br>
+
+<i><ul>
+<li> Sequence: newline
+<li> Selection: if/elif/else
+<li> Repetition: while/for
+<li> Composition: def (functions)
+<li> Parallelism
+</ul></i>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume the following initialization: <u>[14]</u>
+<pre>	myPear = "DAnjou"
+	from math import pi	</pre>
+  <ol class="subparts">
+  <li><tt> 'pi' + 2*'z' + 'a' </tt> <i>'pizza'</i>
+  <li><tt> 2 + 1&gt;4 and (5/0 &lt; 1)	</tt>	<i>False</i>
+  <li><tt> 2.0 + 14 / 4	</tt>	<i>5.0</i>
+  <li><tt> 6 ^ 5 </tt>	<i>3</i>
+  <li><tt> "%03d%s" % (15.189, 'pears')	</tt>	<i>'015pears'</i>
+  <li><tt> string.upper(DAnjou)	</tt>	<i>NameError: DAnjou</i>
+  <li><tt> "%05.2f" % 2.7182818	</tt>	<i>'02.72'</i>
+  <li><tt> '%.2f' % (19 % 5) </tt>	<i>'4.00'</i>
+  <li><tt> range(myPear)	</tt>	<i>TypeError</i>
+  <li><tt> myPear[1:4]	</tt>		<i>'Anj'</i>
+  <li><tt> 'd' + 'b' </tt>		<i>'db'</i>
+  <li><tt> ord('d') - ord('b') </tt>	<i>2</i>
+  <li><tt> 'd' - 'b' </tt>		<i>TypeError</i>
+  <li><tt> 'b' + 3 == 'd'	</tt>	<i>TypeError</i>
+</ol>
+<br>
+
+<li>
+What is a <b>namespace</b>?  Tell me everything you know about scope rules and
+namespaces in Python.
+<u>[5]</u>
+<br>
+
+<i>
+A namespace is a mapping (dictionary) from identifiers (names) to objects
+(values).  There are three kinds of namespaces: the local namespace within a
+function/class/block, the global namespace for each module/file, and the
+default built-in namespace for all of Python.  The scoping rules resolve names
+by moving outward from the local namespace, to any enclosing function/class
+definitions, to the global namespace for the file, to the default namespace.
+</i>
+
+<li class="break">
+An orchard grows five apple varieties:
+<br>Fuji, Gala, Spartan, Rome, and Melba.<br>
+The apples I like are Fuji, Gala, and Rome; let this <b>set</b> be denoted by
+<tt>myFav</tt>.  <br>Let <tt>yrFav</tt> be the set containing Fuji and Melba.
+
+<ol class="subparts">
+  <li> Consider the <b>intersection</b> of <tt>myFav</tt> and <tt>yrFav</tt>.
+  Express in words the <b>interpretation</b> of this intersection
+  in the context of apple preferences. <u>[2]</u> <br><br><br><br> 
+
+  <i>The intersection of myFav and yrFav is the set of apple varieties that
+  <b>both</b> you and I like.</i> <br>
+
+  <li> Consider the <b>set difference</b> <tt>yrFav - myFav</tt>.
+  Express in words the <b>interpretation</b> of this set difference
+  in the context of apple preferences. <u>[2]</u> <br><br><br><br>
+
+  <i>The set difference yrFav - myFav is the set of apple varieties that
+  you like but that I don't like</i><br>
+  
+  <li> We wish to implement some set operations using <b>bitsets</b> in Python.
+  Define five Python <b>variables</b> <tt>Fuji, Gala, Spartan, Rome, Melba</tt>
+  with appropriate integer values for use in a bitset.
+  <u>[2]</u> <br>
+
+  <i><pre>
+fuji = 1 &lt;&lt; 0
+gala = 1 &lt;&lt; 1
+spartan = 1 &lt;&lt; 2
+rome = 1 &lt;&lt; 3
+melba = 1 &lt;&lt; 4
+</pre></i>
+  <li> Using the variables you just defined, define a Python <b>bitset</b>
+  for <tt>yrFav</tt>. <u>[2]</u> <br>
+
+  <i><pre>
+myFav = fuji | melba
+</pre></i>
+
+  <li> Write a Python expression for the <b>intersection</b> of
+  <tt>myFav</tt> and <tt>yrFav</tt>. <u>[2]</u> <br><br><br>
+
+  <i><pre>
+myFav & yrFav
+</pre></i>
+
+</ol>
+
+<li>
+What is <b>wrong</b> with the following Python loop?  Rewrite it from scratch
+in a better way. <u>[4]</u>
+<pre>
+counter = 0
+sum = 0.0
+numitems = 0
+while counter &lt; len(mylist):
+	sum = sum + mylist[counter]
+	numitems = numitems + 1
+average = sum / numitems
+</pre>
+
+<i>counter is never incremented.  Use a for loop:
+<pre>
+sum = 0
+for item in mylist:
+	sum += item
+average = sum / len(mylist)
+</pre></i>
+
+<li class="break">
+The following Python function has at least eleven <b>errors</b>.  Find and fix all of
+them.  Points will be deducted for "fixing" what are not errors.
+<u>[6]</u>
+<pre>
+def<i>ine</i> round(f<i>loat</i>):
+	
+	""<i>"</i>Round a float to the nearest integer (up or down)."""
+	
+	addhalf <i>:</i>= (float<i>+</i>+ 0<i>.</i>5)	<i>//</i> add 0.5 to float
+	
+	<i>R</i>eturn int<i>eger</i>(<i>(</i>addhalf)<i>;</i>
+</pre>
+<br>
+<!-- float is a std ident, not reserved word, so technically not error.
+semicolon is okay at end of statement.  -->
+
+<li>
+Define or describe each of the following <b>object-oriented</b> terms:
+<u>[7]</u>
+<ol class="subparts">
+  <li> Class: <i>a user-defined container type</i>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+  types</i>
+  <li> Attribute: <i>a variable or method belonging to an object</i>
+  <li> Method: <i>a function/procedure belonging to an object</i>
+  <li> Constructor: <i>the special method which is called when an object is
+  instantiated</i>
+  <li> Interface: <i>a set of messages that an object can receive</i>
+  <li> Overloading: <i>giving multiple definitions to a
+  function/method/operator depending on the type of its parameters/operands</i>
+</ol>
+
+<li>
+Modula-2 and C have no built-in <b>string</b> type.  What is a string
+in Modula-2 or C?
+<u>[3]</u>
+<br>
+
+<i>In M2 and C, strings are just arrays of characters, terminated by a
+null.</i>
+
+<li class="break">
+Describe all the differences between Python <b>lists</b> and C <b>arrays</b>.
+<u>[4]</u>
+<br>
+
+<i>Python lists can change length (can insert/delete), can have items of 
+differing type, can have
+items which change type (due to Python's dynamic typing), and have various
+operators/functions defined on them, such as del, len(), negative indexing,
+list slicing, etc. </i>
+
+<li>
+Explain all the differences between <b>atomic</b> and 
+<b>aggregate</b>/compound/container data types.  Give examples of each.
+<u>[4]</u>
+<br>
+
+<i>Atomic data types represent just a single entity/value: e.g., int, float,
+bool, complex.  Container types represent a collection of items: e.g., list,
+tuple, dict, string, set, class.</i>
+
+<li>
+The file 'input.txt' contains a list of real numbers, one per line.
+Write a Python program to <b>read</b> in the numbers from the file and print
+their average to the screen.  Docstring is required; pseudocode is not.
+<u>[6]</u>
+<br>
+
+<i><pre>
+"""Read in numbers from a file and print their average.
+The file 'input.txt' must contain float numbers, one to a line, no blank lines."""
+fileHandle = open('input.txt', 'r')
+stringList = fileHandle.readlines()
+sum = 0.0
+for s in stringList:
+	sum += float(s)
+print "The average is", sum/len(stringList)
+</pre></i>
+
+<li>
+A certain sequence is defined by t<sub>1</sub>=0, t<sub>2</sub>=3, and
+after that t<sub>i</sub>=t<sub>i-1</sub> + 2 t<sub>i-2</sub>, so that
+the first few terms of the sequence are 0, 3, 3, 9, 15, 33, 63, ....
+<br><br>
+On a separate paper, write a <b>recursive</b> Python function to compute 
+the n<sup>th</sup> term of this
+sequence.  Docstring and preconditions are required; pseudocode is not (but may
+be good for partial credit).
+<u>[8]</u>
+<br>
+
+<i><Pre>
+def sequence(n):
+	"""Calculate the nth term of this funky sequence."""
+	if n &lt;= 1:
+		return 0
+	elif n == 2:
+		return 3
+	else:
+		return sequence(n-2) + 2*sequence(n-3)
+</pre></i>
+
+<li>
+A dynamic system that is being accelerated at a constant acceleration
+<em>a</em> has its initial velocity <em>u</em>, final velocity <em>v</em>, and
+the distance travelled <em>d</em> related by the formula 
+<br><em>v<sup>2</sup> - u<sup>2</sup> = 2ad</em>.
+<br><br>
+On a separate paper,
+write an interactive Python program that can calculate <b>either</b>
+<em>d</em> or
+<em>a</em> in terms of the others.  Use at least one function.
+Docstrings are required for the program and all functions.
+Pseudocode is not required (but may be good for partial credit).
+<u>[8]</u>
+
+<i><pre>
+"""Interactive velocity/distance calculator."""
+def find_d(a, u, v):
+	"""Find the distance travelled, given accel and init/final velocities."""
+	return (v*v - u*u)/(2*a)
+
+def find_a(d, u, v):
+	"""Find the accel, given distance and init/final velocities."""
+	return (v*v - u*u)/(2*d)
+
+print "Welcome!  Let's do some physics!"
+u = float(input("What's the initial velocity? "))
+v = float(input("What's the final velocity? "))
+key = ''
+while key != 'd' and key != 'a':
+	key = raw_input("Do you know the distance (d), or the acceleration (a)? ")
+	if key == 'd':
+		d = float(input("What's the distance travelled? "))
+		print "The acceleration is", find_a(d, u, v)
+	elif key == 'a':
+		a = float(input("What's the acceleration? "))
+		print "The distance travelled is", find_d(a, u, v)
+	else:
+		print "Please type either 'd' or 'a'"
+print "Hope you had fun!"
+</pre></i>
+
+</ol>
+
+</body></html>
+
+

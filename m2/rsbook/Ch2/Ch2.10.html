@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<TITLE>2.10 Type Compatibility and REAL</TITLE>
+<meta NAME="keywords" CONTENT="type, compatibility, real, assignment, functionality, int, trunc, float, lfloat">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.10 Type Compatibility and REAL</B></H2>
+<P>In <A HREF="../Ch2/Ch2.7.html">section 2.7</A>, it was observed that CARDINAL and INTEGER are assignment compatible, even if they are not expression compatible.  Assignment compatibility is in this case a small concession to the normally strict rule against mixing types<!--‹-->--these two are used in similar ways.  It can be achieved easily because most computers also store values of these two types in similar ways.   However, both the use and the storage of REAL values is quite different than for either INTEGER or CARDINAL values.  Therefore one cannot in Modula-2 write either of</P>
+<PRE>
+firstReal := -7;
+secondReal := firstReal + card;</PRE>
+
+<P>where <I>firstReal</I> and <I>secondReal</I> are REAL and <I>card</I> is CARDINAL.  That is:</P>
+<BLOCKQUOTE><I>In Modula-2 the type REAL is neither assignment compatible nor expression compatible with CARDINAL or INTEGER.</I></BLOCKQUOTE>
+<P>However, there is a way to convert numbers to and from REAL representation.  If <I>re</I> is of type REAL and <I>ordnum</I> is of type INTEGER or CARDINAL, then</P>
+<PRE>
+re := <B>FLOAT</B> (ordnum)</PRE>
+
+<P>will safely convert <I>ordnum</I> to a REAL, and assign the resulting value to <I>re</I>.  Likewise,</P>
+<PRE>
+card := <B>TRUNC</B> (re)</PRE>
+
+<P>will safely convert the whole number part of <I>re</I> to a CARDINAL and assign the resulting value to the variable <I>card</I>. Furthermore,</P>
+<PRE>
+ordnum := <B>INT</B> (re)</PRE>
+
+<P>will safely convert the whole number part of <I>re</I> to an INTEGER and assign the resulting value to the variable <I>ordnum</I>.</P>
+<P><B>NOTES</B>: 1. These two are examples of what are called functions, or, more properly in Modula-2 function procedures.</P>
+<P>	2.  The above definitions hold for ISO standard Modula-2.  In some older implementations of Modula-2 the FLOAT may only work on one of the types INTEGER or CARDINAL and TRUNC conversions may produce an INTEGER rather than a CARDINAL.  There may not even be an INT function procedure.</P>
+<P>	3. These two operations allow the creation of mixed expressions.  Naturally, FLOAT and TRUNC have the precedence of parentheses.</P>
+<P>	4. TRUNC does not round off to the nearest cardinal, it <!--"-->&quot;hacks off<!--"-->&quot; the decimal part instead.</P>
+<H3><B>Examples:</B></H3>
+<P>Assume <I>re</I>  is REAL, <I>int</I> is INTEGER, and <I>card</I> is CARDINAL</P>
+<PRE>
+re := 2.6 + <B>FLOAT</B> (5);		Answer:  7.6
+int := 26 - 2 * <B>INT</B> (re);	Answer:   12
+card := 26 - <B>TRUNC</B> (re * 2);	Answer:   11
+int := <B>INT</B> (-4.75) - 6;		Answer:  -10</PRE>
+
+<H3><B><A NAME="2.10.1">2.10.1</A> Additional Conversion Functionality</B></H3>
+<P>Many computers have more than one format for storing real numbers.  Typically, there is one for reals with a somewhat limited range of significant figures and exponent, and one or more additional types with a greater range for both.  Because of this, ISO standard Modula-2 provides for a second real type called LONGREAL.  The precision and the exponent range for this type must be at least as great as for the type REAL.  Thus, if only one real type is available in the underlying machine, the two real types would essentially be the same.  However, since this is implementation defined (and somewhat exceptional), the compatibility rule is:</P>
+<BLOCKQUOTE><I>The Modula-2 type REAL and the Modula-2 type LONGREAL are not compatible.</I></BLOCKQUOTE>
+<P>Thus, besides the conversion functions above, ISO standard Modula-2 adds LFLOAT to convert to the type LONGREAL.  Since REAL values need conversion to LONGREAL as well, LFLOAT takes any of CARDINAL, INTEGER, or REAL.  In addition, INT, TRUNC, and FLOAT can take any numeric type that need to be converted to INTEGER, CARDINAL, or REAL, respectively.  Note that this behaviour cannot be counted on in non-ISO standard versions.</P>
+<H3><B>Examples:</B></H3>
+<P>Assume <I>int</I> is an INTEGER, <I>card</I> is a CARDINAL, <I>re</I> is a REAL and <I>lre</I> is a LONGREAL.</P>
+<PRE>
+int := <B>INT</B> (-3.5);			Answer: -3  (works like <B>TRUNC</B>)
+lre := <B>LFLOAT</B> (2.7);		Answer: 2.7 (* but stored as a <B>LONGREAL</B> *)
+lre := <B>LFLOAT</B> (-3);		Answer: -3.0 (* stored as a <B>LONGREAL</B> *)
+re := <B>FLOAT</B> (-3);			Answer: -3.0 (* stored as a <B>REAL</B> *)
+re := <B>FLOAT</B> (<B>INT</B> (5.1));	Answer: 5.0
+card := <B>TRUNC</B> (-3.5);		Answer: error; presumably need to use <B>INT</B>
+int := <B>INT</B> (lre);			Answer: be careful; could overflow!</PRE>
+
+<P><B>NOTES</B>: 1. Nonstandard versions that add such types as LONGINT and LONGCARD may have additional conversion functions.</P>
+<P>	2. Many nonstandard versions add the conversion function CARD, to convert to CARDINAL, instead of or in addition to TRUNC.</P>
+<P>	3. In the ISO standard, TRUNC, INT, FLOAT, and LFLOAT are simply short notation for the corresponding use of VAL (mentioned briefly in <A HREF="Ch2.7.html">section 2.7</A>). That is,</P>
+<BR>
+<P>INT (r) means VAL (INTEGER, r),</P>
+<P>TRUNC (r) means VAL (CARDINAL, r),</P>
+<P>FLOAT (i) means VAL (REAL, i), and</P>
+<P>LFLOAT (i) means VAL (LONGREAL, i). </P>
+<i><blockquote>The Modula-2 function procedure VAL(newType,item) safely converts the value stored in item into a corresponding value of the type newType.</blockquote>
+</i>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

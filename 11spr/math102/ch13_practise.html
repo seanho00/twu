@@ -1,0 +1,112 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>MATH102 Spr2008 ch13 Review Questions, Trinity Western</title>
+</head><body>
+
+Here are some additional review questions on ch3/13; you may also find the 
+odd-numbered problems in the textbook helpful.
+
+<div><a href="#" onClick="toggleAnswers()">[ click for answers ]</a></div>
+
+<ol class="main">
+
+<li> An experiment measured the mass of a certain variety of caterpillars
+after 3 weeks, in different temperatures.  The results are shown below:
+<br>
+
+<table border="1" cellpadding="5">
+<tr><th>Temp (C)</th>
+<td>15</td><td>18</td><td>21</td>
+<td>21</td><td>23</td><td>28</td></tr>
+<tr><th>Mass (g)</th>
+<td>1.8</td><td>2.2</td><td>3.2</td>
+<td>2.8</td><td>3.7</td><td>3.1</td></tr>
+</table>
+
+<ol class="subparts">
+<li> What is the average temperature and average mass in the study sample?
+<br><br> 
+<i>xbar = 21, ybar = 2.8
+</i><br><br>
+
+<li> Calculate SS(x), SS(y), and SS(xy).
+<br><br>
+<i> SS(x) = 98, SS(y) = 2.42, SS(xy) = 11.7
+</i><br><br>
+
+<li> Find the sample correlation r.
+<br><br>
+<i> r = SS(xy)/sqrt(SS(x) SS(y)) &cong; 0.75974 &cong; 0.76
+</i><br><br>
+
+<li> Construct a 95% confidence interval on the correlation.
+<br><br>
+<i> n = 6: about -0.05 &lt; &rho; &lt; 0.96.
+</i><br><br>
+
+<li> At a level of significance of &alpha; = 0.05, is caterpillar mass
+correlated with temperature?
+<br><br>
+<i> df = n-2 = 4: 0.05 &lt; p &lt; 0.10: fail to reject H<sub>0</sub>;
+insufficient evidence to show caterpillar mass is correlated with temperature.
+</i><br><br>
+
+<li> Find the equation of the best-fit line.
+<br><br>
+<i>b1 = SS(xy)/SS(x) &cong; 0.1194, b0 = 0.2929.<br>
+Best-fit line is y = 0.2929 + 0.1194 x.
+</i><br><br>
+
+<li> What does the linear model predict should be the mass of caterpillars
+grown at a temperature of 25 C?
+<br><br>
+<i>y = 0.2929 + 0.1194 * 25 &cong; 3.2776 grams.
+</i><br><br>
+
+<li> Find SSE, the sum of squared errors (residuals).
+<br><br>
+<i>SSE = 1.0232.
+</i><br><br>
+
+<li> What are the assumptions of the linear model?
+<br><br>
+<i>Assumes that the sample is a random sample representative of the
+population.  Assumes that the mass of caterpillars is normally distributed
+with a mean that depends upon the temperature according to the best-fit line
+and a standard deviation that does not depend on temperature.
+</i><br><br>
+
+<li> What does the linear model predict is the standard deviation of
+mass of caterpillars grown at a temperature of 25 C?
+<br><br>
+<i>s<sub>e</sub> = sqrt(SSE/(n-2)) &cong; 0.5058.
+</i><br><br>
+
+<li> Find SE<sub>b1</sub>, the standard error of estimate of the 
+slope (b1) of the best-fit line.
+<br><br>
+<i>SE<sub>b1</sub> = s<sub>e</sub> / sqrt(SS(x)) &cong; 0.0511
+</i><br><br>
+
+<li> At a level of significance of &alpha; = 0.02, is the slope of the
+best-fit line positive?
+<br><br>
+<i>t = (b1 - 0) / SE<sub>b1</sub> &cong; 2.34.
+<br>df = n-2 = 4, one-tailed: 0.025 &lt; p &lt; 0.05
+<br>fail to reject H<sub>0</sub>: insufficient evidence to show that
+the slope of the best-fit regression line for mass and temperature
+is positive.
+</i><br><br>
+
+</ol>
+
+</ol>
+
+</body></html>
+
+

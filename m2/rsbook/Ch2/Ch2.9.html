@@ -1,0 +1,267 @@
+<HTML>
+<HEAD>
+<TITLE>2.9 REAL Variables</TITLE>
+<meta NAME="keywords" CONTENT="real, variables, operations, operands, writereal, srealio, realio, realinout, inout, div, significant, figures, format, output, floating, point, srealio, writereal, real, writeeng, writeln, writefixed, width, characters, scientific, notation">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.9 REAL Variables</B></H2>
+<P>It must be made clear at the outset that a REAL variable is no more <!--"-->&quot;real<!--"-->&quot; than an INTEGER, at least not in the sense that the latter is, say, a figment of the imagination.  Mathematically, the integers can be regarded as a subset of the reals, though this is not true in Modula-2, because the two are different types.</P>
+<BLOCKQUOTE><I><A NAME="REAL">A</A> Modula-2 <B>REAL</B> number is one that is expressed as a series of significant figures including a decimal point, and optionally followed by a scale factor (power of ten).</I></BLOCKQUOTE>
+<P>Figure 2.10 illustrates this.</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.10.GIF" BORDER="1"></CENTER></CENTER><!----></P>
+<P>The notation used for REALs is the standard or scientific one, with a slight change to make it more computer readable.  Consider the following representations:</P>
+<PRE>
+	<U>Decimal</U>		<U>Scientific</U>		<U>Modula-2</U>
+
+	2000		2.000 x 10^3	2.000E+03
+	0.058		5.8 x 10^-2		5.8E-02
+			6.023 x 10^-23	6.023E-23</PRE>
+
+<P><B>NOTE</B>:	For such simple exponents as in the first two examples, the numbers may also be entered for a Modula-2 program as 2000. and 0.058 respectively.  That is, the scale factor indicator and digits after the decimal may not be always necessary, but the decimal point is.  Note that one may not substitute a lower case <I>e</I> for <I>E</I> when writing literals in a program.</P>
+<H3><B><A NAME="2.9.1">2.9.1</A> Real Operations</B></H3>
+<P>The operations and their precedence are the same for REALs as for INTEGERs and CARDINALs, except that REM, MOD and DIV are not defined and REAL division is indicated only with the / (slash).</P>
+<PRE>
+  firstReal := 5.0 / 3.0;		Answer:  1.66666
+  secondReal := 7.5 + 1.1 * 2.0;	Answer:  9.7</PRE>
+
+<P>To output these answers to the screen, the appropriate <I>WriteReal</I> statement is imported as usual.  One must import it from <I>SRealIO</I> (In non ISO standard versions, the library may be called <I>RealIO</I> or <I>RealInOut</I> or these items may simply be included in <I>InOut</I>.)  As in the previous statements of this type, a number following the REAL to be printed specifies the size of the field of blanks in which it is to be right justified.</P>
+<P>The following module is typical of many that can be written to do conversions or other computations using a well-defined formula and having a simple output.  As its only purpose is to demonstrate output of reals, and few other new concepts are present, no detailed plan is provided.</P>
+<H3><B>Example:</B></H3>
+<P>Write a module to convert a 14 degree Fahrenheit temperature to Celsius units.</P>
+<PRE>
+<B>MODULE</B> ConvertToCelsius;
+(* by R. Sutcliffe *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString, WriteChar;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>  (* note separate import statements *)
+  WriteReal;
+
+<B>CONST</B>
+  Fahrenheit = 14.0;  (* this can be changed *)
+  conversion = 32.0;  (* difference between zero points *)
+  ratio = 5.0 / 9.0;  (* ratio between Celsius and Fahrenheit *)
+
+<B>VAR</B>
+  Celsius : <B>REAL</B>;
+
+<B>BEGIN</B>
+  Celsius := ratio * (Fahrenheit - conversion);
+  WriteReal (Fahrenheit, 12);
+  WriteChar ('F');
+  WriteString (<!--"-->&quot; degrees equals <!--"-->&quot;);
+  WriteReal (Celsius, 12);
+  WriteChar ('C');
+  WriteString (<!--"-->&quot; degrees.<!--"-->&quot;);
+
+<B>END</B> ConvertToCelsius.</PRE>
+
+<P>The output from this program module is as follows:</P>
+<PRE>
+14.0000000000F degrees equals -10.000000000C degrees.</PRE>
+
+<P><B>NOTES</B>: 1. The number of significant figures and the maximum size of the exponent allowed depends on the computer system being used.  Here, twelve figures have been printed.  A typical size range for many small computers is about 10<SUP>-308</SUP> <!--<-->&lt; real <!--<-->&lt; 10<SUP>308</SUP>, and similarly for negative reals.</P>
+<P>	2. There are other ways to format real number output that will be considered later.</P>
+<P>	3. The type LONGREAL is also available, and this extends the above range considerably.</P>
+<H3><B>Example:</B></H3>
+<P>Write a module to compute the area and circumference of a circle from a given radius.</P>
+<PRE>
+<B>MODULE</B> CircleAreaCirc;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal;
+
+<B>FROM</B> RealMath <B>IMPORT</B>
+  pi;
+
+<B>CONST</B>
+  twopi = 2.0 * pi;  (* note the real constant expression *)
+
+<B>VAR</B>
+  area, circumference, radius : <B>REAL</B>;
+
+<B>BEGIN</B>
+  radius := 4.0;
+  (* calculate area and circumference *)
+  area := pi * radius * radius;
+  circumference := twopi * radius;
+  (* inform the user *)
+  WriteString (<!--"-->&quot;A circle of radius <!--"-->&quot;);
+  WriteReal (radius, 0); (* spaces provided in the string parts *)
+  WriteString (<!--"-->&quot; units has a circumference of <!--"-->&quot;);
+  WriteLn;
+  WriteReal (circumference, 0);
+  WriteString (<!--"-->&quot; units<!--"-->&quot;);
+  WriteString (<!--"-->&quot; and an area of <!--"-->&quot;);
+  WriteReal (area, 0);
+  WriteString (<!--"-->&quot; square units.<!--"-->&quot;);
+<B>END</B> CircleAreaCirc.</PRE>
+
+<P>The output from this program module is as follows:</P>
+<PRE>
+A circle of radius  4.0000000 units has a circumference of
+ 2.5132740E+1 units and an area of  5.0265480E+1 square units.</PRE>
+
+<H3><B><A NAME="2.9.2">2.9.2</A> The Format of Real Output</B></H3>
+<P>Sometimes a programmer wishes to print out real numbers, say to represent things like wages and bank balances in decimal or <I>fixed</I> form.  At other times, the preference is for scientific or <I>floating point</I> notation.  At still other times, engineering notation (in which the powers of ten are always multiples of three) is desired.</P>
+<PRE>
+   Fixed         Floating    Engineering
+   21421.5     2.14215E+4     21.4215E+3</PRE>
+
+<P>Sometimes the number of significant figure needs to be specified.  At other times it is the number of figures after the decimal that is of importance.  For instance, when printing money values such as $15.34, fixed notation with two decimal places is necessary.</P>
+<P>In ISO standard Modula-2 the library <I>SRealIO</I> has three additional procedures besides <I>WriteReal</I> for writing out real numbers.</P>
+<PRE>
+WriteFloat (real, sigFigs, width);</PRE>
+
+<P>writes out the specified <I>real</I> in floating point form with leading spaces if required to make the total space taken equal to <I>width</I> characters.  One leading space is used if the width is zero. (This is the same behaviour as the <I>width</I> parameter for <I>WriteCard</I> and <I>WriteInt</I>.) If the value of <I>sigFigs</I> is greater than zero, it specifies the number of significant figures in the result.  If the user of this procedure specifies zero figures, the particular implementation is free to define the outcome, and the manuals will have to be consulted.  A sign is written only for negative values, and the exponent part is only written if it is not zero.  No decimal point is included if there are no figures after it to print.  The code</P>
+<PRE>
+  WriteFloat (pi, 4, 0);
+  WriteLn;
+  WriteFloat (1000.0 * pi, 4, 10);
+  WriteLn;
+  WriteFloat (10000.0 * pi, 6, 10);
+  WriteLn;
+  WriteFloat (pi/10000.0, 2, 10);</PRE>
+
+<P>produces the output</P>
+<PRE>
+ 3.142
+ 3.142E+03
+3.14159E+04
+   3.1E-04</PRE>
+
+<PRE>
+WriteEng  (real, sigFigs, width);</PRE>
+
+<P>writes out the specified <I>real</I> in engineering form (exponents are multiples of three) with leading spaces if required to make the total space taken equal to <I>width</I> characters.  The rest of the behaviour of <I>WriteEng</I> is the same as that of <I>WriteFloat</I>.  The code</P>
+<PRE>
+  WriteEng (pi, 4, 0);
+  WriteLn;
+  WriteEng (1000.0 * pi, 4, 10);
+  WriteLn;
+  WriteEng (10000.0 * pi, 6, 10);
+  WriteLn;
+  WriteEng (pi/10000.0, 2, 10);</PRE>
+
+<P>produces the output</P>
+<PRE>
+  3.142
+ 3.142E+3
+31.4159E+3
+   310E-6</PRE>
+
+<PRE>
+WriteFixed (real, place, width);</PRE>
+
+<P>writes out the specified <I>real</I> in fixed point form (ordinary decimal form) and rounded off to <I>place</I> figures after the decimal, with leading spaces if required to make the total space taken equal to <I>width</I> characters.  The rest of the behaviour of <I>WriteFixed</I> is the same as that of <I>WriteFloat</I>.  The code</P>
+<PRE>
+  WriteFixed (pi, 4, 0);
+  WriteLn;
+  WriteFixed (1000.0 * pi, 4, 10);
+  WriteLn;
+  WriteFixed (10000.0 * pi, 6, 10);
+  WriteLn;
+  WriteFixed (pi/10000.0, 2, 10);</PRE>
+
+<P>produces the output</P>
+<PRE>
+ 3.1416
+ 3141.5930
+31415.930000
+      0.00</PRE>
+
+<P>Notice that the last number is zero to three figures, so that is all that gets written.</P>
+<P>Returning to the idea of printing currency values, the code</P>
+<PRE>
+  WriteChar("$");
+  WriteFixed(pi,2,5)
+</PRE>
+
+<P>produces the output</P>
+<PRE>
+ $ 3.14
+</PRE>
+
+<P>with one space before the leading digit because four of the five spaces are occupied.</P>
+<PRE>
+WriteReal (real, width);</PRE>
+
+<P>behaves like a call to <I>WriteFixed (real, place, width)</I>; if the number can fit in the width provided.  The value of <I>place</I> is chosen to exactly fill the remaining field.  If the width is insufficient, the call to <I>WriteReal </I> behaves like one to <I>WriteFloat (real, sigFigs, width)</I>; with a value of <I>sigFigs</I> at least one, limited to those that can be included in the given width along with the exponent and sign.  The code</P>
+<PRE>
+  WriteReal (pi, 0);
+  WriteLn;
+  WriteReal (1000.0 * pi, 10);
+  WriteLn;
+  WriteReal (10000.0 * pi, 10);
+  WriteLn;
+  WriteReal (pi/10000.0, 10);</PRE>
+
+<P>produces the output</P>
+<PRE>
+3.1415927
+3141.59270
+31415.9270
+3.1415E-04</PRE>
+
+<P>This matter presented somewhat of a difficulty for early implementors of Modula-2, because no such flexibility was defined or even suggested by Wirth as part of the standard operating environment.  Indeed, in some Modula-2 implementations, it may not be possible to achieve the goal of formatting reals in these ways without doing some very hard programming work.</P>
+<P>In fact,<I>non-ISO</I> standard compliant versions of Modula-2 may provide something like:</P>
+<PRE>
+WriteReal (real, width, n);</PRE>
+
+<P>where <I>real</I>  represents the value to be written, and the second number is the width of the space to write in as before.  The meaning of the third number, in such versions may be either the number of significant figures of the real to print, or the number of decimal places of the real to print.  The library location of the alternate <I>WriteReal</I> may vary in such versions. Moreover, some non-standard versions of <I>WriteReal</I> switch to scientific notation whenever a negative sign is placed in front of the third supplied number.  Observe that the usual ordering of the second and third numbers in non-ISO versions is often the opposite to that in ISO standard packages.</P>
+<P><B>NOTES</B>: 1. The user documentation for the compiler package of a non-ISO standard implementation must be checked carefully to determine which version of the <I>WriteReal</I> procedure has been provided, and in what library it is located.</P>
+<P>	2. Where more than one <I>WriteReal</I> is available, a specific implementation may even give them different names and/or place them in different libraries.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

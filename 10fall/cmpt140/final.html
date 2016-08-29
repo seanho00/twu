@@ -1,0 +1,284 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<!-- about right, a touch easy -->
+<title>Final Exam :: CMPT140 10FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 100
+
+<ol class="main">
+
+<li> Fill in the blank: <u>[11]</u> <ol class="subparts">
+  <li> "<b>Computers</b> are <i>tools</i>__________, and computing scientists
+  are <i>toolsmiths</i>________________."
+  <li> In software development, the document that describes what the client
+  desires for the project is called the <i>requirements</i>________________.
+  <li> When a new instance (object) is created in Python, the method named 
+  <i><tt>__init__()</tt></i>_______________ is invoked.
+  <li> Testing of a single component in isolation (as opposed to integration
+  testing) is called <i>unit</i>________ testing.
+  <li> What word describes functions which <b>invoke</b> themselves?
+  <i>recursion</i>________
+  <li> The Python method which <b>serializes</b> an object and writes it
+  out to a file is in the <i><tt>pickle</tt></i>____________ library and
+  is called <i><tt>dump()</tt></i>______________.
+  <li> What English part of speech should an <b>attribute</b> name be?
+  <i>noun</i>___________
+  <li> Let <tt>myList = [ 1, 3, 5, 7 ]</tt>.  What is <tt>myList[2:2]</tt>?
+  <i>[] (empty list)</i>_____________
+  <li> What method returns a list of all the <b>indices</b> in a <b>dictionary</b>?
+  <i>keys()</i>________
+</ol>
+<div class="answerblock" style="height:1em"></div>
+
+<li>
+Compare and contrast Python <b>lists</b> with C/M2 arrays <u>[4]</u>
+<i><br>
+  Python lists can change length (can insert/delete), can have items of
+  differing type, can have items which change type (due to Python's
+  dynamic typing), and have various operators/functions defined on them,
+  such as del, len(), negative indexing, list slicing, etc.
+</i>
+<div class="answerblock" style="height:11em"></div>
+
+<li>
+Compare and contrast <b>static</b> typing versus <b>dynamic</b> typing.
+What are pros/cons of each?
+<u>[4]</u><br>
+<i>
+  (The key here is <b>type</b>: not whether the values of the variables can
+  change, but whether their <b>types</b> can change.)
+  Static typing: variables cannot change type
+  Must declare type of variable and initialize value
+  Compiler enforces correct type
+  Dynamic typing: can change type
+  More flexible, but usually we don't want variables to change type
+</i>
+<div class="answerblock" style="height:10em"></div>
+
+<li>
+What is <b>wrong</b> with the following block of Python code?
+Indicate how you would fix the bug. <u>[4]</u>
+<pre>
+def fun(fu):
+	fa = fu * fun(fu - 1)
+	return fa
+print( fun(5) )
+</pre>
+<i>Missing base case in recursive function; fun() will recurse forever!</i>
+<div class="answerblock" style="height:2em"></div>
+
+<li> What is a <b>stub function</b>, and why might such things be useful
+in software development?  Describe an example.<u>[5]</u>
+<i><br>
+  In top-down design of a complex software system, it is helpful to build
+  the general framework first, and fill in the details later.  An analogy
+  is building the frame of a house first, then filling in the wiring,
+  plumbing, drywall, and appliances later.  A stub function is a placeholder
+  for a complete function; it does not perform the computations yet but
+  always returns a dummy value, e.g., 0.  An example is our ROT13 program,
+  when we had the framework of converting between letters and ASCII codes,
+  but did not actually do the ROT13 encryption arithmetic.
+</i>
+<div class="answerblock" style="height:11em"></div>
+
+<li> Consider the concepts of <b>call-by-value</b> and <b>call-by-reference</b>.
+<ol class="subparts">
+  <li> Define and contrast these two terms as general <b>concepts</b>
+  (i.e., independent of Python). <u>[4]</u>
+  <i>In call-by-value, the value in the actual parameter is copied to the 
+    formal parameter; the two are separate (so changes to the formal parameter
+    will not affect the actual parameter).
+    <br>In call-by-reference, the formal parameter is a reference (alias)
+    to the actual parameter, so changes in one show up in the other.</i>
+  <div class="answerblock" style="height:8em"></div>
+  <li> Write <b>Python</b> code which clearly demonstrates the difference 
+  between the two. <u>[4]</u>
+  <i><pre>
+  	def doubler(x):
+		x *= 2
+	a = 7
+	doubler(a)
+	b = [ 3, 4, 5 ]
+	doubler(b)
+</pre>
+  The first call to doubler() passes an int, so (in Python) it is passed by value.
+  The function has no effect and does not return anything.
+  <br>The second call to doubler() passes a list, so (in Python) it is passed by
+  reference.  The function modifies the list in-place; it still does not return
+  anything, but afterward the variable 'b' has the value '[3, 4, 5, 3, 4, 5]'.</i>
+  <div class="answerblock" style="height:10em"></div>
+</ol>
+
+<div class="break"></div>
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given.  If it produces an error/exception, describe
+the error in words.
+Assume each expression is independent of the others.
+For all expressions, assume only the following initialization: <u>[15]</u>
+<pre>	myPear = "Red Bartlett"
+	from math import pi	</pre>
+  <ol class="subparts">
+  <li><tt> 19492016 % 2</tt>		<i>0</i>
+  <li><tt> [2, 4, 6] * 2 </tt>		<i>[2, 4, 6, 2, 4, 6]</i>
+  <li><tt> [2, 4, 6] + 8 </tt>		<i>TypeError: list + int</i>
+  <li><tt> 2 ** 3 &gt; 5 or 3 / 0</tt>	<i>True</i>
+  <li><tt> int("2 pears")</tt>		<i>ValueError</i>
+  <li><tt> "I have %06.2f pears" % 3.1415</tt>	<i>'I have 003.14 pears'</i>
+  <li><tt> "03d%s" % (15, 'pears') </tt><i>TypeError (# args)</i>
+  <li><tt> 'b' in myPear </tt>		<i>False</i>
+  <li><tt> Bartlett.upper()</tt>	<i>NameError: Bartlett</i>
+  <li><tt> range(myPear)	</tt>	<i>TypeError</i>
+  <li><tt> myPear[2:6]	</tt>		<i>'d Ba'</i>
+  <li><tt> chr(ord('P') + 3) </tt>	<i>'S'</i>
+  <li><tt> 'pi' + 'e' </tt>		<i>'pie'</i>
+  <li><tt> 'pie' - 'e' </tt>		<i>TypeError: str - str</i>
+  <li><tt> pi + 'e' </tt>		<i>TypeError: float + str</i>
+</ol>
+<br>
+
+<li> Define or describe each of the following terms in object-oriented 
+programming: <u>[6]</u>
+<ol class="subparts">
+  <li> Class: <i>a user-defined container type</i>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+    types</i>
+  <li> Attribute: <i>a variable or method belonging to an object</i>
+  <li> Method: <i>a function/procedure belonging to an object</i>
+  <li> Constructor/initializer: <i>the special method which is called when
+    an object is instantiated</i>
+  <li> Overloading: <i>giving multiple definitions to a
+    function/method/operator depending on the type of its parameters/operands</i>
+</ol>
+<div class="answerblock" style="height:2em"></div>
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as we discussed in class.
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[3]</u><br><br>
+<i>Write, Apprehend, Design, Execute, Scrutinize<br></i>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Discuss the limitations of the software development model used in the
+previous question, and describe at least two alternate models that we
+talked about in class that might better reflect real-world software
+development.  Discuss pros and cons of the alternate models as
+compared with the model used in the previous question. <u>[8]</u>
+<br><i>
+Waterfall (WADES) assumes perfect requirements, perfect specification,
+perfect design, etc.  In reality, we never get that, and have to move
+on with imperfect documentation, often resulting in a poor product and
+an unhappy client.  The "V" model is a slight modification of WADES that
+emphasizes testing of each stage (components, systems, releases, products)
+before completion.  The spiral/agile model emphasizes repeated cycles of the
+waterfall model, early prototypes to get client feedback, and flexibility
+to changes in requirements, specification, or design.
+</i>
+<div class="answerblock" style="height:12em"></div>
+
+<li> Consider a <b>class</b> <tt>Person</tt> that represents
+a single person in a social network like Facebook.
+<ol class="subparts">
+  <li> What <b>attributes</b> are needed (indicate type of each attribute)?
+  What <b>methods</b> are desirable?
+  No Python code is needed, just discussion. <u>[6]</u>
+  <div class="answerblock" style="height:8em"></div>
+
+  <li> What <b>other classes</b> might you need to design a social network
+  platform?  What <b>relationships</b> might exist between those classes
+  and the Person class?  Discuss and sketch a <b>class diagram</b>. <u>[6]</u>
+  <div class="answerblock" style="height:10em"></div>
+</ol>
+
+<div class="break"></div>
+<li> Write a Python program which prints (on the screen) every word which
+appears exactly <b>once</b> (and no more than once) in the file "input.txt".
+<br><br>Ignore case.  Words are separated by spaces or newlines, and all 
+punctuation, digits, etc.  can be treated the same as letters.
+For instance, if the file "input.txt" contains:
+<pre>	Hello, this is a text file.  hello, here's a TEXT file.</pre>
+then your program should output "<tt>this here's is</tt>".
+<br>(Order of the words in the output does not matter.)
+<br><br>Ensure your program doesn't crash if the input file is not
+found, or if file permissions are incorrect, etc.
+Docstring, pseudocode, comments, etc. are not required, but may be helpful for 
+partial credit if your code isn't right. <u>[10]</u>
+<i><pre>
+# Count each word in the file
+wordlist = {}
+with open("input.txt") as fileIn:
+	for line in fileIn:
+		for word in line.split():
+			lword = word.lower()
+			wordlist[lword] = wordlist.get(lword, 0) + 1
+# Print only the unique words
+for lword in wordlist:
+	if wordlist[lword] == 1:
+		print( lword, end=' ' )
+</pre>
+</i>
+<div class="answerblock" style="height:1em"></div>
+
+<li>
+<div style="float:right"><img src="circlepi.png" height="300">
+<br><small>[Image courtesy <a href="http://www.cs.rit.edu/~ark/lectures/pj01/notes.shtml">
+    Rochester Institute of Technology</a>]</small>
+</div>
+One (very slow) way to calculate the value of &pi; is to compare the area of 
+the unit quarter-circle with the area of the unit square.
+<br><br>We can estimate this
+by generating random points in the unit square (akin to throwing darts at the
+unit square), and counting how many lie within the quarter-circle.  
+The ratio should approximate &pi;/4 as the number of points increases.
+Some helpful hints: <ul>
+  <li> The function <tt>random()</tt> in the library <tt>random</tt> returns
+  a float between 0 and 1 (including 0.0 but not 1.0).
+  <li>Pythagoras' theorem states that for any right triangle with legs
+  a and b and hypotenuse c, a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>.
+</ul>
+<ol class="subparts">
+  <li> Your task is to design a function <tt>circle_pi()</tt> that uses the 
+  above algorithm to estimate &pi;.  The caller should be able to specify the
+  number of points (darts) to use in the approximation.  The function should be
+  modular so that other code can easily use it -- it should <b>not</b> do
+  any console I/O!  Write a comprehensive <b>docstring</b> for this function
+  (but don't implement it yet!), including pre- and post-conditions.  <u>[4]</u>
+  <div class="answerblock" style="height:1em"></div>
+
+  <li> Write a comprehensive <b>test suite</b> for this function, including
+  both valid and invalid input.  Clearly indicate the invocation and the
+  expected result. <u>[4]</u>
+  <div class="answerblock" style="height:1em"></div>
+
+  <li> <b>Implement</b> this function in Python.  Pseudocode, comments, etc.
+  are not required, but may be helpful for partial credit.
+  You should <b>not</b> need to import math!  <u>[6]</u>
+</ol>
+<i>See <a href="circlepi.py">circlepi.py</a></i>
+
+</ol>
+
+</body></html>

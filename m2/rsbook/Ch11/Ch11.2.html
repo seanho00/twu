@@ -1,0 +1,329 @@
+<HTML>
+<HEAD>
+<TITLE>11.2 Recursion Revisited<</TITLE>
+<meta NAME="keywords" CONTENT="program, programming, technique, techniques, recursion, backtracking, bactrack, recurse, knight's tour, extend, extended, example, cover, covering, legal, move, moves, algorithm, co-orinate, co-ordinates, coordinate, coordinates">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><CENTER><B>Part A<!--</B>‹<B>-->--Programming Techniques</CENTER><BR>
+11.2 Recursion Revisited</B></H2>
+<P>Previous examples of recursion (procedures that call themselves either directly or by calling a second procedure that directly or indirectly calls the first) included the <A HREF="../Ch4/Ch4.8.html#Fac">recursive factorial</A> procedure, <A HREF="../Ch4/Ch4.8.html#Hanoi">tower of Hanoi</A> and the <A HREF="../Ch4/Ch4.8.html#cardBin">cardinal/binary conversion program</A> in chapter 4.</P>
+<P>Another application of recursion comes in programs that have to perform trial-and-error steps through some kind of pattern, perhaps at times retracing the logical path to the last success and then following a different branch.</P>
+<P>This technique is known as backtracking, and is similar to the methods one might use in finding the way through a maze.  When one arrives at a dead end, backtracking back to the last known branch in the maze with an untried turn and trying another path is sure to produce a way through the maze  if there is one.  The advantage of using a computer to solve such problems is that the very large number of trials can all be properly kept track of, and new ones can be tried very quickly.  In the example that follows, this (inherently recursive) technique is used to solve an old chess problem.</P>
+<H3><B><A NAME="11.2.1">11.2.1</A> The Knight's Tour<!--</B>‹<B>-->--An Extended Example</B></H3>
+<P>On a chess board, a knight can move one space in any direction and two spaces at right angles to the first part of the move, or the other way around.  Figure 11.1 illustrates the (as many as) eight possible moves a knight may make, in this case on a five by five grid.  Starting at the position K the knight may be moved to any one of the numbered squares on its first move.</P>
+<P><CENTER><IMG SRC="Figure/Figure_11.1.GIF" BORDER="1"></CENTER><!----></P>
+<BLOCKQUOTE><I><A NAME="Knight">A </A><U>Knight's Tour</U>  is a sequence of legal knight moves in which every square of the board is visited exactly once (that is, a <U>covering</U> of the board.)</I></BLOCKQUOTE>
+<P>Depending on the size of the board (and possibly the starting position,) it may or may not be possible to conduct a knight's tour.  Figure 11.2 illustrates a covering of the five by five grid above with legal knight's moves starting at the indicated position, and beginning with move 2a.  The reader should verify that on a three by three grid, it is impossible to conduct a Knight's tour, regardless of the starting position.  If the piece starts in the centre square, it cannot move at all, and if it starts on an outside square, it can never reach the centre.</P>
+<P><CENTER><IMG SRC="Figure/Figure_11.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>Question:  Starting with an n by n board and a chess knight located at a specific position, find a covering of the board consisting of n<sup>2</sup>-1 subsequent legal knight's moves.</P>
+<P>First (recursive) cut:  Reduce the problem to that of either performing a next move or finding that one is impossible.</P>
+<PRE>
+KnightsTour
+  initialize a selection of possible moves
+PROCEDURE  TryNextMove
+
+BEGIN
+  REPEAT
+    select next candidate from the possible next moves
+    IF acceptable
+      THEN
+        record move
+        IF board not covered
+          THEN
+            TryNextMove
+            IF not successful
+              THEN
+                erase previous recording
+              END
+          END
+      END
+  UNTIL (move was successful) OR (no more candidates)</PRE>
+<P>To make this precise:</P>
+<UL><!--€--><LI> represent the board as a matrix</LI>
+<!--€--><LI> index the board [1..n] on each dimension</LI></UL>
+<PRE>
+    <B>TYPE</B>
+      Index [1..n];
+      Board = <B>ARRAY</B> Index, Index <B>OF</B> <B>INTEGER</B>;</PRE>
+<P>Decisions:</P>
+<UL>  <!--€--><LI> suppose b is of type Board</LI>
+  <!--€--><LI> let b[x,y] be zero if the square has not been visited</LI>
+  <!--€--><LI> enter the number i into cell b[x,y] if it was visited on turn number turn</LI>
+  <!--€--><LI> call the initial position turn one</LI>
+  <!--€--><LI> then the condition board not full is (i <!--<-->&lt; n<sup>2</sup>)</LI>
+  <!--€--><LI> a potential move from the current position can have local coordinate changes (relative to the current position) of  u and v</LI>
+  <!--€--><LI> acceptable u and v are</LI>
+<BR>1. (1, 2)	&nbsp;&nbsp;&nbsp;5. (-1, 2)
+<BR>2. (2, 1)	&nbsp;&nbsp;&nbsp;6. (-2, 1)
+<BR>3. (1, -2)	&nbsp;&nbsp;7. (-1, -2)
+<BR>4. (2, -1)	&nbsp;&nbsp;8. (-2, -1).</UL>
+<P>Of course, not all these will produce legal moves.  Some might put the piece off the board. For instance, if the piece were on the right hand edge of the board, the relative horizontal move must be negative, and similarly for other positions on the edges.  Additional restrictions must be made if the piece was one square from an edge, for then it cannot move two squares in that direction.  There are several ways these checks can be expressed; a difficulty is to find one that is efficient.</P>
+<P>Other moves might be legal (on the board), but land the piece on a square previously visited.  The legal moves, and the checking of them could be expressed as:</P>
+<PRE>
+KnightsTour
+  initialize a matrix dX of possible horizontal moves
+  initialize a matrix dY of possible vertical moves
+  initialize all the board positions b[i, j] to zero
+  
+procedure TryMove (input : moveNumber, currentCoordinates,
+ output: moveOK)
+
+ set count to 0
+ repeat
+   Increment count
+   set moveOK to false
+   set m (new x-coordinate) to (old x-coordinate + dX [count])
+   set n (new y-coordinate) to (old y-coordinate + dY [count])
+   if (m <!-->&gt;= 1) <!--& -->&amp; (m <!--<-->&lt;= size) <!--& -->&amp; (n <!-->&gt;= 1) <!--& -->&amp; (n <!--<-->&lt;= size) <!--& -->&amp; (board [m, n] = 0)
+     then
+       set board [m, n] to moveNumber;
+       set moveOK to true;
+       if moveNumber <!--<-->&lt; totalSquares      (* if the board is not filled *)
+         then           (* try the next move *)
+           TryMove (moveNumber + 1, m, n, moveOK);
+           if not moveOK
+             then
+               set board [m, n] to 0;                         (* erase move *)
+             endif
+         endif
+     endif
+  until moveOK or (count = 8)
+end TryMove</PRE>
+<P>Note the necessity to have the coordinates as integers because the values dX and dY that will be added are often negative.  Also, it is relatively easy to write out the final result in a form that allows the user to see the actual tour in a matrix form.  Here is the whole code:</P>
+<PRE>
+<B>MODULE</B> Knight;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate backtracking *)
+(* last revision 1994 06 08 *)
+
+(* This program calculates the path a knight would take, starting from any square on a chessboard, which covers the entire board and does not re-visit a square--the <!--"-->&quot;Knight's Tour<!--"-->&quot; *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadInt, WriteInt;
+
+<B>CONST</B>
+  size = 7; (* number of squares each way; change as desired *)
+  totalSquares = size * size;  (* total # of squares to cover *)
+
+<B>TYPE</B>
+  Index = [1..size];
+
+<B>VAR</B>
+  rowCount, colCount : <B>CARDINAL</B>;     (* counting variables *)
+  rowStart, colStart : <B>INTEGER</B>;  (* starting position *)
+  pathFound : <B>BOOLEAN</B>; (* outermost level success variable *)
+  dX, dY    : <B>ARRAY</B> [1..8] <B>OF</B> <B>INTEGER</B>; (* store possible moves *)
+  board     : <B>ARRAY</B> Index, Index <B>OF</B> <B>INTEGER</B>;  (* the chessboard *)
+
+<B>PROCEDURE</B> TryMove (moveNumber, x, y : <B>INTEGER</B>; <B>VAR</B> moveOK : <B>BOOLEAN</B>);
+(* Pre: board must be initialized correctly and (x, y) must be on the board
+  Post: moveOK is FALSE if a path was not found from (x, y), TRUE if a path was found
+  Note: this procedure is recursive, and will find an entire path starting from (x, y)    *)
+  
+<B>VAR</B>
+  count, m, n : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  count := 0;                   (* counter for the legal moves *)
+  <B>REPEAT</B>
+    <B>INC</B> (count);
+    moveOK := <B>FALSE</B>;              (* default value *)
+    m := x + dX [count];                (* calculate next move *)
+    n := y + dY [count];
+    <B>IF</B> (m <!-->&gt;= 1) <!--& -->&amp; (m <!--<-->&lt;= size) <!--& -->&amp; (n <!-->&gt;= 1) <!--& -->&amp; (n <!--<-->&lt;= size) <!--& -->&amp; (board [m, n] = 0)
+      (* if next move is on the board and to an empty square *)
+      <B>THEN</B>
+        board [m, n] := moveNumber;     (* mark the square *)
+        moveOK := <B>TRUE</B>;
+        <B>IF</B> moveNumber <!--<-->&lt; totalSquares   (* board is not filled *)
+          <B>THEN</B>
+            TryMove (moveNumber + 1, m, n, moveOK);  
+                  (* try next move *)
+            <B>IF</B> <B>NOT</B> moveOK
+              <B>THEN</B>
+                board [m, n] := 0;   (* erase move to backtrack *)
+              <B>END</B>;
+          <B>END</B>;
+      <B>END</B>;
+  <B>UNTIL</B> moveOK <B>OR</B> (count = 8);
+<B>END</B> TryMove;
+
+<B>PROCEDURE</B> PrintBoard;
+<B>VAR</B>
+  rowCount, colCount : <B>CARDINAL</B>; 
+<B>BEGIN</B>
+  <B>FOR</B> colCount := 1 <B>TO</B> size
+    <B>DO</B>
+      <B>FOR</B> rowCount := 1 <B>TO</B> size
+        <B>DO</B>
+          WriteInt (board[rowCount,size+1-colCount], 5);
+        <B>END</B>;
+        WriteLn;
+        WriteLn;
+    <B>END</B>;
+<B>END</B> PrintBoard;
+
+<B>BEGIN</B>  (* main program *)
+  (* initialize move increments *)
+  dX[1] :=  1; dX[2] :=  2; dX[3] :=  1; dX[4] :=  2;
+  dX[5] := -1; dX[6] := -2; dX[7] := -1; dX[8] := -2;
+  dY[1] :=  2; dY[2] :=  1; dY[3] := -2; dY[4] := -1;
+  dY[5] :=  2; dY[6] :=  1; dY[7] := -2; dY[8] := -1;
+  
+  <B>FOR</B> rowCount := 1 <B>TO</B> size 
+    <B>DO</B> 
+      <B>FOR</B> colCount := 1 <B>TO</B> size
+        <B>DO</B>
+          board[rowCount, colCount] := 0; (* initialize board *)
+        <B>END</B>;
+    <B>END</B>;
+
+  (* get starting information *)
+  WriteString (<!--"-->&quot;Start at x = <!--"-->&quot;);
+  ReadInt (rowStart);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;Start at y = <!--"-->&quot;);
+  ReadInt (colStart);
+  SkipLine;
+  WriteLn;
+  
+  board[rowStart, colStart] := 1; (* set first position *)
+  TryMove (2, rowStart, colStart, pathFound);
+    (* call recursive procedure *)
+
+  <B>IF</B> pathFound
+    <B>THEN</B>   (* display final results *)
+      PrintBoard;
+      WriteString (<!--"-->&quot;path found!<!--"-->&quot;);
+      WriteLn;
+    <B>ELSE</B>
+      WriteString (<!--"-->&quot;no path found<!--"-->&quot;);
+      WriteLn;
+    <B>END</B>;
+
+<B>END</B> Knight.</PRE>
+<P>This module was run with the constant size set first to 5 (twice), then 6, and finally seven.  Here are the results:</P>
+<PRE>
+** Run log starts here **
+Start at x = 3
+
+Start at y = 3
+
+   23   12    7    2   21
+
+    6   17   22   13    8
+
+   11   24    1   20    3
+
+   16    5   18    9   14
+
+   25   10   15    4   19
+
+path found!
+** Run log starts here **
+Start at x = 1
+
+Start at y = 1
+
+   25   18    3   12   23
+
+    8   13   24   17    4
+
+   19    2    7   22   11
+
+   14    9   20    5   16
+
+    1    6   15   10   21
+
+path found!
+** Run log starts here **
+Start at x = 1
+
+Start at y = 1
+
+   36   31   34   21    4    7
+
+   33   20    3    6   11   22
+
+   30   35   32   23    8    5
+
+   19    2   27   10   15   12
+
+   26   29   14   17   24    9
+
+    1   18   25   28   13   16
+
+path found!
+** Run log starts here **
+Start at x = 4
+
+Start at y = 4
+
+   49   22   19   44   17   10    3
+
+   46   43   48   21    2    7   16
+
+   23   20   45   18    9    4   11
+
+   42   47   32    1    6   15    8
+
+   33   24   35   38   29   12    5
+
+   36   41   26   31   14   39   28
+
+   25   34   37   40   27   30   13
+
+path found!</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

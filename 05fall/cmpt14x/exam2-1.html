@@ -1,0 +1,155 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li {
+  margin-top: 1em;
+}
+.subparts li {
+  margin-top: 0.3em;
+} 
+ol.subparts {
+  list-style-type: lower-alpha;
+}
+.break {
+  page-break-before: always;
+}
+
+--></style>
+<title>CMPT140 Fall2005 FINAL ch1-7 Part1, Trinity Western.
+26 Oct 2005.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>__________________</td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<ol class="main">
+
+<li>
+Describe the five <b>program structure/flow</b> 
+<br>abstractions mentioned in the text.<br><br>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li> Fill in the blank: <ol class="subparts">
+  <li> "Computers are t________s, and computing scientists are t___________s."
+  <li> A procedure that returns a value is called a ____________ procedure.
+  <li> Before using the value of a variable for the first time in a program,
+    we need to ________________ and   ___________________ it.
+  <li> True or False (circle one): The word FUNCTION is a legal identifier.
+  <li> The three loop structures in Modula-2 are 
+    _______________, _______________, and ______________.
+  <li> A new type made from a sequence of consecutive values of an 
+    existing type is called a ________________ of the host type.
+  <li> What English part of speech should a variable generally be?  ___________
+  <li> The ______ function is used to determine how far a 
+    real/integer is from zero.
+  <li> The function that evaluates natural logarithms on real numbers is found
+    in the _______________ standard library.
+  <li> Redirection of the standard input/output channels is handled by the
+    ______________ library.
+  <li> A procedure that invokes itself is called a _________________ procedure.
+</ol>
+
+<li>
+Explain all the differences between the following, and give examples of each:
+  <ol class="subparts">
+  <li> <b>reserved words</b>: <br><br><br>
+  <li> <b>standard identifiers</b>: <br><br><br>
+  <li> <b>standard library items</b>: <br><br><br>
+</ol>
+
+<li class="break">
+Write a complete declaration for each of the following data types:
+  <ol class="subparts">
+  <li> A string type: <br><br><br><hr>
+  <li> An enumeration type representing the months of the year:
+    <br><br><br><br><hr>
+  <li> A type holding one string for each month of the year: <br><br><br><hr>
+  <li> A type for only the uppercase letters: <br><br><br><hr>
+  <li> A type for an <i>m</i> by <i>n</i> matrix of booleans: <br><br><br><hr>
+</ol>
+
+<li>
+<b>Evaluate</b> each of the following expressions,
+or if it produces an error, describe the error.
+Assume all necessary IMPORTs have been done.
+Assume the following declaration and initialization:
+<pre>	myApple : ARRAY [0..5] OF CHAR;
+	myApple := "granny smith";		</pre>
+  <ol class="subparts">
+  <li><tt> 11 REM 0 </tt>
+  <li><tt> 12.2 MOD 5 </tt>
+  <li><tt> WriteFixed (23.468, 4, 8);</tt>  (show output, including any spaces)
+  <li><tt> ~(3&lt;5)&amp;~3#5</tt>
+  <li><tt> LENGTH(myApple) </tt>
+  <li><tt> (LENGTH(myApple) &gt; 0) AND (CAP(myApple[0]) = 'G') </tt>
+  <li><tt> Strings.Compare (myApple, "Granny Smith") </tt>
+  <li><tt> 'C' &gt; 'A' </tt>
+  <li><tt> 'C' - 'A' </tt>
+  <li><tt> ORD ('C') - ORD ('A') </tt>
+  <li><tt> 'C' + 'A' </tt>
+  <li><tt> ORD (March)</tt> (using the enumeration type you defined above)
+</ol>
+
+<li class="break">
+Show the results (output and/or errors) both with and without the VAR in the
+formal parameter list and explain.
+<pre>
+MODULE SwapTest;
+FROM SWholeIO IMPORT
+	WriteCard;
+
+PROCEDURE Swap (VAR a, b: CARDINAL);
+VAR
+	tmp : CARDINAL;
+BEGIN
+	tmp := a;
+	a := b;
+	b := tmp;
+END Swap;
+
+VAR
+	a, b: CARDINAL;
+BEGIN
+	a := 2;
+	b := 5;
+	Swap (a, b);
+	WriteCard (a, 0);
+	WriteCard (b, 0);
+END SwapTest.
+</pre>
+<br><br><br>
+
+<li>
+Consider the following procedure:
+<pre>
+PROCEDURE SumPlus1 (VAR a, b: CARDINAL): CARDINAL;
+	(* returns a+b+1 *)
+BEGIN
+	INC (a);
+	RETURN a + b;
+END SumPlus1;
+</pre>
+Assume there is a global variable <tt>x := 5</tt>.  If we invoke
+<tt>SumPlus1 (x, x)</tt>, we might expect the result to be 11,
+but it is not.  What is returned instead, and why?  How would you fix this?
+<br><br><br><br><br>
+
+</ol>
+
+</body></html>
+

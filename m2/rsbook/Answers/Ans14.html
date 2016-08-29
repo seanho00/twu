@@ -1,0 +1,105 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 14 Answer Key</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 14</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	Semi generic code is relatively free from implementation considerations, such as what data type will be used in an actual list. Some manual effort is still needed to re-code the module to take a new data type, but this may be as little as one line near the beginning if the design is well done.</P>
+
+<P>2.	Before implementing a list ADT, one must decide what data is to be listed, whether the list is a generic one (re-usable), whether the list is to be unidirectional or bidirectional, sorted or unsorted, and how many pointers to data in the list will be kept. There are some lesser issues such as how much data will be kept on the list (number of items, for instance).</P>
+
+<P>3.	A queue is a first-in-first-out structure and a stack is a last-in-first-out structure.</P>
+
+<P>4.	A lookup table or, for short, a table is a finite set of ordered pairs {(x, f(x))}, that is, it is a function on a finite domain (the first column) to some range (the second column).</P>
+
+<P>5.	How one implements a data structure is independent from the abstraction itself. The table could in some systems be implemented as an array, provided different array components could be of different types.</P>
+
+<P>6.	A tree is a structure in which all nodes may have more than one successor and all nodes but one (the root) have one predecessor.</P>
+
+<P>7.	In a binary tree, the maximum number of successors of a node is two.</P>
+
+<P>8.	A root has no predecessor.</P>
+
+<P>9.	leaves have no successors.</P>
+
+<P>10.	Interior nodes have a predecessor and one or more successors. To put it another way, they are the root of a subtree, but not a root of the entire tree.</P>
+
+<P>11.	A node in a binary tree has degree zero, one, or two.</P>
+
+<P>12.	A full binary tree with eight levels has 255 occupied nodes.</P>
+
+<P>13.	The mathematical sense of "full" simply means that all nodes on each used level are occupied. The memory sense is that there is no more place to put another node.</P>
+
+<P>14.	Searching a linked list requires examination of up to all n items, whereas, searching a binary tree requires at most nlog<sub>2</sub> (n) comparisons.</P>
+
+<P>15.	Even with two pointers, a list is still linear, and searching is proportional to the number of items.</P>
+
+<P>16.	The letters ISAM mean Indexed Sequential Access Method.</P>
+
+<P>17.	Hashing refers to mapping data items into an index space. The function is not one-to-one (or there would be no point) so several items in the data space could have the same index value.</P>
+
+<P>18.	Tree traversal can be pre-order (root-left-right); in-order (left-root-right); or post-order (left-right-root).</P>
+
+<P>19.	Assuming that one works left to right as with a binary tree, the root of the ternary node could be processed before any one of the three children, or after the last, a total of four possibilities.</P>
+
+<P>20-21.	Try it and see.</P>
+
+<P>22-25.	Left as an exercise.</P>
+
+<P><B>Problems</B></P>
+
+<P>Note: At this stage, students should not need any problem solutions.</P>
+
+
+</BODY>
+
+</HTML>

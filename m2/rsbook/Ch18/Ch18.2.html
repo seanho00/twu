@@ -1,0 +1,164 @@
+<HTML><HEAD><TITLE>18.2 A Graphics Environment</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Graphics Environment">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>18.2 A Graphics Environment</b></H2>
+
+<P>For the purposes of carrying the discussion further, the remainder of this chapter will assume that the student has access to the graphics facilities provided by the following definition module. Although the code required to realize this module is quite implementation dependent, it can be done on both Macintosh and Windows systems with a minimum of work, and the necessary detail may all be found in <A HREF="Ch18.6.html">section 18.6</A> so that the student can easily add the necessary facilities to her own project libraries if they have not been bundled by the compiler vendor.</P>
+<P>The basis for drawing on the screen in a graphics user environment is a <i>pen</i>. At any given time, the pen is in a specific (coordinatized) position, and can be used to draw a trail of dots as desired. Alternately, it can be moved to another position without drawing.</P>
+
+<PRE><b>DEFINITION MODULE</b> GraphPaper;
+
+(* Original design copyright 1996 by R. Sutcliffe
+    Original implementation 1996 using p1 on the Macintosh
+    Windows implementation 1998 05 12 by Joel Schwartz
+        with use of examples written by Stony Brook
+        Last revision by RS 1998 07 11
+*)
+
+<b>TYPE</b>
+  CoordSystem = (MacWin, bearing, standard); (* default = standard *)
+(* The MacWin Coordinate system grows down and has the origin at the top
+   left hand corner with angles measured clockwise. In the bearing
+   system the home position (0,0) is the middle of the screen
+   from which angles are measured clockwise. The standard system also
+   starts in mid screen and grows up but measures from east as zero and
+   thence counterclockwise. *)
+
+  AngleType = (deg, rad, grad); (* Allows for angle type specification *)
+  LabelType = <b>ARRAY</b> [0..50] <b>OF</b> <b>CHAR</b>;  (* Standard format for labels *)
+
+<b>PROCEDURE</b> SetCoordSystem (kind : CoordSystem);
+(* Allows the user to set the system. The default is the standard system so this has to be called only if a change is desired. This procedure concludes by calling Home. Any shift in the system origin must be made after calling this procedure.  *)
+<b>PROCEDURE</b> SetAngleType (kind : AngleType);
+(* Allows the user to set the angle measurement type. The default is degrees so this has to be called only if a change is desired. This procedure concludes by calling Home. Any shift in the system origin must be made after calling this procedure.  *)
+
+<b>PROCEDURE</b> Home;
+(* moves to 0,0 and then
+     In the bearing system:
+       - sets angle to 0 (North)
+       - sets the rotational direction to clockwise
+     In the MacWin & standard system:
+       - sets the angle to 0 (East)
+       - sets the rotational direction to clockwise (MacWin)
+               or to counterclockwise (standard) *)
+
+<b>PROCEDURE</b> ShiftOrigin (deltaX, deltaY : <b>INTEGER</b>);
+(* Translate the origin by the amount specified.  The direction of the translation on the screen depends, of course, on the coordinate system being used. Drawing is now with respect to the new origin. Does not call home or change  any other settings. *)
+
+<b>PROCEDURE</b> GetDimensions (<b>VAR</b> x, y: <b>INTEGER</b>);
+  (* obtains the overall width and height of the drawing screen *)
+<b>PROCEDURE</b> GetLocation (<b>VAR</b> x, y: <b>INTEGER</b>);
+  (* get the drawing pen location in current coordinates *)
+
+(* The following three procedures work in the current coordinate
+system and on the stored pen position only but do no actual drawing. *)
+
+<b>PROCEDURE</b> MoveBy (distance: <b>INTEGER</b>);
+  (* move in the stored direction by the supplied distance *)
+<b>PROCEDURE</b> MoveTo (x, y : <b>INTEGER</b>);
+  (* move the drawing pen to the specified coordinates *)
+<b>PROCEDURE</b> Move (dx, dy : <b>INTEGER</b>);
+  (* move the drawing pen to a point (x + dx, y + dy) from the currently stored point *)
+
+(* The following three procedures work in the current coordinate system on the stored pen direction only but do no actual drawing. 
+The angle is assumed to be in the currently set units. *)
+
+<b>PROCEDURE</b> GetCurrentAngle () : <b>REAL</b>;
+  (* Return the current angle in the current units *)
+<b>PROCEDURE</b> Turn (angle : <b>REAL</b>);
+  (* change the stored pen direction by adding its angle to the one supplied *)
+<b>PROCEDURE</b> TurnTo (angle : <b>REAL</b>);
+(* change the stored pen direction by setting its angle to the one supplied *)
+
+(* The following two procedures use the pen to draw a line and change the stored position. *)
+
+<b>PROCEDURE</b> LineBy (distance: <b>INTEGER</b>);
+  (* Draws in the stored pen direction the number of units supplied. *)
+<b>PROCEDURE</b> LineTo (x, y : <b>INTEGER</b>);
+(* Draws a line from the current stored position to the supplied one without using or changing the stored direction. *)
+<b>PROCEDURE</b> Line (dx, dy : <b>INTEGER</b>);
+(* Line to a point (x + dx, y + dy) from the current point without using or changing the stored direction. *)
+
+(* The following two procedures place a dot on the screen, but do not change the pen direction. Measurement is in pixels; not scaled. *)
+
+<b>PROCEDURE</b> Dot;
+   (* places a dot at the present location *)
+<b>PROCEDURE</b> DotAt (x, y : <b>INTEGER</b>);
+   (* does a MoveTo, then a dot *)
+
+(* These procedures are for annotating the graph paper with a scale and labels for the axes. *)
+
+<b>PROCEDURE</b> SetLabels (horix, vert : LabelType);
+   (* Sets the names for the horizontal and vertical axes. *)
+<b>PROCEDURE</b> ShowLabels;
+   (* Show the labels - if no label is set then "x" and "y" are used *)
+<b>PROCEDURE</b> ShowAxes;
+   (* Show the axes for the graph *)
+
+(* The following procedures allow for a scaling of the graph paper and the plotting of points according to the scale. If the scale is 10, there is one unit every ten division marks. This will make the plotting of functions more readible. The default is one unit per division mark.
+    EXAMPLE: setting the scale to 5 using cm's as the unit means 1 cm = 5 division marks.*)
+
+<b>PROCEDURE</b> SetScale (dataPerDivision : <b>CARDINAL</b>);
+   (* Set the scale by which the graph is measured *)
+<b>PROCEDURE</b> PlotPoint( x, y : <b>REAL</b>);
+   (* Plot a scaled point on the graph *)
+<b>PROCEDURE</b> PolarPlotPoint (radius, angle : <b>REAL</b>);
+   (* Moves to a given angle and radius and places a scaled dot at that point.
+	 The angle is assumed to be in the currently set units. *)
+
+<b>END</b> GraphPaper.</PRE>
+
+<P><b>NOTE</b>: Implementations of this module for both the Macintosh and Windows systems will be given later in the chapter.</P>
+<P>In this module, all three basic coordinate systems are supplied, with options to graph in either rectangular or the appropriate polar style, and to turn on a grid system and do scaling if desired. It should be noted that when graphing polar style the point (10, 30) is different in all three coordinate systems.</P>
+<P>Note that plotting pixels is handled by one set of procedures, and plotting points on a scaled (and possibly labeled) piece of graph paper is handled by another set of procedures. This permits the user to work in either. The latter is more useful when graphing functions.</P>
+<P>The user can change the origin to some other place on the screen without changing the coordinate system. Also, the user may decide whether to graph in degrees or radians as both are supported in all three. Other options include the ability to show a set of axes and to set up labels for the axes, for in real situations these are seldom just "x" and "y." For the advanced programmer who needs to use the graphics window for other purposes, a procedure to pass out a reference to the window can normally be found at a lower level, where the graphics window is made available to the implementation of <i>GraphPaper</i>. In addition, the user can obtain the screen dimensions (which depend on the monitor and its settings) and determine the location on the screen and angle for the pen.</P>
+<P>The defaults for this module are set to not display the axes or labels, and to employ the standard coordinate system.</P>
+<P>The underlying implementation stores the current position on the graph paper and also a direction in which any lines drawn with <i>LineBy</i>  and any moves made with <i>MoveBy</i> will go. This direction can be changed by <i>Turn</i> which adds the supplied angle to the stored one, or by <i>TurnTo</i> which resets the stored angle. The procedures <i>Line</i> and <i>Move</i> change the position for the next drawing by a specified number of units, so they supply their own direction and do not change the stored one.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

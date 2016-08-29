@@ -1,0 +1,4 @@
+mod\ClassList.mod(4)(41) : warning: Warning --  Unused symbol
+mod\ClassList.mod(9)(8) : warning: Warning --  Record field not naturally aligned
+mod\ClassList.mod(10)(9) : warning: Warning --  Record field not naturally aligned
+mod\ClassList.mod(12)(10) : warning: Warning --  Array elements will not be naturally aligned

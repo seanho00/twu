@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+<TITLE>2.4 Documenting the Solution</TITLE>
+<meta NAME="keywords" CONTENT="document, documenting, documentation, solution, solve, solutions, external, internal, module, variable, name, names, comments, on-line, on, line, help">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.4 Documenting the Solution</B></H2>
+<P><I><B>Goals</B>:	Write everything down. (Reprise)</I></P>
+<H3><B>At Every Strategic Step   Document what you have written.</B></H3>
+<P>Good programs are not only well planned and systematically written, but also are thoroughly documented.  There are two major categories of documentation that must be produced if a program is to be used properly or even understood by its own writer at a later date:</P>
+<H3><B><A NAME="2.4.1">2.4.1</A> External Documentation</B></H3>
+<P>A manual must be produced for the ultimate user of the program.  This external documentation must explain in a clear, non-technical fashion what is expected of the user at each step, and what the program will do with the information provided.   In commercial practice, a person other than the programmer usually writes the manuals in order to avoid the use of technical jargon, and orient the documentation to the user.  It is best to write the user manual before coding the program, specifying completely what every screen will look like, what all the commands are and exactly what they will do.  The user manual then becomes part of the specifications for writing the program.  One or two sample user manuals will be given later as part of extended examples.</P>
+<H3><B><A NAME="2.4.2">2.4.2</A> Internal Documentation</B></H3>
+<P>The program itself ought to contain carefully written documentation.  This material is of three types:</P>
+<H3><B>1. Names</B></H3>
+<P>The rules for constructing names were discussed in section 2.2.4.  These rules apply to all names, not just to modules.  It is not enough, however, to be able to construct names that follow the syntactical rules for Modula-2.  Names ought also to be given creatively, so that they provide part of the program documentation, assisting the programmer to read and understand the work at a later time.  Modules, variables, and other items that require names should therefore be identified descriptively.  That is, a module name should reflect its function, and that of an item in the module should reflect its use or role in the program.</P>
+<P><I>Poor Module Names</I>:  Snafu, Tarfu, Fubar, MyProgram, ThisCode, Thingy.</P>
+<P>Some of these are easy or traditional, but they have no meaning in the context of the work being undertaken.</P>
+<P><I>Good Module Names</I>: Hello, ComputeInterest, FindArea, ComputePowers.</P>
+<P>These state, imply, or at least hint at the purpose of the module they name.</P>
+<P><I>Poor Variable Names</I>: i, j, k, n, p, r, t, x, var, thing, a1, a2, a3.</P>
+<P>Such names may be easy to type without much thought, but they produce cryptic and nearly unreadable code.</P>
+<P><I>Good variable names</I>: interest, number, principal, rate, time, side, base, exponent.</P>
+<P>By describing their role in the program, such names immediately inform the reader of the code what is supposed to be happening when the program is run.  This makes both understanding and modification feasible. There is nothing more embarrassing than being unable to understand your own code just weeks after writing it. (Except, perhaps being unable to bring out a new version of a commercial package because no one in the company understands the code.)  It also illustrates that:</P>
+<BLOCKQUOTE><I>Programs are meant to be read by humans, not by computers.</I></BLOCKQUOTE>
+<H3><B>2. Comments</B></H3>
+<P>Writing a program can be a long and tedious process.  The more useful the program is expected to be, the longer and more complex the source code (text file) is likely to become.  If  anyone wants to change a section later, will it be possible to find out why they were written the way they were?  Does the programmer even understand the  beginning of the program by the time the end is reached?  Can someone else read and modify the work several years later?</P>
+<P>To ensure that there will be positive answers to these questions, all programming notations provide a mechanism for inserting explanatory notes within the original text file.  These comments are ignored when the compiler reads the file, but are necessary for human beings to be able to read it intelligently.  In Modula-2, comments are enclosed in comment parentheses, which consist of the reserved symbol <B>(*</B> to begin a comment and the reserved symbol <B>*)</B> to end one. Here is the current example, heavily commented:</P>
+<PRE>
+<B>MODULE</B> PowersCommented;  (* This is the title line. *)
+
+(* Written by R.J. Sutcliffe *)
+(* as an introductory example *)
+(* and to demonstrate comments *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 01 25 *)
+
+(* Note that comments such as the one above ought always to be included in the source file in order to identify its writer and purpose. (* Observe that comments can extend over several lines and can include other comments. *) *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>   (* comments can go here, too *)
+  WriteString, WriteLn;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+(* Alternately, have in non-ISO Modula-2:
+<B>FROM</B> InOut <B>IMPORT</B>
+  WriteString, WriteLn, WriteCard;
+*)
+
+<B>VAR</B>
+  base, exponent, counter, result: <B>CARDINAL</B>;
+
+<B>BEGIN</B>    (* The program starts here *)
+  (*
+  Introductory Section: note that a program ought
+  also to identify itself when run.  Note too this
+  alternate style for multi-line comments.
+  *)
+  WriteString (<!--"-->&quot;The program Powers<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;was written by R.J. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;as an introductory example<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;This program raises a base to an exponent<!--"-->&quot;);
+  WriteLn;
+
+  (* Set up the key variables *)
+  base := 4;
+  exponent := 6;
+
+  (* calculation section *)
+  result := base;  (* initially, set the result to the base *)
+  counter := 1;
+  <B>WHILE</B> counter <!--<-->&lt; exponent
+    <B>DO</B>
+      result := result *  base; (* multiply base enough times *)
+      counter := counter + 1
+    <B>END</B>;
+
+  (* display the result *)
+  WriteCard (base, 0);
+  WriteString ( <!--"-->&quot; raised to the power <!--"-->&quot;);
+  WriteCard (exponent, 0);
+  WriteString (<!--"-->&quot; equals <!--"-->&quot;);
+  WriteCard (result, 0);
+  WriteLn;
+
+<B>END</B> PowersCommented.</PRE>
+
+<BLOCKQUOTE><I><A NAME="Comment">A</A> <U>comment</U> is any material enclosed within the comment parentheses which are <!--"-->&quot;(*<!--"-->&quot; and <!--"-->&quot;*).<!--"-->&quot;</I></BLOCKQUOTE>
+<P>The student should observe carefully how effective comments are used in the longer and more detailed examples in this book.</P>
+<H3><B>3. On-line Help</B></H3>
+<P>The meaning of most programs of any substance will be ambiguous at times even to experienced users.  At such times, it may be useful to be able to select a <!--"-->&quot;help<!--"-->&quot; option within the program itself, rather than have to look the information up in a printed manual.  Because of space limitations, this type of documentation will not be fully illustrated in the programs in this text.  However, there will be instances of on-line help in such situations as error handling.  Commercial programs, however, require such documentation just to be regarded as acceptable in the modern marketplace.  In such projects, on-line assistance must be planned for at each step of the program design.  It should be complete, (though not so complete as the printed documents) and should be  relevant to the context of the program at the time the help is requested.  Apart from this remark, further comment on this point is beyond the scope of this text.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

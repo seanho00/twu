@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<TITLE>6.8 Libraries--an Overview</TITLE>
+<meta NAME="keywords" CONTENT="libraries, library, overview, supplied, system, module, modules, input, output, text, numeric, mathematical, math, user, definition, symbol, symbolic, file, link, linker, manager, global, compilation, unit, local, machine">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.8  Libraries<!--</B>‹<B>-->--an Overview</B></H2>
+<P>There are potentially three different types of libraries of modules available to a programmer from which to import entities at any given time. These are:</P>
+<H3><B>The Supplied Library:</B></H3>
+<P>This is the collection of modules provided to the programmer as a part of the language package as it comes from the vendor. They include:</P>
+<P>1. The Standard Library Modules:</P>
+<P>These are the library modules defined by the International Organization for Standards (ISO). Some might include variations on the library modules that Wirth suggested be part of the operating environment in this package. This material includes:</P>
+<P>a. <I>system modules</I> to interface between Modula-2 and certain low level facilities that must exist on any computer<BR>
+b. <I>separate modules</I>  which include (among others) those for<BR>
+(i) input and output<BR>
+(ii) text/numeric conversion<BR>
+(iii) mathematical functions<BR>
+The ISO standard also distinguishes between library modules that are <I>optional</I> and those that are <I>required</I> for certified compliance with the standard.</P>
+<P>2. Nonstandard Utility Modules</P>
+<P>These may include modules to provide communications capabilities, or certain useful data types or operations that programmers commonly use, but may not wish to write for themselves.</P>
+<P>3. System Specific Modules</P>
+<P>These support specialized facilities available only on a particular type or brand of<BR>
+a. computer (VAX, Apple, IBM PC, Sun, or a mainframe.)<BR>
+b. operating system (UNIX, the UCSD P-system, VMS, MS-DOS, Macintosh or other graphics user interface, etc.)</P>
+<P>In some implementations, all three groups might be collected together formally into a single library file and in others they may be present as separate but previously compiled files. This text has already made use of several of these library modules, and shall have more to say about others in later chapters.</P>
+<H3><B>The User Library:</B></H3>
+<P>This is the set of library modules that the programmers working on the system have devised for themselves. As indicated already in this chapter, these are compiled and their entities used in exactly the same way as those in the supplied library.</P>
+<P>Each module has a definition part and a (probably) separate symbol file created by the compiler and for its later use when compiling client programs to determine if the correct syntax has been used. It also has an implementation part that is keyed to the corresponding definition part and contains the actual run-time code for the linker to use in generating the executable version of a program module.</P>
+<P>When the implementation part has been compiled in the presence of the previously compiled definition part, the defined entities are available for import in exactly the same way as the supplied ones.</P>
+<P><B>NOTE</B>:	If the supplied library is a single file, instead of a scattering of files, there will probably be a supplied utility called a <I>library manager</I> that will allow the code of the user library collection also to be bound into a single file, or perhaps even added to the system library. If the latter is done, there will be a slight increase in linking speed, as the module loader will search in the supplied library before going through the other disk files for the desired name.</P>
+<H3><B>The Program Library:</B></H3>
+<P>This is the set of modules that are part of a program file itself, for a module can contain another module. This idea will not be pursued here, as this is a more advanced technique (see chapter eleven). However, note the following definitions:</P>
+<BLOCKQUOTE><I><A NAME="Module">A</A> module that can be independently compiled, such as a program module, is called a <U>global module</U>. It may also be termed a <U>compilation unit</U>. One that is contained inside some other module, and is therefore not itself a compilation unit, is called a <U>local module</U>.</I></BLOCKQUOTE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,87 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 13 Answer Key</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 13</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	The more complex code written for a binary search results in searches that are much faster for large data sets.</P>
+
+<P>2.	In general, simple sorts have a performance proportional to the square of the number of items, whereas advanced sorts have a performance proportional to nlog<sub>2</sub> (n).</P>
+
+<P>3.	The big - O notation signifies the proportionality mentioned above. Literally, it is "order of".</P>
+
+<P>4.	"In place" sorting refers to sorting back into the same data space as the unsorted items were presented to the sorter. Usually, this means that an array of unsorted items is presented, and the same array is returned, now sorted. This is in contrast to sorting, say, from one array to another.</P>
+
+<P>5.	None of the sorts other than Shell's are named after a person.</P>
+
+<P>6.	Left as an exercise for the student.</P>
+
+<P>7.	Answers may reference sorting railroad boxcars by load, date, number, origin, destination, or name of railroad. Similar considerations could be applied to airline passengers, taxpayers, customers, suppliers, students at a school, employees, etc.</P>
+
+<P>8.	Such conditions prevent an invalid array reference. Without it, the count would go outside the appropriate range of the array.</P>
+
+<P>9.	When answering this question, you should try to give a theoretical reason, then run the code and see what happens.</P>
+
+<P>10.	The issue here is the need to copy data. Any method that does so will suffer a performance hit as the size of the data item increases. If a value parameter is used for the array (because you're not sorting in place) data is copied when the procedure is entered.</P>
+
+<P>11.	Left as an exercise for the student.</P>
+
+<P>12.	Left as an exercise for the student.</P>
+
+<P><B>Problems</B></P>
+
+<P>Note: At this stage, students should not need any problem solutions.</P>
+
+
+</BODY>
+
+</HTML>

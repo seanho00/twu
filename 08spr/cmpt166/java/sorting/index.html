@@ -1,0 +1,156 @@
+<html>
+<!--
+ * Copyright (c) 1994-1996, Jason Harrison. All Rights Reserved.
+ * Modified by Jason Harrison, Department of Computer Science
+ * University of British Columbia, June 24 1995
+ *
+ * Permission to use, copy, modify, and distribute this software
+ * and its documentation for NON-COMMERCIAL purposes and without
+ * fee is hereby granted provided that this copyright notice
+ * appears in all copies.
+ *
+-->
+<head>
+<title>Sorting Algorithms Demo</title>
+</head>
+
+<body>
+<h1>Sorting Algorithms</h1>
+<hr>
+
+<p> We all know that Quicksort is one of the fastest algorithms for
+sorting.  It's not often, however, that we get a chance to see exactly
+<EM>how</EM> fast Quicksort really is.  The following applets chart
+the progress of several common sorting algorithms while sorting an
+array of data using <b>in-place</b> algorithms.  This means that the
+algorithms do not allocate additional storage to hold temporary
+results: they sort the data in place.  (This is inspired by the
+algorithm animation work at <A href="http://www.cs.brown.edu/">Brown
+University</a> and the video <em>Sorting out Sorting</em> By Ronald
+Baecker from the University of Toronto (circa 1970!).)  </P>
+
+<p> Some of these sorts are very stupid or very slow and should not be
+used in code.  The use of Bubblesort is deprecated.  So don't use
+Bubblesort!  Also, don't use Swapsort! It is only a demonstration of
+the amount of time Java takes to swap n elements.  </p>
+
+<p> In-Place Mergesort is yet another abomination.  Mergesort is
+supposed to run in O(n log n), but the implementation here runs in O(n
+* n).  This is because a temporary scratch array is not used.  As with
+<b>most</b> of the examples here, In-Place Mergesort sorts the elements
+in the array without using additional storage (other than the stack
+used for the recursive calls, and temporary variables).  Jack Snoeyink
+has provided me with a the Double Storage mergesort algorithm
+sort implementation that uses a scratch array.</p>
+
+<em>Click on each applet to see the algorithm run.</em>
+
+<center><table border="1"><tr>
+
+<td><b>Bubble Sort</b><br>
+<small>(by James Gosling and Jason Harrison)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="BubbleSort2"></applet></td>
+
+<td><b>Bi-directional Bubble Sort</b><br>
+<small>(by James Gosling)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="BidirectionalBubbleSort"></applet></td>
+
+<td><b>Selection Sort</b><br>
+<small>(by Jason Harrison)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="SelectionSort"></applet></td>
+
+</tr><tr>
+
+<td><b>Insertion Sort</b><br>
+<small>(by Jason Harrison)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="InsertionSort"></applet></td>
+
+<td><b>Quick Sort</b><br>
+<small>(by Jason Harrison)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="QSort"></applet></td>
+
+<td><b>Quick Sort with BubbleSort</b><br>
+<small>(by Jim Boritz)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="QubbleSort"></applet></td>
+
+</tr><tr>
+
+<td><b>Enhanced Quick Sort</b><br>
+<small>(by Jim Boritz)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="EQSort"></applet></td>
+
+<td><b>Fast Quick Sort</b><br>
+<small>(by Denis Ahrens)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="FastQSort"></applet></td>
+
+<td><b>Radix Sort</b><br>
+<small>(by Alvin Raj)</small><br>
+<applet code=SortItem.class width=100 height=100>
+<param name="alg" value="RadixSort"></applet></td>
+
+</tr></table></center>
+
+<hr>
+
+One of my favorite references to sorting routines is "Sorting" by
+William A. Martin, in ACM Computing Surveys, Volume 3, Number 4,
+December 1971, pages 147-174.  The abstract reads:
+
+<blockquote>
+The bibliography appearing at the end of this article lists 37 sorting
+algorithms and 100 books and papers on sorting published in the last
+20 years.  The ideas presented here have been abstracted from this
+body of work, and the best algorithms known are given as examples.  As
+the algorithms are explained, references to related algorithms and
+mathematical or experimental analyses are given. Suggestions are then
+made for choosing the algorithm best suited to a given situation.
+</blockquote>
+
+<p>Disclaimer: If you use this page as part of your teaching, please
+let me know.  I tend to refer students who ask too many questions back
+to their instructor.  Requests for translations of the Java sources to
+other programming languages will be denied.  This page was created in
+a fit of "thesis avoidance" in the summer of 1996.</p>
+
+<hr><p>
+Originally created by
+<address>
+<a href="http://java.sun.com/people/jag/"><IMG SRC="http://java.sun.com/people/jag/jag.gif"></a>
+James Gosling, jag@firstperson.com
+</address>
+And modified by
+<address>
+<a href="http://www.cs.ubc.ca/spider/harrison"><IMG SRC="http://www.cs.ubc.ca/~harrison/Pictures/me.jpg" width=48></a>
+Jason Harrison, harrison@cs.ubc.ca
+</address>
+and
+<address>
+<a href="http://www.cs.ubc.ca/spider/boritz"><IMG SRC="http://www.cs.ubc.ca/~harrison/Pictures/Jim.gif"></a>
+Jim Boritz, boritz@cs.ubc.ca
+</address>
+
+<p> Thanks to <a href="http://www.cs.ubc.ca/spider/duprat">Jean-Luc
+Duprat</a> who rebuilt this page for Netscape 2.0 and recompiled the
+applets with the <a href="http://java.sun.com">JDK</a>.</p>
+
+<p> Thanks to <a
+href="http://www-users.informatik.rwth-aachen.de/~guido/">Guido
+Bunsen</a> who put the applets into a <a href="index.html">table on
+this page</a></p>
+
+<p> Peter Brummund is the author of <a
+href="http://www.cs.hope.edu/~alganim/ccaa/">The Complete
+Collection of Algorithm Animations</a> if you're looking for more
+animated algorithms.</p>
+
+<hr>
+This is http://www.cs.ubc.ca/spider/harrison/Java/sorting-demo.html.<br>
+</body></html> 

@@ -1,0 +1,581 @@
+<HTML><HEAD><TITLE>17.5 Very Long Cardinals - The Type Decimal</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Very Long Cardinals - The Type Decimal">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>17.5 Very Long Cardinals<!--‹-->--The Type Decimal</B></H2>
+
+<P>One of the problems we have when manipulating the type REAL is that numbers stored in this form are subject to being rounded off.  In working with dollar amounts, rounding off errors are simply not acceptable, so many computer languages or operating environments provide some means for expressing dollar figures as sequences of digits.</P>
+
+	<P><A NAME="Decimal"></A><I>Numbers that are stored as sequences of exact digits are said to be of type <U>Decimal</U>.</I></P>
+
+<P>If this is done, and we have <I>472</I> <I>+</I> <I>231</I>, a special procedure is required as in Section 7.6 to add the digits one column at a time starting from the right-hand-side and get the sequence <I>703</I>.</P>
+<P>Subtraction and multiplication present their own challenges, as does printing such quantities out, for one may store them initially as strings of digits, but when it comes to printing them, one would probably want to enter those digits into a format defined in another string and output "$7.03". (In this case, the format string used is "$#!##" where each <I>#</I> is a digit and the <I>!</I> indicates the location of the decimal point in the result. See the examples later for details.</P>
+
+	<P><A NAME="FormatString"></A><I>A model string used to specify a format for Decimal data I/O is called a <U>format string</U> or a <U>picture</U> or a <U>mask</U>. The purpose of a picture is to indicate where the punctuation marks are in the output string.</I></P>
+
+<P>Various notations have different provisions for handling such types of data and for performing these operations.  In some versions of Pascal, the predecessor of Modula-2, there is a built-in facility to define long integers of any specified number of digits, merely by stating in brackets after the TYPE definition the number of digits for that Integer type.  COBOL, Fortran, and some BASICs have the ability to reformat such numbers into strings which can be written out as dollar amounts, social security numbers, or in any other desired fashion.</P>
+<P>As may be guessed because of the treatment of the problem of multiplying such quantities in Chapter 7, no such data type or ability is built-in to Modula-2. Modules to implement such types are provided with some versions of Modula-2 and if such a module is available to the reader, there are some straightforward exercises on its use at the end of this chapter.  If it is not, the challenge is to write it, using some of the methods of Chapter 7 and later chapters. Only a portion of that work will be shown here; the rest is left as exercises for the reader.</P>
+
+<P><B>NOTE:</B> Unlike the situation with complex numbers, there is <I>no</I> provision in ISO standard Modula-2 for such a data type.  The user who needs such a facility is at the mercy of her own ability to write it or the vendor's to provide it.</P>
+
+<P>The module below is one possibility for a definition of such an ADT. It can be modified for Canadian, American, or European style numeric output by changing the constants <I>decPoint</I> and <I>separator</I> and by supplying a different currency symbol in the picture string.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> Decimals; 
+(* by R. Sutcliffe
+  last modified 1996 11 05 *)
+
+<B>CONST</B> 
+  MaxDigits = 19; 
+  decPoint = '.'; 
+  separator = ' '; 
+
+<B>TYPE</B>
+  Digit = [0..9]; 
+  DecRange = [0 .. MaxDigits - 1];
+  DecState = (allOK, NegOvfl, PosOvfl, Invalid); 
+  DecHandler = <B>PROCEDURE</B>  (DecState); 
+  CompareResults = (less, equal, greater);
+  Decimal = 
+    <B>RECORD</B>
+      state : DecState;
+      isNeg : <B>BOOLEAN</B>;
+      number : <B>ARRAY</B> DecRange <B>OF</B> Digit;
+    <B>END</B>;
+
+<B>CONST</B>
+  zero = Decimal {allOK, <B>FALSE</B>, {0 <B>BY</B> MaxDigits}};
+
+<B>PROCEDURE</B> SetHandler (handler: DecHandler); 
+<B>PROCEDURE</B> Abs (dec : Decimal): Decimal; 
+<B>PROCEDURE</B> Add (dec1, dec2: Decimal): Decimal; 
+<B>PROCEDURE</B> Sub (dec1, dec2: Decimal): Decimal; 
+<B>PROCEDURE</B> Mul (dec1, dec2: Decimal): Decimal; 
+<B>PROCEDURE</B> Div (dec1, dec2: Decimal): Decimal; 
+<B>PROCEDURE</B> Remainder (): Decimal;
+<B>PROCEDURE</B> Compare (dec1, dec2: Decimal): CompareResults; 
+<B>PROCEDURE</B> Neg (dec: Decimal): Decimal; 
+<B>PROCEDURE</B> Status (dec: Decimal): DecState; 
+
+<B>END</B> Decimals.
+</pre>
+<P>For reasons similar to those given in the initial discussions in the last section, the numeric type is here implemented transparently.  An opaque implementation would require regular procedures and variable parameters to return results of numeric operations.</P>
+<P>The module <I>Decimals</I> exports the type <I>Decimal</I>, which can be thought of as an 19-digit long integer.  Provision is made to store an error state and a sign for each such entity. Of course, <I>Decimal</I> should be treated as an opaque type, as though the details were not available in the definition module.  <I>Decimal</I>s also exports an apparatus for error handling that consists of a type <I>DecState</I> that defines the error values, a <I>Status</I> enquiry procedure to discover the state of any individual item, and a <I>Handler </I>type to define the type of an error handler procedure that a client can attach using <I>SetHandler</I>. This handler defaults to a procedure that does nothing at all, but a program can define a procedure taking the <I>DecState</I> parameter, and set it as desired. The procedure <I>Remainder</I> is intended to fetch the stored remainder of the last division performed.</P>
+
+<P><B>WARNING:</B> The implementation shown below is minimal and incomplete. In particular there are a minimum of comments. Completing it is the subject of some of the exercises at the end of the chapter.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> Decimals; 
+(* by R. Sutcliffe
+  last modified 1996 11 05 *)
+  
+<B>VAR</B> 
+  remainder : Decimal;
+  theHandler : DecHandler;
+
+<B>PROCEDURE</B> DefaultHandler (theError : DecState);
+(* does nothing *)
+<B>END</B> DefaultHandler;
+
+(* exported procs *)
+
+<B>PROCEDURE</B> SetHandler (handler: DecHandler); 
+<B>BEGIN</B>
+  theHandler := handler;
+<B>END</B> SetHandler;
+
+<B>PROCEDURE</B> Abs (dec : Decimal): Decimal; 
+<B>BEGIN</B>
+  dec.isNeg := <B>FALSE</B>;
+  <B>RETURN</B> dec;
+<B>END</B> Abs;
+
+<B>PROCEDURE</B> Add (dec1, dec2: Decimal): Decimal; 
+<B>VAR</B>
+  count, temp, carry : <B>CARDINAL</B>;
+  result : Decimal;
+<B>BEGIN</B>
+  result := zero;
+  carry := 0;
+  (* if both pos or both neg, just add the digits up *)
+  <B>IF</B> ((dec1.isNeg) <B>AND</B> (dec2.isNeg)) <B>OR</B> <B>NOT</B> ((dec1.isNeg) <B>OR</B> (dec2.isNeg))
+    <B>THEN</B>
+      <B>FOR</B> count := 0 <B>TO</B> MaxDigits - 1
+        <B>DO</B>
+          temp := carry + dec1.number[count] + dec2.number[count];
+          result.number[count] := temp <B>MOD</B> 10;
+          carry := temp <B>DIV</B> 10;
+        <B>END</B>;
+      (* attach the common sign *)
+      result.isNeg := dec1.isNeg;
+      <B>IF</B> carry # 0
+        <B>THEN</B>
+          <B>IF</B> result.isNeg
+            <B>THEN</B>
+              result.state := PosOvfl
+            <B>ELSE</B>
+              result.state := NegOvfl
+            <B>END</B>;
+        <B>END</B>;
+    <B>ELSE</B> (* one is neg, the other pos so find difference *)
+      <B>IF</B> Compare (Abs (dec1), Abs (dec2)) = greater
+        <B>THEN</B>
+          <B>FOR</B> count := 0 <B>TO</B> MaxDigits - 1
+            <B>DO</B>
+              <B>DEC</B> (dec1.number[count], carry);
+              <B>IF</B> dec1.number[count] <!-->&gt;= dec2.number[count]
+                <B>THEN</B>
+                  result.number[count] := dec1.number[count] - dec2.number[count];
+                  carry := 0;
+                <B>ELSE</B>
+                  result.number[count] := 10 + dec1.number[count] - dec2.number[count];
+                  carry := 1;
+                <B>END</B>;
+            <B>END</B>;
+          (* attach sign of larger in absolute value *)
+          result.isNeg := dec1.isNeg;
+        <B>ELSIF</B> Compare (Abs (dec1), Abs (dec2)) = less <B>THEN</B>
+          <B>FOR</B> count := 0 <B>TO</B> MaxDigits - 1
+            <B>DO</B>
+              <B>DEC</B> (dec1.number[count], carry);
+              <B>IF</B> dec2.number[count] <!-->&gt;= dec1.number[count]
+                <B>THEN</B>
+                  result.number[count] := dec2.number[count] - dec1.number[count];
+                  carry := 0;
+                <B>ELSE</B>
+                  result.number[count] := 10 + dec2.number[count] - dec1.number[count];
+                  carry := 1;
+                <B>END</B>;
+            <B>END</B>;
+            (* attach sign of larger in absolute value *)
+          result.isNeg := dec2.isNeg;
+        <B>END</B>;
+    <B>END</B>;
+  (* always call error handler before concluding *)
+  theHandler (result.state);
+  <B>RETURN</B> result;
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Sub (dec1, dec2: Decimal): Decimal; 
+<B>BEGIN</B>
+  <B>RETURN</B> Add (dec1, Neg (dec2));
+<B>END</B> Sub;
+
+<B>PROCEDURE</B> Mul (dec1, dec2: Decimal): Decimal; 
+(* exercise *)
+<B>END</B> Mul;
+
+<B>PROCEDURE</B> Div (dec1, dec2: Decimal): Decimal; 
+(* exercise *)
+<B>END</B> Div;
+
+<B>PROCEDURE</B> Remainder (): Decimal;
+<B>BEGIN</B>
+  <B>RETURN</B> remainder;
+<B>END</B> Remainder;
+
+<B>PROCEDURE</B> Compare (dec1, dec2: Decimal): CompareResults; 
+<B>VAR</B>
+  count : <B>INTEGER</B>;
+<B>BEGIN</B> 
+  count := MaxDigits - 1;
+  <B>WHILE</B> (count <!-->&gt; 0) <B>AND</B> (dec1.number[count] = dec2.number[count])
+    <B>DO</B>
+      <B>DEC</B> (count);
+    <B>END</B>;
+  <B>IF</B> count <!--<-->&lt; 0
+    <B>THEN</B>
+      <B>RETURN</B> equal
+    <B>ELSIF</B> dec1.number[count] <!--<-->&lt; dec2.number[count] <B>THEN</B>
+      <B>RETURN</B> less
+    <B>ELSE</B>
+      <B>RETURN</B> greater;
+    <B>END</B>;
+<B>END</B> Compare;
+
+<B>PROCEDURE</B> Neg (dec: Decimal): Decimal; 
+<B>BEGIN</B>
+  dec.isNeg := <B>NOT</B> dec.isNeg;
+  <B>RETURN</B> dec;
+<B>END</B> Neg;
+
+<B>PROCEDURE</B> Status (dec: Decimal): DecState; 
+<B>BEGIN</B>
+  <B>RETURN</B> dec.state;
+<B>END</B> Status;
+
+<B>BEGIN</B>
+  theHandler := DefaultHandler;
+<B>END</B> Decimals.
+</pre>
+<P>Naturally, there have to be procedures for getting data into and out of the internal form. In this case, these are not located in the ADT definition module, but in two other places. First, one can define fairly straightforward input and output for <I>Decimal</I> quantities. </P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> DecimalIO;
+
+(* by R. Sutcliffe
+  modified 1996 11 04 *)
+	
+<B>IMPORT</B> IOChan;
+<B>FROM</B> Decimals <B>IMPORT</B>
+  Decimal;
+
+<B>PROCEDURE</B> ReadDecimal (cid : IOChan.ChanId; <B>VAR</B> dec : Decimal);
+<B>PROCEDURE</B> WriteDecimal (cid : IOChan.ChanId; dec : Decimal; width : <B>CARDINAL</B>);
+
+<B>END</B> DecimalIO.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> DecimalIO;
+
+(* by R. Sutcliffe
+  modified 1996 11 04 *)
+  
+<B>IMPORT</B> IOChan, TextIO, IOResult;
+<B>FROM</B> Decimals <B>IMPORT</B>
+  Decimal, MaxDigits, DecRange, zero, DecState, decPoint;
+<B>FROM</B> CharClass <B>IMPORT</B>
+  IsNumeric;
+<B>FROM</B> WholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> IOResult <B>IMPORT</B>
+  ReadResults;
+
+<B>FROM</B> STextIO <B>IMPORT</B> WriteChar;  
+<B>IMPORT</B> SWholeIO;
+
+<B>TYPE</B>
+  DecString = <B>ARRAY</B> DecRange <B>OF</B> <B>CHAR</B>;
+  
+(* exported procs *)
+
+<B>PROCEDURE</B> ReadDecimal (cid : IOChan.ChanId; <B>VAR</B> dec : Decimal);
+<B>VAR</B> 
+  temp : DecString;
+  count, len : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+  res : IOResult.ReadResults;
+  
+<B>BEGIN</B>
+  count := 0;
+  IOChan.Look (cid, ch, res);
+  <B>IF</B> (res = allRight)
+    <B>THEN</B>
+      dec := zero; (* initialize it *)
+      dec.isNeg := (ch = "-")
+    <B>END</B>;
+  <B>IF</B> (ch = "-") <B>OR</B> (ch = "+")
+    <B>THEN</B>
+      IOChan.SkipLook (cid, ch, res);
+    <B>END</B>;
+  <B>WHILE</B> (count <!--<-->&lt; MaxDigits) <B>AND</B> (res = allRight)
+    <B>DO</B> (* skips over all non numerics *)
+      <B>IF</B> (IsNumeric (ch))
+        <B>THEN</B>
+          temp [count] := ch;
+          <B>INC</B> (count);
+        <B>END</B>;
+      IOChan.SkipLook (cid, ch, res);
+    <B>END</B>;
+  <B>IF</B> (res = allRight) <B>OR</B> (res = endOfLine)
+    <B>THEN</B> 
+      len := count - 1;
+      <B>WHILE</B> count <!-->&gt; 0 
+        <B>DO</B> 
+          <B>DEC</B> (count); 
+          dec.number[len - count] := <B>ORD</B> (temp [count]) - <B>ORD</B> ("0");
+        <B>END</B>; (* while *)
+      dec.state := allOK;
+    <B>END</B>; (* if *)
+<B>END</B> ReadDecimal;
+
+<B>PROCEDURE</B> WriteDecimal (cid : IOChan.ChanId; dec : Decimal; width : <B>CARDINAL</B>);
+<B>VAR</B>
+  count, scount : <B>CARDINAL</B>;
+  started : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  started := <B>FALSE</B>;
+  <B>FOR</B> count := MaxDigits-1 <B>TO</B> 0 <B>BY</B> -1
+    <B>DO</B>
+      <B>IF</B> (<B>NOT</B> started) <B>AND</B> ((dec.number [count] # 0) <B>OR</B> (count = 0))
+        <B>THEN</B>
+          started := <B>TRUE</B>;
+          <B>IF</B> dec.isNeg <B>AND</B> (width <!-->&gt; 1)
+            <B>THEN</B>
+              <B>DEC</B> (width);
+            <B>END</B>; (* if dec *)
+          <B>IF</B> width = 0
+            <B>THEN</B>
+              WriteChar (" ");
+            <B>ELSIF</B> width <!-->&gt; count + 1 <B>THEN</B>
+              <B>FOR</B> scount := 1 <B>TO</B> width - count - 1
+                <B>DO</B>
+                  WriteChar (" ");
+                <B>END</B>;
+            <B>END</B>;
+          <B>IF</B> dec.isNeg
+            <B>THEN</B>
+              WriteChar ("-");
+            <B>END</B>; (* if dec *)
+        <B>END</B>;
+      <B>IF</B> started <B>OR</B> (count = 0)
+        <B>THEN</B>
+          WriteCard (cid, dec.number [count], 1);
+        <B>END</B>
+    <B>END</B> (* for *)
+<B>END</B> WriteDecimal;
+
+<B>END</B> DecimalIO.</pre>
+
+<P>As was the case with the module <I>ComplexIO</I> earlier in the chapter, the corresponding modules for the standard channels are much easier.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> SDecimalIO;
+
+(* by R. Sutcliffe
+  modified 1996 11 04 *)
+<B>FROM</B> Decimals <B>IMPORT</B>
+  Decimal;
+
+<B>PROCEDURE</B> ReadDecimal (<B>VAR</B> dec : Decimal);
+<B>PROCEDURE</B> WriteDecimal (dec : Decimal; width : <B>CARDINAL</B>);
+
+<B>END</B> SDecimalIO.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> SDecimalIO;
+
+(* by R. Sutcliffe
+  modified 1996 11 04 *)
+<B>FROM</B> Decimals <B>IMPORT</B>
+  Decimal;
+<B>IMPORT</B> StdChans, DecimalIO;
+
+<B>PROCEDURE</B> ReadDecimal (<B>VAR</B> dec : Decimal);
+<B>BEGIN</B>
+  DecimalIO.ReadDecimal (StdChans.InChan(), dec);
+<B>END</B> ReadDecimal;
+
+<B>PROCEDURE</B> WriteDecimal (dec : Decimal; width : <B>CARDINAL</B>);
+<B>BEGIN</B>
+  DecimalIO.WriteDecimal (StdChans.OutChan(), dec, width);
+<B>END</B> WriteDecimal;
+
+<B>END</B> SDecimalIO.
+</pre>
+<P>The rest of the problem of moving data to and fro between <I>Decimal</I> and other formats is solved in yet another module that employs format or picture strings.  Note that the conversion to <I>Decimal</I> from strings just scans the string looking for and collecting numeric digits.  An alternate method is to specify an input picture, and scan it along with the input string to ensure that the correct format is used.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> DecimalStr;
+(* by R. Sutcliffe
+  last modified 1996 11 05 *)
+
+<B>FROM</B> Decimals <B>IMPORT</B>
+  Decimal;
+
+<B>PROCEDURE</B> StrToDec (string: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): Decimal; 
+(* This procedure extracts the digits from any string and converts these into a decimal number.  A leading sign is correctly interpreted, but all other non numeric characters are simply ignored. *)
+
+<B>PROCEDURE</B> DecToStr (dec: Decimal; picture: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> result: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>); 
+(* Formats the Decimal according to the picture.  Characters with special meaning are:
+  #  a leading blank or a digit
+  9  a leading zero or a digit
+  !  the decimal character defined in the module Decimals (commonly "." or ",")
+  =  the sign (+ or -)
+  ,  the separator defined in the module Decimals (commonly "." or "," or " ")
+  all other characters in the picture string are entered into the result literally *)
+ 
+<B>END</B> DecimalStr.</pre>
+
+<P>Notice that <I>StrToDec</I> is set up as a function, but <I>DecToStr</I> is a regular procedure that returns its result in a variable parameter.</P>
+
+<P><B>NOTE:</B> The use of special characters in the mask or picture, and the exact meaning given to these varies from one implementation to another.  This usage is rather typical, but not identical to any particular product.</P>
+
+<P><B>Example 1: </B>The number 34235678945 placed into the picture "$###,###,##9!99" would result in the string "$342 356 789.45".  If placed instead into the picture "=999,999,999,999" it would result in the string "+ 34 235 678 945". (The definition module is compiled with space as the separator rather than the American comma.)</P>
+
+<P><B>Example 2: </B>If the string "-1.2345" is read by <I>ReadDecimal</I> only the digits and sign are stored, so the resulting <I>Decimal </I>value placed either into the picture "##!99" or the picture ##.99" would result in the string "123.45". (The extra digit takes up some room at the beginning.)  If placed instead into the picture "=##99999!9" it would result in the string "-  01234.5". There are two spaces before the leading zero because there is room for eight figures provided by the mask and only five are needed.</P>
+
+<P><B>Example 3: </B>If the string "23" is read by <I>ReadDecimal</I> and the resulting <I>Decimal </I>value placed into the picture "##99!99999" the result string is "  00.00023" but if into the picture "##99.##999" the result string is "  00.  023" which is probably not too useful, but is according to the picture.</P>
+
+<P>Here is the implementation module for <I>DecimalStr</I>. Once again the commenting is minimal so that the reader may add this apparatus.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> DecimalStr;
+(* by R. Sutcliffe
+  last modified 1996 11 05 *)
+
+<B>FROM</B> CharClass <B>IMPORT</B>
+  IsNumeric;
+<B>FROM</B> Decimals <B>IMPORT</B>
+  Decimal, MaxDigits, zero, decPoint, separator;
+  
+<B>PROCEDURE</B> StrToDec (string: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): Decimal; 
+(* This procedure extracts the digits from any string and converts these into a decimal number.  A leading sign is correctly interpreted, but all other non numeric characters are simply ignored. *)
+<B>VAR</B>
+  temp : Decimal;
+  counts, countd : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  temp := zero;
+  counts := <B>LENGTH</B> (string);
+  countd := 0;
+  <B>WHILE</B> (counts <!-->&gt; 0) <B>AND</B> (countd <!--<-->&lt; MaxDigits)
+    <B>DO</B>
+      <B>DEC</B> (counts);
+      <B>IF</B> IsNumeric (string[counts])
+        <B>THEN</B>
+          temp.number[countd] := <B>ORD</B> (string [counts]) - <B>ORD</B> ("0");
+          <B>INC</B> (countd);
+        <B>END</B>;
+    <B>END</B>;
+  <B>IF</B> string [0] = "-"
+    <B>THEN</B>
+      temp.isNeg := <B>TRUE</B>;
+    <B>END</B>;
+  <B>RETURN</B> temp;
+<B>END</B> StrToDec;
+
+<B>PROCEDURE</B> DecToStr (dec: Decimal; picture: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> result: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>); 
+(* Formats the Decimal according to the picture.  Characters with special meaning are:
+  #  a leading blank or a digit
+  9  a leading zero or a digit
+  !  the decimal character defined in the module Decimals (commonly "." or ",")
+  =  the sign (+ or -)
+  ,  the separator defined in the module Decimals (commonly "." or "," or " ")
+  all other characters in the picture string are entered into the result literally *)
+
+<B>VAR</B>
+  counts, countd, countr, maxs, maxr, picDigits, pad : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+  decDone : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  decDone := <B>FALSE</B>;
+  maxs := <B>LENGTH</B> (picture);
+  maxr := <B>HIGH</B> (result);
+  picDigits := 0;
+  <B>FOR</B> counts := 0 <B>TO</B> maxs - 1
+    <B>DO</B>
+      ch := picture [counts];
+      <B>IF</B> (ch = "#") <B>OR</B> (ch = "9")
+        <B>THEN</B>
+          <B>INC</B> (picDigits)
+        <B>END</B>
+    <B>END</B>; 
+  counts := 0;
+  countd := MaxDigits;
+  countr := 0;
+  <B>WHILE</B> (countd <!-->&gt; 0) <B>AND</B> (dec.number [countd-1] = 0)
+    <B>DO</B>
+      <B>DEC</B> (countd)
+    <B>END</B>;
+  <B>IF</B> picDigits <!-->&gt; countd
+    <B>THEN</B>
+      pad := picDigits - countd;
+    <B>ELSE</B>
+      pad := 0;
+    <B>END</B>;
+  (* special case zero *)
+  <B>IF</B> countd = 0
+    <B>THEN</B>
+      <B>INC</B> (countd);
+    <B>END</B>;
+  ch := picture [counts];   
+  <B>WHILE</B> (counts <!--<-->&lt; maxs) <B>AND</B> (countd <!-->&gt; 0) <B>AND</B> (countr <!--<-->&lt; maxr)
+    <B>DO</B>
+      <B>IF</B> (ch = "#") <B>OR</B> (ch = "9")
+        <B>THEN</B>
+          <B>IF</B> pad = 0
+            <B>THEN</B>
+              <B>DEC</B> (countd);
+              result [countr] := <B>CHR</B> (dec.number[countd] + <B>ORD</B> ("0"));
+            <B>ELSE</B>   (* fill in spaces or zeros from # and 9 places not used in dec *)
+              <B>IF</B> (ch = "#")
+                <B>THEN</B>
+                  result [countr] := " ";
+                <B>ELSIF</B> (ch = "9") <B>THEN</B>
+                  result [countr] := "0";
+                <B>END</B>;
+              <B>DEC</B> (pad);
+            <B>END</B>;
+          <B>IF</B> countd <!--<-->&lt; picDigits
+            <B>THEN</B>
+              <B>INC</B> (counts);
+            <B>END</B>;
+        <B>ELSIF</B> (ch = "!") <B>THEN</B>
+          result [countr] := decPoint;
+          <B>INC</B> (counts);
+        <B>ELSIF</B> (ch = ",") <B>THEN</B>
+          result [countr] := separator;
+          <B>INC</B> (counts);
+        <B>ELSIF</B> (ch = "=") <B>THEN</B>
+          <B>IF</B> dec.isNeg
+            <B>THEN</B>
+              result [countr] := "-"
+            <B>ELSE</B>
+              result [countr] := "+"
+            <B>END</B>;
+          <B>INC</B> (counts);
+        <B>ELSE</B>
+          result [countr] := ch;
+          <B>INC</B> (counts);
+        <B>END</B>;
+      <B>INC</B> (countr);
+      ch := picture [counts];
+    <B>END</B>;
+  <B>WHILE</B> (counts <!--<-->&lt; maxs) <B>AND</B> (countr <!--<-->&lt; maxr)
+    <B>DO</B> (* copy any stuff left in picture; must be literals *)
+      result [countr] := ch;
+      <B>INC</B> (counts);
+      <B>INC</B> (countr);
+      ch := picture [counts];
+    <B>END</B>;
+  <B>IF</B> (countr <!--<-->&lt; maxr)
+    <B>THEN</B>
+      result [countr] := 0C;
+    <B>END</B>; 
+<B>END</B> DecToStr;
+
+<B>END</B> DecimalStr.</pre>
+
+<P>As indicated in the examples already discussed, a program can read <I>Decimal</I> quantities in the form of strings (perhaps in picture form), assign them to variables of type <I>Decimal</I>, manipulate them, and then print them out using pictures (perhaps of a different form than in the way they were entered).  Here is an example:</P>
+<P>Similarly, one could use this functionality to save and print Social Security (Insurance) or credit card numbers in a form with spaces or dashes at appropriate places.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

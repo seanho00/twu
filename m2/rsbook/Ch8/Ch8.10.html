@@ -1,0 +1,224 @@
+<HTML>
+<HEAD>
+<TITLE>8.10 Lower Level I/O in ISO Modula-2</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="lower, level, i/o, input, output, stream, streamfile, seqfile, textio, wholeio, realio, longio, device, drivers, dependent, close, rewind, iochan, look, skip, skiplook, writeln, textread, textwrite, rawread, rawwrite">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.10 Lower Level I/O in ISO Modula-2</B></H2>
+<P>The modules <I>StreamFile</I> and <I>SeqFile</I>, when used in conjunction with the procedures in <I>TextIO</I>, <I>WholeIO</I>, <I>RealIO</I>, and <I>LongIO</I> impose a model for I/O for  channels opened by them based on the notion of the restricted stream or the rewindable stream, respectively.</P>
+<BLOCKQUOTE><I><A NAME="Drivers">The</A> modules </I>StreamFile<I>, </I>SeqFile<I>, and others of a similar kind are examples of <U>device drivers</U>, that is, of modules that enforce a high level model of I/O appropriate for a particular abstract (logical) device.</I></BLOCKQUOTE>
+<P>The <I>device</I> referred to in the above definition is <I>abstract</I> because the physical device (say, disk media) may be capable of handling channels connected to any one of several different logical devices.  Thus, from a logical point of view, the ISO standard sees sequential devices as distinct from stream devices or other devices, regardless of the actual hardware being employed.  Operations (such as <I>Close</I> or <I>Rewind</I>) performed on channels in this way depend on the logical model; that is, a check is made to ensure that the channel was in fact opened by the correct device driver.</P>
+<P>In some cases, it may be necessary to perform operations at a lower level than that available directly from the device driver facilities.  This may be because it is necessary to perform just a few operations that fall outside the strict model, or because the application program needs a rather different model than those provided by the vendor.  In the extreme case, the user may wish to write her own device driver to implement an appropriate abstract model.</P>
+<P>In order to meet such needs, ISO Modula-2 provides a module at a lower level that allows I/O to be performed without reference to any device driver.</P>
+<BLOCKQUOTE><I><A NAME="Independent">Input</A> and output performed directly on channels without the benefit of a high level device driver is called <U>device independent</U>.</I></BLOCKQUOTE>
+<P>In non-standard Modula-2, all the I/O facilities were likely to be contained in the two modules <I>TextIO</I> and <I>Files/FileSystem/Filer</I>.  It is up to the programmer to impose the logical model through the appropriate use of such routines.  In ISO Modula-2, there is a separate module called <I>IOChan</I> that enables device independent operations on a channel by channel basis. Operations in <i>IOChan</i> include:</P>
+<PRE>
+<B>PROCEDURE</B> Look (cid: ChanId; <B>VAR</B> ch: <B>CHAR</B>; <B>VAR</B> res: IOConsts.ReadResults);
+  (* If there is a character as the next item in the input stream cid, assigns its value to ch without removing it from the stream; otherwise the value of ch is not defined.  res (and the stored read result) are set to the value allRight, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> Skip (cid: ChanId);
+  (* If the input stream cid has ended, the exception skipAtEnd is raised; otherwise the next character or line mark in cid is removed, and the stored read result is set to the value allRight. *)
+
+<B>PROCEDURE</B> SkipLook (cid: ChanId; <B>VAR</B> ch: <B>CHAR</B>; <B>VAR</B> res: IOConsts.ReadResults);
+  (* If the input stream cid has ended, the exception skipAtEnd is raised; otherwise the next character or line mark in cid is removed.  If there is a character as the next item in cid stream, assigns its value to ch without removing it from the stream. Otherwise, the value of ch is not defined.  res (and the stored read result) are set to the value allRight, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> WriteLn (cid: ChanId);
+  (* Writes a line mark over the channel cid. *)
+ 
+<B>PROCEDURE</B> TextRead (cid: ChanId; to: SYSTEM.ADDRESS; maxChars: <B>CARDINAL</B>; <B>VAR</B> charsRead: <B>CARDINAL</B>);
+  (* Reads at most maxChars characters from the current line in cid, and assigns corresponding values to successive components of an ARRAY OF CHAR variable for which the address of the first component is to. The number of characters read is assigned to charsRead. The stored read result is set to allRight, endOfLine, or endOfInput. *)
+
+<B>PROCEDURE</B> TextWrite (cid: ChanId; from: SYSTEM.ADDRESS; charsToWrite: <B>CARDINAL</B>);
+  (* Writes a number of characters given by the value of charsToWrite, from successive components of an ARRAY OF CHAR variable for which the address of the first component is from, to the channel cid. *)
+ 
+<B>PROCEDURE</B> RawRead (cid: ChanId; to: SYSTEM.ADDRESS; maxLocs: <B>CARDINAL</B>; <B>VAR</B> locsRead: <B>CARDINAL</B>);
+  (* Reads at most maxLocs items from cid, and assigns corresponding values to successive components of an ARRAY OF LOC variable for which the address of the first component is to. The number of characters read is assigned to locsRead. The stored read result is set to the value allRight, or endOfInput. *)
+ 
+<B>PROCEDURE</B> RawWrite (cid: ChanId; from: SYSTEM.ADDRESS; locsToWrite: <B>CARDINAL</B>);
+  (* Writes a number of items given by the value of locsToWrite, from successive components of an ARRAY OF LOC variable for which the address of the first component is from, to the channel cid. *)</PRE>
+<P>Several other operations are also available; these are detailed in a full listing of this module in <A HREF="../Appendices/Ap5.html">Appendix 5</A>.  When a channel is opened by a device driver, procedures to do all the above operations on that channel must be provided by the device driver, even though the specific I/O model does not necessarily use them all.  When I/O is done at the level of <I>IOChan</I>, however, any of the channel's low level procedures may be employed through calls to the above.  Here is yet another version of the file copying program to illustrate some use of <I>IOChan</I>.</P>
+<PRE>
+<B>MODULE</B> FileCopyLow;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of ISO module IOChan *)
+(* last revision 1994 02 23 *)
+
+(* Copies a text file character by character using the low level procedures IOChan.Look and IOChan.Skip. *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteChar, WriteLn, ReadString, SkipLine;
+<B>FROM</B> SeqFile <B>IMPORT</B>
+  text, old, ChanId, OpenResults, OpenRead, OpenWrite, Close;
+<B>FROM</B> IOConsts <B>IMPORT</B>
+  ReadResults;
+<B>FROM</B> IOChan <B>IMPORT</B>
+  Look, Skip;
+<B>IMPORT</B> TextIO;
+
+<B>VAR</B>
+  inFile, outFile: ChanId;
+  inFileName, outFileName: <B>ARRAY</B> [0 .. 79] <B>OF</B> <B>CHAR</B>;
+  ch: <B>CHAR</B>;
+  resOpen: OpenResults;
+  resRead: ReadResults;
+
+<B>BEGIN</B>
+  WriteString ('Name of input file ? ==<!-->&gt;');
+  ReadString (inFileName);
+  SkipLine;
+  OpenRead (inFile, inFileName, text, resOpen);
+
+  <B>IF</B> resOpen = opened (* for read *)
+    <B>THEN</B>
+      WriteString ('Name of output file ? ==<!-->&gt;');
+      ReadString (outFileName);
+      SkipLine;
+      OpenWrite (outFile, outFileName, text, resOpen);
+ 
+      <B>IF</B> resOpen = opened (* for write *)
+        <B>THEN</B>
+          <B>REPEAT</B>
+            Look (inFile, ch, resRead);
+             (* see if character available -- uses low level IOChan *)
+            <B>IF</B> resRead = allRight
+              <B>THEN</B> (* yes, so *)
+                TextIO. WriteChar (outFile, ch); (* output it *)
+                Skip (inFile); (* skip to next one in input *)
+              <B>ELSIF</B> resRead = endOfLine <B>THEN</B>
+                TextIO. WriteLn (outFile);
+                 (* place end of line in output *)
+                Skip (inFile);
+                 (* remove input end of line mark/state *)
+              <B>END</B> (* if resRead *);
+          <B>UNTIL</B> resRead = endOfInput; (* only possibility left *)
+          WriteString (<!--"-->&quot;Copy complete. <!--"-->&quot;);
+          WriteString (inFileName);
+          WriteString (<!--"-->&quot; copied to <!--"-->&quot;);
+          WriteString (outFileName);
+          WriteLn;
+          Close (outFile);
+        <B>END</B>; (* if resOpen = opened (* for write *) *)
+      Close (inFile);
+    <B>END</B>; (* if resOpen = opened (* for read *) *)
+<B>END</B> FileCopyLow.</PRE>
+<P>When this program was run, one session looked like:</P>
+<PRE>
+Name of input file ? ==<!-->&gt;FileCopy.MOD
+Name of output file ? ==<!-->&gt;FileCopy.MOD.BAK
+Copy complete. FileCopy.MOD copied to outFileName</PRE>
+<P>An examination of the output file showed that its contents were indeed correct.</P>
+<P>The procedures of <I>IOChan</I> also provide some idea how some of those in <I>TextIO</I> (which is not device dependent) might be implemented by calling device independent routines.  Here are a few from the author's own implementation:</P>
+<PRE>
+<B>PROCEDURE</B> ReadChar (cid: IOChan.ChanId; <B>VAR</B> ch: <B>CHAR</B>);
+  (* If possible, removes a character from the input stream cid and assigns the corresponding value to ch.  The read result is set to the value allRight, endOfLine, or endOfInput.  *)
+
+<B>VAR</B>
+  howMany : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  IOChan.TextRead (cid, SYSTEM.ADR(ch),1, howMany)
+<B>END</B> ReadChar;
+
+<B>PROCEDURE</B> ReadRestLine (cid: IOChan.ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Removes any remaining characters from the input stream cid before the next line mark, copying to s as many as can be accommodated as a string value. The read result is set to the value allRight, outOfRange, endOfLine, or endOfInput. *)
+<B>VAR</B>
+  res : IOConsts.ReadResults;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  ReadString (cid,s);
+  <B>IF</B> IOChan.ReadResult (cid) = IOConsts.allRight (* more there *)
+    <B>THEN</B>
+      res := IOConsts.outOfRange;
+      <B>REPEAT</B>
+        ReadChar (cid, ch);
+      <B>UNTIL</B> IOChan.ReadResult (cid) # IOConsts.allRight;
+      IOChan.SetReadResult (cid, res);
+    <B>END</B>;
+
+<B>END</B> ReadRestLine;
+
+<B>PROCEDURE</B> ReadString (cid: IOChan.ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Removes only those characters from the input stream cid before the next line mark that can be accommodated in s as a string value, and copies them to s.  The read result is set to the value allRight, endOfLine, or endOfInput. *)
+<B>VAR</B>
+  numToRead, numRead : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  numToRead := <B>HIGH</B>(s) + 1;
+  IOChan.TextRead (cid, SYSTEM.ADR (s), numToRead, numRead);
+  <B>IF</B> numRead <!--<-->&lt; numToRead
+    <B>THEN</B>
+      s[numRead] := 0C
+    <B>END</B>;
+<B>END</B> ReadString;
+
+  (* The following procedure reads past the next line mark *)
+
+<B>PROCEDURE</B> SkipLine (cid: IOChan.ChanId);
+  (* Removes successive items from the input stream cid up to and including the next line  mark, or until the end of input is reached.  The read result is set to the value allRight, or endOfInput.  *)
+<B>VAR</B>
+  res : IOConsts.ReadResults;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  IOChan.Look (cid, ch, res);
+  <B>WHILE</B> res = IOConsts.allRight
+    <B>DO</B>
+      IOChan.SkipLook (cid, ch, res);
+    <B>END</B>;
+  <B>IF</B> res = IOConsts.endOfLine
+    <B>THEN</B>
+      IOChan.Skip (cid);
+    <B>END</B>;
+
+<B>END</B> SkipLine;</PRE>
+<P>Although these procedures are all provided in a standard conforming implementation, the reader may well require the use of the ideas they contain in writing applications programs that need to deal with channel I/O on a device independent basis.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

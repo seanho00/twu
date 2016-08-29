@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<TITLE>9.5 Sets at the Low Level</TITLE>
+<meta NAME="keywords" CONTENT="set, sets, low, level, bitset, bitsets, bit, bits, position, positioning, zero, bitsperbitset, packed, packedset, shift, rotate">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.5 Sets at the Low Level</B></H2>
+<P>There are some low-level sets built in that allow bit-by-bit manipulation of memory storage.  Of course, to make any use of these, something must be known about the bit and byte level numeric representations on the underlying machine.</P>
+<H3><B><A NAME="9.5.1">9.5.1</A> Bitsets</B></H3>
+<P>A number represented in binary form could be thought of as a set of bit positions enumerated from least significant (lowest number) to most significant (highest number) as shown in figure 9.3 for an eight bit number..</P>
+<P><CENTER><IMG SRC="Figure/Figure_9.3.GIF" BORDER="1"></CENTER><!----></P>
+<P>In this case, if the number is thought of as a SET OF [0 .. 7] the elements 6, 5, 3, and 2 are in the set, and the elements 7, 4, 1, and 0 are not in the set.  This idea of interpreting storage as a set of bit positions is encapsulated in the following ADT:</P>
+<BLOCKQUOTE><I><A NAME="Bitset">The</A> Modula-2 type <U>BITSET</U> has the implicit definition</BLOCKQUOTE>
+<BLOCKQUOTE>TYPE</BLOCKQUOTE>
+<BLOCKQUOTE>  BITSET = SET OF [0 .. BitsPerBitset-1]</BLOCKQUOTE>
+<BLOCKQUOTE>where the constant BitsPerBitset is implementation defined and the setting of each bit position determines whether the number of that position is an element of the set.</I></BLOCKQUOTE>
+<P>The constant <I>BitsPerBitset</I> is usually the same as the number of bits in a WORD, (or some integral multiple of this); often it is 16 or 32 and can be computed as:</P>
+<PRE>
+BitsPerBitset := <B>SIZE</B> (<B>BITSET</B>) * SYSTEM.BITSPERLOC</PRE>
+<P>If, for instance, as is often the case, the types CARDINAL, WORD, and BITSET all have the same size (in LOCs) the following program provides an alternative to the pair of mutually recursive procedures in Chapter 4 to print out a CARDINAL in binary form.  It forcibly reinterprets a CARDINAL as a BITSET, and then prints out a one or a zero depending on whether that bit is represented in the set or not.</P>
+<PRE>
+<A NAME="BitsetDemo"></A><B>MODULE</B> BitsetDemo;
+
+(* Written by R.J. Sutcliffe *)
+(* to demonstrate the use of bitset *)
+(* using ISO standard Modula-2  *)
+(* last revision 1994 03 01 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard, ReadCard;
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  CAST, WORD, BITSPERLOC;
+  
+<B>CONST</B>
+  maxBitNum = BITSPERLOC * <B>SIZE</B>(<B>BITSET</B>) - 1;
+  
+<B>PROCEDURE</B> WriteWordBin (b: WORD);
+(* Pre : WORD and BITSET have the same size *)
+
+<B>VAR</B>
+  bs : <B>BITSET</B>;
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  bs := CAST (<B>BITSET</B>, b);
+  <B>FOR</B> count := maxBitNum <B>TO</B> 0 <B>BY</B> -1 
+    <B>DO</B> 
+      <B>IF</B> count <B>IN</B> bs
+        <B>THEN</B>
+          WriteCard (1,1)
+        <B>ELSE</B>
+          WriteCard (0,1)
+        <B>END</B>;
+      <B>IF</B> count <B>MOD</B> 8 = 0 (* break into groups of 8 bits *)
+        <B>THEN</B>
+          WriteChar (<!--"-->&quot; <!--"-->&quot;);
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> WriteWordBin;
+
+<B>VAR</B>
+  theNumber : <B>CARDINAL</B>;
+  answer : <B>CHAR</B>;
+  again : <B>BOOLEAN</B>;
+ 
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program tests a procedure to print <!--"-->&quot;);
+  WriteString (<!--"-->&quot;cardinals in binary form<!--"-->&quot;);
+  WriteLn;
+
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;Enter the number to be changed <!--"-->&quot;);
+  WriteString (<!--"-->&quot;to binary form ==<!-->&gt; <!--"-->&quot;);
+  ReadCard (theNumber);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;The cardinal <!--"-->&quot;);
+  WriteCard (theNumber, 0);
+  WriteString (<!--"-->&quot; converted to binary form is: <!--"-->&quot;);
+  WriteLn;
+  
+  WriteWordBin (theNumber); (* one must know sizes are equal *)
+
+  WriteLn;
+  WriteString (<!--"-->&quot;Do another? Y/N <!--"-->&quot;);
+  ReadChar (answer);
+  SkipLine;
+  again := (<B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;);
+<B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> BitsetDemo.</PRE>
+<P>Observe that even the bit positioning from left (most significant) to right (least significant) is implementation defined; it is not necessarily the case in in the underlying hardware of all implementations. However, the numbering from <i>zero</i> (least signficant) to <i>bitsperbitset</i> (most significant) is defined to be the way that ISO standard Modula-2 must produce the results to the program, regardless of the hardware.  Here is a sample run from this program module:</P>
+<PRE>
+This program tests a procedure to print cardinals in binary form
+Enter the number to be changed to binary form ==<!-->&gt; <B>1</B>
+
+The cardinal  1 converted to binary form is: 
+00000000 00000000 00000000 00000001 
+Do another? Y/N <B>y</B>
+Enter the number to be changed to binary form ==<!-->&gt; <B>10</B>
+
+The cardinal  10 converted to binary form is: 
+00000000 00000000 00000000 00001010 
+Do another? Y/N <B>y</B>
+Enter the number to be changed to binary form ==<!-->&gt; <B>65535</B>
+
+The cardinal  65535 converted to binary form is: 
+00000000 00000000 11111111 11111111 
+Do another? Y/N <B>y</B>
+Enter the number to be changed to binary form ==<!-->&gt; <B>1000000</B>
+The cardinal  1000000 converted to binary form is: 
+00000000 00001111 01000010 01000000 
+Do another? Y/N <B>n</B></PRE>
+<H3><B><A NAME="9.5.2">9.5.2</A> Packed Sets</B></H3>
+<P>For the purpose of working with other types at the bit level, and provided their representation details are known, it is also possible to declare a more general kind of bitset, this time with a user-specified number of bits, rather than the fixed number allowed by the type BITSET.  In addition, the underlying type in the more general case need not be CARDINAL [0..n], but may be any ordinal type (though CARDINAL is the most useful).  Of course, if these sets are to be mapped to storage locations, the number of bit positions is most useful as a multiple of BITSPERLOC.  Thus, in the above example, one could have declared:</P>
+<PRE>
+<B>TYPE</B>
+  CardSet = <B>PACKEDSET</B> <B>OF</B> [0..<B>SIZE</B> (<B>CARDINAL</B>) * BITSPERLOC - 1]</PRE>
+<P>and then cast to an item of this type.  Indeed, the type BITSET is just a specific built in subtype of the more general type PACKEDSET.  By this means, the binary representation of other types, such as REALs could also be investigated.</P>
+<P>In addition, there are some operations in SYSTEM that are intended to manipulate PACKEDSETS (including BITSETS) on the bit level.  These include:</P>
+<PRE>
+<B>PROCEDURE</B> SHIFT (val: <!--<-->&lt;packset type<!-->&gt;; numToShift : <B>INTEGER</B>) : 
+            <!--<-->&lt;same packset type<!-->&gt;</PRE>
+<P>which shifts all the bits of the pattern <I>numToShift</I> positions to the left or the right, (The bit on one end is shifted to oblivion and a zero comes in at the other end.) and </P>
+<PRE>
+<B>PROCEDURE</B> ROTATE (val: <!--<-->&lt;packset type<!-->&gt;; numToRotate : <B>INTEGER</B>): 
+            <!--<-->&lt;same packset type<!-->&gt;</PRE>
+<P>which rotates all the bits of the pattern <I>numToRotate</I> positions to the left or the right, (The bit on one end is shifted to the other end.)  The effects of the two are shown in figure 9.4</P>
+<P><CENTER><IMG SRC="Figure/Figure_9.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>This capability is most useful when programming at the low system level where individual bits must be manipulated.  Note that the effect of a right shift is to divide by 2.  This is illustrated in the example below.  Note that it does not make use of any special knowledge about the sizes of the types in bits, but computes them from information available from SYSTEM.</P>
+<PRE>
+<B>MODULE</B> ShiftDemo;
+
+(* Written by R.J. Sutcliffe *)
+(* to demonstrate the use of packedset *)
+(* using ISO standard Modula-2  *)
+(* last revision 1994 03 02 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard, ReadCard;
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  BITSPERLOC, SHIFT, ROTATE, CAST;
+  
+<B>CONST</B>
+  maxBitNum = BITSPERLOC * <B>SIZE</B>(<B>CARDINAL</B>) - 1;
+  
+<B>TYPE</B>
+  CardSet = <B>PACKEDSET</B> <B>OF</B> [0..maxBitNum];
+  
+<B>PROCEDURE</B> WriteCardBin (num: <B>CARDINAL</B>);
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  numSet : CardSet;
+  
+<B>BEGIN</B>
+  numSet := CAST (CardSet, num);
+  <B>FOR</B> count := maxBitNum <B>TO</B> 0 <B>BY</B> -1 
+    <B>DO</B> 
+      <B>IF</B> count <B>IN</B> numSet
+        <B>THEN</B>
+          WriteCard (1,1)
+        <B>ELSE</B>
+          WriteCard (0,1)
+        <B>END</B>;
+      <B>IF</B> count <B>MOD</B> 8 = 0 (* break into groups of 8 bits *)
+        <B>THEN</B>
+          WriteChar (<!--"-->&quot; <!--"-->&quot;);
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> WriteCardBin;
+
+<B>VAR</B>
+  num : <B>CARDINAL</B>;
+  answer : <B>CHAR</B>;
+  again : <B>BOOLEAN</B>;
+ 
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program illustrates bit shifting <!--"-->&quot;);
+  WriteLn;
+
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;Enter the number to be shifted <!--"-->&quot;);
+  ReadCard (num);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;The cardinal <!--"-->&quot;);
+  WriteCard (num, 0);
+  WriteString (<!--"-->&quot; binary: <!--"-->&quot;);
+  WriteCardBin (num);
+  WriteLn;
+  WriteString (<!--"-->&quot;Shifted one position right yields <!--"-->&quot;);
+  num := CAST (<B>CARDINAL</B>, SHIFT (CAST (CardSet, num), -1));
+  WriteCard (num, 0);
+  WriteString (<!--"-->&quot; binary: <!--"-->&quot;);
+  WriteCardBin (num);
+  WriteLn;
+  WriteString (<!--"-->&quot;and, then rotated one position right yields <!--"-->&quot;);
+  num := CAST (<B>CARDINAL</B>, ROTATE (CAST (CardSet, num), -1));
+  WriteCard (num, 0);
+  WriteString (<!--"-->&quot; binary: <!--"-->&quot;);
+  WriteCardBin (num);
+  WriteLn;
+ 
+  WriteString (<!--"-->&quot;Do another? Y/N <!--"-->&quot;);
+  ReadChar (answer);
+  SkipLine;
+  again := (<B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;);
+<B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> ShiftDemo.</PRE>
+<P>Here is a brief run to illustrate:</P>
+<PRE>
+This program illustrates bit shifting 
+Enter the number to be shifted <B>1</B>
+
+The cardinal  1 binary: 00000000 00000000 00000000 00000001 
+Shifted one position right yields  0 binary: 00000000 00000000 00000000 00000000 
+and, then rotated one position right yields  0 binary: 00000000 00000000 00000000 00000000 
+Do another? Y/N <B>y</B>
+Enter the number to be shifted <B>5</B>
+
+The cardinal  5 binary: 00000000 00000000 00000000 00000101 
+Shifted one position right yields  2 binary: 00000000 00000000 00000000 00000010 
+and, then rotated one position right yields  1 binary: 00000000 00000000 00000000 00000001 
+Do another? Y/N <B>y</B>
+Enter the number to be shifted <B>65535</B>
+
+The cardinal  65535 binary: 00000000 00000000 11111111 11111111 
+Shifted one position right yields  32767 binary: 00000000 00000000 01111111 11111111 
+and, then rotated one position right yields  2147500031 binary: 10000000 00000000 00111111 11111111 
+Do another? Y/N <B>n</B></PRE>
+<P>Observe the difference between the rotate and the shift when there is a one in the rightmost position.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,148 @@
+<HTML><HEAD><TITLE>19.2 Object Oriented Terminology</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Object Oriented Terminology">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+
+<H2><b>19.2 Object Oriented Terminology</b></H2>
+
+<H3><b><A NAME="19.2.1"></A>19.2.1 Basic Definitions</b></H3>
+
+<P>Here is an initial summary of common definitions, based on the discussion so far:</P>
+<P><i>A data-centric entity with its own information and manipulative activities is called an <u>object</u>. Each information item of an object is called an <u>attribute</u>, and each activity it can engage in is called a <u>method</u>. A use of "object.attribute" or of "object.method" is called a <u>message</u> to the object, and in the contest of carrying such a message, an object may be termed an <u>agent</u>.</i></P>
+
+<P>If each individual object and its attributes and methods had to be individually declared, these ideas would not give programs much expressive power. However, like variables, constants, and procedures, objects with the same structure are said to have a common type.</P>
+
+<P><i>The type of  an object is called its <u>class</u>.  The attributes and methods of a class taken  collectively are referred to as the <u>members</u> (a common term in other notations) or <u>components</u> (the Modula-2 term) of the class.</i></P>
+
+<P><b>NOTE:</b> In notations other than Modula-2, the term <i>component</i> is usually used of a more or less self-contained routine or collection of routines, such as a module, rather than of an entity constituting part of a class.</P>
+<P><i>An entity that is of a class type is said to be an <u>instance</u> or a <u>member</u> of that class.</i></P>
+
+<P>Thus, objects are not created alone, but as entities belonging to a class‹usually declared in a fashion somewhat as in the pseudocode:</P>
+
+<PRE>Class 
+  Account =
+    attributes
+      balance : real
+    methods
+      procedure credit (amount : real)
+      procedure debit (amount : real)
+    begin initialization
+      balance <= 0.0
+    end Account</PRE>
+
+<P>In practice, the actual syntax of a class declaration may loosely resemble that of a module or a record, but in most object notations, there are several differences from either syntax.</P>
+
+<P><i>The generation of a specific object (that is, an instance) from some class is called <u>instantiation</u>.</i></P>
+
+<P>When an object of this class is generated, the data items can be initialized by some kind of internal code, in the manner shown. One might have something like:</P>
+
+<PRE>var
+  bankAccount : Account;</PRE>
+
+<P>and then, later,</P>
+
+<PRE>Create (bankAccount);</PRE>
+
+<P>where <i>Create</i> is a built in function to allow for the generation and initialization of an object before it is used.</P>
+<P>As suggested at the end of <A HREF="Ch19.1.html">section 1</A>, object notations almost always allow for information hiding. As with political systems, which either allow everything not prohibited, or prohibit everything not allowed, there are two common approaches to object scope data hiding, depending on the notation rules:</P>
+
+<UL><LI><!--…--> all attributes and methods of the object are visible to clients unless marked <i>private</i>
+OR  (the approach taken in Modula-2, by the way)</LI>
+<LI><!--…--> all attributes and methods of the object are hidden unless they are marked <i>reveal</i></LI></UL>
+
+<P>Similarly, object notations usually allow attributes that are variables to be protected in some way, so that clients can read the value but not change it. This eliminates the necessity (recommended for modules) of keeping the value in the implementation, and only putting a procedure to fetch it into the definition. In most object notations, a visible attribute variable can be changed by clients unless it is marked by a reserved word such as <i>protected</i> or <i>readonly</i>. Thus, one might have, on the one hand, something like:</P>
+
+<PRE>Class 
+  Account =
+    protected balance
+    private overdrawn
+    attributes
+      balance : real
+      overdrawn : boolean
+    methods
+      procedure credit (amount : real)
+      procedure debit (amount : real)
+    begin initialization
+      balance <= 0.0
+      overdrawn <= false
+    end Account</PRE>
+
+<P>or, on the other hand, (the Modula-2 hand) something like:</P>
+
+<PRE>Class 
+  Account =
+    reveal credit, debit, Readonly balance
+    attributes
+      balance : real
+      overdrawn : boolean
+    methods
+      procedure credit (amount : real)
+      procedure debit (amount : real)
+    begin initialization
+      balance <= 0.0
+      overdrawn <= false
+    end Account</PRE>
+
+<P>In either of these renditions, the method components <i>credit</i> and <i>debit</i> are available for use by objects in the surrounding scope. Of the attributes, <i>balance</i> can be read, but not written to, and <i>overdrawn</i> is kept private. It should be noted, in accord with the preceding discussion, that object notations can achieve these effects in a variety of ways. The discussion is deliberately being kept general at this point, and can apply to any such notation, but the definition below is used in the OOM-2 standard.</P>
+
+<P><i>An entity whose value is not permitted to be changed is said to be <u>immutable</u>.</i></P>
+
+<H3><b><A NAME="19.2.2"></A>19.2.2 Reference versus Value Objects</b></H3>
+
+<P>The distinction between a value and a reference to a value been made earlier in the text in connection with <i>first</i> value and variable parameters; <i>second</i> the name of a data store and its address (or a pointer).. In brief;</P>
+
+<P><i>If an identifier denotes the name of the data item itself, it is the name of a <u>value</u>. If it denotes a means of access to a value then it is a <u>reference</u>. </i></P>
+
+<P>In many object notations, an object name denotes a reference rather than the actual value of the data. Thus, if <i>obj1</i> and <i>obj2</i> are both objects, then an assignment like</P>
+
+<P>obj1 := obj2</P>
+
+<P>using value semantics would take the data value in <i>obj2</i> and copy it to the location of <i>obj2</i>. However, if reference semantics underlie the object notation (the usual), it is the reference that is copied, not the value. Since an object, as with a record or an array, could be rather large, this is probably a good choice for language designers. It has the consequence, however that such objects, like the entities accessed by pointers, can only be created dynamically, not statically.</P>
+<P>However, as in the case of pointers, such semantics does raise the issues of dangling references and garbage. It is all very well to do things this way, but what if a series of operations leaves some object with no reference at all (garbage)? After all, if objects are declared and initialized dynamically, that sounds a lot like there is memory allocation and deallocation going on, at least behind the scenes, even if not out in the open as with pointers. Indeed, some object notations require that their object entities be explicitly destroyed by the program so that the memory can be reclaimed, and programs written with such semantics face the very real possibility that if the programmer is not careful with references, the available memory will become exhausted.</P>
+<P>However, nearly all implementations of object notation have some form of garbage collection to scour the program memory space for objects that have no current valid references, and collect their memory. That is, an object with no references can be automatically destroyed by the garbage collection routines. It may be possible to invoke these with an explicit procedure call, but often they simply lurk in the background and the program is unaware of them.</P>
+
+<P><i>Objects that are tracked by a garbage collector and cannot be destroyed manually by the program code are said to be <u>traced</u>. Objects that are subject to manual destruction by explicit code and so are not tracked by a garbage collector are said to be <u>untraced</u>.</i></P>
+
+<P>In addition, it is worthwhile to distinguish between program units containing one or the other of these two kinds of object:</P>
+
+<P><i>A program unit (such as a Modula-2 module) that contains only traced objects is called <u>safeguarded</u>. One that contains even one untraced object is called <u>unsafeguarded</u>.</i></P>
+
+<P>Of course, in some object notations, this distinction will not have to be made, because there will only be one kind of object. Indeed, if language designers (or ISO committees) are dealing with a language that has no pointers, it is easy to declare that all objects are to be traced (essentially what happens in Java). Not so in Modula-2, which has both‹partly because the base language already had pointers and so had the possibility of dynamic allocation and deallocation already.</P>
+<P>There are echoes here of comments on loop control variables and whether they can be threatened or not. In some languages, they can be reassigned inside the FOR loop they control; in Modula-2, they cannot be threatened in any way. It should be clear that if objects are to be traced, they have to be protected from attempts to manually dispose of them. For instance, taking the address of a traced value (or casting a traced object reference into a pointer type) constitutes an obvious threat, and is one of the things that would have to be forbidden.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<TITLE>2.5 Variables in Modula-2</TITLE>
+<meta NAME="keywords" CONTENT="variables, representation, abstract, abstraction, abstractions, variable, represent, modula-2, memory, location, contents, assign, assignment, operator, strong, strongly, type, typed, language, languages, var, declare, seclaring, part, integer, char, cardinal, built-in, identifiers, initializing, standard, identifier">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.5 Variables in Modula-2</B></H2>
+<P>As in the sections following the <!--"-->&quot;hello world<!--"-->&quot; example, a careful analysis now needs to be given of the major new idea introduced in the example of the <A HREF="../Ch2/Ch2.3.html">section 2.3</A><!--‹-->--that of the Modula-2 variable.  Variables as names for data representation abstractions were discussed in general terms in <A HREF="../Ch1/Ch1.6.html#1.6.5">section 1.6.5</A>, and the reader is asked to review that material before beginning with this portion of the text.</P>
+<P>Good programs are versatile, and give different results depending on the data being fed into them (even if the result is electronic indigestion).  For that reason, programs must make extensive use of the computer's memory to store data and partial results, and to retain final answers pending the time when they will be printed out or otherwise communicated back to the real world.  If, for each machine, (and each piece of code)  the programmer had to write code to find available memory locations for data and then store things in those locations, the task would be unmanageable.</P>
+<P>Fortunately, any good programming language has a facility to control all this work<!--‹-->--all the programmer has to do is give a name to the pigeonhole where the data is to be stored, and the compiler automatically generates code to allocate the right amount of memory, give it the desired name, find it again whenever the name is subsequently used, and store values there whenever the program demands.  In Modula-2 programs, it is necessary to give variables their name and type before the program code itself begins.  For example, in the last program, the line</P>
+<PRE>
+<B>VAR</B>
+  base, exponent, counter, result: <B>CARDINAL</B>;</PRE>
+
+<P>causes code to be generated to set aside enough memory to store the values of the four named variables.  It also ensures that their type will be CARDINAL.  In all subsequent references to these, code is generated to find the same location by its name.  For instance, when the code for the line</P>
+<PRE>
+  result  := result * base;</PRE>
+
+<P>is executed, the locations named by <I>result</I> and <I>base</I> are looked up and the values retrieved.  The two values are multiplied, and the answer is stored back in the location <I>result</I>.  Likewise, the code for the line</P>
+<PRE>
+  counter := counter + 1;</PRE>
+
+<P>causes the number stored at the location named by counter to be increased by one.  The following definitions are useful at this point:</P>
+<BLOCKQUOTE><I><A NAME="M2Variable">A</A> <U>Modula-2 variable</U> is a name for a memory location, the contents of which can be changed by a program.</BLOCKQUOTE>
+<BLOCKQUOTE>The symbol := is called the <U>assignment operator</U>, and is the means by which the name on its left is given to the value on its right.</I></BLOCKQUOTE>
+<P>The difference may seem unimportant, but this last definition is technically more correct than saying that the value is assigned to the name, though the distinction is not always carefully maintained, even in this text.</P>
+<P><B>NOTE</B>:	There should be a space before and a space after an assignment operator.</P>
+<P>The assignment also illustrates the simplest kind of statement<!--‹-->--the <I>assignment</I> statement.  Its railroad diagram is shown in figure 2.5.</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.5.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B><A NAME="2.5.1">2.5.1</A> Simple Variable Types</B></H3>
+<P>In some computer notations, variables come into existence at the time they are first <i>used</i> in the program.  Moreover, the type of contents the variable may have will be determined by the context in which it is used (these may, for instance,  be alphabetic characters instead of numbers).  Modula-2, on the other hand, is what is known as a <I>strongly typed language</I>.  This means that every variable is of a particular kind or type and only values of the same type can be assigned to it.</P>
+<BLOCKQUOTE><I><A NAME="Declare">A</A> Modula-2 variable is given its name and type, and memory is set aside for the value under a VAR heading.  This is called <U>declaring</U> the variable.  The declaration of a variable must include its type.  The entire section of the program Module preceding the word BEGIN, excluding any import statements, is called the <U>declaration part</U>.</I></BLOCKQUOTE>
+<P>This leads to a revised diagram of a program module. (Figure 2.6)</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>Once the type of a variable has been appropriately declared, the variable may be assigned only values of that type.  For instance, only numbers such as -30, 0, 45, 62, etc. can be assigned to a variable of type INTEGER and only single characters such as 'c', '*', 'H', or '5' can be assigned to a variable of type CHAR (short for Character).   Some rules for type declarations must also be observed.  For example, in a declaration such as:</P>
+<PRE>
+<B>VAR</B>
+  firstNumber : <B>INTEGER</B>;
+  ch : <B>CHAR</B>;</PRE>
+
+<P><B>NOTES</B>:	1. VAR is a reserved word which must be capitalized.</P>
+<P>	2. Each declaration of another type must be separated from the ones before with a semicolon.</P>
+<P>	3. There should be spaces before and after each colon and a new line should be started after the VAR and before any actual declarations.  (This is not absolutely required, but it makes the program look neater.)</P>
+<P>This declaration creates the identifiers <I>firstNumber</I> and <I>ch</I>, with their types fixed for the balance of the program.  In subsequent statements, an assignment like <I>firstNumber := 'M'</I> or <I>ch := 5</I> would be rejected by the compiler as being in <!--"-->&quot;type conflict.<!--"-->&quot;  That is, one is not allowed to give a name of one type to a value of another.  If there are several variables of the same type to declare all at once, they may be separated by commas.  Thus,</P>
+<PRE>
+<B>VAR</B>
+  counter, size, length, int : <B>CARDINAL</B>;</PRE>
+
+<P>has the same effect as the declaration below and conserves space in the source file.</P>
+<PRE>
+<B>VAR</B>
+  counter : <B>CARDINAL</B>;
+  size : <B>CARDINAL</B>;
+  length : <B>CARDINAL</B>;
+  card : <B>CARDINAL</B>;</PRE>
+
+<P>The syntax of the declaration is diagrammed in Figure 2.7.</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>The values a variable can take on are not only limited by its type<!--‹-->--CHAR for instance, is restricted to single characters<!--‹-->--but also by a predefined range.   This is <I>not</I> a restriction imposed by Modula-2 as a programming notation, but by each individual computer and/or its operating system.  In some older systems, the type CARDINAL, for instance can range only from 0 through 65535.  The similar type INTEGER on such systems ranges from -32768 through 32767.  In newer systems, these are 0 through 4294967295 for CARDINAL's and the INTEGER range is from -2147483647 through 2147483647.</P>
+<P><B>NOTES</B>:	1. CARDINAL, INTEGER and CHAR are built-in identifiers.  As detailed later (section 2.5.2), it is unwise to attempt to reuse these names for program identifiers.</P>
+<P>	2. These limits are typical of certain small computers and can in some circumstances be very restrictive.  Some systems offer a much larger range for CARDINAL and INTEGER.   (See chapter 15 for a fuller discussion of the reasons these particular numbers arise as limits.)  The reader must obtain information for the actual system being used from the implementation manuals, or by experimentation.</P>
+<P>	3. Alternatively, many versions of Modula-2 have one or both of the nonstandard types named by the built-in identifiers LONGCARD and LONGINT.  The range of these two data types is much greater than that of the regular types, as each has more memory set aside for its data.</P>
+<P>Although one cannot assign INTEGER or CARDINAL variable names to CHAR values, or vice versa, it is possible to freely assign CARDINAL and INTEGER names to each others' values, but only in the overlapping part of their domain.</P>
+<H3><B>Example:</B></H3>
+<P>Assuming the ranges given above, suppose one had:</P>
+<PRE>
+<B>VAR</B>
+  firstInt, secondInt : <B>INTEGER</B>;
+  firstCard, secondCard : <B>CARDINAL</B>;
+  ck, ch  : <B>CHAR</B>;</PRE>
+
+<P>Then the following are correct:</P>
+<PRE>
+  firstInt := -50;
+  secondInt := 4500;
+  firstCard := 62500;
+  ch := 'X';
+  ck := <!--"-->&quot;m<!--"-->&quot;;  (* single or double quotes allowed *)
+  secondCard := secondInt;  (* This is okay. *)
+  firstCard := firstCard + 3000;  (* This is almost too big for some older systems. *)</PRE>
+
+<P>and, the following are incorrect:</P>
+<PRE>
+  firstInt := firstCard; (* error when code is executed. *)
+  secondCard := firstInt;  (* assigning negative to a cardinal. *)
+  ch := 'ab';   (* This won't work; 2 characters. *)</PRE>
+
+<P><B>NOTE</B>:	Creating a variable name and giving it a type via the VAR statement does not also give it a value.  Until the first assignment statement for that variable is encountered, it is undefined.</P>
+<BLOCKQUOTE><I><A NAME="Initializing">Assigning </A>the first known value to a variable is called <U>initializing</U> it.</I></BLOCKQUOTE>
+<P>To illustrate the last point, consider the calculation section in the last major example:</P>
+<PRE>
+    (* calculation section *)
+  result := base;  (* initially, set the result to the base *)
+  counter := 1; (* What if this initialization is omitted? *)
+  <B>WHILE</B> counter <!--<-->&lt; exponent
+    <B>DO</B>
+      result  := result *  base; (* multiply base enough times *)
+      counter := counter + 1
+    <B>END</B>;</PRE>
+
+<P>Suppose that the line initializing <I>counter</I> were left out.  When the code entered the WHILE loop, the value of <I>counter</I> would be whatever happened to be in that piece of the machine's memory before the program began to run.  It may already be greater than <I>exponent</I>, in which case the loop will not be executed even once.  It may be some value between one and <I>exponent</I> in which case a further computation will be made, but the wrong number of multiplications will be performed.  Assuming, say, that there are 65536 possible values for a CARDINAL, and <I>counter</I> has one of these chosen at random, the probability that the program would produce the correct result is 1/65536 or 0.000153.  Since the range for CARDINAL is much larger on many systems, the actual situation is probably much worse than this.  Notice that similar incorrect results can also be obtained by leaving out the line initializing <I>result</I>.</P>
+<BLOCKQUOTE><I>Moral:  always initialize variables before expecting them to have any particular value.</I></BLOCKQUOTE>
+<H3><B><A NAME="2.5.2">2.5.2</A> Standard Identifiers</B></H3>
+<P>It is important to note that since the capitalized words CARDINAL, INTEGER, and CHAR name types, they too are identifiers.  Like reserved words (VAR, IMPORT, MODULE, etc.,) they are part of (are built into) the Modula-2 notation rather than imported from a library.</P>
+<BLOCKQUOTE><I><A NAME="StandardIdentifier">A</A> Modula-2 <U>Standard Identifier</U> is a name that is built-in to the notation.  It must be written entirely in capital letters.</I></BLOCKQUOTE>
+<P>Though like reserved words in that they are built-in to the notation and must be capitalized, standard identifiers differ from reserved words in two important respects:</P>
+<P>1. They are indeed names, rather than structural punctuation markers.</P>
+<P>2. They may be reused for other purposes, as unwise as this may be.</P>
+<P>Thus,</P>
+<PRE>
+<B>VAR</B>
+  IMPORT: <B>CARDINAL</B>;</PRE>
+
+<P>  is an error the compiler will report, but</P>
+<PRE>
+<B>VAR</B>
+  CARDINAL : <B>INTEGER</B>;</PRE>
+
+<P>may be foolish, for it redefines the identifier CARDINAL as a variable, cutting off access to the standard Modula-2 type CARDINAL, but it is permitted.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

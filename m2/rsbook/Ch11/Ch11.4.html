@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>11.4 Pragmas<</TITLE>
+<meta NAME="keywords" CONTENT="pragma, pragmas, delimiter, delimitters, implementation, implement, define, defined, syntax, document, documentation">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>11.4 Pragmas</B></H2>
+<P>There are many situations where the programmer wishes to give directions to the compiler while the code is being compiled.</P>
+<H3><B>Examples:</B></H3>
+<P>turn on/off listing the code to a printer<BR>
+turn on/off certain compile time checks<BR>
+compile some sections of code for one machine, some for another</P>
+<P>Some implementations do not allow this, but many do, and there is a standard syntax for looking after these situations, even though the actual commands available might vary widely from one implementation to another</P>
+<BLOCKQUOTE><I><A NAME="Pragma">A</A> Modula-2 <U>pragma</U> is a directive to the compiler that is included in the source file it is compiling.  The (implementation defined) instructions that constitute the directive are placed inside a pair of <U>pragma delimiters</U> <!--"-->&quot;<!--<-->&lt;*<!--"-->&quot; and <!--"-->&quot;*<!-->&gt;<!--"-->&quot; and inserted into the code at the point the compiler directive is supposed to take effect.</I></BLOCKQUOTE>
+<PRE>
+<!--<-->&lt;* This is a pragma *<!-->&gt;
+<!--<-->&lt;* listing := true *<!-->&gt;</PRE>
+<P>The exact nature of the available pragmas in a given system will have to be checked with the implementation documentation; however, some situations are given in the next section in which pragmas are commonly available.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

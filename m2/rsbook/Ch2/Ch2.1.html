@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>2.1 Giving Birth--A First Modula-2 Program</TITLE>
+<meta NAME="keywords" CONTENT="run, write, writing, execute, execution, program, define, plan, write, solution, text, version, compile, compiler, link, test, redevelop, efficient, error-free, program, programs, input, output, hardware, hardware-dependent, dependent, stextio, inout, writestring">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.1 Giving Birth--A First Modula-2 Program</B></H2>
+
+<P>Programs written in the Modula-2 notation are generally compiled. (See <A HREF="../Ch1/Ch1.8.html#1.8.3">section 1.8.3</A>.)  That is, the programmer cannot simply write out the instructions, type <I>run</I> and get  immediate results on the console.  Rather, one uses an editing program to create a text version of the program and then compiles this into a code version that the machine can execute.</P>
+<P>In a typical implementation of Modula-2 (and of many other notations) the writing and execution of a program involves the following steps:</P>
+<P>1. Carefully define the problem to be solved.  (The discussion of Chapter 1 will be followed up on in more detail throughout the text.)</P>
+<P>2. Refine the plan into tasks and sub-tasks as necessary</P>
+<P>3. Write out the solution to the problem using a high level notation such as Modula-2.</P>
+<P>4. Enter a text version of the program into the computer using an editing program and save it for later reference.</P>
+<P>5. Run the compiler program to translate the text version to a machine-readable form.</P>
+<P>6. Link the file(s) created at step two with others previously compiled (or supplied with the system) to generate a program that will actually run by itself.</P>
+<P>7. Run the program.</P>
+<P>8. Test the program and redevelop as necessary.</P>
+<P>Figure 2.1 shows a developer's-eye view of a computing system being used for problem solving:</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>In some cases, direct action by the programmer is not required to achieve linking.  Linking may be performed automatically at run time (and therefore be invisible to the programmer.)   On the other hand, it may require that a separate program be run using the compiled file(s) as input and an executable file as output.</P>
+<P>In this book, little emphasis will be placed on the compiling, linking, and interpreting processes.  Instead, the focus will be on writing efficient, error-free programs that will compile and run smoothly.  The details of how to use particular computers, their operating systems, editors, compilers, and linkers, are beyond the scope of this book.  Such instruction must be obtained from separate manuals supplied with the specific system, or provided in an instructional lab.</P>
+<P>Of the major functions of a computer (input, storage, processing, control, and output), only the processing step lies within the definition of a program given in the introduction.  Storage usually is handled more or less automatically by the system, though we shall later see that the programmer also can control this to a limited extent.  Even input and output are, in some senses, peripheral to the task of processing, despite the fact that without them the computer would have no means of obtaining its data or of delivering any results.  Consider yourself:  If you cannot articulate your opinions (output) you may as well not have any.  So, what good is a box that calculates but does not give the answers to the outside world?</P>
+<P>Perhaps more important is the fact that input and output are handled differently on various computers.  That is, these are <I>hardware-dependent</I> functions.  When the routines that handle these operations are entirely contained within the computing notation itself, programs written for one computer are unlikely to work on another one.  For these reasons, the input and output functions have been separated from the Modula-2 language proper.  They must be imported into the programs from another part of the system called the library.  The contents of this library always look the same to the programs that employ it (This is what standards are for), but the code that implements the library will be quite different on different machines.  This importation is illustrated in the first sample program, shown below.</P>
+<PRE>
+<B>MODULE</B> HiThere;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Hello Master, how may I serve you?<!--"-->&quot;);
+<B>END</B> HiThere.</PRE>
+
+<P>The output from this program is the line:</P>
+<PRE>
+Hello Master, how may I serve you?</PRE>
+
+<P><B>NOTE</B>:	The place from which <I>WriteString</I> is usually obtained is called <I>STextIO</I> or <I>InOut</I.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

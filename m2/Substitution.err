@@ -1,0 +1,9 @@
+mod\Substitution.mod(19)(17) : error: Wrong name at end of module or procedure 
+mod\Substitution.mod(19)(17) : error: ; required after END 
+mod\Substitution.mod(20)(1) : error: 'END IdentifierName' required 
+mod\Substitution.mod(20)(1) : error: 'END IdentifierName' required 
+mod\Substitution.mod(20)(1) : error: 'END IdentifierName' required 
+mod\Substitution.mod(20)(1) : error: 'END IdentifierName' required 
+mod\Substitution.mod(20)(1) : error: 'END IdentifierName' required 
+mod\Substitution.mod(20)(1) : error: Function procedure has no RETURN 
+mod\Substitution.mod(20)(1) : error: Function procedure has no RETURN 

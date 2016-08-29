@@ -1,0 +1,409 @@
+<HTML>
+<HEAD>
+<TITLE>4.5 Function Procedures</TITLE>
+<meta NAME="keywords" CONTENT="function, procedure, procedures, return , value, optional, parameter, parameters, formula, declaration, statement, statements, example, examples, method">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Procedures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>4.5 Function Procedures</B></H2>
+<P>Some of the built-in procedures that have been used thus far can be employed in such a way that they return a value directly to the part of the expression that references them.  For instance, programs in this text have contained things like:</P>
+<PRE>
+  ck := <B>CAP</B> (ch);
+  num1 := <B>ABS</B> (num2);
+  firstReal := <B>FLOAT</B> (someInteger) + secondReal;
+  m := <B>MAX</B> (<B>REAL</B>);</PRE>
+
+<P>and so on.  (More of these will be covered in later chapters.)  These have been referred to these all along as <I>functions</I> or, more correctly, as <I>function procedures</I>, but it should be clear that they work somewhat differently than do the regular procedures considered so far in this chapter, because they are oriented toward the return of a single result rather than to the taking of action.  Moreover, that result is returned (in effect) in the procedure's own name, rather than in a variable parameter, as any result sent back by a regular procedure must be.  The identifier of the procedure is itself being used in the expression as though it were a variable.  Note the following definition:</P>
+<BLOCKQUOTE><I><A NAME="Function">A</A> <U>function procedure</U> is a program unit that optionally accepts input data in its parameter list, but that always assigns an output value to the function name according to a fixed rule or formula determined by the statements in the procedure. </I></BLOCKQUOTE>
+<P>The usual mathematical notation for a function is y = f (x), where the <I>f</I> is the  name of the function.  In Modula-2 one would write <I>y := f (x)</I> to assign to <I>y</I> the results of calling the function procedure called <I>f</I> with the data <I>x</I>.  This time the black box looks a little different, as shown in figure 4.6:</P>
+<P><CENTER><IMG SRC="Figure/Figure_4.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>As has already been suggested, Modula-2 employs a variant of the PROCEDURE statement to implement functions.  Here is the general form for a function procedure:</P>
+<PRE>
+<B>PROCEDURE</B> name ( <!--<-->&lt; formal parameter list <!-->&gt; ) : <!--<-->&lt;result type<!-->&gt;;
+<!--<-->&lt;local declarations<!-->&gt;;
+<B>BEGIN</B>
+  <!--<-->&lt;statement sequence<!-->&gt;;
+  <B>RETURN</B> value;   (* must be somewhere in body *)
+<B>END</B> name;</PRE>
+
+<P>or, diagrammatically, as in figure 4.7:</P>
+<P><CENTER><IMG SRC="Figure/Figure_4.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>There are four differences between function procedures and regular procedures:</P>
+<P><I>First</I>:  the type of result to be returned must be specified by placing it after a colon following the closing parenthesis of the formal parameter list.</P>
+<P><I>Second</I>:  a specific RETURN with the result (of the correct type) that is to be sent back must actually be executed somewhere in the body of the function procedure.</P>
+<P><I>Third</I>:  the call of a function procedure must always include a parameter list, even if the latter is empty.</P>
+<P><I>Fourth</I>:  the call of a function procedure appears in an expression, not as a separate command on a line by itself as does the call of a regular procedure.</P>
+<P>These details are illustrated with some examples.  First, here are some valid declarations:</P>
+<PRE>
+  <B>PROCEDURE</B> Largest (firstReal, secondReal : <B>REAL</B>) : <B>REAL</B>;
+  <B>PROCEDURE</B> Strange (<B>VAR</B> firstReal : <B>REAL</B>,
+				  secondReal : <B>REAL</B>) : <B>CARDINAL</B>; (* poor code *)
+  <B>PROCEDURE</B> Round (realToRound : <B>REAL</B>) : <B>CARDINAL</B>;
+  <B>PROCEDURE</B> GetResult ( ) : <B>CARDINAL</B>;
+  <B>PROCEDURE</B> <B>CAP</B> (ch : <B>CHAR</B>) : <B>CHAR</B>;</PRE>
+
+<P>The last of these is just the (implied) heading of one of the built-in pervasive function procedures.  The second one does seem a little strange, because it returns both a variable parameter and a result type.  In actual practice, it is not likely that anyone will do this very often<!--‹-->--indeed, this practice may be legal, but it is very poor code.  However, it does illustrate that function procedures are a specialization of regular procedures and share all the capabilities of the latter.  To illustrate both this and the third one, here are two ways to write the code for a procedure that rounds off a REAL to the nearest whole number.</P>
+<PRE>
+ <B>PROCEDURE</B> Round (num : <B>REAL</B>; <B>VAR</B> numOk : <B>BOOLEAN</B>) : <B>CARDINAL</B>;
+  <B>BEGIN</B>  (*poor version *)
+    <B>IF</B> (num <!--<-->&lt;= <B>FLOAT</B> (<B>MAX</B> (<B>CARDINAL</B>))) <B>AND</B> 
+		  (num <!-->&gt;= <B>FLOAT</B> (<B>MIN</B> (<B>CARDINAL</B>)))
+      <B>THEN</B>
+        numOk := <B>TRUE</B>;
+        <B>RETURN</B> <B>TRUNC</B> (num + 0.5);
+      <B>ELSE</B>
+        numOk := <B>FALSE</B>;
+        <B>RETURN</B> 0;  (* got to send something back *)
+      <B>END</B>;  (* if *)
+  <B>END</B> Round;</PRE>
+
+<P>To use this version, one would write code like:</P>
+<PRE>
+  answer := Round (numToRound, success);
+  <B>IF</B> <B>NOT</B> success
+    <B>THEN</B>
+    <!--<-->&lt;take evasive action<!-->&gt;
+  <B>END</B>;</PRE>
+
+<P>where, <I>numToRound</I> is REAL and <I>success</I> is a BOOLEAN included to ensure that all has gone well.  This code is not safe, however, as the (possibly invalid) assignment to <I>answer</I> is made before checking to see if the procedure was successful.  This is why function procedures should not be written with variable parameters.  It is better to include preconditions in the procedure that are the responsibility of the main code to check before calling the function procedure:</P>
+<PRE>
+  <B>PROCEDURE</B> Round (num : <B>REAL</B>) : <B>CARDINAL</B>;
+
+  (* This procedure rounds off num to the nearest cardinal.
+  Pre: (num <!--<-->&lt;= <B>FLOAT</B> (<B>MAX</B> (<B>CARDINAL</B>))) <B>AND</B>
+		(num <!-->&gt;= <B>FLOAT</B> (<B>MIN</B> (<B>CARDINAL</B>)))
+  Post: the cardinal returned is the closest cardinal to the real parameter supplied *)
+
+  <B>BEGIN</B>
+    <B>RETURN</B> <B>TRUNC</B> (num + 0.5);
+  <B>END</B> Round;</PRE>
+
+<P>To use this version, one would write code like:</P>
+<PRE>
+  <B>IF</B> (numToRound <!--<-->&lt;= <B>FLOAT</B> (<B>MAX</B> (<B>CARDINAL</B>)))
+         <B>AND</B> (numToRound <!-->&gt;= <B>FLOAT</B> (<B>MIN</B> (<B>CARDINAL</B>)))
+    <B>THEN</B>
+      answer := Round (numToRound);
+    <B>ELSE</B>
+      <!--<-->&lt;take evasive action<!-->&gt;
+    <B>END</B>;</PRE>
+
+<P><B>NOTES</B>: 1.  There can be as many RETURN statements as necessary.  If the logic of the procedure allows any one of them to be encountered, the expression following the RETURN is evaluated and that value assigned to the procedure identifier.  Control is immediately transferred to the END of the procedure.</P>
+<P>	2. If no RETURN <!--<-->&lt;value<!-->&gt; has been encountered before the END of the function procedure, a run-time error will be generated.</P>
+<P>	3. The standard function MIN, like MAX (discussed previously) returns the smallest value for whatever type is given as the parameter.</P>
+<P>	4. If one writes a function procedure with no parameters, it must be declared and referred to in any calls as <I>Nameofprocedure ()</I>, that is, with an empty parameter list.</P>
+<H3><B>Problem: </B></H3>
+<P>Write a program that will reduce common fractions to lowest terms.  The numerator and denominator should be input from the keyboard, and the result printed on the screen.</P>
+<H3><B>Discussion:</B></H3>
+<P>A fraction is reduced to lowest terms by dividing the numerator and denominator be the GCD of the two.  In the last chapter, an algorithm was developed for computing the GCD, and this can become a procedure within the program to be presented here.  The GCD program in turn contained a code to swap two numbers, and this too can be abstracted as a single entity and made a separate procedure.</P>
+<P>In the following refinement therefore, the step of computing the GCD is not written out in detail but is conceptualized as a single step.  However, there are some interesting possibilities that can be encountered when printing out the result, and these are detailed.</P>
+<H3><B>Refinement:</B></H3>
+<PRE>Ask the user for the numerator and denominator.
+  Read them into cardinal variables.
+  set a goodData flag if both are non-zero
+Compute and print the result as appropriate:
+  if the data was good then
+    compute the GCD of the two (use a procedure for this)
+    divide the numerator and denominator by the GCD
+    print the numerator
+    if the denominator is not equal to one
+      print a bar for the fraction
+      print the denominator
+  if the numerator was zero
+    then, provided the denominator is not zero, just print a zero
+    otherwise, say that the fraction is indeterminate
+  if the denominator alone was zero
+    say that the fraction is undefined
+exit the program</PRE>
+
+<PRE>
+<B>MODULE</B> ReduceFraction;
+(* This program reduces fractions to lowest terms. *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+
+<B>PROCEDURE</B> Swap (<B>VAR</B> x, y : <B>CARDINAL</B>);
+(* swaps two numbers
+Pre: none
+Post: x(post) = y (pre) and y(post) = x(pre)  *)
+
+<B>VAR</B>
+  temp : <B>CARDINAL</B>;
+
+<B>BEGIN</B>  
+  temp := x;
+  x := y;
+  y := temp;
+<B>END</B> Swap;
+
+<B>PROCEDURE</B> Gcd (x, y : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+(* This procedure computes the greatest common divisor
+Pre: the numbers supplied are non-zero
+Post: The GCD of the supplied arguments is returned *)
+
+<B>VAR</B>
+  result : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* arrange the numbers in order *)
+  <B>IF</B> y <!-->&gt; x
+    <B>THEN</B> 
+      Swap (x, y)
+    <B>END</B>;
+  
+  (* compute the GCD *)
+  <B>REPEAT</B>
+    result := y;  (* let the gcd be the smaller of the two *)
+    y := x <B>MOD</B> y; (* replace the smallest with new remainder *)
+    x := result; (* <!--& -->&amp; larger with smaller one from last step *)
+  <B>UNTIL</B> y = 0;
+
+  <B>RETURN</B> result; (* and send it back *)
+  
+<B>END</B> Gcd;
+
+<B>VAR</B> (* main program variables *)
+  num, denom, gcd : <B>CARDINAL</B>;
+  goodData, again : <B>BOOLEAN</B>;
+  answer : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program reduces fractions to lowest terms.<!--"-->&quot;);
+  WriteLn;
+
+  <B>REPEAT</B> (* main repeat loop *)
+    (* get the numbers *)
+    WriteString (<!--"-->&quot;Enter the numerator ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (num);
+    SkipLine;
+    WriteLn;
+    WriteString (<!--"-->&quot;And now, the denominator ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (denom);
+    SkipLine;
+    WriteLn;
+    
+    (* set a flag if the numbers weren't zero *)
+    goodData := (num # 0) <B>AND</B> (denom #0);
+    
+    (* write the result *)
+    WriteString (<!--"-->&quot;The lowest terms fraction is<!--"-->&quot;);
+    WriteLn;
+    <B>IF</B> goodData
+      <B>THEN</B>
+        gcd := Gcd (num, denom);
+           (* call the procedure to do the calculation *)
+        num := num <B>DIV</B> gcd; (* compute new fraction *)
+        denom := denom <B>DIV</B> gcd;
+        WriteCard (num, 0);
+        WriteLn;
+        <B>IF</B> denom # 1  (* denominators of one are not printed *)
+          <B>THEN</B>
+            WriteString (<!--"-->&quot;-----<!--"-->&quot;);
+            WriteLn;
+            WriteCard (denom, 0);
+            WriteLn;
+          <B>END</B>;
+      <B>ELSIF</B> num = 0 <B>THEN</B>
+        <B>IF</B> denom = 0
+          <B>THEN</B>
+            WriteString (<!--"-->&quot;indeterminate; both parts are zero<!--"-->&quot;);
+          <B>ELSE</B> (* only numerator is zero, so ok *)
+            WriteCard (num, 0);
+          <B>END</B>;
+      <B>ELSE</B> (* only denominator was zero *)
+        WriteString (<!--"-->&quot;undefined because the denominator is zero<!--"-->&quot;)
+      <B>END</B>;
+    WriteLn;
+    WriteString (<!--"-->&quot;Do another? Y/N <!--"-->&quot;);
+    ReadChar (answer);
+    SkipLine;
+    again := (<B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;);
+  <B>UNTIL</B> <B>NOT</B> again;
+  
+<B>END</B> ReduceFraction. </PRE>
+
+<P>Here is a run from this program module:</P>
+<PRE>
+This program reduces fractions to lowest terms.
+Enter the numerator ==<!-->&gt; <B>51</B>
+And now, the denominator ==<!-->&gt; <B>17</B>
+The lowest terms fraction is
+3
+
+Do another? Y/N <B>Y</B>
+Enter the numerator ==<!-->&gt; <B>91</B>
+And now, the denominator ==<!-->&gt; <B>1001</B>
+The lowest terms fraction is
+1
+-----
+11
+
+Do another? Y/N <B>Y</B>
+Enter the numerator ==<!-->&gt; <B>12</B>
+And now, the denominator ==<!-->&gt; <B>0</B>
+The lowest terms fraction is
+undefined because the denominator is zero
+Do another? Y/N <B>Y</B>
+Enter the numerator ==<!-->&gt; <B>0</B>
+And now, the denominator ==<!-->&gt; <B>0</B>
+The lowest terms fraction is
+indeterminate; numerator and denominator both zero
+Do another? Y/N <B>N</B></PRE>
+
+<P>A wide variety of simple functions can be implemented in typical Modula-2 programs.  Here is one that squares the supplied real parameter.</P>
+<PRE>
+  <B>PROCEDURE</B> Sqr (numToSquare : <B>REAL</B>) : <B>REAL</B>;
+  (* Pre: numToSquare <!--<-->&lt;= sqrt (<B>MAX</B> (<B>REAL</B>))
+  Post: the square of numToSquare is returned *)
+
+  <B>BEGIN</B>
+    <B>RETURN</B> numToSquare * numToSquare;
+  <B>END</B> Sqr;</PRE>
+
+<P>Here is one based on a built-in procedure (ODD) that has not previously been mentioned:</P>
+<PRE>
+  <B>PROCEDURE</B> Even (num : <B>CARDINAL</B>) : <B>BOOLEAN</B>;
+  (* Pre : none
+  Post : returns true if num is even and false if num is odd *)
+
+  <B>BEGIN</B>
+    <B>RETURN</B> <B>NOT</B> <B>ODD</B> (num);
+  <B>END</B>;</PRE>
+
+<P>A little more work is required for some others:</P>
+<H3><B>Problem:</B></H3>
+<P>Write a procedure to raise a real number to a real exponent.</P>
+<H3><B>Discussion:</B></H3>
+<P>What is desired here is the solutions to equations such as x = a<sup>b</sup>.  This is done as follows:</P>
+<P>Take natural logarithms on both sides, obtaining</P><P></P>
+	<UL>ln (x) = b <!--¥-->x ln (a)</UL>
+<P></P><P>Now, raise both sides to the power e (the base of the natural logarithms)</P>
+	<!--<UL><IMG SRC="Figure/Eq4.5.1.GIF"></UL>-->
+	<UL>x=e<sup>bln(a)</sup></UL>
+<P>This is expressed in Modula-2 by the assignment</P>
+	<UL>x := exp (b * ln (a) )</UL>
+<P>where both <I>exp</I> and <I>ln</I> must be imported from the library module <I>RealMath</I>.  This produces the following code:</P>
+<PRE>
+  <B>PROCEDURE</B> Power (base, exponent : <B>REAL</B>) : <B>REAL</B>;
+  (* pre: base raised to the exponent is not greater than <B>MAX</B> (<B>REAL</B>) and base > 0
+     post: base raised to the exponent is returned *)
+
+  <B>BEGIN</B>
+    <B>RETURN</B> exp (exponent * ln (base))
+  <B>END</B> Power;</PRE>
+
+<P>This function is actually provided as part of <I>RealMath</I>, but in a similar manner, it might be necessary to compute logarithms with some other base than e.  (Non ISO versions may provide base ten, or common logarithms in a library).  If one starts with</P>
+	<UL>x = log<sub>b</sub>(a)</UL>
+<P>and wishes to find x; one can rewrite changing to exponent notation</P>
+	<UL>b<sup>x</sup> = a</UL>
+<P>and taking natural logarithms on both sides, yields</P>
+	<UL>x * ln (b) = ln (a)  or, x = ln (a) / ln (b)</UL>
+<P>It is now fairly easy to write:</P>
+<PRE>
+  <B>PROCEDURE</B> LogBaseB (base, number : <B>REAL</B>) : <B>REAL</B>;
+  (* Pre : both <I>base</I> and <I>number</I> are positive reals
+  Post : the log of number with the base base is returned. *)
+
+  <B>BEGIN</B>
+    <B>RETURN</B> (ln (number)) / (ln (base))
+  <B>END</B> LogBaseB;</PRE>
+
+<P>The mathematics library mentioned above also contains a procedure for computing square roots, but this computation is not difficult, and is demonstrated below:</P>
+<H3><B>Problem:</B></H3>
+<P>To write a function to compute square roots of real numbers.</P>
+<H3><B>Solution: </B></H3>
+<PRE>1. Check to see if the number provided is negative.
+2. If it is, return without going further.
+3. Otherwise, apply a square root algorithm.
+4. Return the answer.</PRE>
+
+<H3><B>Refinement of 3:  (The  divide and average method)</B></H3>
+<P>Basis: start with a guess at the square root; call it g.  Now if g<sup>2</sup> = x  exactly, then g= x/g and the calculation is finished.  If  g<sup>2</sup> <!-->&gt; x  then x/g <!--<-->&lt; g  so take the average of x/g and g as the next guess and try the test again.  When the result is close enough, return it.</P>
+<PRE>
+3.1  Decide how close the result must be, say epsilon <!--<-->&lt; .00001.
+3.2  Guess an initial value. (say, the first guess is set to half the number.)
+3.3  While guess and number/guess are not within epsilon of each other
+          Take the average of guess and number/guess for a new guess.</PRE>
+
+<P>The code is formulated in such a way that if the precondition that requires a non-negative parameter is ignored by the client code invoking this routine, it will still be safe.  The value returned will be invalid, however.</P>
+<PRE>
+  <B>PROCEDURE</B> Sqrt (num : <B>REAL</B>) : <B>REAL</B>;
+
+  (* precondition: num <!-->&gt;= 0
+      postcondition: if num <!--<-->&lt; 0 the answer is invalid,
+                     otherwise the square root is returned.
+      method: divide and average *)
+
+  <B>CONST</B>
+    epsilon = 0.00001;  (* error limit *)
+
+  <B>VAR</B>
+    guess : <B>REAL</B>;
+
+  <B>BEGIN</B>
+    <B>IF</B> num <!--<-->&lt;= 0.0
+      <B>THEN</B>
+        <B>RETURN</B> num;
+      <B>ELSE</B>
+        guess := num/2.0;
+      <B>END</B>;
+    <B>WHILE</B> <B>ABS</B>  (num/guess - guess ) <!-->&gt; epsilon
+      <B>DO</B>
+        guess :=  0.5 * (num/guess + guess )
+      <B>END</B>;
+    <B>RETURN</B> guess;
+
+  <B>END</B> Sqrt;</PRE>
+
+<P><B>NOTE</B>:   The precision of the result could be improved by making the type of the variable LONGREAL and then making epsilon much smaller.  Such decisions depend on the range of the two real types in the implementation being used.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

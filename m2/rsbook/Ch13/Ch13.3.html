@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>13.3 Analyzing Sorting Routines</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Analyzing Sorting Routines">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.3 Analyzing Sorting Routines</B></H2>
+<P>Before going on to other methods of sorting, it is time to consider the performance of the methods used so far.   For the sake of simplicity, continue to suppose that the data to be sorted consists of an array of cardinals [1 .. n].  Each of these cardinals in turn must be compared with the others in order to find its correct position in the sorted array.  The data must also be moved about in the array, and this can (as in the last section) be achieved by swapping items that are out of place with respect to one another.  At each comparison, there may or may not be a swap, so in general, the time taken by a sorting algorithm will depend on the total number of comparisons.</P>
+<P>For the bubble sort and selection sort, on the first pass there are n - 1, comparisons; on the second, there are n - 2; on the third n - 3, and so on, until the last pass, where there is one comparison  Adding these up in reverse, the total number of comparisons will be:</P>
+<P>1 + 2 + 3 + ... + (n-1)</P>
+<P>an arithmetic sequence of n - 1 terms with common difference 1, for which the sum is (see section 3.8)</P>
+<P><IMG SRC="Figure/Eq13.3.1.GIF"><!----></P>
+<P>and substituting n-1 for the number of terms yields</P>
+<P><IMG SRC="Figure/Eq13.3.2.GIF"><!----></P>
+<P>which simplifies to <IMG SRC="Figure/Eq13.3.3.GIF"><!----></P>
+<P>Since the n<sup>2</sup> term grows much faster than n, it will dominate this expression.  It is reasonable to conclude, therefore, that in the two cases considered so far, the sorting algorithms are <B>O</B>(n<sup>2</sup>) with respect to comparisons.  Indeed, this is the worst possible performance, for no more comparisons than 1 + 2 + 3 + ... + (n-1) should have to be made for any sorting algorithm.  The bubble sort may make a swap for every comparison, so in the worst case, its performance is also <B>O</B>(n<sup>2</sup>) for the swapping.  The selection sort makes at most one swap per pass, so it is <B>O</B>(n), with respect to swapping.</P>
+<P>From previous analysis of search routines, <B>O</B>(n<sup>2</sup>) behaviour seems to relate to the linear nature in which the comparisons are done.  It seems reasonable to expect that some method ought to be available to do the comparisons in a binary fashion so that for each of n items there are only log<sub>2</sub>n comparisons (and possibly swaps).  If so, such an algorithm ought to be <B>O</B>(nlog<sub>2</sub>n) but may be expected to have more complex code.</P>
+<BLOCKQUOTE><I><A NAME="Sorting">Sorting</A> algorithms that are <B>O</B>(n<sup>2</sup>) are said to be <U>simple sorts</U>.  Those that are <B>O</B>(nlog</I><sub>2</sub>n) are said to be <U>advanced sorts</U>.</I></BLOCKQUOTE>
+<P>In the sections that follow, additional examples of both types of sorting algorithm will be explored.  Simple sorts (especially the two in the last section) have the easiest code to understand, work well on small amounts of data, and do not take long to code, but even they can be fine-tuned to increase performance in many cases.  The advanced sorts are sometimes more difficult to understand and code, but for very large data sets, it is better to take few times through a complicated loop than far more times through a simple one.</P>
+<P>It is also worth noting before going on that the intention of most array sorting is to sort the array items <I>in place</I>, that is, to compare and trade (or move) them about while only one (or a small number) are held in temporary variables.  A few methods use two arrays, one called the <I>source</I>, and the other the <I>destination</I>.  However, the latter methods require almost twice as much storage space as the <I>in place</I> methods, and are not as useful for some applications.  It seems reasonable to wonder, however, whether sacrificing storage efficiency might, in some cases, allow a more efficient sorting algorithm to be written.  Perhaps there are even circumstances where the very nature of the data requires additional storage space to sort it at all.  While this aspect of sorting will not be taken up further in this chapter, a few such sorts will be examined later in the book.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

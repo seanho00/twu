@@ -1,0 +1,70 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2007 Lab5, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+li { margin-top: 0.5em; }
+--></style>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a>
+Lab5 (30 pts): Virtual World</h1>
+
+<ul>
+<h2>Objectives</h2>
+
+<li> In this lab you will create an interesting virtual world with multiple
+objects that can be independently manipulated.
+
+<li> The objective of this lab is also to gain experience working with OpenGL
+lights, materials, texture maps, and evaluators.
+
+<h2>Basic requirements</h2>
+
+<li> In the OpenGL viewer you've written in previous labs, 
+create an interesting scene with multiple objects (i.e., not just a cube).
+You may import other people's models, but the creative idea of the overall
+scene should be your own.  You may learn and use other programs to help you do
+the modelling (e.g., 3DSM, Rhino, Maya, etc.), but it's up to you to figure
+out how to import the models into your program.  Remember to give credit where
+credit is due!
+
+<li> You will be evaluated on the creativity/design of your virtual world, not
+just the functionality.
+
+<li> Add at least two OpenGL lights, and change the material properties of
+the objects in the scene.
+
+<li> Add a texture map to at least one object in the scene.
+
+<li> Use an OpenGL evaluator in your scene somehow -- a Bezier curve or
+surface, or a NURBS (using GLU).  You can use evaluators to generate vertices,
+normals, colours, or texture coordinates.
+
+<li> Allow the user to pick an object to manipulate it independently of the
+rest of the scene: <ul>
+  <li> To pick an object, you may wish to consider
+  <a href="http://glprogramming.com/red/chapter13.html">selection mode</a>, or
+  you could also just use an FLTK drop-down list.
+  <li> You may optionally wish to let the user pick lights, too, not just objects.
+  <li> Manipulation could mean translate/rotate/scale, or perhaps changing the
+  material properties.
+  </ul>
+
+<h2>Lab write-up</h2>
+
+<li> Follow <a href="lab_template.html">the template lab write-up</a>
+to document your program.  Name your write-up:
+<br><tt>your_name_lab5_writeup.doc</tt> (or .txt, etc.)
+<br>Put it in the same project directory as your code so that it will be
+included in the tarball.
+
+<h2>Electronic turn-in</h2>
+
+<li> Put everything (C++ code, header files, executable, lab
+write-up) into a tarball/ZIP and upload it to eCourses under "Lab5":
+<br><tt>your_name_lab5.zip</tt>
+
+</ul>
+
+</body></html>

@@ -1,0 +1,708 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+
+    <head>
+
+
+        
+
+
+                <title>MIT OpenCourseWare |
+
+
+                        Electrical Engineering and Computer Science | 6.837 Computer Graphics, Fall 2003 | Tools | Notes from C++ Introduction
+
+
+                </title>
+
+
+        
+
+
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+
+        
+
+
+                <meta name="WT.cg_n" content="6-837Fall2003" />
+
+
+                <meta name="WT.cg_s" content="Tools-c--_notes" />
+
+
+        
+
+<!-- Begin Automatic Metadata Insertion -->
+
+
+
+<!-- End Automatic Metadata Insertion -->
+
+
+
+
+        <link href="../../../../../OcwWeb/style/main.css" type="text/css" rel="stylesheet" />
+
+
+        <link href="../../../../../OcwWeb/style/core.css" type="text/css" rel="stylesheet" />
+
+
+        <link rel="metadata" type="application/rdf+xml" href="../../../../../OcwWeb/xml/ocwcc.rdf" />
+
+
+         
+
+
+         
+
+
+    </head>
+
+
+    <body id="global"  >
+
+
+	        <form method="get" action="http://search.mit.edu/search">
+
+
+
+
+
+	
+
+<script language="javascript" type="text/javascript">
+
+<!--
+
+   var __CMS_PostbackForm = document.CourseHomePage;
+
+   var __CMS_CurrentUrl = "/OcwWeb/templates/section/GenericOther.aspx?NRMODE=Published&NRORIGINALURL=%2fOcwWeb%2fElectrical-Engineering-and-Computer-Science%2f6-837Fall2003%2fTools%2fdetail%2fc--_notes%2ehtm&NRNODEGUID=%7bD45A7ADB-F79E-4C32-91EF-B3D30E976A92%7d&NRCACHEHINT=Guest";
+
+   
+
+// -->
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+             <div class="wrapper">
+
+
+                    <a href="#main" class="skip" tabindex="-1">skip to content</a> <a id="top"></a>
+
+
+                    <!-- begin horizontal 100% wide area -->
+
+
+                    <div class="wide">
+
+
+                        
+
+
+<!-- padding on the outer wide div causes horizontal scroll, hence nested header div -->
+
+
+
+
+
+	<div class="header-redline"> 
+
+
+
+
+
+		<div class="header"><a href="http://ocw.mit.edu/OcwWeb/index.htm"><img src="../../../../../OcwWeb/images/logo-ocw-home.gif" alt="MIT OpenCourseWare" width="180" height="21" /></a>
+
+
+		</div><!-- end header div -->
+
+
+
+
+
+    	<div class="sitetools">
+
+
+        <!-- make sure there's no spaces between li tags -->
+
+
+        <ul><li><a href="http://ocw.mit.edu/OcwWeb/index.htm"><img src="../../../../../OcwWeb/images/ocw-home.gif" alt="OCW home" width="61" height="12" align="center" /></a></li><li><a href="http://ocw.mit.edu/OcwWeb/Global/all-courses.htm"><img src="../../../../../OcwWeb/images/course-list.gif" alt="Course List" width="79" height="12" align="center" /></a></li><li><a href="http://ocw.mit.edu/OcwWeb/Global/AboutOCW/about-ocw.htm"><img src="../../../../../OcwWeb/images/about-ocw.gif" alt="about OCW" width="74" height="12" align="center" /></a></li><li><a href="http://ocw.mit.edu/OcwWeb/Global/OCWHelp/help.htm"><img src="../../../../../OcwWeb/images/help.gif" alt="Help" width="36" height="12" align="center" /></a></li><li><a href="../../../../../OcwWeb/jsp/feedback.jsp?Referer="><img src="../../../../../OcwWeb/images/feedback.gif" alt="Feedback" width="61" height="12" align="center" /></a></li><img src="../../../../../OcwWeb/images/button6.gif" width="20" height="1" align="center" alt=""><a href="http://ocw.mit.edu/OcwWeb/Global/AboutOCW/ocwdonor.htm"><img src="../../../../../OcwWeb/images/give_now_button.jpg" alt="Support MIT OCW" border="0" width="147" height="42" align="center"></a></ul>
+
+
+		</div><!-- end sitetools div -->
+
+
+
+
+
+	</div><!-- end header-redline -->
+
+
+                    </div> <!-- end wide div -->
+
+
+                    <div class="outer">
+
+
+                        <div class="inner">
+
+
+                            <div class="left">
+
+
+                                    <!-- Console -->
+
+
+                                    
+
+
+<script language="javascript" type="text/javascript">
+
+
+<!--
+
+
+function MM_openBrWindow(theURL,winName,features) { 
+
+
+
+
+
+window.open(theURL,winName,features);
+
+
+
+
+
+}
+
+
+// -->
+
+
+</script>
+
+
+
+
+
+                                    
+
+
+	<!-- begin search area, inputs are placed inside div blocks to validate xhtml strict -->
+
+
+	<div class="searchform">
+
+
+		<div>
+
+
+			<input type="hidden" name="site" value="ocw" />
+
+
+			<input type="hidden" name="client" value="mit" />
+
+
+			<input type="hidden" name="getfields" value="*" />
+
+
+			<input type="hidden" name="output" value="xml_no_dtd" />
+
+
+			<input type="hidden" name="proxystylesheet" value="http://ocw.mit.edu/OcwWeb/search/google-ocw.xsl" />
+
+
+			<input type="hidden" name="proxyreload" value="1" />
+
+
+			<input type="hidden" name="as_dt" value="i" />
+
+
+			<input type="hidden" name="oe" value="utf-8" />
+
+
+			<input type="hidden" name="departmentName" value="Electrical Engineering and Computer Science" />
+
+
+			<input type="hidden" name="courseName" value="" />
+
+
+		</div>
+
+
+		<h2><label for="terms">Search</label></h2>
+
+
+		<div>
+
+
+			<input type="text" name="q" id="terms" size="15" maxlength="255" value="" /> <input type="image" src="../../../../../OcwWeb/images/go.gif" name="btnG" alt="go" /></div>
+
+
+		<div>&raquo; <a href="../../../../../OcwWeb/search/AdvancedSearch.htm">Advanced Search</a></div>
+
+
+	</div>
+
+
+	<!-- end search area -->
+
+
+
+
+
+<!-- AE3305: Commented out: <table id="CourseLeftNav1_tblLeftNav" border="0">
+
+
+
+
+
+</table> -->
+
+
+<!-- LeftNav -->
+
+
+<div class="left-nav">
+
+
+<ul>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/CourseHome/index.htm">Course Home</a></div>
+
+</li>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/Syllabus/index.htm">Syllabus</a></div>
+
+</li>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/Calendar/index.htm">Calendar</a></div>
+
+</li>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/LectureNotes/index.htm">Lecture Notes</a></div>
+
+</li>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/Assignments/index.htm">Assignments</a></div>
+
+</li>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/Exams/index.htm">Exams</a></div>
+
+</li>
+
+<li>
+
+<div class="on">
+
+<img src="../../../../../OcwWeb/images/redarrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/Tools/index.htm">Tools</a></div>
+
+</li>
+
+<li>
+
+<div>
+
+<img src="../../../../../OcwWeb/images/whitearrow.gif" width="4" height="7" alt="" /><a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/DownloadthisCourse/index.htm">Download this Course</a></div>
+
+</li>
+
+</ul>
+
+
+
+
+</div> 
+
+
+<!-- End LeftNav -->
+
+
+                            </div>
+
+
+                                <div class="center">
+
+
+                                        <!-- margin and padding on center div causes content to start after nav ends -->
+
+
+                                        <div class="maincontent"><a id="main"></a>
+
+
+                                                <div class="bread-crumb">&nbsp;&raquo;&nbsp;<a href="http://ocw.mit.edu/OcwWeb/index.htm">MIT OpenCourseWare</a>&nbsp;&raquo;&nbsp;<a href="http://ocw.mit.edu/OcwWeb/Electrical-Engineering-and-Computer-Science/index.htm">Electrical Engineering and Computer Science</a>&nbsp;&raquo;&nbsp;<a href="../../../../../OcwWeb/Electrical-Engineering-and-Computer-Science/6-837Fall2003/CourseHome/index.htm">Computer Graphics, Fall 2003</a>
+
+</div>
+
+
+                                                <h1>Notes from C++ Introduction</h1>
+
+
+                                                
+
+
+                                                <div class="mod8">
+
+
+                                                <div class="bodycopy" id="BodyCopy1">
+
+
+	<span class="subhead">A Simple Data Structure in C and in C++</span> 
+
+
+
+
+
+<p><span class="bodycopy">We begin with a comparison between a stack implemented in both C and in C++. Note how similar they are!</span></p>
+
+
+
+
+
+<ul>
+
+
+<li>
+
+
+<div class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/B371B653-6F8E-4B27-A762-A2F7CC94E04E/0/stack1.html">stack data structure in C</a></div>
+
+
+</li>
+
+
+
+
+
+<li>
+
+
+<div class="bodycopy"><span class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/1ED16136-9144-4C39-A32C-AA85F96F4769/0/stack2.html">stack class in C++</a></span></div>
+
+
+</li>
+
+
+</ul>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy">Here is a comparison of how we would use these stacks in a program:</span></p>
+
+
+
+
+
+<ul>
+
+
+<li>
+
+
+<div class="bodycopy"><span class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/14A5024A-872B-42E3-8861-C2ECFCBC0B55/0/stack3.html">main() in C and in C++</a></span></div>
+
+
+</li>
+
+
+</ul>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="subhead"><span class="subhead">Variations</span></span></span></p>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="bodycopy">The member functions, or <strong>methods</strong>, of a class do not have to be defined inside the class. In fact, they are usually in a different file. Here is the stack example with the functions <strong>declared</strong> inside the class, but <strong>defined</strong> outside:</span></span></span></p>
+
+
+
+
+
+<ul>
+
+
+<li>
+
+
+<div class="bodycopy"><span class="bodycopy"><span class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/15948281-C53E-434A-B0B3-8345A3E07134/0/stack4.html">separating interface and implementation</a></span></span></div>
+
+
+</li>
+
+
+</ul>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="bodycopy">The order of the class's <strong>member data</strong> and <strong>member functions</strong> does not matter. Also, public members are accessible outside the class, while private members can only access by the classes member functions. Until you start using class inheritance, you can consider members marked "protected:" to be the same as private.</span></span></p>
+
+
+
+
+
+<ul>
+
+
+<li>
+
+
+<div class="bodycopy"><span class="bodycopy"><span class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/20B1A6DC-2695-4056-BABD-0C555988D4E8/0/stack5.html">private/protected/public class members</a></span></span></div>
+
+
+</li>
+
+
+</ul>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="subhead"><span class="bodycopy"><span class="subhead">Dynamic Memory Allocation</span></span></span></span></span></p>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="bodycopy">C++ replaces malloc() and free() with new and delete. Here is a comparison of allocating and deallocating memory in C and in C++:</span></span></span></span></span></p>
+
+
+
+
+
+<ul>
+
+
+<li>
+
+
+<div class="bodycopy"><span class="bodycopy"><span class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/17BD860E-B884-48CB-AA43-347EE9484F12/0/new_delete.html">Malloc() and free() vs. new and delete</a></span></span></div>
+
+
+</li>
+
+
+</ul>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="subhead"><span class="bodycopy"><span class="subhead">Miscellaneous</span></span></span></span></span></p>
+
+
+
+
+
+<p class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="bodycopy">This last slide demonstrates two points. First, using a pointer to a class in C++ is the same as using a pointer to a struct in C. Second, you don't have to declare your variables at the top of your function. In fact, you can declare a loop counter <strong>inside</strong> the for loop:</span></span></span></p>
+
+
+
+
+
+<ul>
+
+
+<li>
+
+
+<div class="bodycopy"><span class="bodycopy"><span class="bodycopy"><span class="bodycopy"><a href="../../../../../NR/rdonlyres/Electrical-Engineering-and-Computer-Science/6-837Fall2003/1E34BA2E-490D-4D06-86A8-4A3A9BFB33C8/0/pointers_variables.html">pointers to classes and variable declarations</a></span></span></span></div>
+
+
+</li>
+
+
+</ul>
+
+
+
+
+
+</div>
+
+
+                                                </div>
+
+
+                                                
+
+
+                                                <div class="clear"></div>
+
+
+                                                
+
+
+&nbsp;
+
+
+
+
+
+                                        </div> <!-- end maincontent div -->
+
+
+                                </div> <!-- end center div -->
+
+
+                                <div class="clear"></div>
+
+
+                            </div><!-- end inner div -->
+
+
+                        </div><!-- end outer div -->
+
+
+                        <!-- begin horizontal 100% wide area -->
+
+
+                        <div class="wide">
+
+
+                            <div class="logo"><a href="http://mit.edu"><img src="../../../../../OcwWeb/images/mit-logo.gif" alt="" width="38" height="21" /></a></div>
+
+
+                            <!-- padding on outer wide div causes horizontal scroll, hence nested footer div -->
+
+
+                            
+
+
+
+
+
+<div class="foot-wrap">
+
+
+
+
+
+	<div class="page-footer">
+
+
+
+
+
+			<div class="float-right"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/" target="_blank" class="first"><img src="../../../../../OcwWeb/images/cc_button.jpg" alt="Creative Commons - some rights reserved" border="0" width="88" height="31"></a></div>
+
+
+	
+
+
+			<ul><li><a href="../../../../../OcwWeb/Global/terms-of-use.htm" class="first"><img src="../../../../../OcwWeb/images/footer_copyright.gif" border="0" width="112" height="17" align="top" alt="Copyright Massachusetts Institute of Technology" /></a></li><li><a href="../../../../../OcwWeb/Global/privacy.htm">Privacy</a></li><li><a href="../../../../../OcwWeb/Global/terms-of-use.htm">Legal Notices</a></li><a href="http://ocw.mit.eduhttp://ocw.mit.edu/OcwWeb/Global/OCWHelp/rssfeeds.htm"><img src="../../../../../OcwWeb/images/footer_rss.gif" border="0" width="29" height="15" align="top" alt="RSS Feeds" /></a></ul>
+
+
+	
+
+
+			<p>Your use of the MIT OpenCourseWare site and course materials is subject to the conditions and terms of use in our Legal Notices section.</p></div><!-- end page-footer div -->
+
+
+
+
+
+</div><!-- end foot-wrap div -->
+
+
+<!-- Start Webtrends Tracking Tag -->
+
+
+
+
+
+
+
+
+<NOSCRIPT>
+
+
+	<div>
+
+
+ 
+
+
+	</div>
+
+
+</NOSCRIPT>
+
+
+<!-- End Webtrends Tracking Tag -->
+
+
+                        </div>
+
+
+                        <!-- end wide div -->
+
+
+                </div> <!-- end wrapper div -->	
+
+
+                <!--</div>--><!-- added extra div for formatting -->		
+
+
+            </form>
+
+
+    </body>
+
+
+</html>
+
+

@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+<TITLE>10.4 Procedure Types and their Variables</TITLE>
+<meta NAME="keywords" CONTENT="procedure, procedures, type, types, variables, variable, assignment, assign, assignments, var, char, proc, dynamic, hack, hacker²><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.4 Procedure Types and their Variables</B></H2>
+<P>Modula-2 allows almost anything to be a variable type. (Exceptions include modules and types themselves).  It is not by any means unique in this respect, but shares this ability with several other languages.  What is allowed in Modula-2, though, and not in many others, is the assignment of procedures to a variable.  That is, variables can be of a procedure type.  As before, this is done by specifying the existence of the type first, and in this case, the parameter list types also form part of the type declaration.</P>
+<P>There are several possible uses for this particular facility.  One of the simplest is to accommodate the differences in the names of imported procedures in various versions.  Suppose, for instance, one were to write a large program that contained the line:</P>
+<PRE>
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar;</PRE>
+<P>and there were several hundred references to <I>WriteChar</I> throughout the program.  Later, it was desired to run the same program on a different machine where there were a similar module and procedure, but named <I>InOut</I> and <I>Write</I>, respectively, with <I>InOut.Write</I> having the same semantics as <I>STextIO.WriteChar</I>.  The line above must be revised to:</P>
+<PRE>
+<B>FROM</B> InOut <B>IMPORT</B>
+  Write;</PRE>
+<P>However, that is not enough.  There are still all those references to <I>WriteChar</I> scattered through the program.  For the program to work correctly (or even compile), one must evidently change them all to <I>Write</I>.  But, how to ensure they are all done?  And, how to change them all back again if, after further development and change, the first machine is to get the benefit of the changes as well?  If the entity in question were a variable, all one would have to do is place an assignment statement at the beginning of the program.  In Modula-2, one can do the same thing with procedures.  All that is necessary is the declarations:</P>
+<PRE>
+<B>TYPE</B>
+  WriteProc = <B>PROCEDURE</B> (<B>VAR</B> <B>CHAR</B>);
+<B>VAR</B>
+  WriteChar : WriteProc;</PRE>
+<P>to establish a variable of the appropriate procedure type, and the line of code:</P>
+<PRE>
+  WriteChar := Write;</PRE>
+<P>somewhere near the start of the main program, and all will be well.  Now, the calls to <I>WriteChar</I> are translated into calls to the procedure this variable equals.  If it is necessary to port a new version of this second program back to the original system, the import line can be changed and the two lines of declaration and the assignment perhaps commented out.</P>
+<P>A second (more complex) example involves the assignment of procedures in order to improve the flow of a program itself.  For instance, if one wishes to offer the user a choice of calculating the area and perimeter of either a square or a circle, one could offer a menu and then call one or the other of the procedures.  Alternately, one can, using the facility here, set an appropriate procedure variable.  This is realized below:</P>
+<PRE>
+<B>MODULE</B> ProcVarDemo;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteReal;
+
+<B>TYPE</B>
+  AreaPerim = <B>PROCEDURE</B> (<B>REAL</B>, <B>VAR</B> <B>REAL</B>, <B>VAR</B> <B>REAL</B>);
+
+(* Specify only the types of the variables in the parameter list when declaring a procedure Type.  Every variable parameter must be individually specified as such *)
+
+<B>VAR</B>
+  SizeCalc : AreaPerim;
+  dimension, area, perimeter : <B>REAL</B>;
+  which : <B>CHAR</B>;
+
+<B>PROCEDURE</B> Squares (side : <B>REAL</B>; <B>VAR</B> area, perim : <B>REAL</B>);
+<B>BEGIN</B>
+  area := side * side;
+  perim := 4.0 * side;
+<B>END</B> Squares;
+
+<B>PROCEDURE</B> Circles (radius : <B>REAL</B>; <B>VAR</B> area, circ :  <B>REAL</B>);
+
+<B>CONST</B>
+  pi = 3.14159265;
+  twopi = 2.0 * pi;
+<B>BEGIN</B>
+  area := pi * radius * radius;
+  circ := twopi * radius;
+<B>END</B> Circles;
+
+<B>PROCEDURE</B> GetNum ( ) : <B>REAL</B>;
+<B>VAR</B>
+  numToGet : <B>REAL</B>;
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Please type in the figure size here ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (numToGet);
+  SkipLine;
+  WriteLn;
+  <B>RETURN</B> numToGet;
+<B>END</B> GetNum;
+
+<B>BEGIN</B>   (* Main program starts here. *)
+  WriteString (<!--"-->&quot;I will calculate the area and perimeter <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;of either a circle or a square.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Type a 'C' or an 'S' here ===<!-->&gt; <!--"-->&quot;);
+  ReadChar (which);
+  SkipLine;
+  WriteLn;
+  (* assign procedure variable to correct procedure *)
+  <B>IF</B> <B>CAP</B> (which) = 'C'
+    <B>THEN</B>
+      SizeCalc := Circles;
+    <B>ELSE</B>
+      SizeCalc := Squares;
+    <B>END</B>;  (* if *)
+
+  SizeCalc (GetNum( ), area, perimeter);
+  WriteString (<!--"-->&quot;The area is <!--"-->&quot;);
+  WriteReal (area, 15);
+  WriteLn;
+  WriteString (<!--"-->&quot;And, the perimeter is <!--"-->&quot;);
+  WriteReal (perimeter, 15);
+  WriteLn;
+<B>END</B> ProcVarDemo.</PRE>
+<P>One could of course leave out the TYPE part of the declaration and simply write:</P>
+<PRE>
+<B>VAR</B> 
+  SizeCalc : <B>PROCEDURE</B> (<B>REAL</B>, <B>VAR</B> <B>REAL</B>, <B>VAR</B> <B>REAL</B>);</PRE>
+<P>but as usual it is better to create a new type and then to use that type when declaring variables.  This practice makes program modifications simpler and the text file becomes more readable and easier to follow.</P>
+<P>Observe that the parameter type for each formal parameter must be separately specified, and the VAR must be indicated for each separately.</P>
+<P>Modula-2 anticipates that procedure variables will be frequently used, and even has a built-in type PROC that denotes a parameterless procedure.  (There are too many possibilities for procedure types that <I>do</I> take parameters to have any other procedure types built in.)</P>
+<P>One can therefore assume that the language already has a definition equivalent to:</P>
+<PRE>
+<B>TYPE</B>
+  <B>PROC</B> = <B>PROCEDURE</B> ( );   (* no parameters *)</PRE>
+<P>In other words, one can write</P>
+<PRE>
+<B>VAR</B>
+  Proc1, Proc2, Proc3 : <B>PROC</B>;</PRE>
+<P>instead of having to write:</P>
+<PRE>
+<B>VAR</B>
+  Proc1, Proc2, Proc3 : <B>PROCEDURE</B> ( );</PRE>
+<P>There have not been very many parameterless procedures in this text to date; however, they do play an important role in coprocesses and coroutines in Modula-2, and will surface several times later in the book.  It is also worth noting that the assignment of procedure variables is distinguished from their invocation (calling) by the absence of a parameter list in the former case and its presence in the latter.  Thus</P>
+<PRE>
+  Proc := Proc2</PRE>
+<P>is an assignment of the procedure <I>Proc2</I> to the procedure variable <I>Proc</I>, whereas</P>
+<PRE>
+  x := Proc2 (<!--<-->&lt;actual parameters<!-->&gt;)</PRE>
+<P>is an invocation of the function procedure <I>Proc2</I>, and assigns the returned value to <I>x</I>.</P>
+<P>This is true even if the parameter list is empty, so such empty parameter lists must always be given when the intention is to call the procedure, in order to avoid confusion.  Thus, if <I>x</I> is a numeric variable, the statement</P>
+<PRE>
+x := Proc2</PRE>
+<P>would be interpreted as an attempt to assign the procedure Proc2 to the variable x and a type compatibility error would be generated.</P>
+<P><B>NOTES</B>:	1. Only procedures that are declared at the outermost level of a compilation unit can be assigned to procedure variables, not ones that are declared inside other procedures at level one or higher.</P>
+<P>	2. Standard procedures, such as ABS, cannot be assigned, though one can get around this (if one is a good-for-nothing hacker like the author) by enclosing the standard procedure inside another one with a slightly different name, and assigning the name of the procedure variable the enclosing procedure rather than (directly) the standard one.  It is rather unlikely that many people would need to exploit this loophole. </P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

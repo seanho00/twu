@@ -1,0 +1,261 @@
+<HTML>
+<HEAD>
+<TITLE>13.7 An Extended Example (Searching in Text)</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.7 An Extended Example (Searching in Text)</B></H2>
+<P>One of the most commonly used functions in word processing (and other text manipulation) is that of searching some body of text (the target) for a particular pattern of letters (the pattern.)  For example, the ISO module <I>Strings</I> has</P>
+<PRE>
+<B>PROCEDURE</B> FindNext(pattern, stringToSearch : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+           startIndex : <B>CARDINAL</B>;
+           <B>VAR</B> patternFound : <B>BOOLEAN</B>;
+           <B>VAR</B> posOfPattern : <B>CARDINAL</B>);</PRE>
+<P>The simplest and most natural algorithm for implementing such a search is to count through the target until the first letter of the pattern is matched, then count on both strings to see if the match continues.  If it does for the entire pattern, the whole string matches.  If a mismatch is found, one then continues to try to match the first character of the pattern with characters in the target.</P>
+<H3><B>Example:</B></H3>
+<P>Find the pattern <!--"-->&quot;sip<!--"-->&quot; in the target <!--"-->&quot;Mississippi.<!--"-->&quot;</P>
+<H3><B>Progress:</B></H3>
+<P>Compare <!--"-->&quot;s<!--"-->&quot; to <!--"-->&quot;M<!--"-->&quot; and <!--"-->&quot;i<!--"-->&quot; and, finding no match, advance.</P>
+<P>Finding a match at <!--"-->&quot;s<!--"-->&quot; look at <!--"-->&quot;i<!--"-->&quot; which fails to match.</P>
+<PRE>
+Mississippi
+  sip</PRE>
+<P>The next try letter matches <!--"-->&quot;s,<!--"-->&quot; again and then also <!--"-->&quot;i<!--"-->&quot;, but not <!--"-->&quot;p.<!--"-->&quot;</P>
+<PRE>
+Mississippi
+   sip</PRE>
+<P>At the next position there is a mismatch, and then there is another match at <!--"-->&quot;s,<!--"-->&quot; but the next letter fails.  On the next advance, one has</P>
+<PRE>
+Mississippi
+      sip</PRE>
+<P>and here the desired match is obtained.  If <I>m</I> and <I>n</I> denote the lengths of the two strings, this (brute force) algorithm may require up to <I>mn</I> comparisons, that is, it is <B>O</B>(mn).  Here is an implementation of this procedure :</P>
+<PRE>
+<B>PROCEDURE</B> FindNext(pattern, stringToSearch : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+           startIndex : <B>CARDINAL</B>;
+           <B>VAR</B> patternFound : <B>BOOLEAN</B>;
+           <B>VAR</B> posOfPattern : <B>CARDINAL</B>);
+<B>VAR</B>
+  countSi : <B>CARDINAL</B>; (* initial stringToSearch position count *)
+  countP : <B>CARDINAL</B>; (* pattern count *)
+  countSr : <B>CARDINAL</B>; (* count to the right of stringToSearch start *)
+  endP : <B>CARDINAL</B>; (* last pattern position *)
+  lenS : <B>CARDINAL</B>; (* length of stringToSearch *)
+  ch : <B>CHAR</B>; (* temp holder to reduce referencing *)
+  
+<B>BEGIN</B>
+  patternFound := <B>FALSE</B>;
+  endP := <B>LENGTH</B> (pattern);
+  <B>IF</B> endP <!--<-->&lt;<!-->&gt; 0 (* if is zero, do nothing *)
+    <B>THEN</B>
+      <B>DEC</B>(endP); (* last position used is one less than length *)
+      lenS := <B>LENGTH</B>(stringToSearch);
+      countSi := startIndex;
+
+      <B>IF</B> endP = 0
+        <B>THEN</B> (* was one character only *)
+          ch := pattern[0]; (* save it *)
+          <B>WHILE</B> (countSi <!--<-->&lt; lenS) <B>AND</B> (ch <!--<-->&lt;<!-->&gt; stringToSearch[countSi])
+            <B>DO</B> (* and go compare *)
+              <B>INC</B>(countSi);
+            <B>END</B>; (* while count *)
+          
+          <B>IF</B> countSi <!--<-->&lt; lenS
+            <B>THEN</B> (* we exited the loop before end of string *)
+              patternFound := <B>TRUE</B>; (* so we got that one match *)
+              posOfPattern := countSi;
+              <B>RETURN</B>; (* tell the world so *)
+            <B>END</B>; (* if countSi <!--<-->&lt; lenS *)
+
+        <B>ELSE</B> (* more than one character to be matched *)
+          ch := pattern[endP]; (* start at back end *)
+          <B>WHILE</B> countSi + endP <!--<-->&lt; lenS
+            <B>DO</B>
+              <B>IF</B> ch = stringToSearch[countSi+endP]
+                <B>THEN</B> (* got a first character match *)
+                  countP := 0; (* do look for more *)
+                  countSr := countSi;
+                  <B>LOOP</B>
+                    <B>IF</B> pattern[countP] <!--<-->&lt;<!-->&gt; stringToSearch[countSr]
+                      <B>THEN</B>
+                        <B>EXIT</B>;
+                      <B>END</B>; (* if pattern[countP] *)
+                    <B>INC</B>(countP);
+                    <B>INC</B>(countSr);
+                    <B>IF</B> countP = endP (* match whole thing *)
+                      <B>THEN</B>
+                        patternFound := <B>TRUE</B>;
+                        posOfPattern := countSi;
+                        <B>RETURN</B>;
+                      <B>END</B>; (* if countP = endP *)
+                  <B>END</B>; (* loop *)
+                <B>END</B>; (* if ch = stringToSearch *)
+            <B>INC</B>(countSi);
+          <B>END</B>; (* while *)
+        <B>END</B>; (* if endP = 0 *)
+    <B>END</B>; (* endP <!--<-->&lt;<!-->&gt; 0 *)
+<B>END</B> FindNext;</PRE>
+<P>However, a close examination of the progress of this algorithm shows us that some comparisons are not necessary.  If for instance, one has matched the first two letters <!--"-->&quot;si<!--"-->&quot; and there is then a mismatch, one already knows that the initial <!--"-->&quot;s<!--"-->&quot; cannot match the second letter <!--"-->&quot;i<!--"-->&quot; and so the search can be advanced by two places rather than one, and one comparison can be saved.  Sometimes the potential savings are more dramatic:</P>
+<H3><B>Example:</B></H3>
+<P>Find the pattern <!--"-->&quot;gead<!--"-->&quot; in the target <!--"-->&quot;geaageabgeacgead<!--"-->&quot;</P>
+<H3><B>Progress:</B></H3>
+<PRE>geaageabgeacgead
+gead</PRE>
+<P>The first three letters match, but when the fourth letter fails to match, they are known not to match the first letter either, so the pattern can be moved over to:</P>
+<PRE>
+geaageabgeacgead
+    gead</PRE>
+<P>then to</P>
+<PRE>
+geaageabgeacgead
+        gead</PRE>
+<P>and finally to</P>
+<PRE>
+geaageabgeacgead
+            gead</PRE>
+<P>where a match on all four characters is finally obtained.  Notice that this particular search turns out to be <B>O</B>(n), where <I>n</I> is the length of the target string.  However, the ability to slide the matching process over by three characters depends on the fact that there are no repetitions in the pattern string.  If there are repetitions, the amount that the search can be shifted depends on the place where the repetition is found in the pattern.</P>
+<H3><B>Example:</B></H3>
+<P>Find the pattern <!--"-->&quot;papa<!--"-->&quot; in the target <!--"-->&quot;papuapapyruspapa<!--"-->&quot;</P>
+<H3><B>Progress:</B></H3>
+<PRE>
+papuapapyruspapa
+papa</PRE>
+<P>This time, when fails to match, the pattern can be moved over only by two places because of the repetition of the first letter.</P>
+<PRE>
+papuapapyruspapa
+  papa</PRE>
+<P>Similar considerations apply to a later match of <!--"-->&quot;pap<!--"-->&quot; followed by a mismatch.</P>
+<P>In order to implement this strategy, therefore, it is necessary to search the pattern within itself looking for repetitions in order to determine how far the pattern can be moved after a failure at each position.  Since this means examining the pattern, and then following up by examining the target, this algorithm is <B>O</B>(m + n).   It is called the Knuth-Morris-Pratt algorithm, after the three who originated and refined it.</P>
+<PRE>
+Knuth-Morris-Pratt search =
+  scan pattern and construct <!--"-->&quot;backup<!--"-->&quot; vector (table)
+  scan the target
+    while characters match, advance in both pattern and target
+    on mismatch, shift by amount in <!--"-->&quot;backup<!--"-->&quot; vector for that position</PRE>
+<H3><B>Example:</B></H3>
+<P>Find the pattern <!--"-->&quot;cashcar<!--"-->&quot; in the target <!--"-->&quot;xcucatcastcashewcashcucashcatcashcart<!--"-->&quot;</P>
+<H3><B>Step 1</B></H3>
+<P><I>(construct backup vector):  (T = target and P = pattern)</I></P>
+<TABLE BORDER="1" WIDTH="100%"><TR><TH>Matched</TH>	     <TH COLSPAN=2>Mismatch@</TH>		<TH>backup</TH>	<TH>meaning</TH>	<TH>action</TH></TR>
+	<TR><TD></TD><TH>pos</TH>	<TH>letter</TH>		<TD>	</TD><TH>[j]</TH></TR>
+<TR><TD><i>none</i></TD>	<TD>0</TD>	<TD>c</TD>		<TD>-1</TD>	<TD>[0] # c</TD>	<TD>next T pos, resume P at 0</TD></TR>
+<TR><TD>c</TD>	<TD>1</TD>	<TD>a</TD>		<TD>0</TD>	<TD>[1] # a maybe c</TD>	<TD>keep T pos, resume P at 0</TD></TR>
+<TR><TD>ca</TD>	<TD>2</TD>	<TD>s</TD>		<TD>0</TD>	<TD>[2] # s maybe c</TD>	<TD>keep T pos, resume P at 0</TD></TR>
+<TR><TD>cas</TD>	<TD>3</TD>	<TD>h</TD>		<TD>0</TD>	<TD>[3] # h maybe c</TD>	<TD>keep T pos, resume P at 0</TD></TR>
+<TR><TD>cash</TD>	<TD>4</TD>	<TD>c</TD>		<TD>-1</TD>	<TD>[4] # c</TD>	<TD>next T pos, resume P at 0</TD></TR>
+<TR><TD>cashc</TD>	<TD>5</TD>	<TD>a</TD>		<TD>0</TD>	<TD>[5] # a maybe c</TD>	<TD>keep T pos, resume P at 0</TD></TR>
+<TR><TD>cashca</TD>	<TD>6</TD>	<TD>r</TD>		<TD>2</TD>	<TD>[6] # r, got <!--"-->&quot;ca<!--"-->&quot;</TD>	<TD>next T pos, resume P at 2</TD></TR></TABLE>
+<P>The term <!--"-->&quot;backup<!--"-->&quot; refers to the position in the pattern that the search can be backed up to in order to continue examining the target without wasting comparisons.  The value -1 will serve to flag that the position in the target is to be incremented for the next comparison.  When the scan <!--"-->&quot;backs up<!--"-->&quot; to the position -1, both the pattern and target counters will be incremented; when it backs up to the position 0 (or to any other positive number), only the target position will be incremented before continuing comparisons.  Here is the KNP (Knuth-Morris-Pratt) version of the FindNext procedure:</P>
+<PRE>
+<B>PROCEDURE</B> FindNext (pattern, stringToSearch : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+           startIndex : <B>CARDINAL</B>;
+           <B>VAR</B> patternFound : <B>BOOLEAN</B>;
+           <B>VAR</B> posOfPattern : <B>CARDINAL</B>);
+
+(* Knuth Morris Pratt version 
+  adapted by R. Sutcliffe
+  last modified 1995 05 04 *)
+
+<B>VAR</B>
+  count1, count2, sCount, pCount, patternLen, targetLength: <B>INTEGER</B>;
+  backup : Vector;
+  
+<B>BEGIN</B> 
+  targetLength := <B>LENGTH</B> (stringToSearch);
+  patternLen := <B>LENGTH</B> (pattern);
+
+(* construct backup vector *)
+  count1 := 0;
+  count2 := -1;
+  backup [0] := -1;
+  <B>REPEAT</B>  (* look for match in pattern with itself *)
+    <B>IF</B> (count2 = -1) (* starting (over) *)
+       <B>OR</B> (pattern [count1] = pattern [count2]) (* (still) matching *)
+      <B>THEN</B>
+        <B>INC</B>(count1); (* keep going *)
+        <B>INC</B>(count2);
+        <B>IF</B> pattern [count1] # pattern [count2]  (* no match there *)
+          <B>THEN</B>  (* keep same count *)
+             backup [count1] := count2;
+          <B>ELSE</B> (* keep same backup *)
+            backup [count1] := backup [count2];
+          <B>END</B>; (* if pattern *)
+      <B>ELSE</B>
+        count2 := backup[count2];
+      <B>END</B>; (* if count2 *)
+  <B>UNTIL</B> count1 <!-->&gt;= patternLen;
+
+  sCount := startIndex;
+  pCount := 0;
+  <B>REPEAT</B>
+    <B>IF</B> (pCount = -1) (* restart flag *)
+        <B>OR</B> (stringToSearch [sCount] = pattern [pCount]) (* matching *)
+      <B>THEN</B>
+        <B>INC</B>(sCount); (* move to next pos in source *)
+        <B>INC</B>(pCount); (* if was -1, now 0 for restart *)
+      <B>ELSE</B>  (* take backup no restart flag or match same source pos *)
+        pCount := backup [pCount];
+      <B>END</B>; (* if pCount *)
+  <B>UNTIL</B> (pCount <!-->&gt;= patternLen) <B>OR</B> (sCount <!-->&gt;= targetLength);
+  <B>IF</B> pCount <!-->&gt;= patternLen
+    <B>THEN</B>  (* got it so report back *)
+      posOfPattern := sCount - patternLen;
+      patternFound := <B>TRUE</B>;
+    <B>ELSE</B>  (* failed *)
+      posOfPattern := targetLength;
+      patternFound := <B>FALSE</B>;
+    <B>END</B>; (* if pCount *)
+<B>END</B> FindNext;</PRE>
+<P>Unless the pattern being searched for has considerable repetition, this method may not yield much better results than the brute force method in practice.  Yet another method that provides much faster searching capability is the Boyer-Moore algorithm; however, it will not be discussed here as it is rather more complicated.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

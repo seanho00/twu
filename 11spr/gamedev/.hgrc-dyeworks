@@ -1,0 +1,6 @@
+[paths]
+default = ssh://hg@awesomeness.no-ip.org/
+
+[ui]
+ssh = /usr/bin/ssh -i /home/seanho/.ssh/dyeworks_dsa
+username = seanho

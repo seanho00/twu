@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello, Android!</string>
+    <string name="app_name">Hello, Android!</string>
+<string name="type_here">Type a message here!</string>
+<string name="click_me_please">Click me, please!</string>
+</resources>

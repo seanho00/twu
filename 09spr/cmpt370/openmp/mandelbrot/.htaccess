@@ -1,0 +1,8 @@
+<IfModule mod_autoindex.c>
+  IndexOptions FancyIndexing NameWidth=30 DescriptionWidth=30
+  IndexOptions IconsAreLinks IconHeight=16 IconWidth=16
+  IndexIgnore .??* *~ *# README.html HEADER.html HEADER README RCS CVS *,v *,t .DS_Store *.log *.odp Thumbs.db
+
+  AddDescription "Adobe Acrobat Document" .pdf
+  AddDescription "Precompiled executable for carmel" mandelbrot-parallel
+</IfModule>

@@ -1,0 +1,271 @@
+<HTML>
+<HEAD>
+<TITLE>10.13 An Extended Example--Fractions and Exceptions</TITLE>
+<meta NAME="keywords" CONTENT="extend, extended, example, fraction, fractions, exception, exceptions, assign, denominator, inverse, numerator, divisor, zero, definition, module, import, library, finally, clause, final, terminate, termination, correct, correctness, incorrect, incorrectness">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.13 An Extended Example<!--</B>‹<B>-->--Fractions and Exceptions</B></H2>
+<P>The purpose of this section is to illustrate some of the ideas presented in the last section in a longer piece of code.  For simplicity, easy comparison, and to avoid having to present planning steps not relevant to this section, consider one way of adding appropriate exceptions to the Module <I>Fractions</I> first developed in chapter six.</P>
+<P>Three operations with fractions can be identified as ones that, if proper data is provided, there will be no error, but if improper data is passed the fractions are invalid.  (This makes the module a good candidate for having some exceptions defined<!--‹-->--it can control its own code, but not the mistaken calls of clients using erroneous data.)  These are:</P>
+<P>1. assignment of a zero denominator,</P>
+<P>2. taking the inverse when there is a zero numerator, and</P>
+<P>3. dividing when the divisor has zero numerator.</P>
+<P>These are similar errors, and all could be given the same exception identifier, but for the purpose of illustrating features of exceptions, all three will be treated separately.</P>
+<P>In the definition module that follows, alterations have been made to the original in accordance with the remarks in the last section.</P>
+<A NAME="Fractions"></A><PRE>
+<B>DEFINITION</B> <B>MODULE</B> Fractions;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* to illustrate exceptions use in libraries *)
+(* last revision 1994 05 31 *)
+
+<B>TYPE</B>
+  Fraction = <B>ARRAY</B> [1 .. 2] <B>OF</B> <B>INTEGER</B>;
+  (* the first component is the numerator; the second the denominator *)
+
+<B>PROCEDURE</B> Assign (m, n : <B>INTEGER</B>) : Fraction;
+  (* If n is not equal to zero, then the fraction returned has m as numerator and n as denominator. Otherwise the exception zeroDenominator is raised. *)
+
+<B>PROCEDURE</B> Numerator (x : Fraction) : <B>INTEGER</B>;
+  (* the numerator of the fraction is returned *)
+
+<B>PROCEDURE</B> Denominator (x : Fraction) : <B>INTEGER</B>;
+  (* the denominator of the fraction is returned *)
+
+<B>PROCEDURE</B> Neg (x : Fraction) : Fraction;
+  (* Pre: the fraction returned has the numerator negated *)
+
+<B>PROCEDURE</B> Inv (x : Fraction) : Fraction;
+  (* If the numerator of x is not equal to zero then the fraction returned has numerator and denominator swapped.  Otherwise the exception noInverse is raised. *)
+
+<B>PROCEDURE</B> Add (x, y : Fraction) : Fraction;
+  (* The fraction returned is the sum x plus y *)
+
+<B>PROCEDURE</B> Sub (x, y : Fraction) : Fraction;
+  (* The fraction returned is the difference x minus y *)
+
+<B>PROCEDURE</B> Mul (x, y : Fraction) : Fraction;
+  (* The fraction returned is the product of x and y *)
+
+<B>PROCEDURE</B> Div (x, y : Fraction) : Fraction;
+  (* If the numerator of y is not equal to 0, then the fraction returned is the quotient of x by y.  Otherwise, the exception zeroDivide is raised *)
+
+<B>TYPE</B>
+  FracExceptions = (zeroDenominator, noInverse, zeroDivide);
+
+<B>PROCEDURE</B> IsFracException (): <B>BOOLEAN</B>;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of an exception from FracExceptions; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> FracException (): FracExceptions;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception from FracExceptions, returns the corresponding enumeration value, and otherwise raises an exception. *)
+
+<B>END</B> Fractions.</PRE>
+<P>Note in the following implementation that a choice has been made to report any exception occurrence and print the associated string in the termination part of the module.</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> Fractions;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* to illustrate exceptions use in libraries *)
+(* last revision 1994 05 31 *)
+
+<B>FROM</B> EXCEPTIONS <B>IMPORT</B>
+  ExceptionSource, AllocateSource, RAISE, IsExceptionalExecution, IsCurrentSource, CurrentNumber, GetMessage;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar;
+
+<B>VAR</B>
+  fracExSource : ExceptionSource;
+
+<B>PROCEDURE</B> Assign (m, n : <B>INTEGER</B>) : Fraction;
+
+<B>VAR</B>
+  temp : Fraction;
+
+<B>BEGIN</B>
+  <B>IF</B> n = 0
+    <B>THEN</B>
+      RAISE (fracExSource, <B>ORD</B> (zeroDenominator), <!--"-->&quot;Cannot assign fraction with zero denominator<!--"-->&quot;);
+    <B>ELSE</B>
+      temp [1] := m;
+      temp [2] := n;
+      <B>RETURN</B> temp;
+    <B>END</B>;
+<B>END</B> Assign;
+
+<B>PROCEDURE</B> Numerator (x : Fraction) : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> x [1];
+<B>END</B> Numerator;
+
+<B>PROCEDURE</B> Denominator (x : Fraction) : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> x [2];
+<B>END</B> Denominator;
+
+<B>PROCEDURE</B> Neg (x : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  x [1] := -x [1];
+  <B>RETURN</B> x;
+<B>END</B> Neg;
+
+<B>PROCEDURE</B> Inv (x : Fraction) : Fraction;
+
+<B>VAR</B>
+  temp : <B>INTEGER</B>;
+
+<B>BEGIN</B>;
+  <B>IF</B> Numerator (x) = 0
+    <B>THEN</B>
+      RAISE (fracExSource, <B>ORD</B> (noInverse), <!--"-->&quot;Cannot invert fraction with zero numerator<!--"-->&quot;);
+    <B>ELSE</B>
+      temp := x [1];
+      x [1] := x [2];
+      x [2] := temp;
+      <B>RETURN</B> x;
+    <B>END</B>;
+<B>END</B> Inv;
+
+<B>PROCEDURE</B> Add (x, y : Fraction) : Fraction;
+
+<B>VAR</B>
+  temp : Fraction;
+
+<B>BEGIN</B>
+  temp [1] := x [1] * y [2] + x [2] * y [1];
+  temp [2] := x [2] * y [2];
+  <B>RETURN</B> temp;
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Sub (x, y : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  <B>RETURN</B> Add (x, Neg (y) );
+<B>END</B> Sub;
+
+<B>PROCEDURE</B> Mul (x, y : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  <B>RETURN</B> Assign (x [1] * y [1], x [2] * y [2]);
+<B>END</B> Mul;
+
+<B>PROCEDURE</B> Div (x, y : Fraction) : Fraction;
+
+<B>BEGIN</B>
+  <B>IF</B> Numerator (y) = 0
+    <B>THEN</B>
+      RAISE (fracExSource, <B>ORD</B> (zeroDivide), <!--"-->&quot;Cannot divide by zero<!--"-->&quot;);
+    <B>ELSE</B>
+      <B>RETURN</B> Mul (x, Inv (y) );
+    <B>END</B>;
+<B>END</B> Div;
+
+<B>PROCEDURE</B> IsFracException (): <B>BOOLEAN</B>;
+<B>BEGIN</B>
+   <B>RETURN</B> (IsExceptionalExecution() )  <B>AND</B> (IsCurrentSource (fracExSource) )
+<B>END</B> IsFracException;
+
+
+<B>PROCEDURE</B> FracException (): FracExceptions;
+(* The call to CurrentNumber will raise ExException automatically if this source didn't raise an exception. *)
+<B>BEGIN</B>
+  <B>RETURN</B> <B>VAL</B> (FracExceptions, CurrentNumber (fracExSource) );
+<B>END</B> FracException;
+
+
+<B>VAR</B>
+  errorMessage : <B>ARRAY</B> [0..255] <B>OF</B> <B>CHAR</B>;
+  
+<B>BEGIN</B> (* initialize *)
+   AllocateSource (fracExSource);
+   
+<B>FINALLY</B>
+  <B>IF</B> IsFracException ()
+    <B>THEN</B>
+      GetMessage (errorMessage);
+      WriteString (<!--"-->&quot;Program terminating because of exception<!--"-->&quot;);
+      WriteLn ;
+      WriteString (errorMessage);
+      WriteLn;
+      WriteString (<!--"-->&quot;Type return to continue<!--"-->&quot;);
+      SkipLine;
+    <B>END</B>;
+        
+<B>END</B> Fractions.</PRE>
+<P>There are slight dangers in putting code into a FINALLY clause that depends on the importation of some other module, as in this case.</P>
+<P>First, if termination is caused by an exception during initialization, then it may be that the module required (<I>STextIO</I> here) has not yet been initialized (and therefore cannot be used correctly).  This should not happen in this case, because all the exceptions that can be raised by this module are in code that is unlikely to be called during the initialization of library modules.</P>
+<P>Second, modules are terminated in the reverse order that they are initialized.  If the module being employed in FINALLY clause has already been terminated, it <I>may</I> be that some facilities it offers are no longer available. (An implementation may choose to close all channels during finalization, for instance).  This latter problem can only be determined to exist by examining the implementation documentation.</P>
+<P>Note that if either problem <I>does</I> exist, there is no work around, because:</P>
+<BLOCKQUOTE><I>The <u>correctness</u> of a program depends on the meaning of its individual modules, but any program whose meaning depends on the order of initialization (or finalization) of its modules is incorrect.</I></BLOCKQUOTE>
+<P>In this case, the following simple application was run to do a limited test of the new exceptions, by forcing one of them to be raised:</P>
+<PRE>
+<B>MODULE</B> TestFractions;
+
+<B>IMPORT</B> Fractions;
+
+<B>VAR</B>
+  p, q, r : Fractions.Fraction;
+  
+<B>BEGIN</B>
+  p := Fractions.Assign (0, -3);
+  q := Fractions.Assign (4, -3);
+  r := Fractions.Div (q, p);
+<B>END</B> TestFractions.</PRE>
+<P>The exception was triggered, and checking the output log after the run was complete revealed its contents as:</P>
+<PRE>
+** Run log starts here **
+Program terminating because of exception
+Cannot divide by zero
+Type return to continue</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

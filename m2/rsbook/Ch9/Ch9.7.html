@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<TITLE>9.7 Declaring and Assigning to Records</TITLE>
+<meta NAME="keywords" CONTENT="record, records, discussion, discussions, field, fields, declare, declaring, assign, assigning, assignment, single, identifier, cross, product, products, type, types, qualify, qualifier, anonymous">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B><CENTER>Part B<!--</B>‹<B>-->--Records</CENTER><BR>
+9.7 Declaring and Assigning to Records </B></H2>
+<P>The discussions of <A HREF="../Ch1/Ch1.6.html#1.6.3">sections 1.6.3</A> and <A HREF="Ch9.1.html">9.1</A> explored the idea of modeling data that by its very nature consists of items of different types aggregated together into a single structure.  For instance, one might wish to define an aggregate, or record:</P>
+<PRE>
+traveller =
+  name
+  home address
+  airline
+  flight number
+  arrival
+  departure
+  luggage</PRE>
+<BLOCKQUOTE><I><A NAME="Record">A</A> Modula-2 <U>record</U> is a data abstraction designed to allow for aggregates of various types of related data named by a single identifier.</I></BLOCKQUOTE>
+<P>Records are examples of what mathematicians call <I>cross products</I>.  A cross product of two sets is the set of ordered pairs with first coordinate from the first set, second from the second set, thus:</P>
+<P>A <!--¥-->* B = { (a, b) | a <IMG SRC="Figure/in.GIF"><!--‘--> A and b <IMG SRC="Figure/in.GIF"><!--‘--> B}</P>
+<P>For instance,</P>
+<P>{2, 4} <!--¥-->* { 1, 6}  =  {(2, 1), (2, 6), (4, 1), (4, 6)}</P>
+<P>In the case of records, the cross product is done with two or more (usually different) data types.  That is, one expresses a structure <I>struct</I> that is</P>
+<P>REAL <!--¥-->* CARDINAL <!--¥-->* BOOLEAN</P>
+<P>as, say</P>
+<PRE>
+<B>TYPE</B>
+  struct = 
+    <B>RECORD</B>
+      salary : <B>REAL</B>;
+      days : <B>CARDINAL</B>;
+      male : <B>BOOLEAN</B>;
+    <B>END</B>;</PRE>
+<P>where both the overall kind of structure (type) and the individual parts have names.</P>
+<P>Consider, for instance, the representation of a <I>person</I> as a record where the abstraction (the program data as opposed to the actual person) consists of a last name, first name, birthdate, sex, identity number, marital status, and a statement about their role on a university campus.  Of these, one could also in turn structure a record for <I>dates</I> that consists of a year, a month, and a day.  Here are some declarations to illustrate the Modula-2 syntax:</P>
+<PRE>
+<B>TYPE</B>
+  MonthType = (Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sept, Oct, Nov, Dec);
+  Name = <B>ARRAY</B> [0 .. 20] <B>OF</B> <B>CHAR</B>;
+  Role = (freshman, sophomore, junior, senior, professor, administrator, maintenance, associate, assistant, secretary);
+
+  Date =
+    <B>RECORD</B>
+      year : <B>CARDINAL</B>;
+      month : MonthType;
+      day : [1 .. 31];   (* semicolon optional *)
+    <B>END</B>;    (* of the record Date *)
+
+  Person =
+    <B>RECORD</B>
+      lastname, firstname : Name;
+      birth : Date;
+      male : <B>BOOLEAN</B>;
+      idnumber : <B>CARDINAL</B>;
+      married : <B>BOOLEAN</B>;
+      status : Role;
+    <B>END</B>;  (* of the record Person *)
+
+<B>VAR</B>
+  student, faculty : Person;</PRE>
+<P><B>NOTES</B>: 1. RECORD is a reserved word, and each RECORD declaration must have an associated END.</P>
+<P>	 2. The individual parts of a record are called <I>fields</I>.</P>
+<P>	 3. A record field can be of any type, including an array, a user-defined type, or another record.</P>
+<P>	 4. In the original definition of Modula-2, a function procedure could not return a RECORD as its result.  Newer versions (including ISO standard ones) allow this.  If this restriction does exist, it will be noted later that there may be a way around it.</P>
+<P>	 5. There will probably be some implementation dependent maximum record size, though this is not likely to impact on the programs of a beginner.</P>
+<P>The individual fields in each record each have their own identifier, and each is referred to by a qualified identifier that includes the record name itself.  The following statements assign the fields of the above record:</P>
+<PRE>
+student.lastname := <!--"-->&quot;Hacker<!--"-->&quot;;
+student.firstname := <!--"-->&quot;Nellie<!--"-->&quot;;
+student.birth.year := 1965;
+student.birth.month := Feb;
+student.birth.day := 12;
+student.male := <B>FALSE</B>;
+student.idnumber := 46725;
+student.married := <B>FALSE</B>;
+student.status := freshman;</PRE>
+<P>In a similar way, one could assign the fields of a record representing a faculty member, except that the last one could read, say:</P>
+<PRE>
+faculty.status := associate;</PRE>
+<P>One could also define the structure of <I>name</I> and <I>birth</I> within the declaration of <I>person</I>, writing:</P>
+<PRE>
+<B>TYPE</B>
+  Person =
+    <B>RECORD</B>
+      lastname, firstname : Name;
+      birth =
+        <B>RECORD</B>
+          year : <B>CARDINAL</B>;
+          month : MonthType;
+          day : [1 .. 31];
+        <B>END</B>;    (* of the sub-record Date *)
+      male : <B>BOOLEAN</B>;
+      idnumber : <B>CARDINAL</B>;
+      married : <B>BOOLEAN</B>;
+      status : Role;
+    <B>END</B>;  (* of the record Person *)</PRE>
+<P>However, it is better programming practice to employ separate type declarations for each structure, rather than bury structures without type names inside another one (anonymous types).  Once <I>Date</I> is properly declared as a type, it can be used in a variety of other declarations, rather than having to write out its structure every time.  Such natural abstractions should always be made explicit in the code.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

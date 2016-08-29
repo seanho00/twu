@@ -1,0 +1,262 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT370 Spr2007 Midterm 2, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">(toggle answers)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li>
+In your own words, compare the complementary fields of <b>computer graphics</b>
+and <b>image analysis</b>. <u>[4]</u>
+<br><br>
+<i>
+Synthesis vs. analysis: both are components of visual computing.  Computer
+graphics starts with digital representations of objects (triangle meshes,
+lights, etc.) and produces images on screen.  Image analysis starts with images
+(digital camera, satellite, MRI, etc.) and produces digital representations of
+the objects in the images.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+What is <b>colour</b>?  Is an RGB triple (e.g., "#00FF77") a colour?  Discuss.
+<u>[4]</u>
+<br><br>
+<i>
+Colour is a distribution of light energy across the visible spectrum ("frequency
+distribution").  An RGB triple is a point in a colour space, a 
+combination of three chromaticities.  Without specifying what those
+chromaticities are or how they are combined, an RGB triple is not a colour.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Contrast the goals of <b>off-line</b> rendering vs. <b>real-time</b> graphics.
+Which is OpenGL generally used for? <u>[5]</u>
+<br><br>
+<i>
+Off-line rendering prioritizes photorealism and image quality over rendering
+time -- it's okay if each frame takes days to render, as long as it looks
+really good.  Real-time graphics places a constraint of rendering time -- we
+still want it to look good, but not if that means our framerate drops below,
+say, 60 frames per second.
+OpenGL is generally used for real-time rendering.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Describe the idea behind <b>raytracing</b>.  In what ways does it produce
+superior images over standard OpenGL rendering? <u>[5]</u>
+<br><br>
+<i>
+To find a value for each pixel in the framebuffer, rays are cast from the center
+of projection through each pixel in the image plane and into the scene.  When a
+ray intersects a surface, contributions from ambient/diffuse/specular lighting
+are taken.  In addition, new rays are cast starting from that point in the
+direction of reflection (optionally, refraction, too).  This proceeds
+recursively until rays exit the scene or hit a light.  Standard OpenGL
+rendering does not model reflections or refractions.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Contrast <b>clipping</b> with <b>culling</b>.  Why are they important? <u>[5]</u>
+<br><br>
+<i>
+Clipping removes primitives which are outside the view frustum, the volume of
+space which is visible by the camera.
+Culling removes primitives which are not visible, even though they may be
+within the view frustum.  For instance, back-face culling removes primitives
+that face away from the camera, which are generally not visible.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Discuss what is meant by calling OpenGL a <b>"state machine"</b>. <u>[5]</u>
+<br><br>
+<i>
+Most OpenGL commands modify the current state, e.g., the current model-view
+matrix, or the current material properties.  When a primitive is added, e.g., a
+vertex of a polygon, that primitive takes on whatever OpenGL state that was 
+current at the time.  The impact on coding is that we need to specify all the
+properties for a vertex <em>before</em> its <tt>glVertex()</tt> call.
+</i>
+<br><br><br><br><br><br><br>
+
+<li>
+Write a short C code snippet that draws a red <b>triangle</b> in OpenGL, with
+vertices at 
+<tt>A = (0, 1, 2)</tt>,
+<tt>B = (3, 1, 2)</tt>, and
+<tt>C = (3, 1, 0)</tt> (in order).  What is the outward-facing unit normal? <u>[6]</u>
+<br>
+<i><pre>
+	glBegin( GL_TRIANGLES );
+	glColor3f ( 0.0, 1.0, 0.0 );
+	glVertex3f( 0.0, 0.0, 0.0 );
+	glVertex3f( 1.0, 0.0, 0.0 );
+	glVertex3f( 0.0, 1.0, 0.0 );
+	glEnd();
+</pre>The normal vector is (0, 1, 0), pointing in the positive y direction.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+The two most important transform matrices in OpenGL are 
+the <b>model-view</b> matrix (<tt>glMatrixMode( GL_MODELVIEW )</tt>) and 
+the <b>projection</b> matrix (<tt>glMatrixMode( GL_PROJECTION )</tt>).
+Contrast the roles of these two matrices. <u>[5]</u>
+<br><br>
+<i>
+The model-view matrix transforms from world coordinates to camera coordinates:
+it specifies the location of objects in the virtual world relative to the
+camera.  It is also what we use to position objects relative to each other.
+The projection matrix transforms from camera coordinates to screen coordinates:
+it converts from 3D points to 2D points.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+What does it mean for a set of vectors to be <b>linearly independent</b>? <u>[3]</u>
+<br><br>
+<i>
+A set of vectors is linearly independent if no one vector in the set can be
+expressed as a linear combination of the other vectors.  If we were to remove
+any vector from the set, then the vector space spanned by the set would
+collapse by a dimension.
+</i>
+<br><br><br><br><br><br><br>
+
+<li>
+Which of the following sets of homogeneous coordinates represent the same
+geometric entity?  Group together those which are the same: 
+e.g., <em>(a,b,c), (d,e)</em> <u>[4]</u>
+<br><tt>
+a = [ 1, 3, 2, 1 ]<sup>T</sup>
+b = [ 1, 3, 2, 0 ]<sup>T</sup>
+c = [ 2, 6, 4, 0 ]<sup>T</sup><br>
+d = [ 2, 6, 4, 1 ]<sup>T</sup>
+e = [ 2, 6, 4, 2 ]<sup>T</sup>
+</tt>
+<br><br>
+<i>
+(a, e), b, c, d
+</i>
+<br>
+
+<li>
+Create a 4x4 matrix <tt>M</tt> that first 
+<b>translates</b> a point by a vector 
+<tt>t = (t<sub>x</sub>, t<sub>y</sub>, t<sub>z</sub>)</tt>, then
+<b>scales</b> the resulting point <tt>p</tt> by a vector 
+<tt>s = (s<sub>x</sub>, s<sub>y</sub>, s<sub>z</sub>)</tt>.
+For example, if <tt>p</tt> is the point (1, 0, 0), 
+and the translation is t=(3, 0, 0),
+and the scaling is s=(2, 1, 1),
+then the transformed point <tt>p'</tt> should be (8, 0, 0).
+Assume <tt>p</tt> is a column vector in homogeneous coordinates, and
+the transformed point is <tt>p' = M p</tt> (left multiplication). <u>[6]</u>
+<br><br>
+<i>
+<table border="1"><tr>
+<td> s<sub>x</sub> </td>
+<td> 0 </td>
+<td> 0 </td>
+<td> s<sub>x</sub> t<sub>x</sub> </td>
+</tr><tr>
+<td> 0 </td>
+<td> s<sub>y</sub> </td>
+<td> 0 </td>
+<td> s<sub>y</sub> t<sub>y</sub> </td>
+</tr><tr>
+<td> 0 </td>
+<td> 0 </td>
+<td> s<sub>z</sub> </td>
+<td> s<sub>z</sub> t<sub>z</sub> </td>
+</tr><tr>
+<td> 0 </td>
+<td> 0 </td>
+<td> 0 </td>
+<td> 1 </td>
+</tr></table>
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Increasing the value for the GL_SHININESS parameter of a material will (circle
+all that apply): <u>[3]</u><ol class="subparts">
+  <li> Increase the ratio of specular to diffuse reflectivity
+  <li> Decrease the ratio of specular to diffuse reflectivity
+  <li> Increase the brightness of diffuse highlights
+  <li> Decrease the brightness of diffuse highlights
+  <li> Increase the size of specular highlights
+  <li> Decrease the size of specular highlights
+</ol>
+<br>
+<i>
+(f) Decrease the size of specular highlights (sharper falloff)
+</i>
+
+<li>
+Name and describe the four terms in the OpenGL local <b>illumination model</b>.
+For each term, list what <b>vectors</b>, if any, are required to compute the
+term. <u>[5]</u>
+<br>
+<i><ul>
+  <li> Ambient: uniform light that shines everywhere.  No vectors needed.
+  <li> Diffuse: light that shines on a dull, non-shiny object.  Need normal
+  vector and vector to the light source.
+  <li> Specular: Highlights reflecting off a shiny object.  Need view vector
+  to camera and reflection vector.
+  <li> Emissive: Simulates a glowing object.  No vectors needed.
+  </ul>
+</i>
+<br><br><br><br>
+
+<li>
+What are OpenGL <b>display lists</b>?  Why use them?
+Describe an example situation well-suited to display lists. <u>[6]</u>
+<br><br>
+<i>
+OpenGL display lists store a sequence of OpenGL commands (e.g., material
+definitions, lights, primitives, matrix transforms) that are then stored in
+graphics hardware memory.  The display list can then be executed multiple times
+(perhaps with OpenGL state change in between) without resending the data to the
+hardware; this can potentially speed up the rendering.  For instance if a scene
+is to have many hundreds of teapots, it would make sense to store the teapot
+vertex data in a display list.
+</i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Contrast <b>orthographic</b> projection with <b>perspective</b> projection. <u>[4]</u>
+<br><br>
+<i>
+The projector lines in orthographic projection are all parallel, whereas the
+projector lines in perspective projection converge to a single point, the
+center of projection.  Orthographic projection is equivalent to perspective
+projection with a center of projection infinitely far away.  Perspective
+results in foreshortening: closer objects appear larger, farther objects
+appear smaller.
+</i>
+<br><br><br><br><br><br><br>
+
+</ol>
+
+</body></html>
+
+

@@ -1,0 +1,290 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Final Exam :: CMPT166 DS 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers on web ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+
+<ol class="main">
+
+<li> Compare and contrast Java with some other <b>language</b> you know (e.g.,
+C++ or Python).  Describe pros/cons of each -- at least two things that you
+feel Java does better, and at least two things that you feel Java doesn't
+do as well as the other language.<u>[5]</u>
+<br><i>
+</i>
+
+<li> What is the difference between an <b>instance</b> variable and a 
+<b>class</b> variable?  How do you indicate to Java if a variable should
+be an instance variable or a class variable?  <u>[4]</u>
+<br><i>
+  Each instance of a class has its own separate copy of the instance 
+  variables (one per instance), but all instances share the class variables
+  (one per class).  Class variables are declared <tt>static</tt>.
+</i>
+
+<li> What does <b><tt>static</tt></b> mean for methods?
+Why must <tt>main()</tt> be declared static?  <u>[4]</u>
+<br><i>
+Static members belong to the whole class, rather than to each instance.
+Static methods can be invoked from the class without needing to instantiate
+the class.  <tt>main()</tt> has to be static because when it is run no
+objects have been instantiated yet.
+</i>
+
+<li> The following block of code is meant to
+create a list of 20 Student objects and initialize their IDs.  What is 
+<b>wrong</b> with this code?  How would you fix it?  <u>[4]</u>
+<pre>
+	class Student {
+		public int ID;
+	}
+	Student[] classlist = new Student[20];
+	for (int i = 0; i &lt; classlist.length; i++) {
+		classlist[i].ID = i;
+	}
+</pre>
+<i>
+  Although classlist is declared as an array of Students, its elements are
+  never instantiated; thus, there will be an error inside the for loop when
+  the program attempts to access the ID attribute of an element.  To fix it,
+  create an instance of Student and assign it to the array element before
+  assigning its ID field:<pre>
+	for (int i = 0; i &lt; classlist.length; i++) {
+		classlist[i] = new Student();
+		classlist[i].ID = i;
+	}
+</pre></i>
+
+<li> Tell me everything you know about <b>polymorphism</b>.
+Why is it useful?  <u>[5]</u>
+<br><i>
+Polymorphism in object-oriented programming is when a single program
+or method can act upon multiple types of objects using the same code.
+If we write a program to operate on instances of a superclass, then we
+can run that program on instances of subclasses of the given superclass
+without writing a new version of the program.  We can even create new 
+subclasses that hadn't been thought of when the program was written, and
+it will run just the same on instances of the new subclass.
+</i>
+
+<li> Design and draw a UML <b>class diagram</b> for a class hierarchy
+at least two deep (i.e., there should be at least a "grand-parent" class) and 
+with at least two sibling classes (i.e., classes that inherit from the same 
+parent).  Here's the important part: the class hierarchy ought to be 
+<em>meaningful</em>!  Include some methods and inherited attributes.  
+Java code is <em>not</em> required!  But: the classes, their relationships, 
+and their methods/attributes ought to make sense and be meaningful!
+<u>[8]</u>
+<br><i>
+  Many good examples; e.g., Student inherits from Person; Faculty inherits 
+  from Employee, which inherits from Person.  Inherited attributes could
+  include name, phone, address (for Person); GPA (for Student).  Virtual
+  methods could include call() (for Person), or gradAudit() (for Student).
+</i>
+
+<li> What is an <b>abstract class</b>?  Describe a situation where it
+might make sense to use one.  Also describe at least two concrete subclasses.
+<u>[5]</u>
+<br><i>
+  An abstract superclass is a class that cannot be instantiated; it is used
+  to categorize other concrete subclasses and hold common attributes+methods.
+  A simple example might be an abstract superclass 'Person', with two concrete
+  subclasses 'Man' and 'Woman' -- every Person is either a Man or a Woman, so
+  it wouldn't make sense to have an instance of the superclass Person.
+  The Person superclass could contain common attributes like Head, Heart,
+  Arms, etc. that both Men and Women have -- but the "gender-specific" organs
+  would be attributes of the subclasses!
+</i>
+
+<li> Now, write simple but complete <b>Java definitions</b> for the three 
+classes you described in the previous question (they need not be terribly
+complex).  <u>[6]</u>
+<br><i><pre>
+</pre></i>
+
+<li> In Swing, what is the difference between <b><tt>JFrame</tt></b> and
+<b><tt>JPanel</tt></b>? <u>[4]</u>
+<br><i>
+  JFrame represents a window; JPanel is a container for other widgets.
+  Both are JComponents and can contain widgets, but JPanels can be nested
+  (it doesn't make sense to nest windows!).  Every Swing application needs
+  a JFrame, and every JPanel must be inside a JFrame, but not every JFrame
+  needs to have a JPanel.
+</i>
+
+<li> What are <b>layout managers</b> for in Swing?  Describe and contrast
+the layout managers <tt>FlowLayout</tt>, <tt>BorderLayout</tt>, and 
+<tt>GridLayout</tt>. <u>[5]</u>
+<br><i>
+  Layout managers determine how widgets are positioned within a panel
+  (including handling dynamic resizing).  FlowLayout positions the widgets
+  left-to-right in the order they are added to the panel.  BorderLayout allows
+  widgets to be positioned on the edges of the panel -- north, south, east,
+  west, and centre.  GridLayout places widgets on a grid of equal-size cells.
+</i>
+
+<li> What does <b><tt>ActionListener</tt></b> mean in Java?
+How is it used? <u>[4]</u>
+<br><i>
+  ActionListener is an interface.  It has just one method, actionPerformed().
+  Classes that implement ActionListener must implement the actionPerformed()
+  method, which means they know how to respond to an ActionEvent.
+  This is used by Swing applications to respond to button presses, mouse
+  clicks, and other user events.
+</i>
+
+<!--
+<li> What is a <b><tt>WindowListener</tt></b>?  What specific things does
+it listen for?  Why is it useful for Swing programs to have one? <u>[4]</u>
+<br><i>
+  WindowListener is an interface.  Classes that implement it must provide
+  methods that handle various WindowEvents, such as iconifying the window,
+  closing the window, activating the window for keyboard focus, etc.  If there
+  is no WindowListener in a Swing program, then the functionality is not
+  defined when a user clicks on the window's Close ('X') button in the titlebar.
+</i>
+-->
+
+<li> Compare and contrast the following java.io classes:
+<b><tt>FileInputStream</tt></b>, <b><tt>FileReader</tt></b>, and
+<b><tt>ObjectInputStream</tt></b>. <u>[5]</u>
+<br><i>
+  FileInputStream represents a general file opened for byte-based reading.
+  FileReader represents a file opened for character-based reading (text).
+  ObjectInputStream represents a file opened for reading of serialized objects;
+  there must first be an open FileInputStream from which the ObjectInputStream
+  reads.
+</i>
+
+<li> What is object <b>serialization</b> in Java?  What kinds of objects
+can be serialized?  Describe, in as much detail
+as you can, a situation where serialization might be useful. <u>[5]</u>
+<br><i>
+  Serialization converts Java objects into byte streams that can be sent
+  across any I/O channel.  Objects can be serialized if their classes 
+  implement the <tt>Serializable</tt> interface and if all its non-transient
+  instance variables are serializable.  Primitive types (int, char, etc.)
+  and arrays of primitive types are serializable.
+  Any kind of inter-process communication may benefit from object 
+  serialization: e.g., a client-server restaurant ordering system may wish
+  to send objects that represent customer orders over a network I/O channel.
+</i>
+
+<li> What is <b>buffered output</b>?  Why is it used?  When might it be
+inconvenient?  <u>[4]</u>
+<br><i>
+  Writes on a BufferedOutputStream do not get committed (e.g., to disk)
+  immediately, but put in a buffer/queue for later writing (e.g., when
+  the OS and disk are not busy).  Buffering bundles together many small
+  transactions into one large transaction, to optimize for the balance 
+  between bandwidth and latency that is inherent in disks, networks, and
+  other media.
+</i>
+
+<li> What is a <b>component architecture</b>?  Why are they cool?
+Name one component architecture in widespread use (it does not have to be
+from lecture, or even computer-related, as long as you explain why it's
+a component architecture). <u>[5]</u>
+<br><i>
+  A component architecture is a standard defining interoperability for 
+  program components.  New applications can be assembled out of compatible
+  components; the objective is to maximize code re-use.
+  Examples include JavaBeans, ODBC, Rails, Firefox plugins, etc.
+</i>
+
+<li> Contrast <b>TCP</b> with <b>UDP</b>. <u>[4]</u>
+<br><i>
+TCP provides connection-oriented network communication, with certain guarantees
+about the circuit.
+UDP provides connectionless communication: packets may arrive out of order, or
+duplicated, or may not arrive at all.
+</i>
+
+<li> How might a <b>TCP server</b> utilize multithreading?  What limitations
+would a single-threaded TCP server have? <u>[4]</u>
+<br><i>
+  Master thread only listens for connections; when a client connects, the
+  master thread forks off a child thread to communicate with that client,
+  and itself goes back to listening.  Without multithreading, only one client
+  could connect at a time.
+</i>
+
+<li> What is a <b>task scheduler</b>?  What does it do?  Is it part of the
+Java VM or part of the host operating system? <u>[4]</u>
+<br><i>
+  The task scheduler assigns runnable threads to physical processors.
+  It has the authority to preempt running threads, taking them off the 
+  processors and assigning other threads to the processors.
+  It may give some threads higher priority to use the processors.
+  It is part of the operating system, not the Java runtime, because there
+  may be other non-Java processes running on the same system.
+</i>
+
+<li>
+Describe a situation (need not be computer-related) in which a <b>lock</b>
+might be required on a shared object.  What are the two (or more) entities that
+access the shared object, and why is a lock needed?  <u>[5]</u>
+<br><i>
+Locks provide mutual exclusion.  If two threads wish to use the same resource
+(e.g., write to the same file), they must synchronize their accesses or risk
+incorrect results (e.g., corrupting the file).  To use, each thread first
+requests the lock before accessing the shared resource.  If another thread has
+the lock, the requesting thread is blocked, waiting until the lock is freed.
+If no other thread has the lock, the lock is given to the requesting thread,
+whereupon it may freely use the shared resource.  After it is done, it yields
+the lock so that any other waiting threads may try to get the lock.
+<p>
+An example might be the lock on a washroom door: the entities competing for
+access might be you and your roommate; a lock is needed because only one
+person at a time may use the washroom.
+</i>
+
+<li>
+Describe the <b>singleton</b> creational design pattern, 
+and how one might implement it in Java.
+Describe an example application that might need a singleton.  <u>[4]</u>
+<br><i>
+  A singleton class guarantees that there is only ever one instance of that 
+  class.  In Java, the constructor must be made private (so that nobody can
+  make a new instance).  The singleton object can be a class variable, and
+  a static class method can be provided to permit access to the singleton
+  object.  An example might be a domain controller; we want to ensure that
+  there is only one domain controller on the network.
+</i>
+
+<li>
+The value e<sup>x</sup> can be approximated using the <b>partial sum</b>
+1 + x + x<sup>2</sup>/2! + x<sup>3</sup>/3! + ... + x<sup>n</sup>/n!,
+where n! is n-factorial, 1*2*3*4*...*(n-1)*n.
+Write a complete Java program that asks the user for x and n and computes the 
+corresponding partial sum estimate of e<sup>x</sup>.<br>
+Pseudocode, comments/doc-comments, etc. are not required, but may earn partial
+marks if the code is not perfect.  <u>[8]</u>
+
+<li> Sketch a design for an online <b>classified-ad</b> system, like
+<a href="http://craigslist.org/">CraigsList</a>.  Sellers can create and
+see their listings, and buyers can see listings and respond to the sellers.
+No money is exchanged through the system.  There should also be administrators
+who can edit/delete listings and ban users.
+Design the components of the system -- not necessarily at the specific level
+of classes, but general components.  Sketch use-cases: who interacts with the
+system, and how do they interact with it? <u>[8]</u>
+<br><i>
+</i>
+
+</ol>
+
+</body></html>

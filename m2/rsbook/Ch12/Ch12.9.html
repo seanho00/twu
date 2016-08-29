@@ -1,0 +1,278 @@
+<HTML>
+<HEAD>
+<TITLE>12.9 Opaque Types Revealed</TITLE><meta NAME="keywords" CONTENT="opaque, type, types, object, oriented, orient, design, data, type, operator, operators, operation, operations, ood, oop, program, programming, modify, modified, change, definition, define, implement, implementation, module, modules, pointer, pointers, link, relink, re-link">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.9 Opaque Types Revealed</B></H2>
+<P>There was a brief introduction to the concept of opaque types in <A HREF="../Ch10/Ch10.7.html#10.7.3">section 10.7.3</A>, and the reader should review that comment before continuing.</P>
+<P>Here, the goal will be to implement an ADT in an opaque way, that is, with the structural details of the type deliberately hidden away in the implementation module so that clients cannot know what they look like.</P>
+<P>Here, this will be achieved by revisiting an earlier example.  In <A HREF="../Ch6/Ch6.9.html">section 6.9</A>, in the introduction to library modules, the ADT <I>Point</I> was implemented in a transparent manner, that is, with the implementation details available for all to see in the definition module.</P>
+<PRE>
+<B>TYPE</B>
+   Point = <B>ARRAY</B> [1 .. 2] <B>OF</B> <B>REAL</B>;</PRE>
+<P>Client programs <!--"-->&quot;know<!--"-->&quot; the names of the parts of the type <I>Point</I>.  The way that they are written may depend heavily on this fact.  It is a better idea in practice to keep such details hidden, so that the client program does not have access to such information, but rather require that such data items can be operated upon only by the procedures that are also contained in the module along with the data type definition.  This has been referred to, and there have been several instances of predefined library modules containing such opaque types throughout the text.</P>
+<BLOCKQUOTE><U><I><A NAME="Object">Object</A> oriented design</U> concentrates on the need for a type of data.  The data type and all the operations on it are implemented in such a way that an item of that type can be modified only through those operations, and not by any client program.<U></I></U></BLOCKQUOTE>
+<P>There is somewhat more to object oriented design than this in practice, especially if one is working in a notation built from the ground up on such a philosophy.  However, this is a good working start for such thinking.</P>
+<P>Here is the revised definition of the ADT <I>Point</I> with some procedures changed from functions so that they can return <I>Point</I> in a variable parameter.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> <A NAME="OpaquePoints">OpaquePoints</A>;
+
+(* based on an original design by R. Sutcliffe
+   modified to opaque form by Gord Tisher
+   last modification 1995 05 17 *)
+
+   (* angles are measured in radians counterclockwise from the positive x-axis *)
+
+<B>TYPE</B>
+  Point;
+
+<B>PROCEDURE</B> newPoint (x, y : <B>REAL</B>; <B>VAR</B> p : Point);
+  (* allocates memory for a new point *)
+
+<B>PROCEDURE</B> killPoint (<B>VAR</B> p : Point);
+  (* deallocates memory the point variable -- using the variable after a call to killPoint is wrong. *)
+
+<B>PROCEDURE</B> assign (x, y : <B>REAL</B>; <B>VAR</B> p : Point);
+   (* returns the abstract point with coordinates x and y *)
+
+<B>PROCEDURE</B> abscissa (p : Point) : <B>REAL</B>;
+   (* returns the first, or x-coordinate of the point *)
+
+<B>PROCEDURE</B> ordinate (p : Point) : <B>REAL</B>;
+   (* returns the second, or y-coordinate of the point *)
+
+<B>PROCEDURE</B> abs (p : Point) : <B>REAL</B>;
+   (* returns the distance from the point to the origin *)
+
+<B>PROCEDURE</B> arg (p : Point) : <B>REAL</B>;
+   (* returns the angle to the positive x-axis subtended by a line segment from the origin to the point measured in the range 0 to 2<!--¼-->¼lt;¼gt;  radians *)
+
+<B>PROCEDURE</B> polarToRect (abs, arg : <B>REAL</B>; <B>VAR</B> p : Point);
+   (* returns the point with the given absolute value and argument *)
+
+<B>PROCEDURE</B>  reflectX (<B>VAR</B> p : Point);
+   (* returns the reflection of the point in the x-axis *)
+
+<B>PROCEDURE</B>  reflectY (<B>VAR</B> p: Point );
+   (* returns the reflection of the point in the y-axis *)
+
+<B>PROCEDURE</B> reflect0 (<B>VAR</B> p : Point);
+   (* returns the reflection of the point in the origin *)
+
+<B>PROCEDURE</B> reflect45 (<B>VAR</B> p : Point);
+   (* returns the reflection of the point in the line y = x *)
+
+<B>PROCEDURE</B> scale (<B>VAR</B> p : Point; scaleFactor : <B>REAL</B>);
+   (* returns the point with the same argument as p and its absolute value multiplied by the scale factor *)
+
+<B>PROCEDURE</B> rotate (<B>VAR</B> p : Point; rotAngle : <B>REAL</B>);
+   (* returns the point with the same absolute value as p and with its argument increased by rotAngle *)
+
+<B>PROCEDURE</B> translate (<B>VAR</B> p : Point; deltaX, deltaY : <B>REAL</B>);
+   (* returns the point obtained by shifting the given point deltaX horizontally and deltaY vertically *)
+
+<B>END</B> OpaquePoints.</PRE>
+<P>It is time to clear up a little mystery regarding opaque types that may be troubling the thinking reader.  Such types are named in the definition module, but their structure is not given there.  How then can the compiler know how much memory to assign statically to such a variable?  After all, the earliest that the details can become available is the time when the implementation module is linked to the client program.</P>
+<P>In defining Modula-2, Wirth replied that the only possible course of action for the compiler in this case is to assume that opaque types are always a certain fixed size, never more nor less.  He concluded that this in turn meant that the opaque type itself would in practice have to be a pointer, and that the data represented by the abstraction would have to be contained in the structure to which it points.  Wirth left open the possibility that someone might find some other way to achieve this that would allow opaque types to be other than pointers, and some implementations took advantage of this to the extent that they allowed opaque types to be any type that occupied the same amount of memory as a pointer type.  That is, this limitation was a practical one, but not a theoretical one.  Although the restriction of opaque types to pointers is clearly an artifact of current technology, in the sense that the limitation results from the standard view of what must happen at compile-link-run time, the ISO standards committee took a much narrower view of the matter:</P>
+<BLOCKQUOTE><I>In an ISO standard conforming implementation, any opaque type defined in a definition module must be redefined in the corresponding implementation module either as another opaque type or as a pointer type.</I></BLOCKQUOTE>
+<P>Any redefinition in terms of another opaque type merely postpones the inevitable<!--‹-->--an opaque type is, in the (ISO) end a pointer type.  This can be clearly seen in the implementation of the <I>OpaquePoints</I> module below.  The type Point is a pointer to the data structure that contains the coordinates of the point, and all access to the actual data must employ the dereferencing operator.  Observe that the student who implemented the design chose to use ALLOCATE directly rather than NEW.  Note, however, that ALLOCATE and DEALLOCATE appear only once in the entire module, confining their presence to as small a scope as possible, and ensuring good control over memory use.</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> OpaquePoints;
+
+(* based on an original design by R. Sutcliffe
+   modified to opaque form by Gord Tischer
+   last modification 1995 05 18 *)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+
+<B>FROM</B> RealMath <B>IMPORT</B>
+  sqrt, arctan, sin, cos, pi;
+
+<B>TYPE</B>
+  Point = <B>POINTER</B> <B>TO</B> PointData;
+  PointData = <B>ARRAY</B>[1..2] <B>OF</B> <B>REAL</B>;
+
+
+<B>PROCEDURE</B> newPoint (x, y : <B>REAL</B>; <B>VAR</B> p : Point);
+<B>BEGIN</B>
+  ALLOCATE (p, <B>SIZE</B> (PointData));
+  p^[1] := x;
+  p^[2] := y;
+<B>END</B> newPoint;
+
+<B>PROCEDURE</B> killPoint (<B>VAR</B> p : Point);
+  (* deallocates memory the point variable -- using the variable after a call to killPoint is wrong *)
+<B>BEGIN</B>
+  DEALLOCATE (p, <B>SIZE</B> (PointData));
+<B>END</B> killPoint;
+
+<B>PROCEDURE</B> assign (x, y : <B>REAL</B>; <B>VAR</B> p : Point);
+
+<B>BEGIN</B>
+  p^[1] := x;
+  p^[2] := y;
+<B>END</B> assign;
+
+<B>PROCEDURE</B> abscissa (p : Point) : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> p^[1];
+<B>END</B> abscissa;
+
+<B>PROCEDURE</B> ordinate (p : Point) : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> p^[2];
+<B>END</B> ordinate;
+
+<B>PROCEDURE</B> abs (p : Point ) : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> sqrt (p^[1] * p^[1] +  p^[2] * p^[2]);
+<B>END</B> abs;
+
+<B>PROCEDURE</B> arg (p : Point) : <B>REAL</B>;
+(* if both coordinates are zero, the angle is not defined, but this procedure will 
+  return zero.  No errors are generated. *)
+
+<B>VAR</B>
+  temp : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> p^[1] = 0.0 
+    <B>THEN</B>
+      <B>IF</B> p^[2] <!-->&gt; 0.0  (* case of point on positive y-axis *)
+        <B>THEN</B>
+          <B>RETURN</B>  pi / 2.0;
+        <B>ELSIF</B>  p^[2] <!--<-->&lt; 0.0 <B>THEN</B>
+          <B>RETURN</B> 1.5* pi (* case of point on negative y-axis *)
+        <B>ELSE</B>
+          <B>RETURN</B> 0.0;
+        <B>END</B>;
+    <B>END</B>;
+  temp:=  arctan (p^[2]/p^[1]); (* returns first and fourth quadrants only *)
+  <B>IF</B> p^[1] <!-->&gt; 0.0
+    <B>THEN</B>
+      <B>IF</B> p^[2] <!-->&gt;= 0.0
+        <B>THEN</B>
+          <B>RETURN</B> temp;
+        <B>ELSE</B>
+          <B>RETURN</B> (2.0 * pi) + temp;
+        <B>END</B>; (* if *)
+    <B>ELSE</B>
+      <B>RETURN</B> pi + temp (* adjust for second and third quadrants *)
+    <B>END</B>;
+<B>END</B> arg;
+
+<B>PROCEDURE</B> polarToRect (abs, arg : <B>REAL</B>; <B>VAR</B> p : Point);
+
+<B>VAR</B>
+  temp : PointData;
+<B>BEGIN</B>
+  temp[1] := abs * (cos (arg));
+  temp[2] := abs * (sin (arg));
+  p^ := temp;
+<B>END</B> polarToRect;
+
+<B>PROCEDURE</B> reflectX (<B>VAR</B> p : Point );
+
+<B>BEGIN</B>
+  p^[2] := -p^[2];
+<B>END</B> reflectX;
+
+<B>PROCEDURE</B>  reflectY (<B>VAR</B> p : Point );
+
+<B>BEGIN</B>
+  p^[1] := -p^[1];
+<B>END</B> reflectY;
+
+<B>PROCEDURE</B> reflect0 (<B>VAR</B> p : Point );
+
+<B>BEGIN</B>
+  p^[1] := -p^[1];
+  p^[2] := -p^[2];
+<B>END</B> reflect0;
+
+<B>PROCEDURE</B> reflect45 (<B>VAR</B> p : Point );
+<B>VAR</B>
+  temp : <B>REAL</B>;
+<B>BEGIN</B>
+  temp := p^[1];
+  p^[1] := p^[2];
+  p^[2] := temp;
+<B>END</B> reflect45;
+
+<B>PROCEDURE</B>  scale (<B>VAR</B> p : Point; scaleFactor : <B>REAL</B>);
+
+<B>BEGIN</B>
+  p^[1] := scaleFactor * p^[1];
+  p^[2] := scaleFactor * p^[2];
+<B>END</B> scale;
+
+<B>PROCEDURE</B> rotate (<B>VAR</B> p : Point; rotAngle : <B>REAL</B>);
+<B>VAR</B>
+  r, theta : <B>REAL</B>;
+<B>BEGIN</B>
+  r := abs (p);
+  theta := arg (p) + rotAngle;
+  polarToRect (r, theta, p);
+<B>END</B> rotate;
+
+<B>PROCEDURE</B> translate (<B>VAR</B> p : Point; deltaX, deltaY : <B>REAL</B>);
+
+<B>BEGIN</B>
+  p^[1] := p^[1] + deltaX;
+  p^[2] := p^[2] + deltaY;
+<B>END</B> translate;
+
+<B>END</B> OpaquePoints.</PRE>
+<P>Observe that if the implementor had later decided to change the type <i>PointData</i> and implement it as a record instead, only this implementation module, and not any client program, would have to be re-compiled.  Client programs would only have to be re-linked to take advantage of the new code.  They need no re-coding themselves to do this, since their code does not depend on the structural details of the opaque type.  Indeed, it cannot, for those details are deliberately concealed from the client programs.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

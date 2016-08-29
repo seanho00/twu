@@ -1,0 +1,102 @@
+<HTML><HEAD><TITLE>Chapter 16: Generic Modula-2</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Generic Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter</B> <B>16<BR>
+<P class = l>Generic Modula-2</B></H1></CENTER>
+
+
+
+<BR><A class = navgrn HREF="Ch16.0.html">16.0 Chapter Goals</a><!--	710-->
+<BR><A class = navgrn HREF="Ch16.1.html">16.1 Generics In the Base Language (Revisited)</a><!--	710-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.1.html#16.1.1">  16.1.1 Semi Generic Methods and Structures</a><!--	710-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.1.html#16.1.2">  16.1.2 Limitations of Fully Generic Techniques</a><!--	711-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.1.html#16.1.3">  16.1.3 Limitations of Fully Generic Structures</a><!--	712-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.1.html#16.1.4">  16.1.4 Summary</a><!--	713-->
+<BR><A class = navgrn HREF="Ch16.2.html">16.2 Generic Separate Library Modules</a><!--	714-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.2.html#16.2.1">  16.2.1 Generic Definition Modules</a><!--	714-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.2.html#16.2.2">  16.2.2 Generic Implementation Modules</a><!--	716-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.2.html#16.2.3">  16.2.3 Formal Module Parameters</a><!--	719-->
+<BR><A class = navgrn HREF="Ch16.3.html">16.3 Refining Separate Library Modules</a><!--	719-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.3.html#16.3.1">  16.3.1 Refining Definition Modules</a><!--	719-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.3.html#16.3.2">  16.3.2 Refining Implementation Modules</a><!--	721-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.3.html#16.3.3">  16.3.3 Multiple Refinements</a><!--	722-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.3.html#16.3.4">  16.3.4 Actual Parameters</a><!--	722-->
+<BR><A class = navgrn HREF="Ch16.4.html">16.4 Refining Within a Program Module</a><!--	723-->
+<BR><A class = navgrn HREF="Ch16.5.html">16.5 Refining Within an Implementation Module</a><!--	725-->
+<BR><A class = navgrn HREF="Ch16.6.html">16.6 Making New ADTs from Old With Generics</a><!--	726-->
+<BR><A class = navgrn HREF="Ch16.7.html">16.7 Extended ADT Examples</a><!--	730-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.7.html#16.7.1">  16.7.1 Generic Lists</a><!--	730-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.7.html#16.7.2">  16.7.2 Generic Queues</a><!--	736-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.7.html#16.7.3">  16.7.3 Generic Stacks</a><!--	736-->
+<BR><A class = navgrn HREF="Ch16.8.html">16.8 Dependency and Order in Generic Modula-2</a><!--	737-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.8.html#16.8.1">  16.8.1 Module Dependencies</a><!--	737-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.8.html#16.8.2">  16.8.2 Nested Module Refinement Order</a><!--	738-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.8.html#16.8.3">  16.8.3 Module Initialization and Termination Order</a><!--	738-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch16.8.html#16.8.4">  16.8.4 Import and Export Lists</a><!--	738-->
+<BR><A class = navgrn HREF="Ch16.9.html">16.9 Summary and Comparison With Other Notations</a><!--	739-->
+<BR><A class = navgrn HREF="Ch16.10.html">16.10 Chapter Summary</a><!--	739-->
+<BR><A class = navgrn HREF="Ch16.11.html">16.11 Assignments</a><!--	739-->
+
+<!--Version History Last Modified 1997 07 09
+4.0 In Process by RS
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+
+
+
+
+«INCLUDE Ch16.0.html»
+«INCLUDE Ch16.1.html»
+«INCLUDE Ch16.2.html»
+«INCLUDE Ch16.3.html»
+«INCLUDE Ch16.4.html»
+«INCLUDE Ch16.5.html»
+«INCLUDE Ch16.6.html»
+«INCLUDE Ch16.7.html»
+«INCLUDE Ch16.8.html»
+«INCLUDE Ch16.9.html»
+«INCLUDE Ch16.10.html»
+«INCLUDE Ch16.11.html»
+--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

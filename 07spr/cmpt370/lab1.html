@@ -1,0 +1,74 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2007 Lab1, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+--></style>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a>
+Lab1 (30 pts): Your own FLTK program</h1>
+
+<p> In this lab, you will design and implement a small FLTK program of 
+your own choosing.
+
+<ul>
+
+<li> Your program should have a point to it: it should be "useful" in some way.
+It doesn't have to be the next Microsoft Office, but there should be a 
+clearly defined purpose to the program, and it <em>must</em> be easy to use.
+
+<li> You must research and use an advanced FLTK widget / feature 
+<em>beyond</em> what was covered in Lab0 (Fl_Box, Fl_Button, Fl_Input,
+Fl_Menu*, etc.).
+
+<li> Your code need not all be in Fluid: in fact, if your callbacks are
+longer than one or two trivial lines, you should emphasize separation of logic
+and layout: have a separate file (or two) for your callbacks.
+
+<h2>Suggested project ideas</h2>
+
+<li> Some suggestions to help you brainstorm: <ul>
+  <li> A basic image viewer: provide a way for a user to select an image file,
+  then display that image in a window.  Allow the user to specify the filename
+  on the command line, too.  
+  See <a href="http://www.fltk.org/doc-1.1/drawing.html#images">ch5 of
+  the FLTK documentation</a>.
+  (Hint: consider Fl_File_Chooser and Fl_JPEG_Image.)
+
+  <li> A program to graph exponential functions f(t)=Ae<sup>rt</sup>:
+  widgets to specify the initial population A and the growth rate r,
+  and a large box in which to draw the graph using line segments or Bezier
+  arcs.  Update the graph whenever any one of the input widgets changes value.
+  See <a href="http://www.fltk.org/doc-1.1/drawing.html">ch5 of
+  the FLTK documentation</a>.
+
+  <li> A long-running program that makes use of the FL_Progress widget to
+  provide feedback to the user.  Examples might include a program to find prime
+  numbers or solve a Knight's Tour (CMPT145 problems).
+  
+  <li> A child's game to match pairs of cards ("Concentration"), similar
+  to <a href="http://www.prongo.com/match/flowers.pl">this example</a>.
+  (Hint: consider using buttons for the cards.)
+
+</ul>
+
+<li> Be creative; have fun!
+
+<h2>Lab write-up</h2>
+
+<li> Follow <a href="lab_template.html">the template lab write-up</a>
+to document your program.  Name your write-up:
+<br><tt>your_name_lab1_writeup.doc</tt> (or .txt, etc.)
+<br>Put it in the same project directory as your code so that it will be
+included in the tarball.
+
+<h2>Electronic turn-in</h2>
+
+<li> Put everything (C++ code, header files, Fluid files, executable, lab
+write-up) into a tarball and upload it to eCourses under "Lab1":
+<br><tt>your_name_lab1.tar.gz</tt>
+
+</ul>
+
+</body></html>

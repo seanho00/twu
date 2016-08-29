@@ -1,0 +1,358 @@
+<HTML>
+
+<HEAD>
+<TITLE> Chapter 4 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 4</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	A procedure is a unit of code designed to perform a sub-task of some main task. Its code is written out only once in some module. It is better to use a procedure when you have to perform a sub-task more than once.</P>
+
+<P>2.	First type: no data used or produced.<BR>
+	Second type: data used but none produced.<BR>
+	Third type: data produced only.<BR>
+	Fourth type: data used and produced.</P>
+
+<P>3.	Invocation of a procedure is the occurrence of its name somewhere in a program. The invocation instructs the processor to execute the code of the procedure.</P>
+
+<P>4.	A procedure that calls itself is recursive. Recursion should be used when the original problem is naturally recursive.</P>
+
+<P>5.	When procedure value parameters are declared,  say PROCEDURE Write (ch : CHAR), a memory location is set aside for that parameter by the compiler. When the procedure is called, Write (somevar), the parameter is copied into the memory location set aside for that particular procedure, creating a new and independent copy of the value. In using variable parameters, for example, the one in PROCEDURE Read (VAR ch : CHAR), the parameter name is attached to the same memory location as that named by the actual parameter at the time the call is made. These constitute one memory location for that parameter so that changes using the local name are automatically reflected in the global one. The actual parameter must be a variable. A variable parameter can be differentiated from a value parameter by the VAR heading declared before a parameter.</P>
+
+<P>6.	This is true because INTEGERs are assignment compatible with CARDINALs, as long as they are in the same range. When WriteCard is called with an INTEGER as its parameter, it will assign that parameter to the memory location because of their compatibility. However, using ReadCard with an INTEGER is forbidden because of expression compatibility concerns. Because ReadCard is a variable parameter,  it tries to couple the INTEGER parameter to a CARDINAL memory location, which is forbidden. That is why the actual type must exactly match the formal type of a variable parameter.</P>
+
+<P>7.	A function procedure returns a type, the name of the returned type being placed after the closing parenthesis of the formal parameter list. A specific RETURN [value] statement has to be executed somewhere in the body of the function procedure. When calling a function procedure,  a parameter list has to be included even if it is empty. Finally a call to a function procedure, has to be in a form of an expression rather than just a command line (ie. x := SomeProc() rather than SomeProc()).</P>
+
+<P>8.	RETURN [value] returns the value of the specified type from a function procedure. A bare RETURN in a proper procedure terminates the action prematurely, returning to the caller.</P>
+
+<P>9.	ABS:		a built-in function procedure.<BR>
+	FLOAT:	a built-in function procedure.<BR>
+	ReadReal:	an imported proper procedure.<BR>
+	MAX:		a built-in function procedure.<BR>
+	ReadResult	an imported function procedure.<BR>
+	Read:		an imported proper procedure.<BR>
+	CAP :		a built-in function procedure.<BR>
+	MIN :		a built-in function procedure.<BR>
+	exp :		imported function procedure.<BR>
+	ln :		imported procedure.</P>
+
+<P>10.	Each recursive call of Fac has to supply a new and independent value to start the next code cycle. This can only be done with value parameters. A variable parameter would modify all the data held in each of the recursive calls.</P>
+
+<P>11.	In simple interest, the interest rate is applied to only the original principal amount when computing interest. In compound interest, the rate is applied to both the original principal and whatever interest has accumulated.</P>
+
+<P>12.	The net present value is the amount equal to a series of future payments. The net future value is the predicted value of what the principal will eventually become.</P>
+
+<P>13.	When one makes mortgage payments against a debt, one is paying off the present value by a series of future payments. When one receives an annuity, the present value of a deposit is being paid out by a series of future payments. The only difference between the two is the direction the money goes; the computation is identical.</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note: Not all problems are shown. Most problems are left up to students as labs.</P>
+
+<pre>(* modified
+   June 11 1999
+   Chapter 4 Question 15
+   ERROR TRAPPING INCLUDED  *)
+
+MODULE Areas;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate procedures *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 25 *)
+
+FROM STextIO IMPORT
+  WriteString, ReadChar, WriteLn, SkipLine;
+FROM SRealIO IMPORT
+  WriteFixed, ReadReal;
+FROM RealMath IMPORT
+  sqrt;
+FROM SIOResult IMPORT
+  ReadResult, ReadResults;
+
+VAR
+  dimension, height, mArea, mPerim : REAL;
+  which, ans : CHAR;
+  again : BOOLEAN;
+
+(*********************************************)
+PROCEDURE GetNum (VAR theNum : REAL);
+VAR
+  readOK : BOOLEAN;
+
+BEGIN
+  REPEAT
+    WriteString ("Type the number here ==> ");
+    ReadReal (theNum);
+    readOK := (ReadResult() = allRight);
+    IF NOT readOK
+      THEN
+        WriteLn;
+        WriteString ("error in input number; try again.");
+        WriteLn;
+      END;
+    SkipLine;
+  UNTIL readOK;
+END GetNum;
+
+PROCEDURE CalcSquare (side : REAL; VAR area, perim: REAL);
+
+BEGIN
+  area := side * side;
+  perim := 4.0 * side;
+END CalcSquare;
+
+PROCEDURE CalcCircle (radius : REAL; VAR area, perim: REAL);
+
+CONST
+  pi = 3.141592653;
+  twopi = 2.0 * pi;
+
+BEGIN
+  area :=pi * radius * radius;
+  perim := twopi * radius;
+END CalcCircle;
+
+PROCEDURE CalcTri (height : REAL; base : REAL; VAR area, perim : REAL);
+
+PROCEDURE hypot (a : REAL; b : REAL) : REAL;
+
+VAR
+  c : REAL;
+
+BEGIN
+  c := a * a + b * b;
+  RETURN sqrt(c);
+END hypot;
+
+BEGIN
+  area := 0.5 * base * height;
+  perim := base + 2.0 * (hypot(0.5 * base, height));
+END CalcTri;
+
+PROCEDURE CalcRect (height : REAL; base : REAL; VAR area, perim : REAL );
+BEGIN
+  area := base * height;
+  perim := 2.0 * base + 2.0 * height;
+END CalcRect;
+
+(*************************************************)
+
+BEGIN    (* main program *)
+  WriteString ("This program calculates areas and perimeters of");
+  WriteLn;
+  WriteString ("squares from a side length ");
+  WriteString ("or circles from the radius.");
+  REPEAT
+    WriteLn;
+    (* Present menu, give user the choice. *)
+    WriteString ("Do you want to work with ");
+    WriteString ("a circle or a square? ");
+    WriteLn;
+    WriteString ('Type a "C", "R", "S", or "T" here ===> ');
+    ReadChar (which);
+    SkipLine;
+    which := CAP ( which);
+    WriteLn;
+    again := TRUE;
+
+    (* now obtain a set of data *)
+    IF (which = 'C') OR (which = 'S')
+      THEN
+        WriteString ("What is the dimension of the figure ?");
+        WriteLn;
+        GetNum (dimension);
+      ELSIF (which = 'R') OR (which = 'T') THEN
+        WriteString ("What is the height?"); WriteLn;
+	GetNum (height);
+	WriteString ("What is the base?"); WriteLn;
+	GetNum (dimension);
+      ELSE
+        WriteString ("Not an option...quitting"); WriteLn;
+	again := FALSE;
+      END;
+
+    (* Do only if correct option selected *)
+    IF again
+      THEN
+
+        IF which = 'C'
+          THEN    (* Now go do one. "S" is the default *)
+            CalcCircle (dimension, mArea, mPerim);
+          ELSIF which = "R" THEN
+      	    CalcRect (height, dimension, mArea, mPerim);
+          ELSIF which = "S" THEN
+            CalcSquare (dimension, mArea, mPerim);
+	  ELSE
+	    CalcTri (height, dimension, mArea, mPerim);
+          END;    (* if *)
+
+        WriteString ("The area is ");
+        WriteFixed (mArea, 2, 0);
+        WriteString (" square units and ");
+        WriteLn;
+        WriteString ("the perimeter is ");
+        WriteFixed (mPerim, 2, 0);
+        WriteString (" units.");
+        WriteLn;
+        WriteLn;
+      END;
+
+      WriteString ("Do another (Y/N) ==>");
+      ReadChar (ans);
+      SkipLine;
+      again := (CAP (ans) = "Y");
+  UNTIL NOT again;
+END Areas.</pre>
+
+<pre>(*	Translated into ISO Modula-2
+        June.11.1999
+	Chapter 4 Question 27
+	ERROR TRAPPING INCLUDED	*)
+
+
+MODULE Change;
+
+FROM STextIO IMPORT
+   WriteString, WriteLn, ReadChar, SkipLine;
+FROM SWholeIO IMPORT
+   WriteCard, ReadCard;
+FROM SIOResult IMPORT
+   ReadResult, ReadResults;
+
+PROCEDURE CoinChange (VAR amountLeft : CARDINAL; value : CARDINAL);
+(* Calculates the number of coins of the given value *)
+
+VAR
+   numberOfCoins : CARDINAL;
+
+BEGIN
+   numberOfCoins := amountLeft DIV value;
+   amountLeft := amountLeft MOD value;
+   WriteCard (numberOfCoins, 0);
+   WriteLn;
+END CoinChange;
+
+(* main program *)
+
+VAR
+   count, total, leftover, cost, coinValue : CARDINAL;
+   again : CHAR;
+   ok : BOOLEAN;
+
+BEGIN
+   WriteString ("This program will dispense change for a dollar for some");
+   WriteLn;
+   WriteString ("purchased item costing less than a dollar.");
+   WriteLn; WriteLn; WriteLn;
+
+   REPEAT   (* give the option to redo program *)
+
+      (* initalize vars *)
+      total := 0;
+      REPEAT   (* keep getting till their done giving *)
+
+        REPEAT   (* make sure that all are correct types *)
+          cost := 0;
+          WriteString ("Enter the cost of the item (in cents please): ");
+          WriteLn;
+          ReadCard (cost);
+          ok := ReadResult() = allRight;
+          SkipLine;
+       UNTIL ok;
+
+       total := cost + total;
+      UNTIL (cost = 0) OR (total > 100);
+
+      (* amount was greater than 100 *)
+      IF total > 100 THEN
+         WriteString ("Sorry, you've exceeded the limit.");
+         WriteLn;
+      ELSE
+        leftover := 100 - total;
+        WriteLn; WriteLn;
+
+        FOR count := 1 TO 4 DO   (* 4 types of coins, so a loop till 4 *)
+          WriteString ("The number of  ");
+
+          IF count = 1 THEN
+            WriteString ("quarter ");
+            coinValue := 25;
+          ELSIF count = 2 THEN
+            WriteString ("dimes ");
+            coinValue := 10;
+          ELSIF count = 3 THEN
+            WriteString ("nickels ");
+            coinValue := 5;
+          ELSE
+            WriteString ("pennies ");
+            coinValue := 1;
+         END;
+
+         WriteString ("is: ");
+         CoinChange (leftover, coinValue);
+         WriteLn;
+       END;   (* end FOR *)
+
+     END;   (* end IF *)
+
+    WriteLn; WriteLn;
+    WriteString ("Do you want to go again (Y/N)? ");
+    ReadChar (again);
+    SkipLine;
+    WriteLn; WriteLn; WriteLn;
+   UNTIL CAP (again) # 'Y';
+
+  WriteString ("See you around... ");
+  WriteLn;
+END Change.</pre>
+
+</BODY>
+
+</HTML>

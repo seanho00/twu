@@ -1,0 +1,77 @@
+MODULE Eratosthenes;
+(* Sieve of Eratosthenes
+ * List all primes up to a given number
+ * Modula-2 text section 5.9
+ *)
+
+FROM STextIO IMPORT
+	WriteString, WriteLn, ReadChar;
+FROM SWholeIO IMPORT
+	ReadCard, WriteCard;
+FROM RealMath IMPORT
+	sqrt;
+
+(* The primeFlags array must be allocated with fixed size *)
+CONST
+	veryBiggestSize = 1000;
+
+VAR
+	max : CARDINAL;
+
+(* Print out all the primes up to the given number.
+ * Pre: maxprime <= veryBiggestSize
+ * Post: all primes between 2 and maxprime are printed to screen
+ *)
+PROCEDURE ListPrimes (maxprime : CARDINAL);
+VAR
+	primeFlags : ARRAY [1 .. veryBiggestSize] OF BOOLEAN;
+	testNum, testNumMultiple : CARDINAL;
+BEGIN
+	(* Initialize all flags to prime *)
+	FOR testNum := 1 TO maxprime
+		DO
+			primeFlags [testNum] := TRUE;
+		END;
+
+	primeFlags[1] := FALSE;		(* 1 is not prime by definition *)
+
+	(* Eliminate non-primes between 2 and sqrt(maxprime) *)
+	FOR testNum := 2 TO TRUNC (sqrt (FLOAT (maxprime)))
+		DO
+			IF primeFlags [testNum]
+				THEN
+					testNumMultiple := testNum * testNum;		(* start at testNum^2 *)
+					WHILE testNumMultiple <= maxprime
+						DO
+							primeFlags [testNumMultiple] := FALSE;
+							INC (testNumMultiple, testNum);
+						END;
+				END;
+		END;
+
+	(* List all numbers flagged as prime *)
+	FOR testNum := 2 TO maxprime
+		DO
+			IF primeFlags [testNum]
+				THEN
+					WriteCard (testNum, 0);
+				END;
+		END;
+END ListPrimes;
+
+(* Main module code *)
+BEGIN
+	WriteString ("Welcome to the fearsome Sieve of Eratosthenes!");
+	WriteLn;
+	WriteString ("You will be dazzled, you will be amazed at the primes!");
+	WriteLn;
+	WriteString ("Ask me to find all the primes up to: ");
+	ReadCard (max);
+	IF max > veryBiggestSize
+		THEN
+			WriteString ("Sorry, I can only find primes up to");
+			WriteCard (veryBiggestSize, 0);
+		ELSE
+			ListPrimes (max);
+		END;
+END Eratosthenes.

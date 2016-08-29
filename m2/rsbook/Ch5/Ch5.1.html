@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>5.1 Abstract and Transparent Data Types in Modula-2</TITLE>
+<meta NAME="keywords" CONTENT="adt, abstract, abstraction, represent, representaion, representations, transparent, transparency, operations, operator, operators, possible, data, values, value">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.1 Abstract and Transparent Data Types in Modula-2</B></H2>
+<P>In chapter one, it was pointed out that there are a variety of levels of abstraction associated with the details of a task. (Cutting down trees can be viewed as a single task by an experienced logger, or as a series of subtasks in varying detail, depending on the need to elaborate).  This is also true of programs<!--‹-->--they can be thought of as single entities solving a single task (once they are written), but during their construction attention to the individual details is necessary.</P>
+<P>Similar remarks may be made about data.  Up to this point, the only data types employed by this text have been those built into Modula-2.  It has not been necessary for the programmer to be concerned about specifying in the program any of:</P>
+<P>a) how the data is represented in the computer,</P>
+<P>b) what the possible values for the type were to be, or,</P>
+<P>c) what operations will work with the data type in question.</P>
+<P>These characteristics have, in every case seen thus far, been prearranged and the details of the data type's specification hidden from the program.  In using an entity of type REAL or CARDINAL, for example, one need not ordinarily be concerned with the way in which the numbers are stored in the computer.  Each such entity is considered and used as an organic and indivisible whole.  Likewise, while one understands that not everything that can be a real number in mathematics can be one in a program (because infinite precision is not available), the values available for assignment to the type REAL are simply taken for granted.  The operations indicated by +, -, *, and / operators are also built-in for all the numeric data types provided in most computing notations.</P>
+<BLOCKQUOTE><I><A NAME="ADT">A</A> data type whose representation (and operational) details are hidden from the user of entities of that type is said to be an <U>abstract data type</U>.  This is sometimes abbreviated as ADT.</I></BLOCKQUOTE>
+<P><B>NOTES</B>: <BR>1. The programmer <I>may</I> know, or be able to discover the representation details.  The type is still abstract if that knowledge is not <I>used</I> in a program, that is, if it is not depended on in any way.</P>
+<P>	2.  Sometimes it is suitable to say more about such representation details.  For instance, one could think of a REAL as consisting of two cardinals<!--‹-->--one to specify the significant figures of the real, and the other to signify the exponent.  On the other hand, the REAL could be thought of as the string of characters that would have to be printed on an output device for a user to view it.  Thinking about it in either way would not say anything about how the data is actually stored in the computer, though both views might assist in working with the type REAL.</P>
+<P>Of more importance to this discussion is the fact that a computing notation usually allows the user to create new data types, and to specify certain details about such types in the program.  As indicated above, three aspects of data types may be of interest.  This chapter will be concerned only with making a transparent list of potential values for a new data type.  In later chapters, the issue of specifying the structure or representation of the data (at some level of abstraction), and that of specifying operations on items of the type will be considered.</P>
+<BLOCKQUOTE><I><A NAME="Transparent">A</A> data type whose representation details are visible to the user of entities of that type is said to be <U>transparent</U>.</I></BLOCKQUOTE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

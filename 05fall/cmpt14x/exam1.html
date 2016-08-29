@@ -1,0 +1,158 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+li {
+  margin-top: 1em;
+}
+.break {
+  page-break-before: always;
+}
+--></style>
+<title>CMPT/ISYS 14x Fall2005 Midterm ch1-4, Trinity Western University.
+7 Oct 2005.</title>
+</head><body>
+
+<table class=nameblock>
+	<tr><td>Name:</td></tr>
+	<tr><td>Student ID:</td></tr>
+</table>
+
+<ol>
+
+<li>
+Name the five steps to <b>top-down</b> problem solving
+as described in the text.
+<br>(It's okay if you can't remember the exact wording;
+<br>the concepts are more important.)
+
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Name the five computer <b>hardware</b> abstractions described in the text.
+(Again, concepts are more important than exact wording.)
+
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to
+indicate if it is a <b>legal</b> Modula-2 identifier.
+<center><table><tr>
+<td><tt>	numApples	</tt></td><td width=90>______</td>
+<td><tt>	sockeye-salmon	</tt></td><td width=90>______</td>
+<td><tt>	95percent	</tt></td><td width=90>______</td>
+</tr><tr>
+<td><tt>	DO		</tt></td><td width=90>______</td>
+<td><tt>	L337_hAX0rz	</tt></td><td width=90>______</td>
+<td><tt>	Module		</tt></td><td width=90>______</td>
+</tr></table></center>
+
+<li>
+Evaluate each of the following four <b>Boolean</b> expressions,
+or if they give an error, indicate why.
+<center><table cellpadding=2><tr>
+<td><tt>	~(CAP('q') &lt;&gt; 'Q')		</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	(5 / 11 = 2) OR NOT FALSE AND FALSE	</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	0#0&amp;~0/0&lt;0			</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	(6 REM 4 &gt; 2) AND (2 REM 0 = 2)	</tt></td>
+<td>_________________________</td>
+</tr></table></center>
+
+<li>
+Given the following declarations:
+<pre>	card1, card2 : CARDINAL;
+	int1, int2 : INTEGER;
+	real1, real2 : REAL;	</pre>
+Indicate whether each of the following five <b>statements</b> is 
+"okay", "expression incompatible", or "assignment incompatible".
+A statement cannot be both expression and assignment incompatible;
+the first error returned is expression incompatibility.
+Assume all the variables have been initialized already.
+
+<center><table><tr>
+<td><tt>	int1 := int2 - 56;		</tt></td>
+<td>_______________________</td></tr><tr>
+<td><tt>	int1 := card2 DIV 7;		</tt></td>
+<td>_______________________</td></tr><tr>
+<td><tt>	real1 := real2 + 23;		</tt></td>
+<td>_______________________</td></tr><tr>
+<td><tt>	int1 := VAL(CARDINAL, 52.3);	</tt></td>
+<td>_______________________</td></tr><tr>
+<td><tt>	real1 := TRUNC(real2);		</tt></td>
+<td>_______________________</td>
+</tr></table></center>
+
+
+<li>
+What is <b>wrong</b> with this loop?  How would you <b>fix</b> it?
+<pre>
+MODULE BuggyLoop;
+VAR
+	counter : CARDINAL;
+BEGIN
+	counter := 1;
+	REPEAT				<em>(* count up to 10 by twos *)</em>
+		<em>statement sequence;</em>
+		counter := counter + 2;
+	UNTIL counter = 10;
+END BuggyLoop.
+</pre>
+
+<li class="break">
+In the space below, write <b>pseudocode</b> for a function procedure
+<tt>GetReal</tt> that does <em>robust</em> interactive user input:
+
+<p>
+The procedure should prompt the user to enter a positive real value,
+which is then passed back to the calling context via one of 
+<tt>GetReal</tt>'s parameters.
+If the user does not enter a positive value, print an error message and
+prompt the user again.  Another parameter should specify how many times
+to keep trying before giving up.
+The function should also return TRUE if the user eventually typed a good
+value, or FALSE if it had to give up.
+
+<li>
+On a separate sheet of paper, write a <b>complete</b> Modula-2 module, 
+declaring the procedure <tt>GetReal</tt>.
+The body of the module should invoke <tt>GetReal</tt> a few times
+to test it out.
+
+<p>
+<em>Hints:</em> What parameters does <tt>GetReal</tt> need?  
+Call-by-value or call-by-reference?  What return type should it use?
+Be careful to choose different names for <em>formal</em> parameters
+and <em>actual</em> parameters.
+
+<p>
+Please try to indent and format your code properly so
+it can be read easily.  You are not required to comment your code on this
+exam, however if your code is incorrect, your comments may earn you partial
+credit if they show good design thinking.  Little partial credit will be
+given for uncommented incorrect code.
+
+</ol>
+
+</body></html>
+

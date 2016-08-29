@@ -1,0 +1,90 @@
+* Locking down default CentOS 5 distro:
+  * service cups stop (also use ksysv to disable on boot)
+  * iptables -D RH-Firewall-1-INPUT 6 (twice, to remove :631 cups port)
+
+* Users: seanho, sqwishy, hg
+  * seanho: add acadia to .ssh/authorized_keys
+  * sqwishy: useradd -c "Ian Trick" -m sqwishy; add sqwishy to authorized_keys
+  * hg: useradd -c "Mercurial" -m hg; add acadia, swqishy, hg@banana to authorized_keys
+    * add dyeworks_dsa to .ssh/ (private key for login to old server)
+  * trac: useradd -c "Trac" trac; mkdir /home/trac/dyeworks
+  * usermod -G apache,hg,trac apache
+  * visudo: sqwishy ALL=(hg,trac,apache,postgres) NOPASSWD: ALL
+
+* Mercurial:
+  * RPM repositories:
+    * CentOS-plus, CentOS-contrib: /etc/yum.repos.d/CentOS-Base.repo
+    * RPMForge: http://wiki.centos.org/AdditionalResources/Repositories/RPMForge
+      * download http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
+      * rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt
+      * rpm -K rpmforge-*.rpm
+      * rpm -i rpmforge-*.rpm
+  * yum install mercurial (RPMForge)
+  * ssh as hg, create .hg/hgrc with:
+    * [paths]
+    * default = ssh://hg@awesomeness.no-ip.org/
+    * [ui]
+    * ssh = /usr/bin/ssh -i /home/hg/.ssh/dyeworks_dsa
+    * username = game.twu.ca
+  * From /home/hg/, run hg pull
+
+* Apache:
+  * (yum install httpd) installed by default
+  * /etc/httpd/conf/httpd.conf: disable 'Listen 80'
+  * /etc/httpd/conf.d/trac.conf:
+    * http://bitten.edgewall.org/wiki/TracModPython
+    * Location "/":
+      * PythonOption TracEnv /home/trac/dyeworks/
+      * PythonOption TracUriRoot /
+    * LocationMatch "/":
+      * AuthUserFile /home/trac/dyeworks/.htpasswd
+  * /etc/httpd/conf.d/ssl.conf:
+    * SSLCertificateFile /etc/pki/tls/certs/gametwu.crt
+    * SSLCertificateKeyFile /etc/pki/tls/private/gametwu.key
+  * in /etc/pki/tls/certs/: edit and run make-dummy-cert to produce gametwu.crt, .key
+  * delete/remove all other *.conf in /etc/httpd/conf.d/
+  * Init default HTTP authentication (replace with real one later):
+    * htpasswd -mc htpw admin (admin2010); cp htpw /home/trac/dyeworks/.htpasswd
+  * iptables -I RH-Firewall-1-INPUT -p tcp --dport 443 -j ACCEPT
+
+* Postgres:
+  * yum install postgresql-server
+  * yum install python-psycopg2 (RPMForge)
+  * Listen on local unix socket only: PGDATA=/var/lib/pgsql/data/
+    * postgresql.conf: listen_addresses = ''
+    * pg_hba.conf: comment out all but 'local' line
+      * add line: local all trac_db_admin md5
+  * service postgresql start
+  * Setup DB user and initial DB:
+    * http://trac.edgewall.org/wiki/PostgresqlRecipe
+    * sudo -u postgres createuser -SdrliPE trac_db_admin ('trac2010')
+    * createdb -e -U trac_db_admin -W trac_db
+
+* Trac:
+  * yum install trac
+  * easy_install TracAccountManager TracAnnouncer
+  * TracMercurial:
+    * svn co http://svn.edgewall.com/repos/trac/plugins/0.12/mercurial-plugin
+      * svn problems? co on another machine and scp the directory in.
+    * cd mercurial-plugin; mv .svn ..; python setup.py bdist_egg; mv ../.svn .
+    * easy_install dist/TracMercurial-0.12.0.26-py2.4.egg
+  * TracDiscussion (DiscussionPlugin):
+    * svn co http://trac-hacks.org/svn/discussionplugin/0.11/
+    * lots of edits for Py2.4 compatibility (ternary 'if' operator only in Py2.5)
+      * api.py, templates/discussion-macros.html
+    * easy_install TracDiscussion-0.8-py2.4.egg
+  * TracTags (TagsPlugin):
+    * svn co http://trac-hacks.org/svn/tagsplugin/trunk/
+    * easy_install TracTags-0.7dev-py2.4.egg
+  * TracWysiwyg:
+    * svn co http://trac-hacks.org/svn/tracwysiwygplugin/0.12/
+    * easy_install TracWysiwyg-0.12.0.3-py2.4.egg
+  * trac-admin /home/trac/dyeworks initenv
+    * postgres://trac_db_admin:trac2010@/trac_db?host=/tmp
+  * make sure to restart httpd if any eggs are changed
+
+* Backups: see /etc/cron.daily/backup
+  * IT will backup everything in /home/backup/:
+  * tar: /etc /home/{seanho,hg,trac}
+  * sudo -u postgres pg_dumpall > pg.sql && /bin/gzip -f pg.sql
+

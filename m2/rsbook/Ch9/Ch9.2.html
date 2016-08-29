@@ -1,0 +1,347 @@
+<HTML>
+<HEAD>
+<TITLE>9.2 Set Representation and Membership</TITLE>
+<meta NAME="keywords" CONTENT="set, sets, representation, represent, membership, scalar, non-real, real, type, order, iso, char, of, in, constructor, list, operation, operations, union, intersection, difference, symmetric, incl, excl, xor, exclusive, or, const">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><CENTER><B>Part A<!--</B>‹<B>-->--Sets</CENTER><BR>
+9.2 Representation and Membership</B></H2>
+<P>Abstractly, a set is a collection of items of any type.  Thus, it makes sense to write:</P>
+<P>A = {1, 2, 3.525, Monday, true}</P>
+<P>Not many computer languages have sets as a possible data type. Those that do usually restrict the abstract concept so as to require that all the elements of a given set be of the same basic type.  Modula-2 inherits much of the syntax and semantics of its set type from Pascal, and does have this restriction, along with some others.</P>
+<BLOCKQUOTE><I><A NAME="Set">A</A> Modula-2 <U>set</U> is a collection of items of the same scalar non-real type without regard to order. </I></BLOCKQUOTE>
+<P>When a Modula-2 set type is declared, the declaration includes the specification of what elements set variables of the new type may contain.</P>
+<H3><B>Examples:</B></H3>
+<PRE>
+<B>TYPE</B>
+  WeekDaySets = <B>SET</B> <B>OF</B> [Monday .. Friday];
+  DigitSet = <B>SET</B> <B>OF</B> [0 .. 9];</PRE>
+<P><B>WARNING</B>: Many older versions of Modula-2 follow the suggestion (not requirement) Wirth made in presenting Modula-2 that the maximum size of a set may be severely limited (usually to 16 or 32 elements.)  Some, moreover limit set declarations to cardinal subranges starting at zero.  Following this suggestion makes impossible such declarations as:</P>
+<PRE><B>    TYPE</B>
+      CharSet : <B>SET</B> <B>OF</B> <B>CHAR</B>;
+      HunSet : <B>SET</B> <B>OF</B> [100 .. 110];</PRE>
+<P>	in the former case, because there would be too many potential elements, and in the latter because the possible CARDINAL values used in this fashion are not in the range the range [0 .. MaxSetSize - 1].  Such implementations sometimes provide a separate module <I>LongSets</I> (or something similar) with procedures to perform the appropriate operations on large sets.</P>
+<P>The restriction above effectively eliminates most of the practical applications for sets, and versions of Modula-2 that followed this suggestion were regarded by most programmers as badly crippled.  For this reason, the ISO standard for the language has a minimum requirement that whatever limitation an implementation may place on set size,  SET OF CHAR must at the very least be permitted in a declaration.</P>
+<P>For abstract sets, membership of an element in a set is indicated by the symbol <!--"-->&quot;<IMG SRC="Figure/in.GIF"><!--‘--><!--"-->&quot; so that the phrase <!--"-->&quot;a is an element of A<!--"-->&quot; is written <!--"-->&quot;a <IMG SRC="Figure/in.GIF"><!--‘--> A<!--"-->&quot; and the phrase <!--"-->&quot;b is not an element of A<!--"-->&quot;  is written <!--"-->&quot;b <IMG SRC="Figure/notin.GIF"><!--¦--> A.<!--"-->&quot;</P>
+<BLOCKQUOTE><I><A NAME="In">Modula-2</A> set membership is indicated with the reserved word <U>IN</U>.</I></BLOCKQUOTE>
+<P>In Modula-2, therefore, the two phrases in the paragraph above are written:</P>
+<PRE>
+a <B>IN</B> A</PRE>
+<P>and</P>
+<PRE>
+<B>NOT</B> (b <B>IN</B> A)</PRE>
+<P>respectively.</P>
+<P>One other difference between standard mathematical notation and that followed by Modula-2 is that when a literal set is written out, the type of the set must appear before the opening brace.  This is indicated in the syntax diagram for a set, given in figure 9.1.</P>
+<P><CENTER><IMG SRC="Figure/Figure_9.1.GIF" BORDER="1"></CENTER><!----></P>
+<PRE>
+<B>MODULE</B> Aeiou;
+
+(*  Written by R.J. Sutcliffe *)
+(*  using ISO standard Modula-2  *)
+(* last revision 1994 02 23 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  ReadChar, WriteString, WriteLn, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+  
+<B>TYPE</B>
+  CharSet = <B>SET</B> <B>OF</B> <B>CHAR</B>;
+
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+  count : <B>CARDINAL</B>;
+  vowelSet : CharSet;
+
+<B>BEGIN</B>
+  vowelSet := CharSet {'A', 'E', 'I', 'O', 'U'}; (* construct the set *)
+  WriteString (<!--"-->&quot;Type in a line and I'll count vowels. <!--"-->&quot;);
+  WriteLn;
+  count := 0;     (* initialize *)
+
+  <B>REPEAT</B>
+    ReadChar (ch); (* examine each character as typed *)
+    <B>IF</B> (ReadResult () = allRight) <B>AND</B> (<B>CAP</B> (ch) <B>IN</B> vowelSet)
+      <B>THEN</B>
+        <B>INC</B> (count) 
+      <B>END</B>;    (* if *)
+  <B>UNTIL</B> ReadResult () # allRight;
+  SkipLine;
+
+  WriteLn;
+  WriteString (<!--"-->&quot;The number of vowels in the line was <!--"-->&quot;);
+  WriteCard (count, 5);
+  WriteLn;
+  WriteString (<!--"-->&quot;Type a character to continue<!--"-->&quot;);
+  ReadChar (ch);
+  SkipLine;
+<B>END</B> Aeiou.</PRE>
+<P>The following is a picture of the screen from a run of this program:</P>
+<P><IMG SRC="Figure/Eq9.2.1.GIF"><!----></P>
+<P><B>NOTES</B>: 1. The set type must precede the braces that enclose a set constant.  Some exceptions to this rule were allowed in earlier versions of Modula-2, but not in the ISO standard.</P>
+<P>	2. Subranges are allowed in sets.  Assignments involving subranges are written in the following way:</P>
+<PRE><B>    TYPE</B>
+      CharSet = <B>SET</B> <B>OF</B> <B>CHAR</B>;
+      DigitType = <B>SET</B> <B>OF</B> [0 .. 9];
+<B>    VAR</B>
+      charSet1 : CharSet;
+      digits : DigitType;
+<B>    BEGIN</B>
+      charSet1 := CharSet {'A' .. 'Z'};
+      digits := DigitType {0 .. 2};
+      (* A range used in this context does not need brackets. *)</PRE>
+<P>	It is important to keep in mind that while the ranges can be used to assist is constructing the set, there is no particular order to these, or any other set elements.</P>
+<P>	3. For keyboards that cannot type the brace characters, use <!--"-->&quot;(:<!--"-->&quot; and <!--"-->&quot;:)<!--"-->&quot; for  <!--"-->&quot;{<!--"-->&quot; and <!--"-->&quot;}<!--"-->&quot; instead.</P>
+<P>	4. In older versions of Modula-2, if the set type was not given, then it was by default a SET OF [0 .. 15].  (Or, it could be 0 .. 31.)  The upper limit depended on the machine).</P>
+<P>	5. Some versions of Modula-2 also have other restrictions on set membership.</P>
+<BLOCKQUOTE><I><A NAME="Constructor">The</A> Modula-2 notation Type {list} is said to be a <U>constructor</U>.</I></BLOCKQUOTE>
+<H3><B>Set Operations</B></H3>
+<P>Before working through any more examples using sets, first consider the various operations that are possible using abstract set notation, and then how those ideas are translated into Modula-2.  The abstract concepts presented here review standard mathematical ideas.</P>
+<H3><B><A NAME="9.2.1">9.2.1</A> Set Union</B></H3>
+<P>The union of two sets is the new set that contains all the elements present in either of the two original sets.  If <!--"-->&quot;A<!--"-->&quot; and <!--"-->&quot;B<!--"-->&quot; are sets, then <!--"-->&quot;A union B<!--"-->&quot; is written A <IMG SRC="Figure/union.GIF"><!--»--> B.</P>
+<BLOCKQUOTE><I>The Modula-2 symbol for set union is +.</I></BLOCKQUOTE>
+<H3><B>Examples:</B></H3>
+<P>Suppose that in the rest of this section,</P>
+<PRE>
+<B>TYPE</B>
+  SmallSets = <B>SET</B> <B>OF</B> [0 .. 9];
+  CharSet = <B>SET</B> <B>OF</B> <B>CHAR</B>;
+<B>VAR</B>
+ A, B : SmallSets;
+ C : CharSet;</PRE>
+<P>Then,</P>
+<PRE>
+A := SmallSets{1, 2, 5} + SmallSets{3, 7};</PRE>
+<P>leaves A holding {1, 2, 3, 5, 7}</P>
+<PRE>
+B := SmallSets{3, 7, 4} + SmallSets{4, 3, 2, 1};</PRE>
+<P>leaves B holding {1, 2, 3, 4, 7}</P>
+<P>The elements <I>3</I> and <I>4</I> are not repeated.  The only thing that matters is whether an entity is in the set.  It cannot be a member more than once, nor is the order in which the elements are written important.</P>
+<H3><B><A NAME="9.2.2">9.2.2</A> Set Intersection</B></H3>
+<P>The intersection of two sets is the new set that contains only those elements common to the original pair of sets.  If <!--"-->&quot;A<!--"-->&quot; and <!--"-->&quot;B<!--"-->&quot; are sets, then <!--"-->&quot;A intersect B<!--"-->&quot; is written A <IMG SRC="Figure/intersect.GIF"><!--«--> B.</P>
+<BLOCKQUOTE><I>The Modula-2 symbol for set intersection is *.</I></BLOCKQUOTE>
+<H3><B>Examples:</B></H3>
+<PRE>
+A := SmallSets{1, 3, 7} * SmallSets{1, 3, 9, 16};</PRE>
+<P>leaves A holding {1, 3}</P>
+<PRE>
+B := SmallSets{2, 4, 6, 7} * SmallSets{1, 9, 10};</PRE>
+<P>leaves B holding { }</P>
+<P>This latter set is called the <I>empty set</I>.  It has no elements.  In mathematics, the preferred notation for the empty set is the symbol <!--ø-->&oslash;, but this is not a standard Modula-2 symbol.</P>
+<H3><B><A NAME="9.2.3">9.2.3</A> Set Difference</B></H3>
+<P>The set difference A - B of two sets of the same type is the new set consisting of all elements of A that are not in B.</P>
+<BLOCKQUOTE><I>The Modula-2 symbol for set difference is also -.</I></BLOCKQUOTE>
+<H3><B>Examples:</B></H3>
+<PRE>
+A := SmallSets{1, 2, 3, 7, 9} - SmallSets{2, 7};</PRE>
+<P>leaves A holding {1, 3, 9}</P>
+<PRE>
+B := SmallSets{2, 4, 6, 7} - SmallSets{1, 3, 4, 9};</PRE>
+<P>leaves B holding {2, 6, 7}</P>
+<P>As the last example illustrates, any superfluous elements in the second set that cannot be removed from the first one are simply ignored.</P>
+<H3><B><A NAME="9.2.4">9.2.4</A> Symmetric Set Difference</B></H3>
+<P>The symmetric set difference of two sets is defined as the new set whose elements are in either of the original sets, but not in both.  If A and B are sets, this can be written as  indicated as A <IMG SRC="Figure/union.GIF"><!--»--> B - A <IMG SRC="Figure/intersect.GIF"><!--«--> B.</P>
+<BLOCKQUOTE><I>The Modula-2 symbol for symmetric set difference is /.</I></BLOCKQUOTE>
+<H3><B>Examples:</B></H3>
+<PRE>
+C := CharSet {'a', 'b', 'c'} / CharSet {'c', 'd'};</PRE>
+<P>leaves C holding {'a', 'b', 'd'}</P>
+<PRE>
+B := SmallSets{1, 4, 6, 7} / SmallSets{2, 4, 5, 7, 9};</PRE>
+<P>leaves B holding {1, 2, 5, 6, 9}</P>
+<P>The symmetric set difference A / B is also called an <I>exclusive</I> or operation (sometimes written XOR).</P>
+<P>As also illustrated by these examples, expressions involving the various set operators are also allowed.  The normal arithmetic rules of precedence for the symbols +, -, *, and / are followed, so if this is not the desired meaning of a set expression, the programmer must use parentheses to change the order.</P>
+<P>One common syntax error in writing out set expressions is forgetting to place the braces around a set, particularly if it has only one element.  Also, one must not write, say</P>
+<PRE>
+A := DaySet {Mon, Tue, Wed} + Thur</PRE>
+<P>when what is meant is</P>
+<PRE>
+A := DaySet {Mon, Tue, Wed} + DaySet {Thur}.</PRE>
+<H3><B><A NAME="9.2.5">9.2.5</A>  One Element at a Time</B></H3>
+<P>Modula-2 also provides two built-in procedures allowing single elements to be quickly inserted into, or removed from, a set.  Of course, when inserting, it is important that the proposed new element actually be of the underlying set type; what one is essentially doing is a union with a one-element subset.</P>
+<BLOCKQUOTE><I><A NAME="INCL"><U>INCL</U></A> (theSet, element) produces the same result as theSet := theSet + setType {element} and <U>EXCL</U> (theSet, element) produces the same result as theSet := theSet - setType {element} where theSet is a set and element is expression compatible with the base type of theSet.</I></BLOCKQUOTE>
+<H3><B>Example:</B></H3>
+<PRE>
+<B>TYPE</B>
+  DigitSets = <B>SET</B> <B>OF</B> [0 .. 9];
+
+<B>VAR</B>
+  digits : DigitSets;
+  number : <B>CARDINAL</B>;
+
+<B>CONST</B>
+  zilch = DigitSets {1-1};
+
+<B>BEGIN</B>
+  number := 7;
+  digits := DigitSets {0 .. 3};  (* Now, digits holds {0,1,2,3} *)
+  <B>INCL</B> (digits, 5); (* Now, digits holds {0,1,2,3,5} *)
+  <B>EXCL</B> (digits, number - 4); (* Now, digits holds {0,1,2,5} *)
+  digits := digits - zilch; (* Now, digits holds {1,2,5} *)</PRE>
+<P>The CONST declaration illustrates that set constants can be created and that the declaration can contain expressions, as with other CONST declarations.  This ability may not be particularly useful in an example like this one, but it is present.</P>
+<P><B>NOTE</B>:	Here, set identifiers begin with an upper case letter and set elements with lower case letters, in accordance with standard mathematical practice, but somewhat contrary to the usual conventions in this book.</P>
+<H3><B>Example:</B></H3>
+<P>Write a procedure to check an input string to see if it is a legal Modula-2 identifier.</P>
+<H3><B>Refinement:</B></H3>
+<P>Check the first character to see if it is a letter.<BR>
+Check each subsequent character to see if it is a letter or a number.</P>
+<H3><B>Pseudocode:</B></H3>
+<PRE>Set a count to zero.
+Set lastCharNum to the length of the string.
+If the length is zero or string<sub>count</sub> is not a letter then return false.
+While the count is less than or equal to lastCharNum
+  If string<sub>count</sub> is a letter or a digit then
+    increment count
+  else return false.
+return true</PRE>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> TestForIdentifier;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2  *)
+(* last revision 1994 02 23 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  ReadString, WriteString, WriteLn, ReadChar, SkipLine;
+
+<B>TYPE</B>
+  String  = <B>ARRAY</B> [0 .. 255] <B>OF</B> <B>CHAR</B>; (* local string type *)
+  CharSet = <B>SET</B> <B>OF</B> <B>CHAR</B>;
+
+<B>VAR</B>
+  theIdent, replyStr : String;
+  caps, lcase, letters, digits, okChars, yesChars, noChars, validChars : CharSet;
+  validReply, again : <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> LegalIdent (str : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : <B>BOOLEAN</B>;
+
+<B>VAR</B>
+  count, strLen : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  strLen := <B>LENGTH</B> (str);
+  count := 0;
+  (* check for zero length <!--& -->&amp; ensure letter for first character *)
+  <B>IF</B> (strLen = 0) <B>OR</B> <B>NOT</B> (str [count] <B>IN</B> letters)
+    <B>THEN</B>
+      <B>RETURN</B> <B>FALSE</B>;
+    <B>END</B>;
+  <B>INC</B> (count);
+  (* now check subsequent characters *)
+  <B>WHILE</B> count <!--<-->&lt; strLen
+     (* when count = length we're past last character *)
+    <B>DO</B>
+      <B>IF</B> str [count] <B>IN</B> okChars
+        <B>THEN</B>
+          <B>INC</B> (count)
+        <B>ELSE</B>
+          <B>RETURN</B> <B>FALSE</B>
+        <B>END</B>;
+    <B>END</B>; (* while *)
+  <B>RETURN</B> <B>TRUE</B>; (* string was ok if code got to here *)
+
+<B>END</B> LegalIdent;
+
+<B>BEGIN</B> (* main *)
+  (* sets for identifiers *)
+  caps := CharSet {<!--"-->&quot;A<!--"-->&quot; .. <!--"-->&quot;Z<!--"-->&quot;};
+  lcase := CharSet {<!--"-->&quot;a<!--"-->&quot; .. <!--"-->&quot;z<!--"-->&quot;};
+  letters := caps + lcase + CharSet {<!--"-->&quot;_<!--"-->&quot;};
+  (* remove last item if not ISO standard *)
+  digits := CharSet {<!--"-->&quot;0<!--"-->&quot; .. <!--"-->&quot;9<!--"-->&quot;};
+  okChars := digits + letters;
+ 
+  (* sets for keyboard answers *)
+  yesChars := CharSet {<!--"-->&quot;Y<!--"-->&quot;, <!--"-->&quot;y<!--"-->&quot;};
+  noChars := CharSet {<!--"-->&quot;N<!--"-->&quot;, <!--"-->&quot;n<!--"-->&quot;};
+  validChars := yesChars + noChars;
+  
+  WriteString (<!--"-->&quot;Test harness for procedure to check for legal identifiers.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;by R. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  
+  <B>REPEAT</B> (* main loop for testing several *)
+    WriteLn;
+    WriteString (<!--"-->&quot;Type the identifier here ==<!-->&gt; <!--"-->&quot;);
+    ReadString (theIdent);
+    SkipLine;
+    WriteString (<!--"-->&quot;The string '<!--"-->&quot;);
+    WriteString (theIdent);
+    WriteString (<!--"-->&quot;' is<!--"-->&quot;);
+    <B>IF</B> <B>NOT</B> LegalIdent (theIdent) 
+      <B>THEN</B>
+        WriteString (<!--"-->&quot; not<!--"-->&quot;);
+      <B>END</B>;
+    WriteString (<!--"-->&quot; a legal Modula-2 identifier.<!--"-->&quot;);
+    WriteLn;
+   
+    <B>REPEAT</B> (* see if another *)
+      WriteString (<!--"-->&quot;Do you wish to do another? (Y/N) ==<!-->&gt; <!--"-->&quot;);
+      ReadString (replyStr);
+      SkipLine;
+      validReply := replyStr [0] <B>IN</B> validChars;
+      <B>IF</B> <B>NOT</B> validReply
+        <B>THEN</B>
+          WriteString (<!--"-->&quot;That was not a valid reply.  Please try again.<!--"-->&quot;);
+          WriteLn;
+        <B>END</B>;
+    <B>UNTIL</B> validReply;
+    again := replyStr [0] <B>IN</B> yesChars;
+  <B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> TestForIdentifier.</PRE>
+<H3><B>Sample Run: (Picture of the screen)</B></H3>
+
+<P><IMG SRC="Figure/Eq9.2.2.GIF"><!----></P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

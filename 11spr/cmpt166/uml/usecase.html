@@ -1,0 +1,43 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<meta name="generator" content="Adobe GoLive 4">
+		<title>Digging Deeper -- Use Case Diagrams</title>
+		<script language="JavaScript"><!--
+function closeWindow()
+{
+   top.window.close();
+}
+// -->
+		</script>
+	</head>
+
+	<body bgcolor="white">
+		<center>
+			<font size="6">Digging Deeper: Use Case Diagrams</font></center>
+		<div align="left">
+			<p>Use case diagrams give an outsider's view of a system. Every use case diagram has actors, use cases, and communications. A simple use case diagram can be expanded with additional features to display more information.</p>
+			<p>This page covers the following UML use case features.</p>
+			<ul>
+				<li>system boundaries
+				<li>generalizations
+				<li>includes
+				<li>extensions
+			</ul>
+			<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+			<p><font size="5">Medical clinic diagram, expanded</font></p>
+			<p>The following use case diagram expands the original medical clinic diagram with additional features.</p>
+			<p><img height="402" width="558" src="extcasediagram.gif" hspace="10" vspace="15" alt="Use case diagram"></p>
+			<p>A <font color="#990000"><b>system boundary</b></font> rectangle separates the clinic system from the external actors.</p>
+			<p>A use case <font color="#990000"><b>generalization</b></font> shows that one use case is simply a special kind of another. <b>Pay Bill</b> is a parent use case and <b>Bill Insurance</b> is the child. A child can be substituted for its parent whenever necessary. Generalization appears as a line with a triangular arrow head toward the parent use case.</p>
+			<p><font color="#990000"><b>Include</b></font> relationships factor use cases into additional ones. Includes are especially helpful when the same use case can be factored out of two different use cases. Both <b>Make Appointment</b> and <b>Request Medication</b> include <b>Check Patient Record</b> as a subtask. In the diagram, include notation is a dotted line beginning at base use case ending with an arrows pointing to the include use case. The dotted line is labeled <font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" size="2">&lt;&lt;include&gt;&gt;</font>.</p>
+			<p>An <font color="#990000"><b>extend</b></font> relationship indicates that one use case is a variation of another. Extend notation is a dotted line, labeled <font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" size="2">&lt;&lt;extend&gt;&gt;</font>, and with an arrow toward the base case. The <font color="#990000"><b>extension point</b></font>, which determines when the extended case is appropriate, is written inside the base case.</p>
+			<p><a href="(Empty Reference!)" onclick="closeWindow( ); return false;"><img height="20" width="45" src="close.gif" alt="Close window" border="0"></a></p>
+		</div>
+		<p>
+		<hr>
+		<font size="2">Copyright &copy; 2000 TogetherSoft, Inc. All rights reserved.</font>
+	</body>
+
+</html>

@@ -1,0 +1,158 @@
+
+<HTML><HEAD><TITLE>Appendix 12--Generic Modula-2 Syntax</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 12<!--</B>‹<B>-->--Generic Modula-2 Syntax</B></H2>
+
+<P>The term Generic Modula-2 refers to a set of extensions to the base language that allow for programmers to create and refine generic separate modules or <i>templates</i>.</P>
+<H3><B><A NAME="A12.1">A12.1</A>  Keywords</B></H3>
+<P>The word GENERIC is added to the list of keywords for the base language.</P>
+<H3><B><A NAME="A12.2">A12.2</A>  Diagrams of Changes to Base Language Syntax</B></H3>
+<P>compilation module (see <A HREF="Ap2real.html#A2.2.1.1">A.2.2.1.1</A>)</P>
+<IMG SRC="Figure/generic_compilation_module.GIF" HEIGHT="231" WIDTH="344"><!---->
+<P>local module declaration (see <A HREF="Ap2real.html#A2.2.2.9">A.2.2.2.9</A>)</P>
+<IMG SRC="Figure/generic_local_module_decl.GIF" HEIGHT="76" WIDTH="383"><!---->
+<H3><B><A NAME="A12.3">A12.3</A>  Generic Modula-2 Syntax Diagrams</B></H3>
+<H3><B>A12.3.1  Generic Definition Module</B></H3>
+<P>generic definition module</P>
+<IMG SRC="Figure/generic_definition_module.GIF" HEIGHT="173" WIDTH="502"><!---->
+<H3><B>A12.3.2  Generic Implementation Module</B></H3>
+<P>generic implementation module</P>
+<IMG SRC="Figure/generic_implementation_mod.GIF" HEIGHT="190" WIDTH="508"><!---->
+
+<H3><B>A12.3.3  Refining Definition Module</B></H3>
+<P>refining definition module</P>
+<IMG SRC="Figure/refining_definition_module.GIF" HEIGHT="175" WIDTH="476"><!---->
+
+<H3><B>A12.3.4  Refining Implementation Module</B></H3>
+<P>refining implementation module</P>
+<IMG SRC="Figure/refining_implementation_mod.GIF" HEIGHT="175" WIDTH="476"><!---->
+
+<H3><B>A12.3.5  Identifiers and Formal Parameters</B></H3>
+<P>generic separate module identifier</P>
+<IMG SRC="Figure/generic_sep_mod_identifier.GIF" HEIGHT="39" WIDTH="180"><!---->
+
+<P>formal module parameters</P>
+<IMG SRC="Figure/generic_formal_module_prams.GIF" HEIGHT="35" WIDTH="309"><!---->
+
+<P>formal module parameter list</P>
+<IMG SRC="Figure/gen_formal_mod_prametr_list.GIF" HEIGHT="64" WIDTH="268"><!---->
+
+<P>formal module parameter</P>
+<IMG SRC="Figure/gen_formal_module_parameter.GIF" HEIGHT="81" WIDTH="390"><!---->
+
+<P>constant value parameter specification</P>
+<IMG SRC="Figure/gen_const_value_param_specs.GIF" HEIGHT="31" WIDTH="355"><!---->
+
+<P>type parameter specification</P>
+<IMG SRC="Figure/gen_type_parameter_specs.GIF" HEIGHT="31" WIDTH="355"><!---->
+
+<H3><B>A12.3.6  Refining Local Module Declaration</B></H3>
+<P>refining local module declaration (see <A HREF="Ap2real.html#A2.2.2.9">A.2.2.2.9</A>)</P>
+<IMG SRC="Figure/refining_local_mod_declrtns.GIF" HEIGHT="184" WIDTH="501"><!---->
+
+<H3><B>A12.3.7  Actual Parameters</B></H3>
+<P>actual modual parameters</P>
+<IMG SRC="Figure/gen_actual_module_params.GIF" HEIGHT="40" WIDTH="313"><!---->
+
+<P>formal module parameter list</P>
+<IMG SRC="Figure/gen_actual_module_parm_list.GIF" HEIGHT="61" WIDTH="216"><!---->
+
+<P>actual parameter</P>
+<IMG SRC="Figure/generic_actual_parameter.GIF" HEIGHT="81" WIDTH="274"><!---->
+
+<H3><B><A NAME="A12.4">A12.4</A> Changes To the Syntax of the Base Language in EBNF</B></H3>
+
+<PRE><b>keyword</b> = base language keyword | "GENERIC" ;
+
+<b>compilation module</b> = program module | definition module |
+implementation module | generic definition module | generic
+implementation module | refining definition module | refining
+implementation module ;
+
+<b>local module declaration</b> = Base Language local module
+declaration | refining local module declaration ;</PRE>
+
+
+<H3><B><A NAME="A12.5">A12.5</A> The Syntax of Generic Modula-2 in EBNF</B></H3>
+
+<P>The concrete syntax in this section is taken from ISO/IEC IS 10514-2, the international standard for the generic extensions to Modula-2.</P>
+
+<PRE><b>generic definition module</b> =
+   "GENERIC", "DEFINITION", "MODULE", module identifier, [formal module parameters], semicolon,
+   import lists, definitions,
+   "END", module identifier, period ;
+<b>generic implementation module</b> =
+   "GENERIC", "IMPLEMENTATION", "MODULE", module identifier, [interrupt protection], [formal module parameters], semicolon,
+   import lists, module block,
+   module identifier, period ;
+<b>refining definition module</b> =
+  "DEFINITION", "MODULE", module identifier, equals, generic separate module identifier, [actual module parameters], semicolon,
+   "END", module identifier, period ;
+<b>refining implementation module</b> =
+   "IMPLEMENTATION", "MODULE", module identifier, equals, generic separate module identifier, [actual module parameters], semicolon,
+    "END", module identifier, period ;
+<b>generic separate module identifier</b> =
+  identifier ;
+<b>formal module parameters</b> =
+  left parenthesis, formal module parameter list, right parenthesis ;
+<b>formal module parameter list</b> =
+  formal module parameter, {semicolon, formal module parameter} ;
+<b>formal module parameter</b> =
+  constant value parameter specification| type parameter specification
+
+<b>constant value parameter specification</b> = 
+  identifier list, colon, formal type;
+<b>type parameter specification</b> =
+  identifier list, colon, "TYPE" ;
+<b>refining local module declaration</b> =
+   "MODULE", module identifier, equals, generic separate module identifier, [actual module parameters], semicolon,
+   [export list],
+   "END", module identifier ;
+<b>actual module parameters</b> = 
+  left parenthesis, actual module parameter list, right parenthesis ;
+<b>actual parameter list</b> = 
+  actual parameter, {comma, actual parameter} ;
+<b>actual parameter</b> = 
+  constant expression | type parameter ;</PRE>
+
+<HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

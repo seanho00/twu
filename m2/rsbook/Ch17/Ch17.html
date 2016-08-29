@@ -1,0 +1,99 @@
+<HTML><HEAD><TITLE>Chapter 17: Advanced Applications</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Advanced Applications">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD><BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter 17<BR>
+Advanced Applications</B></H1></CENTER>
+
+
+
+<BR><A class = navgrn HREF="Ch17.0.html">17.0 Chapter Goals</a><!--	2-->
+<BR><A class = navgrn HREF="Ch17.1.html">17.1 Standard and Non-Standard Numeric Types</a><!--	2-->
+<BR><A class = navgrn HREF="Ch17.2.html">17.2 Complex Numbers</a><!--	2-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.2.html#17.2.1">  17.2.1 Complex Numbers Defined</a><!--	2-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.2.html#17.2.2">  17.2.2 Implementing non-ISO Complex Numbers</a><!--	5-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.2.html#17.2.3">  17.2.3 Testing the non-ISO Complex Implementation</a><!--	6-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.2.html#17.2.4">  17.2.4 Opaque non-ISO Complex Numbers</a><!--	7-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.2.html#17.2.5">  17.2.5 Testing the Opaque non-ISO Complex Implementation</a><!--	9-->
+<BR><A class = navgrn HREF="Ch17.3.html">17.3 ISO Complex Types and Support</a><!--	10-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.3.html#17.3.1">  17.3.1 ISO COMPLEX Math Library Support</a><!--	11-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.3.html#17.3.2">  17.3.2 Implementing ComplexMath</a><!--	16-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.3.html#17.3.3">  17.3.3 Input and Output</a><!--	20-->
+<BR><A class = navgrn HREF="Ch17.4.html">17.4 Electrical Circuits and Complex Numbers</a><!--	28-->
+<BR><A class = navgrn HREF="Ch17.5.html">17.5 Very Long Cardinals<!--‹-->--The Type Decimal</a><!--	33-->
+<BR><A class = navgrn HREF="Ch17.6.html">17.6 Binary Coded Decimal Fixed Point Types</a><!--	43-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.6.html#17.6.1">  17.6.1 BCD Support in p1 Modula-2 (Optional)</a><!--	44-->
+<BR><A class = navgrn HREF="Ch17.7.html">17.7 A Suggested Project<!--‹-->--Polynomials</a><!--	46-->
+<BR><A class = navgrn HREF="Ch17.8.html">17.8 The Date and Time</a><!--	49-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.8.html#17.8.1">  17.8.1 The Module SysClock</a><!--	49-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.8.html#17.8.2">  17.8.2 Time and Date I/O</a><!--	50-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.8.html#17.8.3">  17.8.3 Time and Date Arithmetic</a><!--	52-->
+<BR><A class = navgrn HREF="Ch17.9.html">17.9 A Closer Look at Whole Number I/O</a><!--	53-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.9.html#17.9.1">  17.9.1 Commmon Conversion Information Modules</a><!--	53-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.9.html#17.9.2">  17.9.2 Scanning For Whole Number Input</a><!--	56-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.9.html#17.9.3">  17.9.3 High Level String Conversion Routines</a><!--	62-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch17.9.html#17.9.4">  17.9.4 High Level Whole Number I/O</a><!--	66-->
+<BR><A class = navgrn HREF="Ch17.10.html">17.10 Chapter Summary</a><!--	66-->
+<BR><A class = navgrn HREF="Ch17.11.html">17.11 Assignments</a><!--	67-->
+
+<!--Version History Last Modified 1996 12 17
+4.0 In Process by RS
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+
+
+
+
+«INCLUDE Ch17.0.html»
+«INCLUDE Ch17.1.html»
+«INCLUDE Ch17.2.html»
+«INCLUDE Ch17.3.html»
+«INCLUDE Ch17.4.html»
+«INCLUDE Ch17.5.html»
+«INCLUDE Ch17.6.html»
+«INCLUDE Ch17.7.html»
+«INCLUDE Ch17.8.html»
+«INCLUDE Ch17.9.html»
+«INCLUDE Ch17.10.html»
+«INCLUDE Ch17.11.html»
+--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

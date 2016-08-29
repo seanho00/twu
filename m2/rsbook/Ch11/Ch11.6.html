@@ -1,0 +1,179 @@
+<HTML>
+<HEAD>
+<TITLE>11.6 Structure Constructors<</TITLE>
+<meta NAME="keywords" CONTENT="structure, constructor, constructors, type, list, {list}, array, arrays, of, record, records">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><CENTER><B>Part B<!--</B>‹<B>-->--Intermediate (Structured) Data Issues</CENTER><BR>
+11.6 Structure Constructors</B></H2>
+<P>Recall from Chapter 9 that it is possible to construct sets from literals:</P>
+<PRE>
+  charSet1 := CharSet {'A' .. 'Z'};
+  digits := DigitType {0 .. 2};</PRE>
+<P>and that</P>
+<BLOCKQUOTE><I><A NAME="Constructor">The</A> Modula-2 notation Type {list} is said to be a <U>constructor</U>.</I></BLOCKQUOTE>
+<P>It is also possible to construct specific arrays and records from literals in a similar fashion, as shown in the following two sections.</P>
+<H3><B><A NAME="11.6.1">11.6.1</A> Array Constructors</B></H3>
+<P>Suppose a program has the declarations:</P>
+<PRE>
+<B>TYPE</B>
+  Vector = <B>ARRAY</B> [1..10] <B>OF</B> <B>CARDINAL</B>;
+<B>VAR</B>
+  v1 : Vector;</PRE>
+<P>In order to initialize such an array so that its components were, say, the values 1 through 10, one can write a loop, as shown earlier in the text:</P>
+<PRE>
+<B>FOR</B> count := 1 <B>TO</B> 10
+  <B>DO</B>
+    v1 [count] := count
+  <B>END</B>;</PRE>
+<P>However the same goal may be achieved using the constructor notation as follows.</P>
+<PRE>
+v1 := Vector {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</PRE>
+<P>If some of the components are to have the same value, repetition is shown using BY.  That is:</P>
+<PRE>
+v1 := Vector {1, 1, 1, 4, 4, 6, 7, 7, 7, 7};</PRE>
+<P>is equivalent to:</P>
+<PRE>
+v1 := Vector {1 <b>BY</b> 3, 4 <B>BY</B> 2, 6, 7 <B>BY</B> 4};</PRE>
+<P>and all the components could be initialized to, say, zero using simply:</P>
+<PRE>
+v1 := Vector {0 <B>BY</B> 10};</PRE>
+<P>Note that <I>all</I> components must receive a value, so that</P>
+<PRE>
+v1 := Vector {0 <B>BY</B> 9};</PRE>
+<P>will cause the compiler to report an error.  In addition, the values employed may be expressions, including the returns from functions, this if one had:</P>
+<PRE>
+<B>PROCEDURE</B> NextCount () : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>INC</B> (count);
+  <B>RETURN</B> count;
+<B>END</B> NextCount;</PRE>
+<P>then the constants 1 through 10 could be entered in the vector by</P>
+<PRE>
+  count := 0;
+  v1 := Vector {NextCount() <B>BY</B> 10};</PRE>
+<P>although this use of side-effects on a global variable is not generally a good idea.</P>
+<P>Similar considerations apply to other arrays, so that:</P>
+<PRE>
+<B>TYPE</B>
+  String80 = <B>ARRAY</B> [0..79] <B>OF</B> <B>CHAR</B>;
+  RealVector = <B>ARRAY</B> [1..10] <B>OF</B> <B>REAL</B>;
+
+<B>VAR</B>
+  str : String80;
+  rvect : RealVector;</PRE>
+<P>could be initialized by such calls as:</P>
+<PRE>
+chr := <!--"-->&quot;o<!--"-->&quot;;
+str := String80{<!--"-->&quot;H<!--"-->&quot;, <!--"-->&quot;e<!--"-->&quot;, <!--"-->&quot;l<!--"-->&quot; <B>BY</B> 2, chr, 0C <B>BY</B> 75};
+rvect := RealVector {0.0 <B>BY</B> 10};</PRE>
+<P>It is also quite proper to construct a constant of one of these types:</P>
+<PRE>
+<B>CONST</B>
+  NullStr = NameString {0C <B>BY</B> 80};</PRE>
+<P>If the array is two dimensional, it is treated as an ARRAY OF ARRAY and the constructor notation is appropriately nested. The following declarations and statements are legal:</P>
+<PRE>
+<B>TYPE</B>
+  RowType = <B>ARRAY</B> [1..4] <B>OF</B> <B>INTEGER</B>;
+  Array34 = <B>ARRAY</B> [1..3], [1..4] <B>OF</B> <B>INTEGER</B>;
+  Array3R = <B>ARRAY</B> [1..3] <B>OF</B> RowType;  (* last two have same structure *)
+
+<B>VAR</B>
+  row : RowType;
+  array1 : Array34;
+  array2 : Array3R;
+
+  array1 := Array34 { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12} };
+  array1 := Array34 { {1, 2, 3, 4} <B>BY</B> 3 }; (* three rows the same *)
+  array2 := Array3R {RowType{1, 2, 3, 4} <B>BY</B> 3};  (* same result *)
+  array2 := Array3R { {0 <B>BY</B> 4} <B>BY</B> 3 };  (* all 12 entries are 0 *)
+  row := RowType {1 <B>BY</B> 4};
+  array2 := Array3R { row <B>BY</B> 3 };  (* all 12 entries are 1 *)</PRE>
+<P>Similar considerations apply if three or more dimensions are employed.  </P>
+<H3><B><A NAME="11.6.2">11.6.2</A> Record Constructors</B></H3>
+<P>Records may also have constructed values, and this is particularly useful for initialization purposes.  As arrays may have arrays as their components, so also records may have nested records, and therefore nested constructors.  Given the declarations:</P>
+<PRE>
+<B>TYPE</B>
+  NameString = <B>ARRAY</B> [0..50] <B>OF</B> <B>CHAR</B>;
+  Month = (Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec);
+  Date = 
+    <B>RECORD</B>
+      year: <B>CARDINAL</B>;
+      month : Month;
+      day : <B>CARDINAL</B>;
+    <B>END</B>;
+  Person  =
+    <B>RECORD</B>
+      name : NameString;
+      birthdate : Date;
+    <B>END</B>;
+  Group = <B>ARRAY</B> [1..100] <B>OF</B> Person;
+
+<B>CONST</B>
+  startDate = Date {1, Jan, 1};
+  
+<B>VAR</B>
+  moniker : NameString;  
+  da : Date;
+  nullPerson, Joe : Person;
+  class : Group;</PRE>
+<P>the following are legal:</P>
+<PRE>
+  moniker := <!--"-->&quot;Josephine<!--"-->&quot;;
+  da := Date {1901, Jan, 4};
+  nullPerson := Person {<!--"-->&quot;<!--"-->&quot;, {1994, Oct, 15} };
+  Joe := Person {moniker, da };
+  Joe := Person {<!--"-->&quot;Joe<!--"-->&quot;, da };
+  class := Group {nullPerson <B>BY</B> 100};</PRE>
+<P>Observe that since the assignments to items of type <I>Person</I> are not assigning via constructors to the arrays, ordinary literal strings will do.  This is certainly easier than:</P>
+<PRE>
+  Joe := Person { {<!--"-->&quot;J<!--"-->&quot;,<!--"-->&quot;o<!--"-->&quot;,<!--"-->&quot;e<!--"-->&quot;, 0C <B>BY</B> 48 }, da };</PRE>
+<P>where each character must be accounted for individually.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

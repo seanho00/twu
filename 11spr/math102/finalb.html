@@ -1,0 +1,589 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Final Exam (B) :: MATH102 11SP :: TWU</title>
+</head><body>
+
+<!--
+-->
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<p>MATH102 11SP Final Exam<br>
+<small>B <a href="#" onClick="toggleAnswers()">[ answers in web view ]</a>
+  Total points: 150</small></p>
+
+<div class="inspiration">
+  Let the words of my mouth and the meditation of my heart<br>
+  Be acceptable in Your sight, O LORD, my Rock and my Redeemer.<br>
+  -- Psalm 19:14
+</div>
+
+<ul class="instructions">
+  <li> Please show all your work!  No partial credit will be given for
+  incorrect answers with no work shown.
+  <li> Please draw a box around your final answer.
+  <li> You are only permitted to use your own calculator and writing implements.
+  <br> Cell phones should be muted and left in your pocket or bag.
+  <li> All relevant tables are attached to the back.  You may detach them for your
+  reference.
+  <i>
+    <a href="tables/jk10-t3.pdf">(T3: normal)</a>
+    <a href="tables/jk10-t6.pdf">(T6: t-dist)</a>
+    <a href="tables/jk10-t8.pdf">(T8: &chi;<sup>2</sup>)</a>
+    <a href="tables/jk10-t9.pdf">(T9: F-dist)</a>
+  </i>
+  <li> Assume &alpha; = 0.05 everywhere unless indicated otherwise.
+  <li> For t-tests on two groups, if the df is not given, you may use the
+  conservative estimate of df = min(n<sub>1</sub>, n<sub>2</sub>) - 1.
+</ul>
+
+<ol class="main">
+
+<li class="Q"><!-- ######################################################## -->
+A particular FDG-PET (fludeoxyglucose positron-emission tomography) screening
+test for non-Hodgkin's lymphoma has a 18% false-positive rate (82% specificity)
+and 91% sensitivity (i.e., 91% of lymphomas are caught by the screening
+process). <ol class="subparts">
+  <li> Suppose the screening test is applied to 250 patients, of which 50 have
+  non-Hodgkin's lymphoma.  Draw an <b>event tree</b> for the outcomes of the
+  test, and <b>label</b> the tree with probabilities for each branch of the
+  tree. <u>[4]</u>
+  <i><br>First level of event tree has two branches:
+    has lymphoma (0.20) vs.  does not have lymphoma (0.80).
+    <br>Second level of event tree has a total of four branches:
+    <br>P(test pos | lymph) = 0.91, <br> P(test neg | lymph) = 0.09,
+    <br>P(test pos | no lymph) = 0.18, <br> P(test neg | no lymph) = 0.82.
+    <br>There are four possible outcomes:
+    <br>P(test pos &cap; lymph) = (0.20)(0.91) = 0.182,
+    <br>P(test neg &cap; lymph) = (0.20)(0.09) = 0.018
+    <br>P(test pos &cap; no lymph) = (0.80)(0.18) = 0.144,
+    <br>P(test neg &cap; no lymph) = (0.80)(0.82) = 0.656.</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> On average, how many people in this group will <b>test positive</b> for
+  non-Hodgkin's lymphoma? <u>[3]</u>
+  <i><br> (true positive) + (false positive) 
+    = n(test pos &cap; lymph) + n(test pos &cap; no lymph)
+    = (0.182 + 0.144)(250)
+    = (0.326)(250)
+    = 81.5</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> If a patient tests positive using this test, what is the 
+  probability that the patient <b>really</b> has non-Hodgkin's lymphoma?
+  <u>[2]</u>
+  <i><br> (true positive) / (total positive) = 0.182 / (0.182 + 0.144)
+    = 0.182 / 0.326 = 55.828%</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+The home provinces of 16 students in a class are listed below.
+Draw a <b>Pareto</b> chart showing the distribution of home province in this
+sample. <u>[4]</u>
+<div style="text-align:center">
+  AB, BC, BC, SK, AB, SK, BC, MB, AB, BC, ON, AB, BC, ON, MB, SK
+</div>
+<br>
+<table border="1">
+  <tr height="40px">
+    <td width="40px"></td><td width="40px"></td><td width="40px"></td>
+    <td width="40px"></td><td width="40px"></td>
+  </tr>
+  <tr height="40px">
+    <td width="40px"></td><td width="40px"></td><td width="40px"></td>
+    <td width="40px"></td><td width="40px"></td>
+  </tr>
+  <tr height="40px">
+    <td width="40px"></td><td width="40px"></td><td width="40px"></td>
+    <td width="40px"></td><td width="40px"></td>
+  </tr>
+  <tr height="40px">
+    <td width="40px"></td><td width="40px"></td><td width="40px"></td>
+    <td width="40px"></td><td width="40px"></td>
+  </tr>
+</table>
+<i>Frequencies (in order): <br>
+  BC = 5/16 = 31.25% (cum: 31.25%); <br>
+  AB = 4/16 = 25% (cum: 56.25%);<br>
+  SK = 3/16 = 18.75% (cum: 75%); <br>
+  MB = 2/16 = 12.5% (cum: 87.5%);<br> 
+  ON = 2/16 = 12.5% (cum: 100%)
+</i>
+
+<li class="Q"><!-- ######################################################## -->
+The average number of hours of exercise per week was measured for a number of
+urban dwellers and rural dwellers.
+A 95% <b>confidence interval</b> for the difference of means (urban - rural)
+is (-0.27, 1.23).  Based on this information, indicate whether each of the
+following statements is "True" or "False".
+(Please write the entire word, "True" or "False".) <u>[6]</u>
+<ol class="subparts">
+  <li> We are 95% certain that urban dwellers exercise between 0.27 hrs less
+  and 1.23 hrs more per week than rural dwellers. <i>True</i>
+  <li> 95% of urban dwellers exercise between 0.27 hrs less and 1.23 hrs more
+  per week than rural dwellers. <i>False</i>
+  <li> There is no difference in the amount of exercise for urban and rural
+  dwellers. <i>False</i>
+  <li> Urban dwellers exercise an average of between 0.27 hrs less
+  and 1.23 hrs more per week than rural dwellers. <i>False</i>
+  <li> At a 5% level of significance, this study is unable to find a
+  difference in amount of exercise between urban and rural dwellers. <i>True</i>
+  <li> With 95% confidence, the difference in hrs/week of exercise between
+  urban and rural dwellers in this study is between -0.27 and 1.23. <i>False</i>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+Describe two events/conditions that one might reasonably expect are
+statistically <b>independent</b>, and justify why.  Be sure also to indicate
+what the overall sample space is. <u>[3]</u>
+<i><br>Plenty of options here: e.g., sample space is outcomes of flipping a
+  coin twice: heads on first flip is independent of heads on second flip.
+  <br> Gender and eye colour: being female is independent of having brown eyes.
+  (sample space is all people with any combination of gender and eye colour).
+  <br> As a counterexample: male and female are <b>not</b> independent:
+  they are mutually exclusive.</i>
+<div class="answerbox" style="height:5em"></div>
+
+<li class="Q"><!-- ######################################################## -->
+In clinical trials, a cholesterol pill produced by pharmaceutical company 
+"Murck" exhibits severe side effects in 30 out of 250 patients.
+The pill produced by competitor "ZastroSeneca" exhibits severe side effects in
+14 out of 200 patients.
+<ol class="subparts">
+
+  <li> Build a 95% <b>confidence interval</b> for the risk of side effects with
+  Murck's pill.  Do the same for ZastroSeneca. <u>[4]</u>
+  <i><br> &sigma;<sub>M</sub> = &radic;(npq)/n = &radic;(pq/n) = &radic;(.12*.88/250) = .02055
+    <br> 95% &rArr; z = 1.96: confidence interval is .12 &plusmn; 1.96(.02055)
+    or 7.967% &lt; p<sub>M</sub> &lt; 16.033%.
+    <br> &sigma;<sub>Z</sub> = &radic;(npq)/n = &radic;(pq/n) = &radic;(.07*.93/200) = .01804
+    <br> 95% &rArr; z = 1.96: confidence interval is .07 &plusmn; 1.96(.01804)
+    or 3.46% &lt; p<sub>Z</sub> &lt; 10.54%.</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> Does the risk of side effects differ significantly for the two 
+  companies' cholesterol pills?
+  State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[2]</u>
+  <i><br> H<sub>0</sub>: binomial proportion p<sub>Z</sub> = p<sub>M</sub>
+    <br>  H<sub>A</sub>: binomial proportion p<sub>Z</sub> &ne; p<sub>M</sub>
+  </i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What statistical <b>test</b> is appropriate to test the hypothesis?
+  Number of tails? <u>[2]</u>
+  <i><br>Comparing two independent proportions, 1-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[4]</u>
+  <i><br> SE<sub>p1-p2</sub> = &radic;(pq/n + pq/n)
+    = &radic;(.12*.88/250 + .07*.93/200) = .02735
+    <br> z = ( (p'<sub>M</sub> - p'<sub>Z</sub>) - 0 ) / SE
+      = (0.12 - 0.07) / .02735 = 1.8283
+    <br> P-value: p = 0.0678; Classical: critical z = 1.96 </i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the two 
+  drug companies.  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br>Fail to reject H<sub>0</sub>: the risk of side effects does not
+    significantly differ for the two companies' cholesterol pills.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  Are the assumptions met?  Why or why not? <u>[2]</u>
+  <i><br>Random sampling of physicians (this is a big assumption here!),
+    np = 30 &gt; 5, nq = 220 &gt; 5, np = 14 &gt; 5, nq = 186 &gt; 5.</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> Now let's approach this research question from a different approach:
+  first, identify the two <b>variables</b> involved (i.e., for each
+  participant in the study, what two questions need to be asked).
+  What are the <b>levels of measurement</b>? <u>[2]</u>
+  <i><br>Company (categorical/nominal, dichotomous)
+    <br>Occurrence of severe side effects (categorical/nominal, dichotomous)</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> Now, let the research question be: are these two variables
+  <b>independent</b>?
+  State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br>H<sub>0</sub>: side effects are independent of company; 
+    P(side|Murck) = P(side|Zastro) (or any one of several equivalent forms)
+    <br>H<sub>A</sub>: side effects are not independent of company;
+    P(side|Murck) &ne; P(side|Zastro) (or any one of several equivalent forms)</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> What statistical <b>test</b> is appropriate to test the hypothesis?
+  <br>Number of tails? <u>[2]</u>
+  <i><br>Chi-squared on 2x2 contingency table.  Omnibus (2-tailed).</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[5]</u>
+  <i><br> Observed: 30, 14, 220, 186.  Expected: 24.44, 19.56, 225.56, 180.44
+    <br> &chi;<sup>2</sup> = 3.15.  df=1.
+    <br> p = 0.076, or critical value of &chi;<sup>2</sup> = 3.84.</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the two 
+  drug companies.  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br>Fail to reject H<sub>0</sub>: insufficient evidence to show that
+    having side effects is dependent of which company's pill you take.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  Are the assumptions met?  Why? <u>[2]</u>
+  <i><br>Random sampling, no expected cell counts are zero.
+    Yes, because smallest E is 19.56.</i>
+  <div class="answerbox" style="height:1em"></div>
+
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+A biomedical lab recently purchased a new <b>spirometer</b>
+(measures lung functioning) to replace its old one.  
+To assess precision, both spirometers were run 16 times on a standard 
+test apparatus to measure forced vital capacity (FVC).
+The old spirometer had a standard deviation of 20 mL, and
+the new spirometer has a standard deviation of 12 mL.
+Is the new spirometer more precise than the old one?
+<ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[2]</u>
+  <i><br> H<sub>0</sub>: &sigma;<sub>old</sub> &le; &sigma;<sub>new</sub>, or
+    &sigma;<sub>old</sub><sup>2</sup> / &sigma;<sub>new</sub><sup>2</sup> &le; 1
+     <br> H<sub>A</sub>: &sigma;<sub>old</sub> &gt; &sigma;<sub>new</sub>, or
+    &sigma;<sub>old</sub><sup>2</sup> / &sigma;<sub>new</sub><sup>2</sup> &gt; 1
+  </i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is appropriate to test the hypothesis?
+  Number of tails? <u>[2]</u>
+  <i><br>F-test comparing two variances, 1-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[4]</u>
+  <i><br> F = 20<sup>2</sup> / 12<sup>2</sup> = 2.7778, df = (15, 15), 1-tail:
+    <br> p = 0.0283, or critical F(15, 15, 0.05) = 2.40</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the original
+  research question.  Please use complete English sentences. <u>[2]</u>
+  <i><br> Reject H<sub>0</sub>: new spirometer is significantly
+    more precise than old one.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?  <u>[2]</u>
+  <i><br>Random sampling of measurements, normal distribution of measurements.</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+The peak expiratory flow (PEF) is the maximum flow rate (in L/min) from the 
+lungs when a person blows out.  The PEF for seven females with asthma is
+measured both before and after the patient inhales a corticosteroid:
+<table class="data">
+  <tr><td colspan="8"></td><th>Mean</th><th>SD</th></tr>
+  <tr><th>No inhaler:</th>
+    <td>310</td><td>325</td><td>350</td><td>355</td>
+    <td>373</td><td>395</td><td>433</td>
+    <td>363</td><td> 41.85</td></tr>
+  <tr><th>With inhaler:</th>
+    <td>332</td><td>350</td><td>362</td><td>370</td>
+    <td>384</td><td>400</td><td>420</td>
+    <td>374</td><td> 29.98</td></tr>
+</table>
+<ol class="subparts">
+
+  <li> Do corticosteroids enhance peak expiratory flow in females with asthma?
+  State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[2]</u>
+  <i><br>H<sub>0</sub>: &mu;<sub>d</sub> &le; 0
+    (presuming d = after - before; you could also subtract in the other order),
+    corticosteroids do not increase PEF.
+    <br> H<sub>A</sub>: &mu;<sub>d</sub> &gt; 0,
+    corticosteroids do increase PEF.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  Number of tails? <u>[2]</u>
+  <i><br> Dependent t-test on pairwise differences. 1-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[4]</u>
+  <i><br>mean diff = 11, SD of diffs = 12.556
+    <br>SE<sub>d</sub> = 4.746, t = 2.318, df = 6, one-tailed.
+    <br>p = 0.0298, or critical t = 2.45</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the original
+  research question.  Please use complete English sentences. <u>[2]</u>
+  <i><br>Reject H<sub>0</sub>,
+    corticosteroids increase peak expiratory flow in females with asthma.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  Are the assumptions met?  Why or why not? <u>[3]</u>
+  <i><br>Random sampling of females with asthma;
+    change in PEF is normally distributed.
+  Not met: one outlier whose PEF decreased by 13 L/min</i>
+  <div class="answerbox" style="height:4em"></div>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+Three pharmaceutical companies, "Murck", "ZastroSeneca", and "Faizer", 
+all produce diabetes medication which purports to reduce glycated hemoglobin
+(A1C, an indicator of plasma glucose concentration).
+Each company's medication is given to a different group of diabetic patients,
+and the percent reduction in A1C is recorded (see below).
+Do all three medications have the same efficacy on A1C?
+<table class="data">
+    <tr><td colspan="4"></td><th>Mean:</th><th>SD:</th></tr>
+    <tr><th>Murck:</th>
+      <td>0.4</td><td>0.6</td><td>   </td>
+      <td>0.5</td><td>0.1414</td></tr>
+    <tr><th>ZastroSeneca:</th>
+      <td>0.5</td><td>0.6</td><td>1.0</td>
+      <td>0.7</td><td>0.2646</td></tr>
+    <tr><th>Faizer:</th>
+      <td>1.0</td><td>1.4</td><td>1.5</td>
+      <td>1.3</td><td>0.2646</td></tr>
+</table>
+<ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[3]</u>
+  <i><br>[H<sub>0</sub>: &mu;<sub>M</sub> = &mu;<sub>Z</sub> = &mu;<sub>F</sub>:
+    Reduction in A1C is the same for all three medications.
+    <br>H<sub>A</sub>: &mu;<sub>M</sub> &ne; &mu;<sub>Z</sub>, or
+    &mu;<sub>M</sub> &ne; &mu;<sub>F</sub>, or
+    &mu;<sub>Z</sub> &ne; &mu;<sub>F</sub>.
+    Some medications are more effective than others in reducing A1C.</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  Number of tails? <u>[2]</u>
+  <i><br>ANOVA, omnibus (2-tailed)</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[5]</u>
+  <i><br>Grand mean = 0.875.
+    <br>SS(factor) = 0.915, df(factor) = 2; <br>SS(error) = 0.3, df(error) = 5.  
+    <br>MS(factor) = 0.4575, MS(error) = 0.06.
+    <br> F = 7.625.
+    <br> p = 0.0303, or critical F = 5.79.</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the original
+  research question.  Please use complete English sentences. <u>[2]</u>
+  <i><br>Reject H<sub>0</sub>, the three medications do differ in
+    A1C reduction .</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling in all 3 groups; A1C reduction is are normally
+    distributed within each group; variance of A1C reduction is similar in 
+    all groups.</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+Anxiety is frequently measured on the Hamilton Anxiety Scale ("HAM-A"),
+a 14-parameter questionnaire, where a score of 0 indicates minimal anxiety,
+up a score of 14 representing severe anxiety.
+Is there a relationship between <b>coffee intake</b> (cups/week)
+and <b>anxiety</b> level?
+<ol class="subparts">
+
+  <li> Name the <b>variable(s)</b> which need to be measured and their
+  levels of measurement.  <u>[2]</u>
+  <i><br>Coffee and anxiety, both continuous.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is appropriate?
+  Number of tails?  <u>[2]</u>
+  <i><br> Linear regression: t-test on slope b<sub>1</sub>. 2-tailed. </i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  notation. <u>[2]</u>
+  <i><br>[ H<sub>0</sub>: &beta; = 0 (also ok: b<sub>1</sub> = 0),
+    there is no linear relationship between coffee and anxiety.
+    <br>H<sub>A</sub>:  &beta; &ne; 0 (also ok: b<sub>1</sub> &ne; 0),
+    there is a linear relationship between coffee and anxiety. ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> A study with 11 participants results in the following data
+  (X represents coffee in cups/week, and Y represents anxiety in HAM-A points):
+  <br>SS<sub>X</sub> = 110, SS<sub>Y</sub> = 41.26, SS<sub>XY</sub> = 55.
+  <br>Find the <b>slope</b> of the best-fit line, indicate its <b>units</b>,
+  and <b>interpret</b> the slope in light of the original variables.  <u>[3]</u>
+  <i><br> slope=0.5: for every additional cup of coffee drunk per week,
+    anxiety increases by 0.5 points on the HAM-A scale.
+    Units are HAM-A pts / (cups/wk).</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> The <b>average</b> coffee intake in the study was 9 cups/week,
+  and the average anxiety level in the study was 7.5.
+  Find the <b>equation</b> of the best-fit line, and interpret the
+  <b>intercept</b> of the line in light of the model. <u>[3]</u>
+  <i><br> Anxiety = 3 + 0.5*Coffee.
+    <br> According to the model, non-coffee drinkers have an anxiety level
+    of 3.  </i>
+  <div class="answerbox" style="height:7em"></div>
+
+  <li> Find the <b>correlation</b> between coffee intake and anxiety
+  level in this study. Is this a low, medium, or high level of correlation?
+  <u>[2]</u>
+  <i><br> r = SS<sub>XY</sub> / &radic;(SS<sub>X</sub> SS<sub>Y</sub>) = 0.8164,
+    quite high.</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What <b>fraction</b> of the variability in anxiety levels in this
+  study is explained by the linear relationship with coffee intake? <u>[2]</u>
+  <i><br>r<sup>2</sup> = 66.65% </i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> What is the <b>average</b> anxiety level predicted by the linear
+  model for people who drink 2 cups of coffee a day (14 per week)? <u>[1]</u>
+  <i><br> 3 + 0.5*14 = 10 on the HAM-A scale.</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> What is the <b>standard deviation</b> in anxiety level predicted by 
+  the linear model for people who drink 2 cups of coffee a day (14 per week)?
+  <u>[3]</u>
+  <i><br> SS(err) = (1 - r<sup>2</sup>)SS(y) = (1 - 0.6665)(41.26) = 13.76,
+    <br> s<sub>e</sub> = &radic;( SS(err) / (n-2) ) = &radic;(13.76/9) = 1.2366</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Conduct a <b>significance</b> test to answer the original research
+  question: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[4]</u>
+  <i><br> SE = s<sub>e</sub> / &radic;(SS<sub>X</sub>) = 1.2366 / &radic;(110) = 0.1179
+    <br> t = slope/SE = 0.5 / 0.1179 = 4.24.
+    <br> 2-tailed, df=9: p &lt; 0.01 (p = 0.0022), or critical value of t = 2.26</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the 
+  research question.  <br>Please use complete English sentences. <u>[2]</u>
+  <i><br>Reject H<sub>0</sub>, coffee intake is linearly related to
+    anxiety.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling, normality of the residuals (i.e., points are
+    normally distributed about the line of best fit),
+    homoscedasticity (i.e., variance of residuals is constant).</i>
+  <div class="answerbox" style="height:4em"></div>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+A factory needs to ensure that the widgets it produces have variance no more
+than 2.5mm<sup>2</sup>.  An inspector from corporate headquarters randomly
+selects 41 widgets from the factory, to check if the factory is within
+specifications.  Those 41 widgets have a variance of 3.52mm<sup>2</sup> in
+length. <ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[2]</u>
+  <i><br> H<sub>0</sub>: variance &sigma;<sup>2</sup> &le; 2.5
+    <br> H<sub>A</sub>: variance &sigma;<sup>2</sup> &gt; 2.5</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  Number of tails? <u>[2]</u>
+  <i><br>&chi;<sup>2</sup> (chi-squared), 1-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[4]</u>
+  <i><br> &chi;<sup>2</sup> = 56.32, df = 40.
+    <br> p = 0.04503, or critical &chi;<sup>2</sup> = 55.8.</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the original
+  research question.  Please use complete English sentences. <u>[2]</u>
+  <i><br> Reject H<sub>0</sub>: the factory is out of spec.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling; length of widgets is normally distributed.</i>
+  <div class="answerbox" style="height:3em"></div>
+</ol>
+
+<li class="Q"><!-- ######################################################## -->
+The forced expiratory volume in 1 second (FEV1) is the volume of air (in litres)
+that can forcibly be blown out by a person in 1 second.
+Does <b>FEV1</b> depend on <b>gender</b>?
+<ol class="subparts">
+
+  <li> State the null and alternative hypotheses, both in <b>words</b> and in
+  <b>notation</b>.  <u>[2]</u>
+  <i><br>[H<sub>0</sub>: &mu;<sub>M</sub> = &mu;<sub>F</sub>:
+    FEV1 levels are the same for both genders.
+    <br>H<sub>A</sub>: &mu;<sub>M</sub> &ne; &mu;<sub>F</sub>:
+    FEV1 levels differ for males from females.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What statistical <b>test</b> is be appropriate to test the hypothesis?
+  Number of tails? <u>[2]</u>
+  <i><br>t-test on independent groups, 2-tailed.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> Data for this experiment are given below.  Sketch <b>boxplots</b>
+  for the data, on a common axis (number line). <u>[4]</u>
+  <table class="data">
+    <tr><td colspan="9"></td><th>Mean:</th><th>SD:</th></tr>
+    <tr><th>Males:</th>
+      <td>3.0</td><td>3.1</td><td>3.3</td><td>3.4</td>
+      <td>3.4</td><td>3.7</td><td>4.0</td><td>4.1</td>
+      <td>3.5</td><td>0.4000</td></tr>
+    <tr><th>Females:</th>
+      <td>2.7</td><td>2.9</td><td>3.0</td><td>3.1</td>
+      <td>3.2</td><td>3.2</td><td>3.4</td><td>3.5</td>
+      <td>3.125</td><td>0.2605</td></tr>
+  </table>
+  <i>M: (3.0, 3.2, 3.4, 3.85, 4.1).  F: (2.7, 2.95, 3.15, 3.3, 3.5)</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> <b>Run</b> the test: find the test statistic and either bracket a
+  p-value or find the critical value.  <u>[4]</u>
+  <i><br>SE<sub>M</sub> = 0.1414, SE<sub>F</sub> = 0.0921, SE = 0.1688.
+    <br> mean diff = 0.325, so t = 2.222.
+    <br> Two-tailed; df = min(n<sub>1</sub>, n<sub>2</sub>) - 1 = 7
+    (using the formula, real df = 12.03)
+    <br> p = 0.0617, or critical t = 2.36
+    (with df=12, p=0.0433).</i>
+  <div class="answerbox" style="height:7em"></div>
+
+  <li> Draw a conclusion and <b>interpret</b> it in the context of the original
+  research question.  Please use complete English sentences. <u>[2]</u>
+  <i><br>Fail to reject H<sub>0</sub>, average FEV1 level in males
+    does not differ significantly from FEV1 level in females.</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What <b>assumptions</b> did you rely upon in conducting the test?
+  <u>[2]</u>
+  <i><br>Random sampling on both groups; FEV1 levels are normally
+    distributed in both groups; variance of FEV1 levels is similar in both
+    groups.</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+</ol>
+</body></html>

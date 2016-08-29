@@ -1,0 +1,185 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT167 Spr2007 Midterm, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ Answers ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points:  60
+
+<ol class="main">
+
+<li> Compare and contrast <b>object-oriented</b> programming with procedural programming. <u>[4]</u>
+<br><br><i>Procedural programming is action-oriented: the code is a sequence of
+procedures, and the data structures are passed as parameters to the procedures.
+The focus is on the 'verbs'.  In contrast, object-oriented programming is
+data-oriented: code is organized into classes, centred around objects, and the
+procedures are treated as methods within each class.  The focus is on the
+'nouns'.
+</i><br><br><br><br>
+
+<li> Explain what the <b>JDK</b> and <b>JRE</b> are and contrast them.
+<u>[3]</u>
+<br><br><i><dl>
+<dt> Java Runtime Environment
+<dd> what you need to run (other people's) Java programs: the Java
+virtual machine (command line: java).  
+<dt> Java Development Environment
+<dd> what you need to compile (make your own) Java programs: javac compiler.
+</dl></i><br><br>
+
+<li> Describe the <b>MVC</b> design pattern <u>[4]</u>
+<br><br> 
+<i><dl>
+<dt>Model:
+<dd>Data structures and methods to interact with the data.
+e.g., 2D array of letters for word-search
+<dt>View:
+<dd>Display/output, summary of the data, statistics, etc.
+e.g., Swing labels, text output
+<dt>Controller:
+<dd>Input/control from the user or other programs.
+e.g., Swing buttons, keyboard input
+</dl></i><br><br>
+
+<li> Explain and contrast method <b>overloading</b> with method
+<b>overriding</b>. <u>[4]</u>
+<br><br><i><dl>
+<dt> overloading
+<dd> multiple versions of the same method (same name) but with
+different number/types of parameters.
+<dt> overriding
+<dd> a method defined in a subclass overrides a method of the same name
+in the superclass.
+</dl></i><br><br>
+
+<li> What is an <b>abstract</b> class? <u>[3]</u>
+<br><br> 
+<i>An abstract class is not meant to be instantiated directly, but rather
+subclassed.</i><br><br>
+
+<li> What is a Java class <b>interface</b>? <u>[3]</u>
+<br><br> 
+<i>An interface is a named set of methods.
+</i><br><br>
+
+
+<li> Describe and contrast the eight Java <b>primitive types</b>. <u>[8]</u>
+<br><br> <i> <dl>
+<dt> <tt>bool</tt> <dd> boolean type, just true and false
+<dt> <tt>char</tt> <dd> a Unicode character
+<dt> <tt>byte</tt> <dd> an integer represented with 1 byte
+<dt> <tt>short</tt> <dd> an integer represented with 2 bytes
+<dt> <tt>int</tt> <dd> an integer represented with 4 bytes
+<dt> <tt>long</tt> <dd> an integer represented with 8 bytes
+<dt> <tt>float</tt> <dd> a real value represented with 4 bytes
+<dt> <tt>double</tt> <dd> a real value represented with 8 bytes
+</dl></i><br><br>
+
+<li> Describe and contrast the four options we have in Java for 
+<b>access modifiers</b> on attributes/methods. <u>[8]</u>
+<br><br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> (no modifier) <dd> methods in this class and this package can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i><br><br>
+
+<li> Tell me everything you know about <b>serialization</b> in Java. <u>[5]</u>
+<br><br><i>
+Serialization is converting an abstract data structure (object) into a series of
+bytes suitable for writing into a file or sending over the network.  (In Python
+this is "pickling".)  In Java an object is serializable if its class implements
+the (empty) interface <tt>Serializable</tt> and if every non-transient attribute
+is serializable.  The primitive types (int, char, etc.) and arrays of them are
+serializable.  Non-serializable attributes can be skipped over by declaring them
+<tt>transient</tt>.  A serializable object can be written out to an
+<tt>ObjectOutputStream</tt> by calling its <tt>writeObject()</tt> method.
+Similarly, objects (of unknown type) may be read from an <tt>ObjectInputStream</tt>
+by calling <tt>readObject()</tt>.
+</i><br><br><br><br>
+
+<li class="break"> Define simple Java classes and sketch a UML class diagram 
+that formalizes the following set of statements.  Declare and diagram
+every (non-primitive) class used.<u>[8]</u>
+<ul>
+<li> Every <tt>Appointment</tt> has a <tt>startTime</tt>.
+<li> A <tt>startTime</tt> is a <tt>Time</tt>.
+<li> Every <tt>Time</tt> has an <tt>Hour</tt> and <tt>Minute</tt>.
+<li> Every <tt>Appointment</tt> has a list of <tt>attendees</tt>.
+<li> Each <tt>attendee</tt> is a <tt>Person</tt>.
+</ul>
+<br><br><i><pre>
+class Appointment {
+	Time startTime;
+	Person[] attendees;
+}
+class Time {
+	byte hour, minute;
+}
+class Person { }
+</pre>
+(You may also have made Hour and Minute classes; that's okay, too.)
+</i><br><br>
+
+<li class="break"> Write a complete Java class to <b>sort</b> an array of
+integers.
+Docstrings and comments are not necessary but may garner partial
+credit.  <u>[10]</u>
+
+<br><br><i>
+<pre>
+
+public class Sorter {
+
+  public static void bubbleSort(int array[]) {
+    for (int i=array.length-1; i &gt;= 0; i--) {
+      for (int j = 0; j&lt;i; j++) {
+	if (array[j] &gt; array[j+1]) {	// swap!
+	  int temp = array[j];
+	  array[j] = array[j+1];
+	  array[j+1] = temp;
+	}
+      }
+    }
+  }
+
+  public static void main( String[] args ) {
+    int ARRAY_LEN = 100;			// can change this
+    int[] myArray = new int[ARRAY_LEN];
+
+    for (int i=0; i&lt;myArray.length; i++) 	// fill with random
+      myArray[i] = (int) (100 + 900*Math.random());
+
+    System.out.println("Random array: of " + ARRAY_LEN + " 3-digit numbers:");
+    for (int i=0; i&lt;myArray.length; i++)
+      System.out.print(" " + myArray[i]);
+    System.out.println("");
+
+    bubbleSort(myArray);		// sorts in-place
+
+    System.out.println("Sorted:");
+    for (int i=0; i&lt;myArray.length; i++)
+      System.out.print(" " + myArray[i]);
+    System.out.println("");
+
+  }
+}
+
+</pre></i>
+
+</ol>
+
+</body></html>
+
+

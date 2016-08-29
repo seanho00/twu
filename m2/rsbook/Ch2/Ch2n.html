@@ -1,0 +1,80 @@
+<HTML><HEAD><TITLE>Programming Note--I/O in Non-Standard Modula-2</TITLE><STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Programming Note<!--</B>‹<B>-->--I/O In Non-Standard Modula-2</B></H2>
+
+<P>Several references were made in Chapter two to the classical or pre-standard versions of Modula-2.  In general, but with many variations, the entire contents of the standard modules <I>SWholeIO</I> and <I>STextIO</I> were found in the classical module <I>InOut</I>, and contents of <I>SRealIO</I> were found in the classical module RealInOut.  <A HREF="../Ch6/Ch6.3.html#6.3.1">Section 6.3.1</A> and <A HREF="../Appendices/Ap7.html">Appendix 7</A> can be consulted for further details.  The program here is a little illustration in classical Modula-2.  As can readily be seen, there is not much difference between it and an ISO program.</P>
+<PRE>
+<B>MODULE</B> ALittleMath;
+
+ (* This program will ask for two numbers and multiply them.  *)
+
+<B>FROM</B> InOut <B>IMPORT</B>
+  WriteString, WriteLn, Read;
+<B>FROM</B> RealInOut <B>IMPORT</B>
+  ReadReal, WriteReal;
+
+<B>VAR</B>
+   userInput1, userInput2, ans : <B>REAL</B>;
+
+<B>BEGIN</B>
+  (* fetch input *)
+  WriteString (<!--"-->&quot;Give me a number, please. <!--"-->&quot;);
+  ReadReal (userInput1);
+  WriteLn;
+  WriteString (<!--"-->&quot;And a second one, if you would. <!--"-->&quot;);
+  ReadReal (userInput2);
+  WriteLn;
+  (* do calculation *)
+  ans := userInput1 * userInput2; 
+  (* output *)
+  WriteString (<!--"-->&quot;The answer to your <!--"-->&quot;); 
+  WriteString (<!--"-->&quot;multiplication problem is ====<!-->&gt; <!--"-->&quot;);
+  WriteReal (ans, 15, 3);
+
+<B>END</B> ALittleMath.</PRE>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

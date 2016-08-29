@@ -1,0 +1,196 @@
+<HTML>
+<HEAD>
+<TITLE>9.11 Records and Random Access Files</TITLE>
+<meta NAME="keywords" CONTENT="record, records, random, access, file, files, sequential, stream, save, file, savefile, structure, structures, newpos, startpos, setpos, pos, filepos, rndfile, model, marker, markers, position, read, write, end-of-file, eof, end, readresult, endofoutput, openold, openclean, exception, exceptions, open">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.11 Records and Random Access Files</B></H2>
+<P>In the last chapter, and so far in this chapter as well the kind of file used in the examples was the sequential type, that is, the <I>stream</I> of data.  It is important to remember that sequential files (whether rewindable or not) are only one of two possible models for files, the other being the random access file.  The only difference introduced in the last section was that the stream consists of record items rather than text items, or individual binary items.</P>
+<P>In the example of the last section, the records were sent to the output device in raw form.  In the procedure <I>SaveFile</I> instead of:</P>
+<PRE>
+  <B>FOR</B> count := 1 <B>TO</B> numItems
+    <B>DO</B>
+      Write (dataChan, stock [count]);
+    <B>END</B>;</PRE>
+<P>one could have written the output as a text stream instead, though it would have taken more effort and more room on the storage device:</P>
+<PRE>
+  <B>FOR</B> count := 1 <B>TO</B> numItems
+    <B>DO</B>
+      <B>WITH</B> Stock[count]
+        <B>DO</B>
+          WriteString (dataChan, name);
+          WriteLn;
+          WriteReal (dataChan, price, 1)
+          WriteLn;
+          WriteCard (dataChan, quantity, 1)
+          WriteLn;
+          WriteChar (dataChan, bin)
+          WriteLn;
+        <B>END</B>;
+    <B>END</B>;</PRE>
+<P>The advantage would be that the resulting file would consist of text and could be read by other programs. Moreover, whether at the logical level one views the file as a sequence of records, or as a sequence of characters at the physical file level one still has a stream of text material<!--‹-->--albeit organized into logical groupings determined by the structure of the program. </P>
+<P>Since this logical organization makes so much more sense than thinking of such a file as merely a text stream, and since the record is the important abstraction here, it is natural to ask whether one can find a particular one of those records in the disk file without having to read them all into memory at once.</P>
+<P>The answer is <!--"-->&quot;yes,<!--"-->&quot; but there is a <I>caveat</I>.  Any attempt to do this requires that one be able to reliably find the place on the disk where the record is stored.  If the data is being read and written as text, this is tedious, because each record must be read back in one  field at a time until the correct one is found.  This is because there is no way to tell how much room such a record occupies.  The text produced by a <i>WriteInt</i> could have any number of characters in it.  The text produced by a <i>WriteString</i> has a number of characters up to one more than the HIGH of the character array parameter.  Thus text records all occupy different amounts of space, and so must be read the way they are written<!--‹-->--one text field at a time.</P>
+<P>On the other hand, if the records are written raw, they all occupy the same amount of disk space, for they all occupy the same amount of memory.  It is therefore possible to find a particular record by reading whole records sequentally.  To find the inventory item whose name is <i>bolts</i>, proceed as follows:  Assume that there is a program variable item with the same structure as used above. This will not be an array, just a single record.  Assume that the program has gone through the routine of opening the appropriate file and connecting the program to it.  Now it must read through all the records until it finds the correct one:</P>
+<PRE>
+  <B>REPEAT</B>
+    Read (dataChan, item);
+  <B>UNTIL</B> (item.name = <!--"-->&quot;bolts<!--"-->&quot;) <B>OR</B> (IOResult.ReadResult (dataChan) # allRight);</PRE>
+<P>There is a better way, in those cases that one knows ahead of time which record one is looking for, or if one wishes only to handle in memory and edit a single record and  then find the same position in the disk file to write it back.  Suppose one has the number of the record <I>recnum</I> that must be found (starting with the first in the file as number zero), and also the size of the record (the number of storage locations each takes).  The loop above could then be replaced with the following code:</P>
+<PRE>
+  recsize := <B>SIZE</B> (ItemType); (* the same for all reads and writes *)
+  top := StartPos (dataChan);
+  pos := NewPos (dataChan, recnum, recsize, top);
+  SetPos (dataChan, pos);
+  Read (dataChan, student);</PRE>
+<P>where the variables <I>top</I> and <I>pos</I> are both of type <I>FilePos</I>, and the procedures <I>NewPos</I>, <I>StartPos</I>, and <I>SetPos</I> as well as the type <I>FilePos</I> are all imported from <I>RndFile</I>.  The idea is to calculate with <I>NewPos</I> the position in the file where one wishes to begin reading or writing, and then set the actual file position marker to that position before doing the input or output.</P>
+<P>Once one begins to use position markers and to read and write whole records without regarding the expression of either their individual fields or entire records as streams, one has changed to a <i>random access model</i> for the file.  Recall in the definitions given in chapter eight that the difference between a stream or sequential type of file and the random access type is the rules for reading and writing.  It does not matter whether one uses a record as such in the process.  What determines that a file is random access is whether or not one is allowed to calculate and set a position marker to read and write anywhere in the file.</P>
+<P>That is, the difference between the two has to do with the way one <I>thinks</I> about the files, not necessarily with the way they exist on the disk.  Both can be thought of on one level as recordings of streams of data for all data is reduced to a series of raw binary numbers in any case. Furthermore, a sequential file <I>could</I> be thought of as a random access file whose records consist of single characters.  Although the latter is not a particularly useful model, the various positioning functions described above will work on a file that was originally created as a sequence, because the I/O routines do not know or care what sort of structure the actual file has; those sorts of interpretations are up to the programmer.</P>
+<BLOCKQUOTE><I><A NAME="Markers">File</A> manipulation is subject to two <U>markers</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>The <U>position marker</U> is the point in the file at which the next piece of data will be read or written.</BLOCKQUOTE>
+<BLOCKQUOTE>The <U>End-Of-File</U>, or EOF marker is defined to be one place after the last piece of data in the file.</I></BLOCKQUOTE>
+<P>A program cannot read past the EOF marker and an attempt to do so will result in <I>IOResult.ReadResult</I> becoming set to the value <I>endOfInput</I>.  Further, any attempt to use <i>SetPos</i> to position reading beyond the EOF marker will generate an exception (run time error).</P>
+<P><I>RndFile</I> is the ISO module (device driver) that implements the random access file model.  In order for the file positioning routines to work properly on the specified channel, the channel must actually be open by <I>RndFile</I>, just as <I>SeqFile.Rewrite</I> will only work on a file that has been opened (and is being modeled by <I>SeqFile</I> at the time).  For reference, here is a listing of the contents of <I>RndFile</I>:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RndFile;
+ 
+  (* Random access files *)
+
+(* =========================================
+            Definition Module from
+                  ISO Modula-2
+Draft Standard CD10515 by JTC1/SC22/WG13
+    Language and Module designs © 1992 by
+BSI, D.J. Andrews, B.J. Cornelius, R. B. Henry
+R. Sutcliffe, D.P. Ward, and M. Woodman
+
+          Implementation © 1993
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1993 10 20
+===========================================*)
+ 
+<B>IMPORT</B> IOChan, ChanConsts, SYSTEM;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+  
+<B>CONST</B>    (* Accepted singleton values of FlagSet *)
+  read = FlagSet{ChanConsts.readFlag};   (* input operations are
+requested/available *)
+  write = FlagSet{ChanConsts.writeFlag}; (* output operations are
+requested/available *)
+  old = FlagSet{ChanConsts.oldFlag};     (* a file may/must/did exist before the channel is opened *)
+  text = FlagSet{ChanConsts.textFlag};   (* text operations are
+requested/available *)
+  raw = FlagSet{ChanConsts.rawFlag};     (* raw operations are
+requested/available *)
+
+<B>PROCEDURE</B> OpenOld (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored random access file of the given name.
+     The old flag is implied; without the write flag, read is implied; without the text flag, raw is implied.
+     If successful, assigns to cid the identity of the opened channel, assigns
+the value opened to res, and sets the read/write position to the start of the file.
+     If a channel cannot be opened as required, the value of res indicates the
+reason, and cid identifies the invalid channel.  *)
+ 
+<B>PROCEDURE</B> OpenClean (<B>VAR</B> cid: ChanId; name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; flags: FlagSet; <B>VAR</B> res: OpenResults);
+  (* Attempts to obtain and open a channel connected to a stored random access file of the given name.
+     The write flag is implied; without the text flag, raw is implied.
+     If successful, assigns to cid the identity of the opened channel, assigns the value opened to res, and truncates the file to zero length.
+     If a channel cannot be opened as required, the value of res indicates the reason, and cid identifies the invalid channel.
+  *)
+ 
+<B>PROCEDURE</B> IsRndFile (cid: ChanId): <B>BOOLEAN</B>;
+  (* Tests if the channel identified by cid is open to a random access file. *)
+ 
+<B>PROCEDURE</B> IsRndFileException (): <B>BOOLEAN</B>;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of a RndFile exception; otherwise returns FALSE.  *)
+ 
+<B>CONST</B>
+  FilePosSize = 4; (* implementation defined constant *)
+ 
+<B>TYPE</B>
+  FilePos = <B>ARRAY</B> [1 .. FilePosSize] <B>OF</B> SYSTEM.LOC;
+  
+<B>PROCEDURE</B> StartPos (cid: ChanId): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise returns the position of the start of the file.  *)
+ 
+<B>PROCEDURE</B> CurrentPos (cid: ChanId): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise returns the position of the current read/write position.  *)
+ 
+<B>PROCEDURE</B> EndPos (cid: ChanId): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise returns the first position after which there have been no writes.  *)
+ 
+<B>PROCEDURE</B> NewPos (cid: ChanId; chunks: <B>INTEGER</B>; chunkSize: <B>CARDINAL</B>; from: FilePos): FilePos;
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise returns the position (chunks * chunkSize) relative to the position given by from, or raises the exception posRange if the required position cannot be represented as a value of type FilePos.  *)
+ 
+<B>PROCEDURE</B> SetPos (cid: ChanId; pos: FilePos);
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise sets the read/write position to the value given by pos.  *)
+ 
+<B>PROCEDURE</B> Close (<B>VAR</B> cid: ChanId);
+  (* If the channel identified by cid is not open to a random access file, the exception wrongDevice is raised; otherwise closes the channel, and assigns the value identifying the invalid channel to cid. *)
+ 
+<B>END</B> RndFile.</PRE>
+<P><B>NOTES</B>: 1. A channel must be opened with <I>OpenOld</I> or <I>OpenClean</I> before it can be manipulated by the <I>RndFile</I> positioning procedures.</P>
+<P>	2. The flags employed upon opening come from the same initial source as for <I>SeqFile</I> and <I>StreamFile</I>, and have similar meanings.</P>
+<P>	3. The <!--"-->&quot;exceptions<!--"-->&quot; mentioned are run time errors, about which more will be said later in the text.</P>
+<P>	4. Observe that <I>NewPos</I> can compute a new position forward or backward from any position, because the number of chunks is an integer, and the position counted <i>from</i> can be anywhere in the file.</P>
+<P>	5. <I>EndPos</I> is useful for calculating the place to do appending.</P>
+<P>	6. A <i>read</i> or <i>write</i> of a record moves the position marker.  To access the same record again, the position must be moved back to where it was before using <I>SetPos</I>.</P>
+<P>	7. Non-standard Modula-2 implementations have similar procedures to these, though with slightly different names and syntax in some cases.  Position variables may be just of type LONGINT, for example.  These are usually found in <I>Files</I>/<I>Filer</I>/<I>FileSystem</I>, where also is located the one and only <i>Open</i> procedure.  It is up to the programmer to enforce the separation between sequential file models and random access file models in such versions; there is no help from the library suite.</P>
+<P>	8. If the position marker is at the end of the file then a <I>write</I> operation will extend the file, making it larger.  If it is anywhere else, a <i>write</i> operation will lay down the new data on top of whatever was there before, erasing the old.</P>
+<P>	9. One cannot set the current position marker past the end-of-file marker or before the beginning of the file; for there will then be a run-time error.</P>
+<P>These procedures are elaborated on in the second part of the extended example found in the next section.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

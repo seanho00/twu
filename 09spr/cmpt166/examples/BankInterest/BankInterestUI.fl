@@ -1,0 +1,67 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <FL/fl_message.H>} {} 
+
+decl {\#include "BankInterest.h"} {} 
+
+decl {float widthdrawals[4];} {} 
+
+Function {update_balance()} {open return_type void
+} {
+  code {widthdrawals[0] = w1->value();
+widthdrawals[1] = w2->value();
+widthdrawals[2] = w3->value();
+widthdrawals[3] = w4->value();
+balance->value(
+calc_balance(init_bal->value(), rate->value(), widthdrawals, 4));} {}
+} 
+
+Function {} {open return_type int
+} {
+  Fl_Window {} {
+    label BankInterest open
+    private tooltip {A simple bank interest calculator.} xywh {905 96 320 265} type Double visible
+  } {
+    Fl_Value_Input init_bal {
+      label {Starting balance:}
+      callback {update_balance();}
+      tooltip {How much money is initially in your account} xywh {165 20 60 25} maximum 9999
+    }
+    Fl_Value_Input rate {
+      label {Interest rate:}
+      callback {update_balance()}
+      tooltip {Enter "12" for an account earning twelve percent.} xywh {165 45 45 25}
+    }
+    Fl_Value_Input w1 {
+      label {First Quarter widthdrawal:}
+      callback {update_balance()}
+      tooltip {How much to take out after the first quarter} xywh {217 75 55 25}
+    }
+    Fl_Value_Input w2 {
+      label {Second Quarter widthdrawal:}
+      callback {update_balance()}
+      tooltip {How much to take out after the second quarter} xywh {217 100 55 25}
+    }
+    Fl_Value_Input w3 {
+      label {Third Quarter widthdrawal:}
+      callback {update_balance()}
+      tooltip {How much to take out after the third quarter} xywh {217 125 55 25}
+    }
+    Fl_Value_Input w4 {
+      label {Fourth Quarter widthdrawal:}
+      callback {update_balance()}
+      tooltip {How much to take out after the fourth quarter} xywh {217 150 55 25}
+    }
+    Fl_Value_Output balance {
+      label {Ending Balance: }
+      tooltip {How much money is left in the account} xywh {165 205 80 25} maximum 9999 step 0.01
+    }
+    Fl_Button {} {
+      label {Ok bye!}
+      callback {fl_message("Press Escape to Quit");} selected
+      xywh {245 230 70 30}
+    }
+  }
+} 

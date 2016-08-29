@@ -1,0 +1,69 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2009 Lab3, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+li { margin-top: 0.5em; }
+--></style>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/09spr/cmpt370/">CMPT 370 Spring 2009</a>
+Lab3 (30 pts): Animated 3D Model</h1>
+
+In this lab you will develop an OpenGL application displaying an
+<b>animated</b>, <b>procedurally-generated</b>, 3D scene of your own design.
+
+<ul>
+
+  <li> <b>Animated</b> means the geometry should change/morph/grow on its 
+  own without user interaction, so that you can, e.g., rotate the view while
+  the object animates.  <br>Hint: timer callbacks.
+    <a href="http://www.fltk.org/documentation.php/doc-1.1/Fl.html#Fl.add_timeout">
+      <tt>add_timeout()</tt></a>,
+    <a href="http://seriss.com/people/erco/fltk/#AnimateDrawing">
+      Erco's FLTK Cheat Page (animated lines)</a>.
+
+  <li> <b>Procedurally-generated</b> means an algorithm computes/generates
+  the geometry (rather than just being static or read in from a file).
+  The algorithm should take one or more parameters which can change over time
+  to create the animation.
+
+  <li> Provide a way for the user to <b>rotate</b> and <b>pan</b> the view.
+  You may use the code in <a href="fltk/CubeView/">CubeView</a> or provide your
+  own user interface to do this.
+  You may find 
+  <a href="http://www.fltk.org/doc-1.1/opengl.html">the FLTK OpenGL docs</a>
+  useful.
+
+  <li> Some ideas: swinging pendulum, animated generation of a 3D 
+  <a href="http://en.wikipedia.org/wiki/Sierpinski_triangle">Sierpinski gasket</a>
+  or other fractal, 
+  <a href="http://www.mathacademy.com/pr/minitext/escher/big.asp?IMAGE=mobius_strip">
+    ant on a Möbius strip</a>, etc.  Be creative, have fun!
+
+  <li> Feel free to add on fancier options, user interface, etc.!
+
+  <li> <b>Extra credit</b> (up to 5pts): add interactive <em>picking</em> of
+  objects (clicking on an object to select it or fire some other callback).
+
+</ul>
+
+<h2> References </h2>
+
+You may find the following links helpful:<ul>
+  <li> <a href="http://seriss.com/people/erco/fltk/#OpenGlSimple">
+    Erco's simple OpenGL example</a>
+  <li> <a href="http://seriss.com/people/erco/fltk/#OpenGlSimpleWidgets">
+    Erco's example of OpenGL controlled by FLTK widgets</a>
+  <li> <a href="http://seriss.com/people/erco/fltk/#OpenGlInterp">
+    Erco's example of an animated OpenGL shape </a>, using Fl::repeat_timeout()
+  to update and redraw the screen 24fps
+</ul>
+
+<h2>Electronic turn-in</h2>
+
+Put everything (C++ code, header files, executable, lab
+write-up) into a tarball/ZIP and upload it to myCourses under "Lab3":
+<br><tt>your_name_lab3.zip</tt>
+
+</body></html>

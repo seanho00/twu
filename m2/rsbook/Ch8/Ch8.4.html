@@ -1,0 +1,189 @@
+<HTML>
+<HEAD>
+<TITLE>8.4 Extended Low Level Examples</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="extend, extended, low, level, example, examples, keyboard, read, reading, operate, operating, system, systems, generic, generics, swap, procedure, procedures, any, data,">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.4 Extended Low Level Examples</B></H2>
+<H3><B><A NAME="8.4.1">8.4.1</A> Keyboard Reading<!--</B>‹<B>-->--Operating System Level</B></H3>
+<P>At a slightly higher level than that employed in the last section, it may be possible to take advantage of one's knowledge of low level procedures that have been provided in the operating system interface to read the keyboard.  This technique is illustrated by the following library module:</P><PRE>
+<B>DEFINITION</B> <B>MODULE</B> Keyboard;
+
+(* =========================================
+  Definition and Implementation © 1993 by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1997 10 06
+=========================================== *)
+(* Note that this module functions independently of the Terminal, *)
+
+<B>PROCEDURE</B> BusyRead (<B>VAR</B> ch: <B>CHAR</B>);
+  (* return character if one there, otherwise return 0C *)
+  
+<B>PROCEDURE</B> Read (<B>VAR</B> ch: <B>CHAR</B>);
+  (* return character *)
+  
+<B>END</B> Keyboard.
+
+<b>IMPLEMENTATION</b> <b>MODULE</b> Keyboard;
+
+(* =========================================
+  Definition and Implementation © 1993 by R. Sutcliffe
+   Last modification date 1997 10 06
+=========================================== *)
+
+(* first implementation 1993 10 20 revised for p1 1994 05 18 
+  modifierSet becomes modifiers characterCode becomes charCode 
+  Desk changes to Events 1995 09 14 
+1996 08 08 changed to WaitNextEvent as problems with translating GetNextEvent to C *)
+
+<b>FROM</b> Events <b>IMPORT</b>
+  EventRecord, GetCaretTime, WaitNextEvent, keyDown, cmdKey, everyEvent;
+<b>FROM</b> SYSTEM <b>IMPORT</b>
+  CAST;
+  
+<b>VAR</b>
+  theEvent : EventRecord;
+  gSleep   : <b>INTEGER</b>;
+
+<b>PROCEDURE</b> BusyRead (<b>VAR</b> ch: <b>CHAR</b>);
+  (* return character if one is there, otherwise return 0C *)
+<b>BEGIN</b>
+  <b>IF</b> WaitNextEvent (everyEvent, theEvent, gSleep, <b>NIL</b>)
+              <b>AND</b> (theEvent.what = keyDown) <b>AND</b> <b>NOT</b>  (cmdKey <b>IN</b> theEvent.modifiers)
+    <b>THEN</b>
+      ch := theEvent.charCode;
+    <b>ELSE</b>;
+      ch := 0C
+   <b>END</b>; (* if WaitNextEvent *)
+<b>END</b> BusyRead;
+
+<b>PROCEDURE</b> ReadChar (<b>VAR</b> ch: <b>CHAR</b>);
+ 
+<b>BEGIN</b>
+  <b>REPEAT</b>
+    BusyRead (ch);
+  <b>UNTIL</b> ch # 0C
+<b>END</b> ReadChar;
+
+<b>BEGIN</b> (* main *)
+  gSleep := GetCaretTime (); (* set idle time used by WaitNextEvent *)
+<b>END</b> Keyboard.</PRE>
+
+<P>A program could now implement a procedure to wait for a keypress before continuing processing by importing <i>BusyRead</i> and then proceeding much as does <i>Read</i> in the above, except not returning anything to the caller.</P>
+<PRE>
+<B>PROCEDURE</B> Keypress;
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    Keyboard.BusyRead (ch);
+  <B>UNTIL</B> ch # 0C
+<B>END</B> Keypress;</PRE>
+
+<P>While the code shown here to achieve this is necessarily implementation specific to the Macintosh, something similar should be possible under any operating system.</P>
+<H3><B><A NAME="8.4.2">8.4.2</A> Generic Swap</B></H3>
+<P>It is often necessary to swap the values of two variables, and on a number of occasions such procedures have been used in this text.  Each time one writes something like:</P>
+<PRE>
+<B>PROCEDURE</B> Swap (<B>VAR</B> x, y : <B>REAL</B>);</PRE>
+<P>and each time it is necessary to swap two items of a type not previously used, the procedure must be rewritten, if ever so slightly.  Using the low level facilities of Modula-2 , it is possible to write a swap procedure that can swap two items of any type presented to it.</P>
+<BLOCKQUOTE><I><A NAME="Generic">A</A> procedure that is capable of acting on any data regardless of type is said to be <U>generic</U>.</I></BLOCKQUOTE>
+<P>Generic procedures are written using the ARRAY OF LOC as parameter.  Since this has an equivalent high level meaning on every machine, the result code ought to be portable, even if the low level nature of LOC is different.  Of course, the items ought both to be of the same type or the results will be meaningless.  Indeed, if the items are not at least of the same size, attempting to swap on a memory location by memory location basis could prove disastrous unless the swap stops at the end of the shorter item, and even then the results of such a swap are not likely to be meaningful.  The library module below encapsulates a generic swap.  It also employs HIGH to compute the number of LOCs occupied by the variable passed to it as a parameter.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Swaps;
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  LOC;
+
+<B>PROCEDURE</B> CanSwap (a, b : <B>ARRAY</B> <B>OF</B> LOC) : <B>BOOLEAN</B>;
+(* Pre : None
+Post: if a and b are of the same size, returns true, else returns false *)
+
+<B>PROCEDURE</B> Swap (<B>VAR</B> a, b : <B>ARRAY</B> <B>OF</B> LOC);
+(* Pre : None, but does no size checking, so if they are not the same size, the result may be meaningless
+Post: Swaps the number of bytes of the smaller of the two arrays. *)
+
+<B>END</B> Swaps.</PRE>
+<P>The Procedure <I>CanSwap</I> is only able to check on the size of the items, not whether they really are the same type.  For its part, the procedure <I>Swap</I> does no checking; it just swaps as many bytes as it can.  Here is the code:</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> Swaps;
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  LOC;
+  
+<B>PROCEDURE</B> CanSwap (a, b : <B>ARRAY</B> <B>OF</B> LOC) : <B>BOOLEAN</B>;
+(* Pre : None
+Post: if a and b are of the same size, returns true, else returns false *)
+<B>BEGIN</B>
+  <B>RETURN</B> (<B>HIGH</B> (a) = <B>HIGH</B> (b));
+<B>END</B> CanSwap;
+
+<B>PROCEDURE</B> Swap (<B>VAR</B> a, b : <B>ARRAY</B> <B>OF</B> LOC);
+(* Pre : None, but does no size checking, so if they are not the same size, the result may be meaningless
+Post: Swaps the number of bytes of the smaller of the two arrays. *)
+
+<B>VAR</B>
+  temp : LOC;
+  max, count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  max := <B>HIGH</B> (a);
+  <B>IF</B> max <!-->&gt; <B>HIGH</B> (b)
+    <B>THEN</B> (* use lesser of two for # to swap *)
+      max := <B>HIGH</B> (b);
+    <B>END</B>;
+  <B>FOR</B> count := 0 <B>TO</B> max
+    <B>DO</B>
+      temp := a [count];
+      a [count] := b [count];
+      b [count] := temp;
+    <B>END</B>;
+<B>END</B> Swap;
+    
+<B>END</B> Swaps.</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,204 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li {
+  margin-top: 2em;
+}
+.subparts li {
+  margin-top: 0.2em;
+} 
+ol.subparts {
+  list-style-type: lower-alpha;
+}
+.break {
+  page-break-before: always;
+}
+.knight td {
+width: 3em;
+height: 2em; 
+       text-align: center;
+}
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+--></style>
+<title>CMPT145 Fall2005 Final Exam, Trinity Western.
+14 Dec 2005.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>__________________________</td></tr>
+  <tr><td>Student ID:	</td><td>__________________________</td></tr>
+</table>
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+<br>problem solving as described in the text. <u>[5]</u><br>
+
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Describe the five <b>program structure/flow</b> 
+abstractions in the text. <u>[5]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li> Fill in the blank <u>[20]</u>: <ol class="subparts">
+  <li> "Computers are t________s, and computing scientists are t___________s."
+  <li> The ___________________ function is used to determine 
+    how many LOCs are used to store an item in memory.
+  <li> A procedure that returns a value is called a _______________ procedure.
+  <li> Express 4AH in decimal: _________, octal: ____________, and 
+    binary: ________________________
+  <li> Before using the value of a variable for the first time in a program,
+    we need to ________________________ and ___________________________ it.
+  <li> The four loop structures in Modula-2 are 
+  _____________________,     _____________________, 
+  _____________________, and _____________________.
+  <li> A new type made from a sequence of consecutive values of an 
+    existing type is called a _______________________ of the host type.
+  <li> A procedure that invokes itself is called a 
+    ______________________ procedure.
+  <li> The function that evaluates natural logarithms on real numbers is found
+    in the ________________________ standard library.
+  <li> True or False (circle one): The word FUNCTION is a legal identifier.
+  <li> 4GB = _______________ kilobit. (You may express it as a power of 2.)
+</ol>
+
+<li>
+In the space provided, <b>evaluate</b> each of the following four Boolean
+expressions, or if they give an error, indicate <b>why</b>. <u>[8]</u>
+  <ol class="subparts">
+  <li> 'X' &gt;= 'A' AND 'X' &lt;= 'Z'
+  <li> (5 / 12 = 2) OR NOT FALSE AND FALSE
+  <li> (1#1)&amp;~(1/1&lt;1) 
+  <li> (6 REM 4 &gt; 2) AND (2 REM 0 = 2)
+  </ol>
+
+
+<li class="break">
+<b>Name</b> the 3 standard I/O libraries used to 
+open/close files, and the <b>differences</b> among them.  
+Name at least <b>two</b> procedures from each library. <u>[9]</u>
+<br><br><br><br><br><br><br>
+
+<li>
+What is <b>wrong</b> with this loop, intended to count down from 100 by threes?
+How would you <b>fix</b> it?
+You may fix the code directly in the space below. <u>[4]</u>
+<pre>
+MODULE CountDown;
+VAR
+	counter : INTEGER;
+BEGIN
+	counter := 100;
+	REPEAT
+		<em>statement sequence;</em>
+		DEC (counter, 3);
+	UNTIL counter = 0;
+END CountDown.
+</pre>
+
+<li>
+Rewrite the following FOR loop code snippet as a general <b>LOOP</b>.
+Don't worry about the rest of the module (IMPORT, VAR, etc.). <u>[5]</u>
+<pre>
+FOR idx := 0 TO LENGTH (name) DO
+	WriteCard (ORD (name [idx]));
+END;
+</pre>
+<br><br><br><br><br>
+
+<li>
+Tell me everything you know about Modula-2 <b>records</b>. <u>[5]</u>
+
+<li class="break">
+In your own words, describe what <b>inheritance</b> means in object-oriented
+programming. <u>[5]</u>
+<br><br><br><br><br><br><br>
+
+<li>
+Write a complete <b>declaration</b> for each of the following data types:
+<u>[11]</u>
+  <ol class="subparts">
+  <li> A string type: <br><br><hr>
+  <li> A type defining three exceptions, 
+    <tt>goodEx</tt>, <tt>badEx</tt>, and <tt>uglyEx</tt>:
+    <br><br><br><br><hr>
+  <li> A type for only the lowercase letters: <br><br><br><hr>
+  <li> A type for an <i>m</i> by <i>n</i> matrix of booleans: <br><br><br><hr>
+  <li> A doubly-linked (bidirectional) list of reals:<br><br><br><br><br><br>
+</ol>
+
+<li>
+Draw a diagram illustrating a <b>doubly-linked</b> (bidirectional) list 
+with three nodes.  Include <b>all</b> relevant pointers and indicate
+if any are NIL. <u>[4]</u>
+<br><br><br><br><br>
+
+<li>
+On a separate paper,
+write a Modula-2 procedure to <b>delete</b> a node from a doubly-linked
+list.  A complete module is not necessary.  You may assume any necessary
+IMPORTs have been done.  You may assume type declarations given above.
+Pseudocode/design is not necessary to show, but is good for partial credit.
+<u>[10]</u>
+
+<b>You may assume the user won't ask to delete the first or last node
+	(you can ignore the tricky special cases at the end-conditions)</b>
+
+<li class="break">
+Fill in the following grid with moves for a <b>knight's tour</b>.
+The first two positions are filled in for you.
+You may want to do your scratch work separately
+and copy just your final solution here.
+Partial credit for showing backtracking work.
+<br><br>
+<center><table border=1 class="knight">
+<tr><td><b>1</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td><b>2</b></td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+</table></center>
+
+<li>
+<img src="exam4-bst.gif" height=250 align=right>
+Consider the following <b>binary search tree</b> <u>[13]</u>:
+  <ol class="subparts">
+  <li> Which node is the <b>root</b>?  <br><br>__________________
+  <li> What is the <b>depth</b> of the tree?  <br><br>____________
+  <li> Name all the <b>leaves</b> in this tree:<br><br><br><br><br><br>
+  <li> Do a <b>post-order</b> traversal of this binary tree.
+  <li> Using the algorithm discussed in class, insert a node, 
+  "Cortland", into this BST and <b>diagram</b> the result.
+  <li> From the original BST, delete the node, "Gala", using the
+  algorithm discussed in class, and <b>diagram</b> the result.
+  </ol>
+
+</ol>
+
+</body></html>
+

@@ -1,0 +1,126 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 167 Spring 2007 Lab Template, Trinity Western University</title>
+</head><body>
+
+<h1><a href=".">CMPT167</a> Lab0: Template Lab Write-up</h1>
+
+<h2>Problem Statement:</h2>
+Display a running total of a sequence of integers entered by the user.
+
+<h2>Suitability:</h2>
+This is quite a trivial problem, well within the reach of a calculator (or
+Google!).
+However, the solution does illustrate how the problem-solving
+process works, from problem statement to design to implementation.
+
+<h2>Problem Restatement:</h2><ul>
+<li> <b>Given:</b> A sequence of integers entered by the user
+<li> <b>To Do:</b> Calculate the sum of all integers entered thus far
+<li> <b>Desired Result:</b> Running total
+<li> <b>Formula:</b> (none applicable)
+</ul>
+
+<h2>Libraries:</h2>
+This program uses the basic Java libraries.
+It is coded as a Java applet, and so uses the applet libraries.
+
+<h2>Problem Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input Section:</b> <ul>
+  <li> user input value
+  </ul>
+<li> <b>Computation:</b> <ul>
+  <li> calculate running total
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> display running total
+  </ul>
+</ol>
+
+<h2>Second Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input</b> <ul>
+  <li> Define a text input widget and bind it to the applet
+  <li> When the user presses enter, retrieve the value from the input widget
+  and convert it to an integer
+  </ul>
+<li> <b>Computation</b> <ul>
+  <li> Add the retrieved integer value to the running total
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> Convert the integer running total to a string and set the status bar
+  text accordingly (could also use a label widget)
+  <li> Clear the text input widget
+  </ul>
+</ol>
+
+<h2>Data Table:</h2>
+  <li> <b>number</b> (int): the integer value entered by the user
+  <li> <b>sum</b> (int): the integer running total
+  <li> <b>input</b> (TextField): text input widget for <b>number</b>
+  <li> (it is not necessary to include all widgets here (e.g., <b>prompt</b> --
+  <a href="Addition.java">see code</a>), just the ones used for
+  computation)
+  </ul>
+
+<h2>User Manual:</h2>
+
+<h3>Description:</h3>
+Addition is a trivial little applet that keeps a running total of integers
+entered by the user.
+
+<h3>Operation:</h3>
+There is just one text box in the applet window:
+<ul><li><b>Enter integer and press Enter:</b></ul>
+Type in an integer value and press Enter.  It can be negative, but must not
+contain any decimal points, commas, or other non-numeric characters (letters,
+punctuation etc.).
+
+<p>Each time you type a number and press Enter, the status bar will be updated
+to show the current running total.  Keep entering numbers to see the status bar
+change.
+
+<h2>Test Cases, with expected results:</h2>
+
+<p>Put some effort into designing your test cases; QA is a challenging job!
+The idea is that if your program passes all the test cases, you'd be confident
+shipping it to a paying customer.
+
+<h3>Normal Test case:</h3>
+<ul>
+<li> Enter integer and press Enter: 100
+<li> Enter integer and press Enter: -165
+<li> Enter integer and press Enter: 033
+<li> Status bar: -32
+</ul>
+
+<h3>Test case that breaks (invalid input):</h3>
+<ul>
+<li> Enter integer and press Enter: -55
+<li> Enter integer and press Enter: 2.5
+<li> <em>(Applet ignores input or crashes)</em>
+</ul>
+
+<h2>Screenshots</h2>
+<img src="screenshot1.png" width="402" height="191">
+<br>(Can be embedded here or left as separate files if you like, 
+but list the filenames here.)
+
+<p>
+<object width="400" height="50"
+  classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93">
+<param name="type" value="application/x-java-applet">
+<param name="code" value="Addition.class">
+<comment>
+<embed code="Addition.class" width="400" height="50"
+  type="application/x-java-applet"
+  pluginspage="http://java.sun.com/javase/downloads/"/>
+</comment>
+</object>
+
+<br>
+This write-up is done in HTML as a webpage, and this sample lab is done as a
+Java Applet.  If you do this as well, you may opt to embed your applet
+directly into your lab write-up.  But you should <em>still</em> have static
+screenshots in your write-up.
+
+</body></html>

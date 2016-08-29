@@ -1,0 +1,48 @@
+<html>
+<head>
+  <title>Doctests and test driven development</title>
+</head>
+<body>
+
+<h1>Doctests and test driven development</h1>
+
+<h2>Automated testing with <code>doctest</code></h2>
+
+<p><code>doctest</code> is a module in the Python standard library which 
+makes innovative use of Python's docstring, interactive shell, and
+introspection capabilities.
+</p>
+
+
+<h2>docstrings</h2>
+
+<p>Python's <strong>docstring</strong>s provide an easy way to document
+modules, classes, methods, and functions.  A docstring is simply a string
+constant that occurs as the first statement of an object's definition.
+Here is an example from the chapter on trees illustrating its use:
+</p>
+
+<pre class="python">
+def total(tree):
+    """total(tree) -> sum
+
+      Return the sum of the values of the elements of a tree of numbers.
+    """
+    if tree == None: return 0
+    return total(tree.left) + total(tree.right)
+</pre>
+
+<p>Assuming the example above is in a module named <code>trees.py</code>,
+the following is now possible:</p>
+
+<pre class="python-shell">
+>>> from trees import *
+>>> print total.__doc__
+total(tree) -> sum
+
+      Return the sum of the values of the elements of a tree of numbers.
+
+</pre>
+
+</body>
+</html>

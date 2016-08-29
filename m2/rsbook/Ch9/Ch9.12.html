@@ -1,0 +1,598 @@
+<HTML>
+<HEAD>
+<TITLE>9.12 An Extended Example (Inventory)</TITLE>
+<meta NAME="keywords" CONTENT="extended, extend, example, inventory, code, raw, sequence, sequencial, i/o, seqfile, seqfiles, file, files, rawio, record, records, random, access, model">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.12 An Extended Example (Inventory)</B></H2>
+<P>Here is a simple illustration of some of the ideas found in the last two sections.  The program is designed to keep track of a small inventory.  Each item is recorded by name, price, quantity and location (bin number).  The records are kept in a disk file, and any new items are added to that disk file whenever the user chooses to save the data or exits the program.</P>
+<H3><B><A NAME="9.12.1">9.12.1</A> Inventory with Raw Sequential I/O</B></H3>
+<P>The first version of the program keeps track of the inventory in a file that is manipulated by <I>SeqFile</I> as a rewindable stream, and the actual I/O is done by RawIO.  Logically, the items in the stream consist of records; physically they are binary recordings.  The planning information has been left out so as to save space.</P>
+<PRE>
+<A NAME="Inventory"></A><B>MODULE</B> Inventory;
+(* Keeps track of a demonstration inventory in a file called <!--"-->&quot;inventory.data.<!--"-->&quot; *)
+
+(* Written by R.J. Sutcliffe *)
+(* to demonstrate the use of records and RawIO *)
+(* using ISO standard Modula-2  *)
+(* last revision 1994 03 24 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadString, SkipLine, WriteLn, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> RawIO <B>IMPORT</B>
+  Read, Write;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>IMPORT</B> IOResult;
+<B>FROM</B> SeqFile <B>IMPORT</B>
+  OpenRead, OpenResults, raw, write, Reread, Rewrite, Close, ChanId;
+
+<B>CONST</B>
+  max = 10; (* a small inventory *)
+    
+<B>VAR</B>
+  fileOpen, fileDirty : <B>BOOLEAN</B>; (* to know what the status is *)
+<B>TYPE</B>
+  Name = <B>ARRAY</B> [0 .. 20] <B>OF</B> <B>CHAR</B>;
+  Item =
+    <B>RECORD</B>
+      name : Name;
+      price : <B>REAL</B>;
+      quantity : <B>CARDINAL</B>;
+      bin : <B>CHAR</B>;
+    <B>END</B>;  (* Item *)
+  Items = <B>ARRAY</B> [1 .. max] <B>OF</B> Item;
+<B>VAR</B>
+  emptyItem : Item;
+  stock : Items;
+  Ok : <B>BOOLEAN</B>;
+  dataChan : ChanId;
+  res : OpenResults;
+    
+(* This group of procedures displays current contents of fields on the screen for viewing or editing. *)
+
+<B>PROCEDURE</B> DisplayName (name: Name);
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Name ==<!-->&gt; <!--"-->&quot;);
+  WriteString (name);
+<B>END</B> DisplayName;
+
+<B>PROCEDURE</B> DisplayPrice (price : <B>REAL</B>);
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Price ==<!-->&gt; <!--"-->&quot;);
+  WriteFixed (price, 2,6);
+<B>END</B> DisplayPrice;
+
+<B>PROCEDURE</B> DisplayQuantity (quantity : <B>CARDINAL</B>);
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Quantity ==<!-->&gt; <!--"-->&quot;);
+  WriteCard (quantity, 10);
+<B>END</B> DisplayQuantity;
+
+<B>PROCEDURE</B> DisplayLocation (bin : <B>CHAR</B>);
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Bin Location ==<!-->&gt; <!--"-->&quot;);
+  WriteChar (bin);
+<B>END</B> DisplayLocation;
+
+<B>PROCEDURE</B> DisplayItem (item : Item);
+(* calls the above to display an item. *)
+<B>BEGIN</B>
+  <B>WITH</B> item
+    <B>DO</B>
+      WriteString (<!--"-->&quot;         Item<!--"-->&quot;);
+      WriteLn;
+      DisplayName (name);
+      WriteString (<!--"-->&quot;    <!--"-->&quot;);
+      DisplayPrice (price);
+      WriteString (<!--"-->&quot;    <!--"-->&quot;);
+      WriteLn;
+      DisplayQuantity (quantity);
+      WriteString (<!--"-->&quot;    <!--"-->&quot;);
+      DisplayLocation (bin);
+      WriteLn;WriteLn;
+    <B>END</B>;
+<B>END</B> DisplayItem;
+
+<B>VAR</B>
+  numItems : <B>CARDINAL</B>;  (* global *)
+  
+<B>PROCEDURE</B> ListItems; (* list all items *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := 1 <B>TO</B> numItems
+    <B>DO</B>
+      WriteCard (count, 1);
+      WriteString (<!--"-->&quot;. <!--"-->&quot;);
+      DisplayName (stock [count].name);
+      WriteLn;
+    <B>END</B>;
+<B>END</B> ListItems;
+
+<B>PROCEDURE</B> EditItem (<B>VAR</B> item : Item); (* change contents *)
+<B>VAR</B>
+  tempName : Name;
+  tempPrice : <B>REAL</B>;
+  tempQuantity : <B>CARDINAL</B>;
+  tempBin : <B>CHAR</B>;
+
+ <B>BEGIN</B>
+  <B>WITH</B> item
+    <B>DO</B>
+      WriteString (<!--"-->&quot;  Edit  Item<!--"-->&quot;);
+      WriteLn;
+      DisplayName (name);
+      WriteLn;
+      ReadString (tempName);
+      <B>IF</B> (ReadResult() = allRight)
+        <B>THEN</B>
+          name := tempName;
+          fileDirty := <B>TRUE</B>;
+        <B>END</B>;
+      SkipLine;
+      WriteLn;
+      DisplayPrice (price);
+      WriteLn;
+      ReadReal (tempPrice);
+      <B>IF</B> (ReadResult() = allRight)
+        <B>THEN</B>
+          price := tempPrice;
+          fileDirty := <B>TRUE</B>;
+        <B>END</B>;
+      SkipLine;
+      WriteLn;
+      DisplayQuantity (quantity);
+      WriteLn;
+      ReadCard (tempQuantity);
+      <B>IF</B> (ReadResult() = allRight)
+        <B>THEN</B>
+          quantity := tempQuantity;
+          fileDirty := <B>TRUE</B>;
+        <B>END</B>;
+      SkipLine;
+      WriteLn;
+      DisplayLocation (bin);
+      WriteLn;
+      ReadChar (tempBin);
+      <B>IF</B> (ReadResult() = allRight)
+        <B>THEN</B>
+          bin := tempBin;
+          fileDirty := <B>TRUE</B>;
+        <B>END</B>;
+      SkipLine;
+    <B>END</B>; (* with *)
+<B>END</B> EditItem;
+
+<B>PROCEDURE</B> AddItem;
+(* make an empty item, and then edit it. *)
+<B>VAR</B>
+  temp : Item;
+<B>BEGIN</B>
+  <B>IF</B> numItems <!--<-->&lt; max
+    <B>THEN</B>
+      temp := emptyItem;
+      EditItem (temp);
+      <B>INC</B> (numItems);
+      stock [numItems] := temp;
+    <B>END</B>;
+<B>END</B> AddItem;      
+
+<B>PROCEDURE</B> GetItem (<B>VAR</B> itemNum : <B>CARDINAL</B>);
+(* Find out which one to deal with *)
+<B>BEGIN</B>
+  <B>IF</B> numItems <!-->&gt; 0
+    <B>THEN</B>
+      <B>REPEAT</B>
+        ListItems;
+        WriteString (<!--"-->&quot;Pick one 1 .. <!--"-->&quot;); WriteCard (numItems,1);
+        WriteString (<!--"-->&quot; ==<!-->&gt;<!--"-->&quot;);
+        ReadCard (itemNum);
+        SkipLine;
+        Ok := (ReadResult() = allRight) <B>AND</B> (itemNum <!--<-->&lt;= numItems);
+        <B>IF</B> <B>NOT</B> Ok
+          <B>THEN</B>
+            WriteString (<!--"-->&quot;Error in selection; try again<!--"-->&quot;);
+            WriteLn;
+          <B>END</B>;
+      <B>UNTIL</B> Ok;
+    <B>ELSE</B>
+      WriteString (<!--"-->&quot;No items to list<!--"-->&quot;);
+      WriteLn;WriteLn;
+      itemNum := 0;
+    <B>END</B>;
+
+<B>END</B> GetItem;
+
+<B>PROCEDURE</B> Menu (<B>VAR</B> menuNum : <B>CARDINAL</B>);
+
+(* print a menu of program choices and get a valid choice *)
+
+<B>VAR</B>
+  Ok : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Do you wish to<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;1. Get existing/ open new disk file<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;2. Display an item<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;3. Add an item<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;4. Edit an item<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;5. Save disk file<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;6. Quit the program<!--"-->&quot;);WriteLn;
+    WriteString (<!--"-->&quot;Pick one 1 .. 6 ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (menuNum);
+    WriteLn;
+    SkipLine;
+    Ok := (ReadResult () = allRight) <B>AND</B> (menuNum <!--<-->&lt;7);
+    <B>IF</B> <B>NOT</B> Ok
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Error in menu selection; try again<!--"-->&quot;);
+        WriteLn;WriteLn;
+      <B>END</B>;
+  <B>UNTIL</B> Ok;
+<B>END</B> Menu;
+
+<B>PROCEDURE</B> GetFile;
+(* Open and read contents of Inventory.data, if any. *)
+<B>BEGIN</B>
+  numItems := 0;
+  OpenRead (dataChan, <!--"-->&quot;InventoryData<!--"-->&quot;, raw+write, res);
+  <B>IF</B> (res = opened)
+    <B>THEN</B>
+      fileOpen := <B>TRUE</B>;
+      <B>REPEAT</B>
+        Read (dataChan, stock [numItems + 1]);
+        <B>IF</B> IOResult.ReadResult (dataChan) = allRight
+          <B>THEN</B>
+            <B>INC</B> (numItems);
+          <B>END</B>;
+      <B>UNTIL</B> (numItems = max) <B>OR</B> (IOResult.ReadResult (dataChan) # allRight)
+    <B>END</B>;
+<B>END</B> GetFile;
+
+<B>PROCEDURE</B> SaveFile;
+(* write out entire file.  If file not already open, opens and reads stuff in first. *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> fileOpen
+    <B>THEN</B>
+      <B>IF</B> <B>NOT</B> fileDirty
+        <B>THEN</B>
+          WriteString (<!--"-->&quot;No data collected <!--& -->&amp; no file open<!--"-->&quot;);
+          WriteLn;
+          <B>RETURN</B>;
+        <B>END</B>;
+      GetFile;
+    <B>END</B>;
+  Rewrite (dataChan);
+  <B>FOR</B> count := 1 <B>TO</B> numItems
+    <B>DO</B>
+      Write (dataChan, stock [count]);
+    <B>END</B>;
+  Close (dataChan);
+  fileOpen := <B>FALSE</B>;
+  fileDirty := <B>FALSE</B>;
+  numItems := 0;
+    
+<B>END</B> SaveFile;
+
+<B>VAR</B> (* main *)
+  action, itemNum : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  numItems := 0;
+  fileOpen := <B>FALSE</B>;
+  fileDirty := <B>FALSE</B>;
+  (* make a default or empty item for later editing *)
+  <B>WITH</B> emptyItem
+    <B>DO</B> (* initialize one *)
+      name := <!--"-->&quot;<!--"-->&quot;;
+      price := 0.0;
+      quantity := 0;
+      bin := <!--"-->&quot;*<!--"-->&quot;; (* nowhere *)
+    <B>END</B>;  (* with *)
+  WriteString (<!--"-->&quot;    Rick's Inventory program<!--"-->&quot;);
+  WriteLn;WriteLn;
+      
+  <B>REPEAT</B>
+    Menu (action); (* print menu + get action *)
+    (* take action according to request from menu *)
+    <B>IF</B> (action = 1) <B>AND</B> <B>NOT</B> fileOpen
+      <B>THEN</B>
+        GetFile;
+      <B>ELSIF</B> (action = 2) <B>THEN</B>
+        GetItem (itemNum);
+        <B>IF</B> itemNum # 0
+          <B>THEN</B>
+            DisplayItem (stock [itemNum]);
+          <B>END</B>;
+      <B>ELSIF</B> (action = 3) <B>THEN</B>
+        AddItem;
+      <B>ELSIF</B> (action = 4) <B>THEN</B>
+        GetItem (itemNum);
+        <B>IF</B> itemNum # 0
+          <B>THEN</B>
+            EditItem (stock [itemNum]);
+          <B>END</B>;
+      <B>ELSIF</B> (action = 5) <B>THEN</B>
+        SaveFile;
+      <B>ELSIF</B> (action = 6) <B>THEN</B>
+        <B>IF</B> fileOpen
+          <B>THEN</B>
+            SaveFile;
+          <B>END</B>;
+      <B>END</B>;
+  <B>UNTIL</B> action = 6; (* and then quietly exit *)
+<B>END</B> Inventory.</PRE>
+<P><B>NOTES</B>:	1. Observe the free use of numerous small specialized procedures to encapsulate program tasks for easy debugging.</P>
+<P>	2. Note the use of a menu that is reprinted on the screen repeatedly whenever the current task is complete.</P>
+<P>This program was run and the data file created, added to, and edited.  The program was run again and more items added.  However, these runs are lengthy and the output is not reproduced here.  It is left as an exercise to the student to make some improvements.</P>
+<H3><B><A NAME="9.12.2">9.12.2</A> Inventory with Raw Random I/O</B></H3>
+<P>In this second module, the same file is opened and manipulated as in the last, except that a random access model is used, and only one record item is kept in memory at a time.  The fact that a random access model can be imposed upon a file previously created with a sequential model device driver illustrates that the logical view of a file is independent of the physical recording.  In the program listing below, many of the procedures from the first version are not duplicated.</P>
+<PRE>
+<B>MODULE</B> RndInventory;
+(* Keeps track of a demonstration inventory in a file called <!--"-->&quot;inventory.data.<!--"-->&quot; *)
+
+(* Written by R.J. Sutcliffe *)
+(* to demonstrate the use of records, random access and RawIO *)
+(* using ISO standard Modula-2  *)
+(* last revision 1994 03 25 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadString, SkipLine, WriteLn, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> RawIO <B>IMPORT</B>
+  Read, Write;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>IMPORT</B> IOResult;
+<B>FROM</B> RndFile <B>IMPORT</B>
+  OpenOld, OpenResults, raw, read, write, Close, ChanId,
+  FilePos, StartPos, NewPos, EndPos, SetPos;
+    
+<B>VAR</B>
+  fileOpen : <B>BOOLEAN</B>; (* to know what the status is *)
+<B>TYPE</B>
+  Name = <B>ARRAY</B> [0 .. 20] <B>OF</B> <B>CHAR</B>;
+  Item =
+    <B>RECORD</B>
+      name : Name;
+      price : <B>REAL</B>;
+      quantity : <B>CARDINAL</B>;
+      bin : <B>CHAR</B>;
+    <B>END</B>;  (* Item *)
+<B>VAR</B>
+  emptyItem, currentItem : Item;
+  Ok : <B>BOOLEAN</B>;
+  dataChan : ChanId;
+  res : OpenResults;
+    
+(* Put same display procedures here *)
+
+<B>VAR</B>
+  numItems : <B>CARDINAL</B>;  (* global *)
+
+<B>PROCEDURE</B> ListItems; (* list all items *)
+(* Pre : file is open *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  SetPos (dataChan, StartPos (dataChan));
+  count := 0;
+  <B>REPEAT</B>
+    Read (dataChan, currentItem);
+    <B>IF</B> IOResult.ReadResult (dataChan) = allRight
+      <B>THEN</B>
+        WriteCard (count+1, 1);
+        WriteString (<!--"-->&quot;. <!--"-->&quot;);
+        DisplayName (currentItem.name);
+        WriteLn;
+        <B>INC</B> (count);
+      <B>END</B>;
+  <B>UNTIL</B> IOResult.ReadResult (dataChan) # allRight;
+  numItems := count;
+<B>END</B> ListItems;
+
+<B>PROCEDURE</B> PutItem (item: Item);
+(* Write out item at current file position *)
+<B>BEGIN</B>
+  Write (dataChan, item);
+<B>END</B> PutItem;
+
+<B>PROCEDURE</B> FetchItem (itemNum: <B>CARDINAL</B>; <B>VAR</B> item : Item);
+(* Obtain that item number in the file
+Assume program numbering 1 ... and file numbering 0... *)
+
+<B>VAR</B>
+  pos : FilePos;
+<B>BEGIN</B>
+  pos := NewPos (dataChan, itemNum-1, <B>SIZE</B> (Item), StartPos (dataChan));
+  SetPos (dataChan, pos);
+  Read (dataChan, item);
+  SetPos (dataChan, pos);
+<B>END</B> FetchItem;
+
+<B>PROCEDURE</B> EditItem (<B>VAR</B> item : Item); (* change contents *)
+(* same as last time, but omit fileDirty lines *)
+
+<B>PROCEDURE</B> GetFile;
+(* Open or create Inventory.data *)
+<B>BEGIN</B>
+  OpenOld (dataChan, <!--"-->&quot;InventoryData<!--"-->&quot;, raw+write+read, res);
+  <B>IF</B> (res = opened)
+    <B>THEN</B>
+      fileOpen := <B>TRUE</B>;
+      SetPos (dataChan, StartPos(dataChan))
+    <B>END</B>;
+<B>END</B> GetFile;
+
+<B>PROCEDURE</B> CloseFile;
+(* close file.  If file not already open, does nothing. *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> fileOpen
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;No file open<!--"-->&quot;);
+      WriteLn;
+      <B>RETURN</B>;
+    <B>END</B>;
+  Close (dataChan);
+  fileOpen := <B>FALSE</B>;
+  numItems := 0;
+<B>END</B> CloseFile;
+
+<B>PROCEDURE</B> AddItem;
+(* make an empty item, and then edit it. *)
+<B>VAR</B>
+  temp : Item;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> fileOpen
+    <B>THEN</B>
+      GetFile;
+    <B>ELSE</B>
+      SetPos (dataChan, EndPos (dataChan));
+    <B>END</B>;
+    temp := emptyItem;
+    EditItem (temp);
+  <B>END</B> AddItem;      
+
+<B>PROCEDURE</B> GetItem (<B>VAR</B> itemNum : <B>CARDINAL</B>);
+(* Find out which one to deal with *)
+<B>BEGIN</B>
+  <B>IF</B> fileOpen
+    <B>THEN</B>
+      <B>REPEAT</B>
+        ListItems;
+        WriteString (<!--"-->&quot;Pick one 1 .. <!--"-->&quot;); WriteCard (numItems,1);
+        WriteString (<!--"-->&quot; ==<!-->&gt;<!--"-->&quot;);
+        ReadCard (itemNum);
+        SkipLine;
+        Ok := (ReadResult() = allRight) <B>AND</B> (itemNum <!--<-->&lt;= numItems);
+        <B>IF</B> <B>NOT</B> Ok
+          <B>THEN</B>
+            WriteString (<!--"-->&quot;Error in selection; try again<!--"-->&quot;);
+            WriteLn;
+          <B>END</B>;
+      <B>UNTIL</B> Ok;
+    <B>ELSE</B>
+      WriteString (<!--"-->&quot;File not open<!--"-->&quot;);
+      WriteLn;WriteLn;
+      itemNum := 0;
+    <B>END</B>;
+
+<B>END</B> GetItem;
+
+<B>PROCEDURE</B> Menu (<B>VAR</B> menuNum : <B>CARDINAL</B>);
+
+(* identical to last version *)
+
+<B>END</B> Menu;
+
+<B>VAR</B> (* main *)
+  action, itemNum : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  numItems := 0;
+  fileOpen := <B>FALSE</B>;
+  (* make a default or empty item for later editing *)
+  <B>WITH</B> emptyItem
+    <B>DO</B> (* initialize one *)
+      name := <!--"-->&quot;<!--"-->&quot;;
+      price := 0.0;
+      quantity := 0;
+      bin := <!--"-->&quot;*<!--"-->&quot;; (* nowhere *)
+    <B>END</B>;  (* with *)
+  WriteString (<!--"-->&quot;    Rick's Inventory 2 program<!--"-->&quot;);
+  WriteLn;WriteLn;
+      
+  <B>REPEAT</B>
+    Menu (action); (* print menu + get action *)
+    (* take action according to request from menu *)
+    <B>IF</B> (action = 1) <B>AND</B> <B>NOT</B> fileOpen
+      <B>THEN</B>
+        GetFile;
+      <B>ELSIF</B> (action = 2) <B>THEN</B>
+        GetItem (itemNum);
+        <B>IF</B> itemNum # 0
+          <B>THEN</B>
+            FetchItem(itemNum, currentItem);
+            DisplayItem (currentItem);
+          <B>END</B>;
+      <B>ELSIF</B> (action = 3) <B>THEN</B>
+        AddItem;
+      <B>ELSIF</B> (action = 4) <B>THEN</B>
+        GetItem (itemNum);
+        <B>IF</B> itemNum # 0
+          <B>THEN</B>
+            FetchItem(itemNum, currentItem);
+            EditItem (currentItem);
+          <B>END</B>;
+      <B>ELSIF</B> (action = 5) <B>THEN</B>
+        CloseFile;
+      <B>ELSIF</B> (action = 6) <B>THEN</B>
+        <B>IF</B> fileOpen
+          <B>THEN</B>
+            CloseFile;
+          <B>END</B>;
+      <B>END</B>;
+  <B>UNTIL</B> action = 6 (* and then quietly exit *)
+<B>END</B> RndInventory.</PRE>
+<P>Observe that only one item is kept in memory at a time, and that after it is read the file position is set back to its starting point so that if editing is done, the item will be written back to the correct location.  Much of the other logic remains the same, but new procedures have been inserted to fetch an item by number and to return it to the disk.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

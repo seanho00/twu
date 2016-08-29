@@ -1,0 +1,222 @@
+<HTML>
+<HEAD>
+<TITLE>5.11 Assignments</TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, abstract, transparent, whole, number, ordinal, scalar, new, variable, type, types, enumerated, enumerate, subranges, declare, standard, procedure, procedures, function, functions, array, arrays, char, chars, string, strings, nestm nestedm loop, loops, assign, assignment, manipulate, pass, parameter, parameters, open, reserved, word, words, standard, identifier, identifiers, symbol, symbolic, symbols, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.11 Assignments </B></H2>
+
+<H3><B>Questions</B></H3>
+<P>1.  What is the difference between an abstract data type and a transparent data type?</P>
+<P>2.  What must the specification of an abstract data type include?</P>
+<P>3.  What is the difference between a built-in ordinal data type and a user-defined ordinal data type?  Illustrate with an example of each, and indicate what kind of operations can be used with each.</P>
+<P>4.  Explain why one cannot write <I>WriteString (January)</I> where <I>January</I> is a value of an enumerated type <I>MonthNames</I>.</P>
+<P>5. Consider the module <I><A HREF="Ch5.2.html#SimplePay">SimplePay</A></I> in section 5.2.1.  Why is it necessary to have the value <I>Saturday</I> in the enumeration even though it is not used?</P>
+<P>6.  Describe some advantages of using subranges.</P>
+<P>7.  Which of the following ranges is incorrectly specified, and why?<BR>
+	a) [10 .. 5]<BR>
+	b) [<!--"-->&quot;0<!--"-->&quot; .. 9]<BR>
+	c) [a .. e]<BR>
+	d) [<!--"-->&quot;a<!--"-->&quot; .. <!--"-->&quot;Z<!--"-->&quot;]</P>
+<P>8.  What is the difference between an iterated repetition, and the more general counted repetition?</P>
+<P>9.  Why are the WHILE and FOR loops not equivalent?</P>
+<P>10.  Which of the following are incorrect and why?<BR>
+	a. FOR count = 1 TO 15 DO<BR>
+	b. FOR count := 15 TO 1 DO<BR>
+	c. FOR count := <!--"-->&quot;a<!--"-->&quot; TO <!--"-->&quot;z<!--"-->&quot; DO<BR>
+	d. FOR boolVar := FALSE TO TRUE DO<BR>
+	e. FOR day := Mon TO Fri BY 2 DO<BR>
+	f. FOR count := 1.5 TO 10 DO<BR>
+	g. FOR count := 1 TO 10 BY 1.5 DO<BR>
+	h. FOR count := 1 TO 10 BY count DO</P>
+<P>11.  When the following code is compiled, all is well.  However, when it is run, there is always an out-of-range error.  Why?</P>
+<PRE><B>TYPE</B>
+  countRange = [1 .. 10];
+<B>VAR</B>
+  count : countRange;
+  count := 0;
+<B>BEGIN</B>
+  <B>WHILE</B> count <!--<-->&lt;= 10
+    <B>DO</B>
+      statement sequence;
+      <B>INC</B> (count);
+    <B>END</B>;</PRE>
+
+<P>12. Using DayName as defined in the chapter: (Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday); consider the following statement sequences.  If an error arises, indicate the nature of the error.  Assume that <I>cardVar</I> is of type CARDINAL and has the value of 2 at the beginning of each statement sequence, and answer with the final value of <I>cardVar</I> or <I>day</I> in each case.<BR>
+	a)  <I>cardVar</I> := <I>cardVar</I> + ORD (Wednesday);<BR>
+	b)  day := Monday;<BR>
+	     day := day + 2;<BR>
+	c)  day := VAL (DayName, 3);<BR>
+	     INC (day, ORD (Monday));<BR>
+	d)  <I>cardVar</I> := ORD (VAL (DayName, 2)) - 5;<BR>
+	e)  day := Friday;<BR>
+	     INC (Friday, 2);</P>
+<P>13. Both assignments to the variable <I>count</I> in the following code are incorrect.  In each case, why?</P>
+<PRE><B>FOR</B> count := 1 <B>TO</B> 100 <B>DO</B>
+  statement sequence1;
+  count := count + 2;
+<B>END</B>;
+count := count + 2;
+statement sequence2;</PRE>
+
+<P>14. What is wrong with the following nested loop:</P>
+<PRE><B>FOR</B> count := 1 <B>TO</B> 10
+  <B>DO</B>
+    <B>FOR</B> count := 2 <B>TO</B> 10
+      <B>DO</B>
+        statement sequence;
+    <B>END</B>;
+  <B>END</B>;</PRE>
+
+<P>15. The following loop constructions each contain the statement WriteString (<!--"-->&quot;Hi<!--"-->&quot;) at their innermost point to represent the working code of an entire statement sequence.  In each case, state the number of times the sample statement executes.</P>
+a. <PRE> <B>FOR</B> count := 2 <B>TO</B> 100 <B>BY</B> 3
+   <B>DO</B>
+     WriteString (<!--"-->&quot;Hi<!--"-->&quot;);
+   <B>END</B>;</PRE>
+
+b. <PRE> <B>FOR</B> count := 200 <B>TO</B> 100 <B>BY</B> -13
+   <B>DO</B>
+     WriteString (<!--"-->&quot;Hi<!--"-->&quot;);
+   <B>END</B>;</PRE>
+
+c. <PRE> <B>FOR</B> outerCount := 2 <B>TO</B> 100
+   <B>DO</B>
+     <B>FOR</B> innerCount := 2 <B>TO</B> 10
+       <B>DO</B>
+         WriteString (<!--"-->&quot;Hi<!--"-->&quot;);
+       <B>END</B>;
+   <B>END</B>;</PRE>
+
+d. <PRE> <B>FOR</B> outerCount := 2 <B>TO</B> 100 <B>BY</B> 3
+   <B>DO</B>
+     <B>FOR</B> innerCount := 2 <B>TO</B> 10 <B>BY</B> 5
+       <B>DO</B>
+         WriteString (<!--"-->&quot;Hi<!--"-->&quot;);
+       <B>END</B>;
+   <B>END</B>;</PRE>
+
+e. <PRE> start := 5;
+ <B>FOR</B> count := start <B>TO</B> 1
+   <B>DO</B>
+     WriteString (<!--"-->&quot;Hi<!--"-->&quot;);
+   <B>END</B>;</PRE>
+
+<P>16. Indicate what will be the  output from each program segment.  Pay attention to carriage returns and spacing.</P>
+a. <PRE>    GString := <!--"-->&quot;chord<!--"-->&quot;;
+    <B>FOR</B> i := 0 <B>TO</B> 4
+      <B>DO</B>
+        <B>FOR</B> k := 1 <B>TO</B> 4
+          <B>DO</B>
+            WriteChar (GString [i]);
+          <B>END</B>;
+      <B>END</B>;</PRE>
+
+b. <PRE><B>    REPEAT</B>
+      i := 5;
+      WriteCard (i, 10);
+      WriteLn;
+      <B>INC</B> (i, 2);
+    <B>UNTIL</B> i = 7;</PRE>
+
+c. <PRE>    <B>FOR</B> i := 1 <B>TO</B> 5
+      <B>DO</B>
+        <B>FOR</B> j := i <B>TO</B> 3
+          <B>DO</B>
+            WriteCard (i, 0);
+            WriteCard (j, 2);
+          <B>END</B>;
+       <B>END</B>;</PRE>
+
+<P>17. What is the mathematical name for a two-dimensional array?</P>
+<P>18. Show how you would (i) declare, (ii) fill with zeros, one row at a time an n by m two-dimensional array.</P>
+<H3><B>Problems</B></H3>
+<P>19. Show how to modify the code of the module <I><A HREF="Ch5.5.html#LetterCounter">LetterCounter</A></I> in Section 5.5 to ignore any non alphabetic characters and to regard uppercase and lowercase versions of a letter as the same letter.</P>
+<P>20. Modify the module <I><A HREF="Ch5.2.html#SimplePay">SimplePay</A></I> in section 5.2.1 to take into account the following additional considerations:</P>
+		<UL>	<!--€--><LI> pay time-and-a-half for over eight hours per day or Saturday work</LI>
+	<!--		€--><LI> pay double time- for over ten hours per day or Sunday work</LI>
+		<!--€--><LI> use a two week cycle rather than a one week cycle</LI>
+		<!--€--><LI> deduct 25% for taxes and $31.50 per week for medical coverage.</LI></UL>
+<P>21. Modify the module <I><A HREF="Ch5.4.html#ClassMarks">ClassMarks</A></I> in section 5.4.2 to allow the individual marks to be weighted.  The weights should be expressed in decimal form, and should add to 1.  The data input should have the weights of the mark categories on the third line before the first student's name.</P>
+<P>22. Write your own short program to print out the ASCII character values and their corresponding ordinals.  You should start with CHR (32) and end at CHR (126) as the ones below 32 and above 126 are control characters and may affect your display, program, or computer in rather unexpected ways, and the ones above 127 are not defined for the purposes of Modula-2.  (They may be graphics characters on your machine<!--‹-->--want to try?)  Print out the material and put it in your notebook for future reference.</P>
+<P>23. Consider the letter counting and word averaging program in <A HREF="../Ch5/Ch5.5.html#LetterCounter">section 5.5</A>.  Improve on it so that starting and ending punctuation is not included in the length of a word.  Thus, when the program encounters <I><!--"-->&quot;hello,<!--"-->&quot;</I>  all eight printable characters are recorded in the frequency array, but only the five alphabetic characters are used in computing the average word length.  If the word is a qualified identifier such as <I>STextIO</I>.<I>WriteChar</I>, that is, the punctuation mark is in the middle of a letter group, it should be included for purposes of computing the average word length.  Numbers should be included if they are part of an alphabetic word such as <I>identifier1</I>, or <I>goody2shoes</I>, but not when they are part of literals such as <I>234</I> or <I>15.3</I>.</P>
+<P>24. Write a program that will take an input word (say, with about four different letters) and write out all possible <!--"-->&quot;words<!--"-->&quot; (anagrams) based on permutations (rearranging the order) of the letters of the given word.  Make sure you don't use a letter twice. Use only <I>STextIO.WriteChar</I> for the output, not <I>STextIO.WriteString</I>.<BR>
+	<I>Sample Input</I>:<BR>
+	two<BR>
+	<I>Sample Output:  (Your algorithm may produce a different order.)</I><BR>
+	two tow wot wto otw owt</P>
+<P>25. Write a program that will test a selection of text and determine the average number of syllables per word.  You may take as a simple definition of a syllable that it is a consonant followed by a sequence of one or more vowels.  Some exceptions to this rule are words that start with vowels or that end with <I>y</I>, which is then a vowel.</P>
+<P>26. Write a program that will analyze a selection of text and create a table of frequencies for the letters of the alphabet only.  The results should be printed out in order of the most frequently occurring to least frequently occurring letter.  (This could be used to decode <!--"-->&quot;secret<!--"-->&quot; messages sent in simple letter-for-letter substitution cyphers.) </P>
+<P>27. Consider the PROCEDURE <A HREF="Ch5.6.html#AddArrays3">AddArrays3</A> in section 5.6 and suppose that HIGH (vect1) does not have to equal HIGH (vect2).  This leaves some additions undefined, so assume that any extra elements supplied are zero and any extra elements in the result are set to zero.  Modify the procedure to work this way and test it with two different test sets of data, each involving two arrays of different sizes.  (Six different sizes altogether, please; twice with <I>vect1</I> larger, twice with <I>vect2</I> larger, and twice with <I>ansVector</I> larger.)</P>
+<P>28. Suppose you have a one-dimensional array of up to ten CARDINALs.  Write a procedure to find the smallest one and swap it with the first element.  You may want to use a <I>Swap</I> procedure as well.  Now write a Module that sorts the whole array this way with successive calls to this procedure scanning elements 2 .. N, 3 .. N, and so on, each time selecting the smallest remaining one.  Test with the input data 2, 84, 1, 5, 63, 89, 12, 15.  Have the results printed.  (This is called a selection sort.)</P>
+<P>29. In <A HREF="../Ch5/Ch5.6.html">section 5.6</A> a procedure was developed for adding two vectors of indefinite length.  Write and test a similar procedure for finding the dot product of two vectors of indefinite (but equal) length.<BR>
+	PROCEDURE dotProduct (vect1, vect2 : ARRAY OF INTEGER;<BR>
+	      VAR dotOk : BOOLEAN; VAR result : INTEGER);<BR>
+	The procedure should return an error in the manner of <i>AddArrays4</i> if the lengths of the two open array parameters do not agree.  To compute the dot product, multiply the corresponding components together, and add up all the products.  Thus if a = (a<sub>1</sub> a<sub>2</sub>) and b = (b<sub>1</sub> b<sub>2</sub>), then a <!--·-->&#183; b = a<sub>1</sub>b<sub>1</sub> + a<sub>2</sub>b<sub>2</sub>.</P>
+<P>30.  Write and test a procedure for determining the length of a two dimensional vector and the angle it makes with the x-axis.  If a = (a<sub>1</sub> a<sub>2</sub>), r represents the length and theta is the angle, then r<sup>2</sup> = x<sup>2</sup> + y<sup>2</sup> and theta = arctan (y/x), where <i>arctan</i> may be imported from <I>RealMath</I>.</P>
+<P>31.  Complete and test the example <I><A HREF="Ch5.8.html#EnrollData">EnrollData</A></I> in section 5.8.</P>
+<P>32.  Write a program to record the marks of an entire class of students and calculate their letter grades.  Feel free to use the example <I><A HREF="Ch5.4.html#ClassMarks">ClassMarks</A></I>  of section 5.4.2 for part of this.  What you will also need is an array to store student names and another one for their marks, say on four tests, each out of one hundred.  Provision should be made for weighting as in problem 16 above.  You also need sections for entering the data and for printing it out along with the final letter grades.  Make good use of procedures.</P>
+<P>33. <I>Twin primes</I> are primes that differ by two.  Thus 3 and 5, 5 and 7, 11 and 13, and so on are twin primes.  Write a program to examine a file of primes created by a program like the example in <A HREF="../Ch5/Ch5.9.html">section 5.9</A> for twin primes, and print out all the twins it finds.</P>
+<P>34. The <I>Fibonacci sequence</I> is defined by a<sub>1</sub> = 1, a<sub>2</sub> = 1, and for i <!-->&gt; 2, a<sub>i</sub> = a<sub>i-1</sub> + a<sub>i-2</sub> so that the numbers in the sequence are 1, 1, 2, 3, 5, 8, 13, etc.  Write a procedure Fib (n) to calculate the value of a member of this sequence.  Write the surrounding Module to test and print not only Fib (n), but also the ratio Fib (n) / Fib (n-1).  Do this for successive values of n, up to the largest CARDINAL that does not give an overflow error.  Does the ratio appear to be approaching a particular value?</P>
+<P>35. Assume that you only have <I>ReadChar</I> available, and not <I>ReadCard</I>.  Write and test a procedure to read in a Cardinal value one digit at a time and store each digit in an array.  Write and test a procedure to write these numbers out one character at a time.  Write and test a procedure to add two such numbers, one digit at a time.  Make no use of cardinals larger than 9 or of reals, just arrays of the digits.  Test your procedure now by making them read in, add, and print out the answers to:<BR>
+	a)  760 + 429<BR>
+	b)  62481 + 39862<BR>
+	c)  41839276 + 84321475</P>
+<P>36. Write a Module that solves a system of two equations in two variables using determinants (Hint: look up and use Cramer's rule).</P>
+<P>37. Extend your solution in #36 to encompass three equations in three variables.</P>
+<H3><B>Challenges</B></H3>
+<P>38. (For the really ambitious Mathematician) Write a recursive procedure to calculate the determinant of an n x n matrix. Use an open array.  Compute the dimension of the array passed within the procedure.</P>
+<P>39. Write a program Module to play the game of tic-tac-toe on the screen.  Use an array to hold the current values of the nine boxes.  The machine should play the best possible strategy<!--‹-->--if it goes first it should always win or draw, regardless of the user's strategy. </P>
+<P>40. A number is divisible by nine if the sum of its digits is divisible by nine.  Write a program to test a number that is entered as a string of digits, one character at a time, to see if it is divisible by nine.  (This problem would be trivial if you were allowed to enter the number as a CARDINAL.)</P>
+<P>41. A number is divisible by nine if the sum of its digits is divisible by nine. Write a program to test a number that is entered as a string of digits, one character at a time, to see if it is divisible by nine. (This problem would be trivial if you were allowed to enter the number as a CARDINAL.)</P>
+<P>42. Write a program to produce a calendar of an entire year given the year.</P>
+<P>43. A square (n by n) matrix is diagonal if only non-zero entries in the matrix are on the main diagonal (at positions 1,1  2,2  3,3 etc.) If all the entries on the main diagonal are equal to one, the matrix is an identity matrix. If all the entries above the main diagonal are zero, it is lower triangular, and if all the entries below the main diagonal are zero, it is upper triangular. Write and test a procedure to classify square matrices of any size as one or more of the above. </P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

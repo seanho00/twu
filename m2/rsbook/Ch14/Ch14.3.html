@@ -1,0 +1,441 @@
+<HTML><HEAD><TITLE>14.3 Queues</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Queues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.3 Queues</B></H2>
+<P>When data is organized in a list (or an array), one can get access to any one of the items in the structure.  However, if data structures are to mirror real-life situations, this kind of access may not always be desirable.</P>
+<P>Consider for instance the problem of simulating something like a cashier's lineup.  Here, new data items are added at one end of the line, but they are only served at the other, in order of their addition to the line.  This is termed a first-in-first-out data structure.</P>
+<H3><B>Example:</B></H3>
+<PRE>
+<B>Action</B>		<B>Resulting Queue</B> 
+A arrives		A
+B arrives		AB
+C arrives		ABC
+service  		BC
+D arrives		BCD
+service  		CD</PRE>
+<BLOCKQUOTE><I><A NAME="Queue">A</A> first-in-first-out data structure is called a <U>queue</U>.</I></BLOCKQUOTE>
+<P>One would probably implement a queue in such a way that the only operations on it were, say, <I>Init</I>, <I>Destroy</I>, <I>Full</I>, <I>Empty</I>, <I>Enqueue</I> (add to queue), and <I>Serve</I>.  This would prevent access to any but the end of the queue for <I>adding</I> and the beginning for <I>serving</I> (removing an item).  <I>Full</I> would be used to check the status of the queue before attempting to add, and <I>Empty</I> to check before attempting to serve.</P>
+<P><I>Init</I> would create an empty queue, and <I>Destroy</I> would terminate it (giving back all the memory it used in the dynamic allocation).</P>
+<P>Here, for example is a module to define and implement a queue for text items:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> TextQueues;
+
+(* a simple text queue of specified size
+  by  R. Sutcliffe
+  last modified 1995 05 29  *)
+
+<B>TYPE</B>
+  Queue;   (* details in implementation *)
+  ActionProc = <B>PROCEDURE</B> (<B>CHAR</B>);
+
+<B>PROCEDURE</B> Init (maxSize : <B>CARDINAL</B>) : Queue;
+(* Pre: none
+   Post: Establish a text queue that can enqueue at most maxSize characters.  *)
+
+<B>PROCEDURE</B> Destroy (q : Queue);
+(* Pre: q is a previously established queue.  
+   Post: any memory previously allocated to q is now returned. *)
+
+<B>PROCEDURE</B> Full (q : Queue) : <B>BOOLEAN</B>;
+(* Pre: q is a previously established queue.  
+   Post: if the number of active items in the queue equals the maxSize used when Init was called, returns <B>TRUE</B>; otherwise returns <B>FALSE</B>. *)
+
+<B>PROCEDURE</B> Empty (q : Queue) : <B>BOOLEAN</B>;
+(* Pre: q is a previously established queue.  
+   Post: if the number of active items in the queue is zero, returns <B>TRUE</B>; otherwise returns <B>FALSE</B>. *)
+
+<B>PROCEDURE</B> Enqueue (q : Queue; item : <B>CHAR</B>);
+(* Pre: q is a previously established queue.  
+   Post: if the number of active items in the queue is less than the maxSize used when Init was called, the given character is added to the queue; otherwise no action is taken. *)
+
+<B>PROCEDURE</B> Serve (q : Queue; <B>VAR</B> item : <B>CHAR</B>);
+(* Pre: q is a previously established queue.  
+   Post: if the number of active items in the queue is greater than the zero, a character is removed from the queue and returned on a first-in-first-out basis; otherwise no action is taken. *)
+
+<B>PROCEDURE</B> Traverse (q : Queue; Proc : ActionProc);
+(* Pre: q is a previously established queue.  
+   Post: The action specified by Proc is taken on each item in the queue from the head to the tail without affecting the queue itself. *)
+
+<B>END</B> TextQueues.</PRE>
+<P>This particular specification envisions a maximum size for a queue defined when the queue is first created.  It also has a procedure that allows a client application to <!--"-->&quot;walk<!--"-->&quot; or <!--"-->&quot;traverse<!--"-->&quot; down the queue and do something with each item without affecting the queue itself.  The <!--"-->&quot;something<!--"-->&quot; that is done depends on the procedure that is passed.</P>
+<P>In the implementation, <i>Queue</i> must be redefined as a pointer to a data structure containing information as to the size of the queue, a pointer to the actual data, the number of active items, and a pointer to indicate the position in the queue for enqueing (head) and for serving (tail.)  <I>Init</I> must create and initialize one of these structures and set aside enough memory for <I>maxSize</I> characters.  <I>Enqueue</I> must enter the supplied character into the queue and adjust the counter and enqueing position.   <I>Serve</I> must remove and return the character at the serving position, adjust the serving position and the count.  One possible implementation of this queue uses a dynamic array to hold the characters. If in adjusting the count, one goes past the end of the structure, the number must be wrapped to the beginning (if possible.)  If the two counters collide, the queue is either full or empty, depending on which catches up with which.  Here, though, these conditions are kept track of by the number of items that are currently in the queue.</P>
+<P>Because it would be somewhat inefficient to implement this by dynamically allocating a separate piece of memory for each character to be enqueued, the <I>Init</I> procedure has been specified to take sufficient memory for the maximum number of items that can be enqueued.  Here is the implementation:</P>
+<PRE>
+<A NAME="TextQueues"></A><B>IMPLEMENTATION</B> <B>MODULE</B> TextQueues;
+
+(* a simple text queue of specified size
+  by  R. Sutcliffe
+  last modified 1995 05 29  *)
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  ADDRESS, ADDADR;
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+
+<B>TYPE</B>
+  Queue = <B>POINTER</B> <B>TO</B> QueueData;
+  QueueData = 
+    <B>RECORD</B>
+      size : <B>CARDINAL</B>;
+      numberActive: <B>CARDINAL</B>;
+      head, tail : <B>CARDINAL</B>;
+      dataPtr : <B>ADDRESS</B>;
+    <B>END</B>;
+  CharAdr = <B>POINTER</B> <B>TO</B> <B>CHAR</B>;
+
+<B>PROCEDURE</B> Init (maxSize : <B>CARDINAL</B>) : Queue;
+<B>VAR</B>
+  q : Queue;
+<B>BEGIN</B>
+  <B>NEW</B> (q);  (* set up a queue record *)
+  q^.size := maxSize;
+  q^.numberActive := 0;
+  q^.head := 0;
+  q^.tail := 0;
+  ALLOCATE (q^.dataPtr, <B>SIZE</B> (<B>CHAR</B>) * maxSize);
+  <B>IF</B> q^.dataPtr = <B>NIL</B> (* couldn't get memory for data *)
+    <B>THEN</B>
+      <B>DISPOSE</B> (q);
+    <B>END</B>;
+  <B>RETURN</B> q;
+<B>END</B> Init;
+
+<B>PROCEDURE</B> Destroy (q : Queue);
+<B>BEGIN</B>
+  DEALLOCATE (q^.dataPtr, <B>SIZE</B> (<B>CHAR</B>) * q^.size); (* data *)
+  <B>DISPOSE</B> (q); (* and queue info *)
+<B>END</B> Destroy;
+
+<B>PROCEDURE</B> Full (q : Queue) : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>IF</B> q^.numberActive = q^.size
+    <B>THEN</B>
+      <B>RETURN</B> <B>TRUE</B>
+    <B>ELSE</B>
+      <B>RETURN</B> <B>FALSE</B>
+    <B>END</B>;
+<B>END</B> Full;
+
+<B>PROCEDURE</B> Empty (q : Queue) : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>IF</B> q^.numberActive = 0
+    <B>THEN</B>
+      <B>RETURN</B> <B>TRUE</B>
+    <B>ELSE</B>
+      <B>RETURN</B> <B>FALSE</B>
+    <B>END</B>;
+<B>END</B> Empty;
+
+<B>PROCEDURE</B> Enqueue (q : Queue; item : <B>CHAR</B>);
+<B>VAR</B>
+  ptr : CharAdr;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Full (q)
+    <B>THEN</B>
+      ptr := ADDADR (q^.dataPtr, q^.tail * <B>SIZE</B> (<B>CHAR</B>));
+      ptr^ := item;
+      <B>INC</B> (q^.numberActive);
+      q^.tail := (q^.tail + 1) <B>MOD</B> q^.size;
+    <B>END</B>; (* does nothing if full *)
+<B>END</B> Enqueue;
+
+<B>PROCEDURE</B> Serve (q : Queue; <B>VAR</B> item : <B>CHAR</B>);
+<B>VAR</B>
+  ptr : CharAdr;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Empty (q)
+    <B>THEN</B>
+      ptr := <B>ADDADR</B> (q^.dataPtr, q^.head * <B>SIZE</B> (<B>CHAR</B>));
+      item := ptr^;
+      <B>DEC</B> (q^.numberActive);
+      q^.head := (q^.head + 1) <B>MOD</B> q^.size;
+    <B>END</B>;  (* does nothing if empty *)
+<B>END</B> Serve;
+
+<B>PROCEDURE</B> Traverse (q : Queue; Proc : ActionProc);
+<B>VAR</B>
+  ptr : CharAdr;
+  pos : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Empty (q)
+    <B>THEN</B>
+      pos :=  q^.head; (* start at head of queue *)
+      <B>REPEAT</B>
+        ptr := ADDADR (q^.dataPtr, pos * <B>SIZE</B> (<B>CHAR</B>));
+        Proc (ptr^); (* do whatever we were told to *)
+        <B>INC</B> (pos);
+        <B>IF</B> pos = q^.size
+          <B>THEN</B>  (* wrap around if necessary *)
+           pos := 0;
+          <B>END</B>;
+      <B>UNTIL</B> pos = q^.tail;
+  <B>END</B>;
+<B>END</B> Traverse;
+
+<B>END</B> TextQueues.</PRE>
+<P>If some other abstract data type is to be enqueued using this approach, another library module must be written.  The example below has the predicates removed to make it more compact.  It is written in the semi-generic style of the list module in the previous section.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> anAdtQueues;
+
+(* a simple semi-generic queue 
+  by  R. Sutcliffe
+  last modified 1995 05 29  *)
+
+<B>FROM</B> ItemADT <B>IMPORT</B>
+  ItemType;
+<B>TYPE</B>
+  DataType (* local name *) = ItemType;
+  ActionProc = <B>PROCEDURE</B> (DataType);
+  Queue;
+  
+<B>PROCEDURE</B> Init (<B>VAR</B> q : Queue);
+<B>PROCEDURE</B> Destroy (q : Queue);
+<B>PROCEDURE</B> Full (q : Queue) : <B>BOOLEAN</B>;
+<B>PROCEDURE</B> Empty (q : Queue) : <B>BOOLEAN</B>;
+<B>PROCEDURE</B> Enqueue (q : Queue; item : DataType);
+<B>PROCEDURE</B> Serve (q : Queue; <B>VAR</B> item : DataType);
+<B>PROCEDURE</B> Traverse (q : Queue; Proc : ActionProc);
+
+<B>END</B> anAdtQueues.</PRE>
+<P>This time, a singly linked approach is used to the implementation.  Here, a queue is only full if no more memory can be obtained for the data node.  Since it is necessary to be able to check that fact ahead of time by calling <I>Full</I>, the space for the next data node is obtained after the current one has been linked in.  The very first one is obtained in the body of the module.  If the last obtained data node pointer is NIL, then all queues established by this module are full (so, the parameter on <I>Full</I> could have been left out).</P>
+<PRE>
+<A NAME="AnAdtQueues"></A><B>IMPLEMENTATION</B> <B>MODULE</B> anAdtQueues;
+
+(* a simple semi-generic queue 
+  by  R. Sutcliffe
+  last modified 1995 05 29  *)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+  
+<B>TYPE</B>
+  DataPtr = <B>POINTER</B> <B>TO</B> DataNode;
+  DataNode =
+    <B>RECORD</B>
+      data : DataType;
+      toPoint : DataPtr; (* single node linking *)
+    <B>END</B>;
+  Queue = <B>POINTER</B> <B>TO</B> QueueData; 
+  QueueData = (* each queue has this data *)
+    <B>RECORD</B>
+      head, tail : DataPtr;
+    <B>END</B>;
+<B>VAR</B>
+  nextItem : DataPtr;
+    (* a global for reserving space ahead of time *)
+
+<B>PROCEDURE</B> GetNextItemSpace;
+<B>BEGIN</B>
+   <B>NEW</B> (nextItem);
+<B>END</B> GetNextItemSpace;
+    
+<B>PROCEDURE</B> Init (<B>VAR</B> q : Queue);
+
+<B>BEGIN</B>
+  <B>NEW</B> (q);  (* set up a queue record *)
+  <B>IF</B> q # <B>NIL</B>
+    <B>THEN</B>
+      q^.head := <B>NIL</B>;
+      q^.tail := <B>NIL</B>;
+    <B>END</B>;
+<B>END</B> Init;
+
+<B>PROCEDURE</B> Destroy (q : Queue);
+<B>VAR</B>
+  dummy : DataType;  (* not going anywhere, just killing them *)
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Empty (q)
+    <B>THEN</B>
+      <B>REPEAT</B>
+        Serve (q, dummy);
+      <B>UNTIL</B> Empty (q);
+    <B>END</B>;
+  <B>DISPOSE</B> (q);
+<B>END</B> Destroy;
+
+<B>PROCEDURE</B> Full (q : Queue) : <B>BOOLEAN</B>;
+(* whenever the last call to GetNextItemSpace returned <B>NIL</B>, all lists are full. *)
+
+<B>BEGIN</B>
+ <B>RETURN</B>  (nextItem = <B>NIL</B>);
+<B>END</B> Full;
+
+<B>PROCEDURE</B> Empty (q : Queue) : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>IF</B> q^.head = <B>NIL</B>
+    <B>THEN</B>
+      <B>RETURN</B> <B>TRUE</B>
+    <B>ELSE</B>
+      <B>RETURN</B> <B>FALSE</B>
+    <B>END</B>;
+<B>END</B> Empty;
+
+<B>PROCEDURE</B> Enqueue (q : Queue; item : DataType);
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Full (q)
+    <B>THEN</B>
+      (* use global nextItem already obtained *)
+      nextItem^.data := item;
+      nextItem^.toPoint := <B>NIL</B>;
+      <B>IF</B> Empty (q) (* i.e. before this *)
+        <B>THEN</B> (* change head *)
+          q^.head := nextItem
+        <B>ELSE</B> (* chain old tail to new one *)
+          q^.tail^.toPoint := nextItem;
+        <B>END</B>;
+     q^.tail := nextItem; (* always *)
+     GetNextItemSpace; (* for next time; if fails, will show full *)
+    <B>END</B>; (* does nothing if full *)
+<B>END</B> Enqueue;
+
+<B>PROCEDURE</B> Serve (q : Queue; <B>VAR</B> item : DataType);
+<B>VAR</B>
+  temp : DataPtr;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Empty (q)
+    <B>THEN</B>
+      temp := q^.head;
+      q^.head := q^.head^.toPoint;
+      <B>IF</B> <B>NOT</B> Full (q)
+        <B>THEN</B>
+          <B>DISPOSE</B> (temp)
+        <B>ELSE</B>
+          nextItem := temp;
+        <B>END</B>;
+    <B>END</B>;  (* does nothing if empty *)
+  <B>IF</B> Empty (q) (* i.e. now empty *)
+    <B>THEN</B>
+      q^.tail := <B>NIL</B>;
+    <B>END</B>;
+<B>END</B> Serve;
+
+<B>PROCEDURE</B> Traverse (q : Queue; Proc : ActionProc);
+<B>VAR</B>
+  ptr, next : DataPtr;
+<B>BEGIN</B>
+  <B>IF</B> <B>NOT</B> Empty (q)
+    <B>THEN</B>
+      ptr :=  q^.head; (* start at head of queue *)
+      <B>REPEAT</B>
+        next := ptr^.toPoint;
+        Proc (ptr^.data); (* do whatever we were told to *)
+        ptr := next;
+      <B>UNTIL</B> ptr = <B>NIL</B>;
+    <B>END</B>;
+<B>END</B> Traverse;
+
+<B>BEGIN</B>
+  GetNextItemSpace; (* do one ahead of time *)
+<B>END</B> anAdtQueues.</PRE>
+<P>The very simple test harness below was used to check the operation of this library.  Note that the library itself would be renamed according to the data type it was importing.  The procedure passed to traverse would also depend on the data being used.  Perhaps that procedure too could be placed in the ADT library and imported to the queue library.</P>
+<PRE>
+<B>MODULE</B> QueueTest;
+(* crude test program to test the queue library with the cardinal ADT as imported to anAdtQueues from ItemADT 
+by R. Sutcliffe  modified 1995 05 29 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, WriteChar, SkipLine;  
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> anAdtQueues <B>IMPORT</B>
+  Queue, Init, Destroy, Enqueue, Full, Empty, Traverse, Serve;
+  
+<B>VAR</B>
+  q : Queue;
+  n : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+  
+<B>PROCEDURE</B> WriteItem (card: <B>CARDINAL</B>);
+(* a procedure to pass as a parameter in the next procedure *)
+<B>BEGIN</B>
+  WriteCard (card, 0);
+  WriteChar (<!--"-->&quot;,<!--"-->&quot;)
+<B>END</B> WriteItem;
+
+<B>PROCEDURE</B> WriteCardQueue (q : Queue); 
+<B>BEGIN</B>
+   Traverse (q, WriteItem);
+   WriteLn;
+<B>END</B> WriteCardQueue;
+
+<B>BEGIN</B> (* main *)
+  Init (q);
+  n := 1;
+  Enqueue (q, n);
+  WriteCardQueue (q);
+  n := 2;
+  Enqueue (q, n);
+  WriteCardQueue (q);  
+  n := 1000;
+  Enqueue (q, n);
+  WriteCardQueue (q);
+  Serve (q, n);
+  WriteCardQueue (q);
+  n := 2000;
+  Enqueue (q, n);
+  WriteCardQueue (q);
+  Serve (q, n);
+  WriteCardQueue (q);
+  n := 30000;
+  Enqueue (q, n);
+  WriteCardQueue (q);
+
+<B>END</B> QueueTest.</PRE>
+<P>The results of this test are shown below:</P>
+<PRE>
+** Run log starts here **
+1,
+1,2,
+1,2,1000,
+2,1000,
+2,1000,2000,
+1000,2000,
+1000,2000,30000,</PRE>
+<P>In the next two chapters, more advanced techniques will be discussed to allow the concept of the <I>queue</I> to be abstracted without reference to any particular data type that is to be enqueued and served.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

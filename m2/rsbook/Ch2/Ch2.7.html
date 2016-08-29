@@ -1,0 +1,159 @@
+<HTML>
+<HEAD>
+<TITLE>2.7 Expressions for Constants and Variables</TITLE>
+<meta NAME="keywords" CONTENT="expression, operator, operators, operand, operands, integer, cardinal, div, division, arithmetic, overflow, underflow, variable, rem, mod, simple, term, precedence, mixed">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.7 Expressions for Constants and Variables</B></H2>
+<P>This material follows up on the general comments about expressions made in <A HREF="../Ch1/Ch1.7.html">section 1.7</A>.  Here, the specific concern is the kinds of things one is allowed to write on the right-hand-side of a Modula-2 assignment statement.  This section will be concerned only about type  INTEGER and CARDINAL.  Additional expressions that are appropriate for other data types will be discussed later.</P>
+<BLOCKQUOTE><I><A NAME="M2Expression">A</A> <U>Modula-2 expression</U> is a combination of literals, constants, and variables using addition, subtraction, multiplication, division, and/or such other operations as may be defined for the type of entity being combined.</BLOCKQUOTE>
+<BLOCKQUOTE>In an expression, symbols such as +, -, and * are called <U>operators</U> and the entities being combined are called <U>operands</U>.</I></BLOCKQUOTE>
+<P>Here are some examples of valid expressions:</P>
+<PRE>
+  4 + 5
+  7 - firstNum
+  secondNum + thirdNum - fourthNum</PRE>
+
+<P>If <I>firstNum</I> and <I>fourthNum</I> are large enough cardinals the last two may cause errors at runtime.  As in other notations, multiplication is indicated by an asterisk.</P>
+<PRE>
+  3 * 5		(* three times five *)
+  4 * num	(* one cannot write 4num, 4(num) or 4  num *)</PRE>
+
+<P>Division of INTEGER or CARDINAL values uses the / or DIV operators.  The answer will have any fractional part removed, so that it will still be an entire number of the same type.  For both / and DIV, the dividend (left operand) may be negative, but DIV requires that the divisor (right operand) be positive.  The / operator simply does a division and throws away the fractional part.  However, the DIV operator has the effect of reducing the dividend to the <I>next lower</I> multiple of the divisor first, then dividing.  The effect is the same for positive dividend, but not for negative ones.</P>
+<PRE>
+  7 / 2 		(* result:  3 *)
+  9 <B>DIV</B> 4	(* result:  2 *)
+  -35 / 2	(* result:  -17 *)
+  -35 <B>DIV</B> 12 	(* result:  -3  first reduce to -36, then divide *)
+  -42 / 10	(* result:  -4 *)
+  -42 <B>DIV</B> 10 	(* result:  -5  first reduce to -50, then divide *)
+  7 / -2		(* result:  -3 *)
+  9 <B>DIV</B> -2	(* result:  the compiler reports an error *)
+  -15 / -3	(* result:  5 *)
+  -12 <B>DIV</B> -4 	(* result:  an error *)
+  card / 0	(* result:  a divide-by-zero error *)
+  int <B>DIV</B> 0  	(* result:  a divide-by-zero error *)</PRE>
+
+<P><B>NOTE</B>:	Care must be taken to ensure that the result of an arithmetic expression is neither too large nor too small to fit in the allowable range for the type of the variable one is attempting to assign it to.</P>
+<BLOCKQUOTE><I><A NAME="Overflow">An </A>attempt to assign to a variable name a value which is larger than the maximum allowable, or smaller than the minimum allowable is said to <U>overflow</U> or <U>underflow</U>, the variable respectively.</I></BLOCKQUOTE>
+<P>That is, the expressions (a - b) and (a + b) may not be valid CARDINALs, even though both a and b have been correctly assigned CARDINAL values.</P>
+<H3><B>Example:</B></H3>
+<P>Suppose one had:</P>
+<PRE>
+<B>VAR</B>
+ firstCard, secondCard, thirdCard : <B>CARDINAL</B>;
+ firstInt, secondInt : <B>INTEGER</B>;</PRE>
+
+<P>Then these assignments are correct:</P>
+<PRE>
+  firstCard := 6000;
+  secondCard := 5000;
+  firstInt := -4000;
+  thirdCard := firstCard + secondCard; (* no problem here *)</PRE>
+
+<P>and these may cause overflows, depending on the respective ranges:</P>
+<PRE>
+  thirdCard := firstCard * secondCard;
+    (* answer may be too big for <B>CARDINAL</B> *)
+  secondInt := firstCard * 30;
+    (* answer may be too big for <B>INTEGER</B> *)</PRE>
+
+<P><B>WARNING</B>: Compilers are supposed to generate code to check at run time for overflows and underflows of CARDINAL/INTEGER (and similar) assignments.  However, there are Modula-2 implementations in which this is not done, and this fact could make errors difficult to track down.</P>
+<P>Another pair of operators worth mentioning here are REM and MOD. On the one hand, <I>c := a DIV b</I> and <I>c := a / b</I> assign only the whole number part of the appropriate division to c, with the remainder being discarded.  REM and MOD do the opposite, discarding the quotient to the division and retaining only the remainder.  REM works for both positive or negative divisors and dividends, but MOD requires that the divisor be positive.  REM produces the remainder of a / division, and MOD the remainder of a DIV division.  Therefore, the results are the same for positive dividends, but different for negative ones.  A REM result always has the same sign as the dividend, but a MOD result is always positive (the distance from the next lower multiple of the divisor to the dividend.)</P>
+<PRE>
+Examples:
+    4 <B>REM</B> 2 produces 0
+    4 <B>MOD</B> 2 produces 0
+   12 <B>REM</B> 5 produces 2
+   12 <B>MOD</B> 5 produces 2
+  -22 <B>REM</B> 6 produces -4
+  -22 <B>MOD</B> 6 produces 2 (* distance from -24 to -22 *)
+   32 <B>REM</B> -3 produces 2
+   32 <B>MOD</B> -3 produces an error
+   49 <B>REM</B> 0 produces an error
+   49 <B>MOD</B> 0 produces an error</PRE>
+
+<P><B>NOTES</B>:  1. Another way to obtain a MOD b is to compute a REM b first.  Then, a MOD b = a REM b if a REM b = 0, and, a MOD b = b - a REM b if a REM b <!--<-->&lt; 0</P>
+<P>	2. REM, MOD and DIV are all reserved words, as are all words indicating an operation.</P>
+<P>Parts of an arithmetic expression that are joined by a multiplication or division are called <I>factors</I> and those joined by an addition or subtraction are called <I>terms</I>.  More complex expressions can be formed by combining factors and terms.  Figure 2.9 is a diagram of a simple expression.  Note that it may start with a <!--"-->&quot;+<!--"-->&quot; or a <!--"-->&quot;-<!--"-->&quot;  and that a <!--"-->&quot;muloperator<!--"-->&quot; can be *, /, REM, DIV or MOD (thus far.)</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.9.GIF" BORDER="1"></CENTER><!----></P>
+<P>Expressions can be used anywhere on the right-hand side of a variable assignment (a := a + 2) or a constant equate (octave = 2 * unison).  To further illustrate the latter, suppose three constants were used in a program, namely 20, 40, and 70, and the programmer knew that even if these changed, the second would always be twice the first, and third would be thirty more than the second.  The constants could be declared as:</P>
+<PRE>
+<B>CONST</B>
+  firstConst = 20;
+  secondConst = 2 * firstConst;
+  thirdConst = secondConst + 30;</PRE>
+
+<H3><B><A NAME="2.7.1">2.7.1</A> Precedence in Modula-2</B></H3>
+<P>Refer to <A HREF="../Ch1/Ch1.7.html#1.7.1">section 1.7.1</A> for a general discussion of this topic, where it is explained that Mathematicians adopt a convention or set of rules to evaluate otherwise ambiguous expressions such as:</P>
+<P>4 + 5 * 8  or  6 - 12 / 2  or  (12 - 5) (3 + 9) - 4 (6 - 3 / (-1))</P>
+<P>Modula-2 is capable of following these standard rules for evaluating arithmetic expressions.  That is, multiplication and division are performed before addition and subtraction, and parentheses can modify this order.  This is not the case with many calculators, which evaluate expressions as they are entered.  Here are a number of assignments, with the results shown at right.</P>
+<PRE>
+  firstNum := 4 + 5 * 6			Answer:  34
+  secondNum := 4 <B>DIV</B> 3 + 5 <B>MOD</B> 4	Answer:   2
+  thirdNum := (3 - 4) * 6		Answer:  -6
+  fourthNum := 9 * (5 - 20 <B>DIV</B 3)	Answer:  -9</PRE>
+
+<P>Of course, both <I>thirdNum</I> and <I>fourthNum</I> must be of type INTEGER, or the last two assignments will fail to work.  Notice that the <!--"-->&quot;*<!--"-->&quot; operator is necessary in the last case; one cannot simply write <I>fourthNum := 9(5 - 20 DIV 3)</I>, using the parenthesis to imply multiplication.</P>
+<H3><B><A NAME="2.7.2">2.7.2</A> Mixed Expressions and Modula-2</B></H3>
+<P>In Modula-2, mixed expressions, say, those involving both INTEGER and CARDINAL types, are forbidden.  That is, in the terminology of <A HREF="../Ch1/Ch1.7.html#1.7.2">section 1.7.2</A>, INTEGER and CARDINAL are not expression compatible, even though (over their common range) we have seen that they are assignment compatible.  For instance, if <I>firstCard</I> is of type CARDINAL and <I>firstInt</I> and <I>secondInt</I> are both of type INTEGER, then it is illegal to write either:</P>
+<PRE>
+  firstInt := firstCard + secondInt;
+  firstCard := firstCard + firstInt;</PRE>
+
+<P>because the right-hand side of the expression contains two different data types.  The way to get around this, if necessary, is to convert the value of one of the members on the right to the data type of the other as follows:</P>
+<PRE>
+  firstInt := <B>VAL</B> (<B>INTEGER</B>, firstCard) + secondInt;
+  firstCard := firstCard + <B>VAL</B> (<B>CARDINAL</B>, firstInt);</PRE>
+
+<P>Of course, the numbers being converted must be in the correct range for the other variable, or there will be an overflow error.  Conversions using VAL will be covered in more detail in <A HREF="Ch2.10.html#2.10.1">section 2.10.1</A>.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

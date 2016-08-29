@@ -1,0 +1,343 @@
+<HTML>
+<HEAD>
+<TITLE>1.9 Abstractions for Instructing Machines--Program Structures</TITLE>
+<meta NAME="keywords" CONTENT="abstract, abstraction, abstractions, instruct, instructing, instructions, machine, machines, program, programming, structure, structures, john, von, neunann, control, sequence, selction, repetition, iteration, test, testing, top-of-loop, top, loop, bottom-of-loop, bottom, loop, tested, composition, subprogram, subprograms, procedure, parallelism, parallel, processing, encode, encoding, pseudo, code, pseudocode, algorithm, flowchart, flow, chart, fibonacci, euclid, gcd, syntax, semantics, control, errors, error, logic, logical, bugs, planning, plan, problem, problems, assignment, assignments, exercise, exercises">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>1.9 Abstractions for Instructing Machines<!--</B>‹<B>-->--Program Structures</B></H2>
+<P>The fundamental concepts of the modern computing machine were enunciated by John Von Neumann in the late 1940s. These included both the idea of the encoded stored program, and of the implementation of programs as the step-by-step execution of a series of instructions. Devices built on such principles are often termed von Neumann machines. The exact nature of both the machine and of the instructions varies widely, but there are certain themes that are common to almost all of them.</P>
+<P>To illustrate the fact that these methods are not confined to computing devices, it is worthwhile to observe that the tree cutting example given in <A HREF="Ch1.4.html">section 1.4</A> incorporated all the major ways of arranging instructions that are employed in modern computing notations.</P>
+<H3><B><A NAME="1.9.1">1.9.1</A> Program Control Abstractions</B></H3>
+<P><CENTER>Sequence</CENTER></P>
+<P>The simplest of these abstractions is in fact the <I>sequence</I><!--‹-->--one instruction following another in order.</P>
+<H3><B>Example:</B></H3>
+<PRE>1. Compute the number and select the trees to fell.
+2. Obtain tools and safety gear.
+3. Put on safety gear.
+4. Prepare tools for use.
+5. Cut down the selected trees.
+6. Remove branches.
+7. Buck the logs into short pieces.
+8. Split the wood.
+9. Pile the wood for drying.
+10. Clean up the site.
+11. Put away tools and safety gear.</PRE>
+
+<P><CENTER>Selection</CENTER></P>
+<P>The second is <I>selection</I> which refers to the choice among two or more alternative tasks depending on certain circumstances encountered when the solution is actually executed.</P>
+<H3><B>Example:</B></H3>
+<PRE>If spark plug is dirty
+	then clean or replace spark plug</PRE>
+
+<P>Here, the choice is between cleaning a dirty spark plug, or doing nothing. There may be a variety of outcomes from examining a fouled plug, so it too may result in some selection:</P>
+<H3><B>Example:</B></H3>
+<PRE>If spark plug is dirty
+	then if spark plug is also damaged
+		then replace spark plug
+			examine points
+			if points are damaged
+				then replace them too
+		else just clean spark plug
+else reinstall spark plug</PRE>
+
+<P><CENTER>Repetition</CENTER></P>
+<P>The third organizational tool for problem solving is the <I>repetition</I> or <I>iteration</I> of a series of steps under the control of some condition. Because one or more instructions are being repeated again and again, the programming structure that expresses this is called a <I>loop</I>.</P>
+<H3><B>Example 1:</B></H3>
+<PRE>While count is less than number of trees selected
+	determine direction of fall
+	cut main notch facing fall direction
+	overcut higher back notch on opposite side
+	yell <!--"-->&quot;timber<!--"-->&quot;
+	duck
+	add one to the count</PRE>
+
+<H3><B>Example 2:</B></H3>
+<PRE>repeat
+	file the selected tooth
+	select next tooth
+until all teeth are sharp</PRE>
+
+<P>These two methods of repeatedly executing a sequence of statements differ only in that the first one involves checking the condition for continuing at the top of the loop (before the instructions are executed,) and the second one postpones the checking of the exit condition until the end of the instruction sequence.</P>
+<BLOCKQUOTE><I><A NAME="BottomTop">Depending </A>on the position of the test for exiting a statement repetition (a loop) the construction is known as <U>top-of-loop tested</U> or as <U>bottom-of-loop</U> tested.</I></BLOCKQUOTE>
+<P>A variation of the while loop (and therefore top-of-loop tested) uses an explicit counter to step through the repetitions. It might be expressed as follows:</P>
+
+<PRE>for count = 1 to the number of trees selected
+	determine direction of fall
+	cut main notch facing fall direction
+	overcut higher back notch on opposite side
+	yell <!--"-->&quot;timber<!--"-->&quot;
+	duck</PRE>
+
+<P>Every programming notation uses one or more of these repetition methods (and perhaps others) for expressing repetition; the precise details for Modula-2 can await the need.</P>
+<P><CENTER>Composition</CENTER></P>
+<P>The fourth method of combining instructions involves naming a section of code, and then using only its name in the main program sequence. This abstraction technique<!--‹-->--of letting the name of some code stand for the whole<!--‹-->--is termed <I>composition</I>.</P>
+<P>There was a great deal of this in the tree cutting example, in the use of such words as: compute, select, obtain, put on, file, tighten mix, fill, inspect, clean, replace, file (second type), determine, cut, overcut, yell, duck, remove, buck, split, pile, clean up, put away, start, and add. Each was employed to stand for a series of complex actions that it was thought unnecessary to detail in the instruction sequence itself.</P>
+<P>The actual details of the composed or abstracted items are to be found either in a separate library from whence they are called upon only by name, or they may be elaborated somewhere else in the program, in an effort to avoid clutter in the main sequence of instructions. Sometimes such compositions are termed <I>subprograms</I>, although this term may have a more specialized meaning in certain computing contexts. A more Modula-2 like term for a composition is <I>procedure</I>.</P>
+<P><CENTER>Parallelism</CENTER></P>
+<P>The final method of conceiving of the execution of instructions departs entirely from the Von Neumann model. It is not implemented on a single processing device, but on many simultaneously. (One could imagine an army of chainsaw-wielding loggers cutting down an entire forest at the same time<!--‹-->--an impossible task if one of them had to do it alone.)</P>
+<BLOCKQUOTE><I><A NAME="Parallel">The</A> execution of simultaneous von Neumann machines all cooperating toward the achievement of a single controlling master task is called <U>parallelism</U> or <U>parallel processing</U>.</I></BLOCKQUOTE>
+<P>Hardware and software that allow for parallelism are relatively new, and this topic will not be studied extensively here, though Modula-2 does have some facilities for taking advantage of such ideas, and these will be explored in a later chapter.</P>
+<H3><B><A NAME="1.9.2">1.9.2</A> Encoding (Representing) Programs<!--</B>‹<B>-->--Pseudocode</B></H3>
+<P>The solution to the wood cutting problem does not just illustrate the planning process used in creating programs and the control methods used in expressing instructions. The point-form English in which the solution was expressed is known as <I>pseudocode</I>. This same style is used to express solutions destined for eventual coding into some specific computing notation.</P>
+<P>The advantages of writing the solution out in pseudocode first are that:</P>
+<P>1. one need not pay particular attention at this stage to the specific grammatical details of the actual code in a particular notation</P>
+<P>2. the pseudocode is general enough so that the solution can later be expressed in any one of several different actual coding notations</P>
+<P>3. writing in pseudocode forces the programmer to pay sufficient attention to detail to ensure that the solution is completely thought out</P>
+<P>4. the pseudo code is easy to examine for possible efficiency improvements and for the elimination of logical errors.</P>
+<P>There is no hard and fast rule for deciding when to stop refining into steps at the pseudocode stage, and when to begin writing actual code in the selected notation. The transition ought to take place when it is obvious to the writer how all remaining abstractions can be expressed in the actual programming notation<!--‹-->--a point that is reached by different people at different times, depending on the ability to conceptualize large tasks as an organic whole. For most people, it suffices to represent the <!--"-->&quot;tricky bits<!--"-->&quot; where unusual or hard-to-follow computations are being performed. There is a name for these:</P>
+<BLOCKQUOTE><I><A NAME="Algorithm">A</A> technique to perform a calculation, expressed as a series of steps or instructions, is called an <U>algorithm</U>.</I></BLOCKQUOTE>
+<H3><B>Example 1:</B></H3>
+<P>Express in pseudocode a method for swapping the values of two variables x and y.</P>
+<P>Solution:</P>
+<P>One might be tempted to write, simply,</P>
+<PRE>x <!--¨-->&lt;- y (put the value of y into location x)
+y <!--¨-->&lt;- x (put the value of x into location y)</PRE>
+
+<P>However, this will not do, for if these two commands are executed in sequence, both the variables x and y will end up naming the value originally named by x. What is needed to conduct a working swap algorithm is a place holder to name one of the values temporarily, thus:</P>
+
+<PRE>temp <!--¨-->&lt;- x
+x <!--¨-->&lt;- y
+y <!--¨-->&lt;- temp</PRE>
+
+<P><B>NOTE</B>: One may also write:</P>
+<PRE>temp = x
+x = y
+y = temp</PRE>
+
+<P>as long as it is clear that the value named on the right hand side is given to the name on the left hand side. That is, the equal sign is being used as an operation, and not as a statement that two things are identical.</P>
+<H3><B>Example 2:</B></H3>
+<P>Express in pseudocode a technique of adding up a sequence of numbers indexed from item<sub>1</sub> through to item<sub>20</sub>.</P>
+<P>The use of a variable to hold the sum, as well as an indexing scheme is necessary. Initially, the variable should be set to zero, as it will be employed to hold a running sum. The code here is expressed in a repeating fashion:</P>
+<PRE>
+sum = 0 -- this variable holds the running total
+count = 1 -- this is the index counter
+repeat
+ sum = sum + item<SUB>count</SUB>
+ increase the count by 1
+until count <!-->&gt; 20</PRE>
+
+<H3><B>Example 3:</B></H3>
+<P>The following piece of pseudocode is meant to be an algorithm to compute the maximum of a sequence of real numbers read in from some source. However, it will not work properly as shown. Make one correction so that it will.</P>
+<PRE>
+Compute maximum
+ read n -- get the number of reals to do
+ set count to 1
+ read first number
+ set maximum to first number -- temporarily
+ while count <!--<-->&lt;= n
+  read currentReal
+  if currentReal <!-->&gt; maximum
+   then maximum = currentReal 
+  add one to count
+ end while
+ write out maximum
+end Compute maximum</PRE>
+
+<P>This one is a little devious, but the error is a very common one. The first number, call it real<SUB>1</SUB>, is read before the loop is begun, and again inside the loop the first time the loop code is executed (because the value of the variable <I>count</I> is still 1. The value of <I>count</I> should be set to two before the loop is entered; then the first number read inside it is real<SUB>2</SUB>.</P>
+<H3><B>Example 4:</B></H3>
+<P>Write an algorithm to print the values of the sequence a<SUB>1</SUB> through a<SUB>20</SUB>, assuming that these have already been calculated.</P>
+<PRE>
+Some people write:
+counter = 1
+repeat
+ write a<sub>counter</sub>
+until counter = 20
+
+when they mean
+
+counter = 1
+repeat
+ write a<sub>counter</sub>
+ add one to the counter (<!--"-->&quot;increment<!--"-->&quot; the counter)
+until counter = 21</PRE>
+
+<P>Notice that the erroneous version would never complete the task because the value for a<SUB>1</SUB> would be written continuously until the user interrupted the program.</P>
+<H3><B>Example 5:</B></H3>
+<P>Write an algorithm to add the first n positive integers, where the number <I>n</I> is determined by asking the user of the program.</P>
+<PRE>
+write the message <!--"-->&quot;Type the number of integers to be added<!--"-->&quot;
+read the value for max number
+set running sum to zero
+set current integer to one
+repeat
+ add current integer to running sum
+ increase current integer by one
+until current integer equals (max number + 1)</PRE>
+
+<P>The interesting point to notice here is the use of the running sum. Observe that it must be set to zero initially. This is because in a <!--"-->&quot;real<!--"-->&quot; computer, <I>running sum</I> names a memory location in the machine which may or may not have had a value previously stored in it. For the purposes of this algorithm, the assumption must be made that <I>running sum</I> has some undetermined value before being cleared to zero, making this step essential.</P>
+<H3><B>Example 6:</B></H3> (by Gordon Tisher)
+<P>Write an algorithm to print out the first n numbers of the Fibbonacci sequence. The Fibbonacci sequence is the sequence of numbers 1, 1, 2, 3, 5, 8, 13, 21, 34 . . . where each number (from the third on) is the sum of the previous two.</P>
+
+<P>A flowchart of the algorithm is as follows:</P>
+<P><CENTER><IMG SRC="Figure/Figure_1.1.GIF" BORDER="1"></CENTER><!--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--></P>
+
+<P>The pseudocode for this would be:</P>
+
+<PRE>Fibbonacci
+ get n from user
+ count <!--<-->&lt;- 0
+ ult <!--<-->&lt;- 1
+ penult <!--<-->&lt;- 1
+ repeat
+  if count <!--<-->&lt; 2 then
+   write <!--"-->&quot;1<!--"-->&quot;
+  else
+   new <!--<-->&lt;- ult + penult
+   write new
+   penult <!--<-->&lt;- ult
+   ult <!--<-->&lt;- new
+  end if
+  count <!--<-->&lt;- count + 1
+ until count = n
+end Fibbonacci</PRE>
+
+<H3><B>Example 7:</B></H3> (by Dana Aldom)
+<P>Write an algorithm to find the greatest common denominator (GCD) of two integers. The GCD is the highest number that divides evenly into both integers. Using Euclid's algorithm, the flowchart would be as follows:</P>
+<P><CENTER><IMG SRC="Figure/Figure_1.2.GIF" BORDER="1"></CENTER><!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--></P>
+
+<P>The pseudocode for such an algorithm could be written as follows:</P>
+<PRE>Euclid
+ Input two integers: high and low
+ If |low| <!-->&gt; |high|
+  swap high and low
+ end if
+ while low is not equal to 0
+  result <!--<-->&lt;- |high| MOD |low|
+  high <!--<-->&lt;- low
+  low <!--<-->&lt;- result
+ end while
+ print result
+end Euclid</PRE>
+
+<P>Most of the following chapters will have at least one sample problem worked out in full, from initial problem analysis through to one or more attempts to frame a suitable algorithm in pseudocode, and on to actual code. Since personal and institutional standards for this aspect of the work vary widely, these examples can only serve as a rough guide for the appropriate amount of detail that may be required from a student. For more precise guidelines, prevailing local standards must be consulted.</P>
+<H3><B><A NAME="1.9.3">1.9.3</A> Syntax, and Semantics</B></H3>
+<P>Unlike the loose and rough style employed for pseudocode, actual programming notations have very exacting rules that determine how code that is acceptable to the translator program must be submitted. For instance, in Pascal one writes a while loop (top-of-loop tested) as:</P>
+<PRE>
+while <!--<-->&lt;boolean expression<!-->&gt; do
+	begin
+		statement one;
+		statement two;
+		...
+		statement n
+	end;</PRE>
+
+<P>However, in Modula-2, the same thing is written with somewhat different punctuation:</P>
+<PRE>
+<B>WHILE</B> <!--<-->&lt;boolean expression<!-->&gt;
+	<B>DO</B>
+		statement one;
+		statement two;
+		...
+		statement n
+	<B>END</B>;</PRE>
+
+<P>The details need not be of much concern yet; what this example illustrates is that each programming notation has a set of symbols and some rules for the way those symbols are to be used in order to write programs.</P>
+<BLOCKQUOTE><I><A NAME="Syntax">The </A><U>syntax</U> of a programming notation consists of the set of legal symbols it uses, together with the rules expressing how those symbols may be employed to write correct programs.</I></BLOCKQUOTE>
+<BLOCKQUOTE><I><U><A NAME="Semantics">Semantics</A></U> refers to the meaning of some construction employed in a computing notation.</I></BLOCKQUOTE>
+<P>The syntax of a notation is a set of rigid rules for spelling, punctuation, and the like. It is mechanical, predetermined by the designers of the notation and is not subject to interpretation by the programmer.</P>
+<P>On the other hand, semantics exists on at least two levels. The <I>while</I> loop construction illustrated above has a generic meaning defined by the notation designer. When actually used, however, it takes on a specific meaning as an implementation of repetition or iteration in the particular problem being solved. This meaning is attached by the programmer. Indeed the whole purpose of writing the program is to express the meaning of the solution in a form that allows it to be resolved. That is, the meaning of the program as a whole is that it is a solution to a problem (i.e. an abstraction of the problem.)</P>
+<H3><B><A NAME="1.9.4">1.9.4</A> The Control of Errors</B></H3>
+<P>Once upon a time there was a computer made with vacuum tubes. (Look the word up in an old encyclopedia or something.) This computer could add, subtract, multiply, and divide. (No Virginia, it did not fit in your purse, it occupied most of a building.) In the wee small hours of the morning, the computer ceased functioning. A junior member of the operating staff was dispatched to discover what ailed the cranky monster, and, after wandering for some time among the banks of switches, tubes, and wires which comprised its <!--"-->&quot;brain,<!--"-->&quot; discovered that an errant moth had landed between the two contacts of a relay. Although beaten to death, the creature still served to prevent the proper electrical contact from being made. Having located the cause of the mental dysfunction, the technician removed the unfortunate creature from its impalement and brought it to the white-coated senior operators. Recognizing this for the historic moment it was, they had the brave moth incarcerated in one of their notebooks, immortalized for all time as the first <!--"-->&quot;bug in the system.<!--"-->&quot;</P>
+<P>Unless a program doesn't do anything, or only comprises a line or two, it will almost certainly contain errors or <I>bugs</I>. These may be of two types:</P>
+<P><I>Syntax errors</I> result from incorrect spelling, misplaced or missing punctuation (such as semicolons) or the otherwise incorrect use of some part of the notation. The compiler should discover these errors and notify when attempting to compile text into code. Some complete Modula-2 systems include a context-oriented editor, which tries to prevent the writer from entering a syntactically incorrect statement in the first place.</P>
+<P><I>Logical errors</I>, on the other hand, are the result of insufficient planning, fuzzy thinking, or poor program organization. They are caused by a failure to express the meaning of the problem in a fashion that can be translated into a solution. To put it another way, the steps in abstracting the real world problem to a computing notation are in such cases either ill-understood, mistakenly applied, or both. These errors often do not surface until the program is run and starts to produce unexpected results.</P>
+<P>It is a fundamental principle of good program planning that one must plan before writing, write before typing, check before running, and test the program carefully before delivering the finished product to customers (or to the teacher). The cardinal sin in programming is sitting down at the terminal or microcomputer with nothing but the statement of the problem, and beginning to write code. As far as the inevitable syntax errors are concerned, it would be good to remember that the computer can do only what you tell it; its <!--"-->&quot;intelligence<!--"-->&quot; is very limited (unlike that of the programmer) and the slightest mistake will make communication attempts unintelligible to it. Careful planning can eliminate most bugs before they hatch. Good proofreading will squash most of the rest, and the remainder will be served up on the plate either at compile time or at run time. These, one must patiently fly swat, one by one. Much more will be said about such matters in subsequent chapters; in the meantime, fore-warned is fore-armed.</P>
+
+<CENTER>
+<A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>
+

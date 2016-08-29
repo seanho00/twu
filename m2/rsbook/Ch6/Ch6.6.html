@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<TITLE>6.6 Handling Errors in Library Modules</TITLE>
+<meta NAME="keywords" CONTENT="error, errors, handling, handle, library, libraries, module, modules, precondition, preconditions, postcondition, postconditions, check, checking, automatic, exception, exceptions">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.6 Handling Errors in Library Modules</B></H2>
+<P>There are a number of common methods of detecting and handling errors that may take place in some specialized section of the program, particularly while some library module code has control of the program execution. Some of the simpler ones are:</P>
+<H3><B>Precondition checking</B></H3>
+<P>This method relies on checking for potential error conditions before taking the action which might otherwise cause the error to arise. Code to compute the tangent of an angle by the formula tan (x) = sin (x) / cos (x) could possibly look something like this outline:</P>
+<PRE>
+  <B>IF</B> (abs ( cos (x)) <!-->&gt; 0.000001)  (* or a suitable small number *)
+    <B>THEN</B>
+      m := sin (x) / cos (x)
+    <B>ELSE</B>
+      take evasive error action
+    <B>END</B>;</PRE>
+
+<P>The module <I>Fractions</I> in the last section relies on precondition checking to prevent errors, for it demands that parameters be free of conditions that would result in a zero denominator. It places the responsibility for doing the checking on the client program. Notice however that none of the procedures will actually fail to work if the preconditions are not met. There are no divisions performed in the implementation, so a fraction of (1, 0) for instance will not generate a divide-by-zero error at run time. However, to maintain the integrity of the abstract representation, zero denominators ought to be prohibited, and precondition checking is one way to require this.</P>
+<H3><B>Postcondition Checking</B></H3>
+<P>This is the method employed by such modules as <I>STextIO</I>, <I>SRealIO</I>, and <I>SWholeIO</I> that allow for the function <I>SIOResult.ReadResult</I> to enquire about the success of the last performed read operation. Similarly, the classical <I>InOut</I> maintains a global variable <I>Done</I> that is set by a certain class of operations automatically. In this method, the operation is attempted, and its success is checked afterward (perhaps for several tries) by examining the value of the appropriate variable.</P>
+<PRE>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please type in a real number ===<!-->&gt; <!--"-->&quot;);
+    ReadReal (numToGet);
+    tempResult := ReadResult ();
+    SkipLine; (* swallow line marker *)
+    WriteLn;
+  <B>UNTIL</B> tempResult = allRight;</PRE>
+
+<P>or, perhaps:</P>
+<PRE>
+  try := 1;
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please type in a real number ===<!-->&gt; <!--"-->&quot;);
+    ReadReal (numToGet);
+    tempResult := ReadResult ();
+    SkipLine; (* swallow line marker *)
+    WriteLn;
+    <B>IF</B> tempResult # allRight
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Error in input. Try again<!--"-->&quot;);
+        WriteLn;
+        <B>INC</B> (try);
+      <B>END</B>;
+  <B>UNTIL</B> (tempResult = allRight) <B>OR</B> (try = 5);
+  (* handle more than 5 bad tries here somewhere *)</PRE>
+
+<P>Alternately, the same thing could be achieved, but with more pressure on the programmer to actually check the result if a <!--"-->&quot;success<!--"-->&quot; variable is included as one of the parameters in the procedure. Since an actual parameter must be provided at each call, the variable cannot be simply ignored.</P>
+<PRE>
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;Type in a Real here = = <!-->&gt;<!--"-->&quot;);
+  ReadReal (theReal, allOK); (* this ReadReal has two parameters *)
+<B>UNTIL</B> allOK;</PRE>
+
+<P>This type of error handling (in either style) can easily be added to library modules created by the programmer. The first can be achieved using an enumerated type with or without an enquiry function, or a boolean. The first value in the enumeration represents a no-error condition, and the others represent specific problems that have been encountered. For instance, the definition part of the module <I>Fractions</I> could have:</P>
+<PRE>
+  <B>TYPE</B>
+    FracStatus = (fracOk, undefined, divideByZero);
+
+  <B>PROCEDURE</B> FracState (): FracStatus;</PRE>
+
+<P>The implementation module maintains a variable, say, <I>fracState</I> to store the last error state. With these in place, the procedure <I>Assign</I> would be written to set <I>fracState</I> to the value <I>fracOk</I> whenever the denominator being set was non zero, and to <I>undefined</I> if it were zero. The procedure <I>Div</I> would set <I>fracState</I> to <I>divideByZero</I> if the second parameter it were passed had a zero numerator, and to <I>fracOk</I> otherwise. The other procedures would not give rise to such errors and could all set <I>fracState</I> to <I>fracOk</I>. (An overflow in the integer type during <I>Add</I> or <I>Mul</I> could also lead to an error, but that would be more difficult to handle in this manner). If a client of this module wanted to determine the value of this variable after an operation it would use the procedure FracState to do so.</P>
+<H3><B>Automatic Error Handling</B></H3>
+<P>Methods that take this approach invoke some procedure that automatically handles errors whenever they take place, without any boolean or enumerated type having to be set or checked. A detailed discussion of such methods cannot be included here, but will be taken up later in the text. One uses procedure variables, and will be mentioned as an application of these once they are introduced. The other makes use of <I>exceptions</I>, and is only available to the programmer if some changes have been made to the Modula-2 notation itself. Such changes have been incorporated into the ISO standard for the notation, but are not available in classical Modula-2 as defined by Wirth. Exception handling will be covered in chapter 10.</P>
+<P>Which of the methods is best?  Some would respond that this is merely a matter of taste and style, but others would say that the question is a fundamental one that goes to the heart of proper program design philosophy. This text takes the position that precondition checking is generally preferred, on the assumption that errors are better caught before they can happen, but that postcondition checking and exception handling are sometimes necessary. The most important thing is that all errors be caught and handled in <I>some</I> way, and that whatever method is used be clearly documented in the definition and implementation parts of library modules and in client programs.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

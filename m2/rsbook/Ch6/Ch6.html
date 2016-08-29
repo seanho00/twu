@@ -1,0 +1,98 @@
+<HTML><HEAD><TITLE>Chapter 6: Program Organization and Modules</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<CENTER><H1><B>Chapter 6<BR>
+Program Organization and Modules</B></H1></CENTER>
+
+
+<BR><A class = navgrn HREF="Ch6.0.html">6.0  Chapter Goals</A><!--	226-->
+<BR><A class = navgrn HREF="Ch6.1.html">6.1  What Did You Say a Module is?</A><!--	226-->
+<BR><A class = navgrn HREF="Ch6.2.html">6.2  Libraries<!--‹-->--How to Borrow a Module and Sign itOut</A><!--	227-->
+<BR><A class = navgrn HREF="Ch6.3.html">6.3  The Standard Library (1)<!--‹-->--I/O</A><!--	228-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.3.html#6.3.1">  6.3.1  ISO Standard I/O Modules</A><!--	228-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.3.html#6.3.2">  6.3.2  Classical I/O<!--‹-->--The InOut Family</A><!--	229-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.3.html#6.3.3">  6.3.3  Alternate Origins and Destinations</A><!--	232-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.3.html#6.3.4">  6.3.4  Redirection</A><!--	234-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.3.html#6.3.5">  6.3.5  Writing Special Characters To a Terminal</A><!-- 	242-->
+<BR><A class = navgrn HREF="Ch6.4.html">6.4  The Standard Library (2)<!--‹-->--Mathematical Functions</A><!--	242-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.4.html#6.4.1">  6.4.1  Square Root</A><!--	243-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.4.html#6.4.2">  6.4.2  Exponential and Logarithmic Functions</A><!--	244-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.4.html#6.4.3">  6.4.3  Trigonometric Functions</A><!--	247-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.4.html#6.4.4">  6.4.4  Conversions</A><!--	249-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.4.html#6.4.5">  6.4.5  Summary of RealMath</A><!--	250-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.4.html#6.4.6">  6.4.6  Other Mathematical functions</A><!--	250-->
+<BR><A class = navgrn HREF="Ch6.5.html">6.5  Starting Your Own Libraries</A><!--	251-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6.5.html#6.5.1">  6.5.1  Modules and User-Defined Data Types</A><!--	253-->
+<BR><A class = navgrn HREF="Ch6.6.html">6.6  Handling Errors in Library Modules</A><!--	257-->
+<BR><A class = navgrn HREF="Ch6.7.html">6.7  Modules and Design Considerations</A><!--	259-->
+<BR><A class = navgrn HREF="Ch6.8.html">6.8  Libraries<!--‹-->--an Overview</A><!--	261-->
+<BR><A class = navgrn HREF="Ch6.9.html">6.9  An Extended Example (Coordinate Geometry)</A><!--	262-->
+<BR><A class = navgrn HREF="Ch6.10.html">6.10 Chapter Summary</A><!--	268-->
+<BR><A class = navgrn HREF="Ch6.11.html">6.11 Assignments</A><!--	269-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch6i.html">  Second Interregnum<!--</B>‹<B>-->--Nellie and the Pirates</A><!--	272-->
+
+<!--Version History:
+Version 3.0 released to MS 1993 07 19 
+Version 3.0.1 1994 01 19
+Version 3.02 with character graphics for Deane 1994 02 03
+Version 3.02a with bugs in a couple of modules repaired 1994 02 14
+Version 3.02b Minor corrections 1994 02 15
+Version 3.02 with contents 1994 08 30
+Version 4.0 with HTML markup by G Tisher, 1995 05
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 07 02 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+
+«INCLUDE Ch6.0.html»
+«INCLUDE Ch6.1.html»
+«INCLUDE Ch6.2.html»
+«INCLUDE Ch6.3.html»
+«INCLUDE Ch6.4.html»
+«INCLUDE Ch6.5.html»
+«INCLUDE Ch6.6.html»
+«INCLUDE Ch6.7.html»
+«INCLUDE Ch6.8.html»
+«INCLUDE Ch6.9.html»
+«INCLUDE Ch6.10.html»
+«INCLUDE Ch6.11.html»
+«INCLUDE Ch6i.html»-->
+<HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

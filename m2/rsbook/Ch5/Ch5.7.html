@@ -1,0 +1,201 @@
+<HTML>
+<HEAD>
+<TITLE>5.7 Multi-Dimensional Arrays</TITLE>
+<meta NAME="keywords" CONTENT="array, arrays, parameter, parameters, formal, procedure, procedures, function, functions, open, array, high, cardinal, var, char, real, closed, memory, warning, copies, copy, variable, reals, integers, cardinals, vars, chars">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.7 Multi-Dimensional Arrays</B></H2>
+<P>It was noted in section 5.3 that any type of data may be indexed by being placed in a Modula-2 array, including another array.  Thus far, the only instance of doing the latter was in an array of strings.</P>
+<PRE>
+<B>TYPE</B>
+  String  = <B>ARRAY</B> [0 .. 80] <B>OF</B> <B>CHAR</B>;
+  Paragraph = <B>ARRAY</B> [1 .. 10] <B>OF</B> String;
+
+<B>VAR</B>
+  para : Paragraph;</PRE>
+
+<P>No mention was made at the time of how to refer to an individual character within the array <I>para</I>, but it seems reasonable to suppose that </P>
+<PRE>
+ch := para [1] [2];</PRE>
+
+<P>would be a legitimate assignment, and so it is.  The type <I>Paragraph</I> can be thought of at one level of abstraction in the way it is defined, that is, as an <I>array of strings</I>.  Looking a little more closely, one might also want to think of it as an <I>array of array of characters</I>.  Likewise, if one desired, it would be quite proper to define</P>
+<PRE>
+  <B>TYPE</B>
+    DataBlock = <B>ARRAY</B> [1 .. 5] <B>OF</B> <B>ARRAY</B> [1 .. 4] <B>OF</B> <B>INTEGER</B>;
+  <B>VAR</B>
+    theData : DataBlock;</PRE>
+
+<P>and to write assignments such as:</P>
+<PRE>
+  theData [2] [4] := -200;</PRE>
+
+<P>to assign a value to a single item in one of the five arrays of four integers,</P>
+<P>or</P>
+<PRE>
+  theData [2] := theData [4];</PRE>
+
+<P>to assign one of the four-integer arrays to another in its entirety.</P>
+<P>It is convenient to think of such data as if it were arranged in five rows each of four <I>columns</I>.</P>
+<PRE>
+     1	 5	-6	 9
+     2	 0	 4	-2
+     1	 0	 2	-6
+    -8	 9	 3	 1
+     4	 1	-3	 5</PRE>
+
+<P>In terminology previously used for several examples, the array consists of four <I>column vectors</I>, each of length 5.  This closely parallels the mathematical construction known as a matrix.  Here are some samples:</P>
+<P><IMG SRC="Figure/Eq5.1.GIF"><!----></P><P><!----></P>
+<BLOCKQUOTE><I><A NAME="Matrix">A</A> <U>two-dimensional matrix</U> is a collection of data arranged in a rectangular fashion. An individual element is referenced by its <U>row</U> and its <U>column</U> as Ai, j and Bi, j .  Both rows and columns are numbered starting from one  If the maximum <U>indices</U> for the row and column are m and n, it is called an <U>m by n matrix</U> (written m <!--¥--></I>x<I> n.)</I></BLOCKQUOTE>
+<P><B>NOTE</B>:   This text will follow normal mathematical conventions and capitalize the first letter of a matrix identifier.  This is not a rule; but a question of taste.  The identifier of a two-dimensional array in a Modula-2 program will be capitalized only if it represents a matrix, and not otherwise.</P>
+<P>By convention, the row index is always given first.  In the above examples, <I>A</I> is a 4 <!--¥-->x 3 matrix, and <I>B</I> is a 2 <!--¥-->x 2 matrix.  Likewise, A<sub>3,2</sub> is the number 9, and A<sub>2,3</sub> is the number -5.  Sample declarations for A and B are given below.</P>
+<PRE>
+  <B>TYPE</B>
+    Matrix43 = <B>ARRAY</B> [1 .. 4], [1 .. 3] <B>OF</B> <B>INTEGER</B>;
+    Range = [1 .. 2];
+    Matrix22  = <B>ARRAY</B> Range, Range <B>OF</B> <B>INTEGER</B>;
+
+  <B>VAR</B>
+    A : Matrix43;
+    B : Matrix22;</PRE>
+
+<P>Modula-2 requires separate brackets for each range, unlike some computing notations, which allow all the ranges to be listed inside a single pair of brackets.  As with the one-dimensional or ordinary array, no brackets are needed if the name of a range type is given in place of a literal range.</P>
+<P>When referring to the individual two-dimensional array elements in a Modula-2 program, both index references may be placed inside a single pair of brackets.  Thus, one might write:</P>
+<PRE>
+  A [1, 3] := 5;
+  B [2, 2] := A [3, 1];</PRE>
+
+<P>rather than</P>
+<PRE>
+  A [1] [3] := 5;
+  B [2] [2] := A [3] [1];</PRE>
+
+<P>reflecting the fact that the data being abstracted is a single two-dimensional array with a unified indexing scheme, rather than an array of arrays, as the one with which this discussion began.</P>
+<P><B>NOTE</B>:   Modula-2 does not actually distinguish between: 
+	<PRE><B>	ARRAY</B> range1, range2 <B>OF</B> type 
+			    and
+	<B>	ARRAY</B> range1 <B>OF</B> <B>ARRAY</B> range2 <B>OF</B> type.  </PRE>
+
+<P>One or the other may be a better description of the actual structure of the data being abstracted, though the former is more compact and is easier to write.  However, it makes no difference to the compiler or to the eventual program which of the two one uses, for the interpretation of both declarations produces exactly the same code.</P>
+<P>Having constructed such a data type and assuming <I>rowCount</I> and <I>colCount</I> to be of type CARDINAL and to have values in the correct range, loops can be constructed with references to individual elements in the form:</P>
+<PRE>
+  int := B [rowCount, colCount]</PRE>
+
+<P>or</P>
+<PRE>
+  int := A [rowCount, colCount]</PRE>
+
+<P>Also, notice that the assignment</P>
+<PRE>
+  A [1, 4] := B [2, 1]</PRE>
+
+<P>is perfectly legal, because both individual elements are of the same type, whereas the assignment</P>
+<PRE>
+  B := A;</PRE>
+
+<P>is illegal because the arrays themselves are not of the same type, and the assignment</P>
+<PRE>
+  B [1, 3] := A [1, 3];</PRE>
+
+<P>is also illegal because the indexing of <I>B</I> in this statement exceeds the correct bounds for the type.  The first of these two errors is detected by the compiler, whereas the latter is normally found at run time when array index values are checked against the maximum and minimum allowable bounds.  If it were done literally this way with <i>1</i> and <i>3</i>, the compiler would catch the error.  Normally, variables are used, however, and their values are not known until run time.</P>
+<H3><B><A NAME="5.7.1">5.7.1</A> Arrays of More than Two Dimensions</B></H3>
+<P>It is also possible to have arrays of matrices, that is, three dimensional arrays.  These are harder to write down on paper, and four, five, or six dimensional ones are even more difficult to visualize.  A six dimensional array of integers that is, say, three by three by three by three by three by three would have 729 elements.  If each dimension were five instead of three, 15625 storage locations would be required for a single one of these entities.  It is possible that insufficient room will be available for such variables in some machines.  The compiler would allow the program to be compiled with such a dragon in it, but it might not be able to execute.</P>
+<P>If the programmer has a sufficiently large memory store, it may not be necessary to be concerned about the size and number of large arrays.  Some language implementations have extensive library facilities for array manipulation, and simply assume that the large quantities of memory sometimes necessary will in fact be available.  However, there is always some limit on these things; one cannot consume memory space indefinitely.</P>
+<P>Here's one (slightly unusual) way to declare that three by three by etc., along with one reference to it that does not use the same abstraction as the declaration, but is still correct:</P>
+<PRE>
+  <B>TYPE</B>
+    Range = [0 ..2];
+    MatrixA = <B>ARRAY</B> Range, Range <B>OF</B> <B>INTEGER</B>;
+    BigStructure = <B>ARRAY</B> Range, Range, Range <B>OF</B> MatrixA;
+
+  <B>VAR</B>
+    theArray : BigStructure;
+
+  <B>BEGIN</B>
+    theArray [1, 1, 2, 0, 1, 2] := -4</PRE>
+
+<H3><B><A NAME="5.7.2">5.7.2</A> Multidimensional Open Array Parameters</B></H3>
+<P>It was earlier noted that one can write more generic code using open array parameters that can accept a one-dimensional array of any length as an actual parameter.  Likewise, a multidimensional actual array can be assigned to a multidimensional open array formal parameter provided the number of dimensions matches.</P>
+<P>To use, say, a three-dimensional open array we need only write something like:</P>
+<PRE>
+  <B>PROCEDURE</B> MatrixOperation (<B>VAR</B> m1, m2 : <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>INTEGER</B>);</PRE>
+
+<P>Within the procedure, <I>HIGH (m1)</I> will return the highest index assigned on the <I>first</I> dimension.  To find the highest index on one of the other dimensions, we observe that all the <I>m1[i]</I> are themselves open arrays, so that <I>HIGH (m1[0])</I> in particular will return the highest index assigned on the second dimension.  Likewise, <I>HIGH (m1 [0, 0])</I> will return the highest index assigned on the third dimension.</P>
+<P>To illustrate further, suppose one has</P>
+<PRE>
+  <B>TYPE</B>
+    DayRange = (Mon, Tue, Wed);
+    LetIndices = ['A' .. 'D'];
+    OddMatrix = <B>ARRAY</B> DayRange, LetIndices, [1 .. 5] <B>OF</B> <B>INTEGER</B>;
+
+  <B>VAR</B>
+    day : DayRange;
+    let : LetIndices;
+    num: <B>CARDINAL</B>;
+    odd1, odd2 : OddMatrix;</PRE>
+
+<P>and the PROCEDURE MatrixOperation described above was invoked by</P>
+<PRE>
+  MatrixOperation (odd1, odd2);</PRE>
+
+<P>then, within the procedure the following are</P>
+<H3><B>Correct:</B> (but only inside a procedure where m1 is an open array)</H3>
+<PRE>  num := <B>HIGH</B> (m1);	 would assign num the value 2
+  num := <B>HIGH</B> (m1 [0]);	would assign num the value 3 and,
+  num := <B>HIGH</B> (m1 [0, 0]);	 would assign num the value 4</PRE>
+
+<H3><B>Incorrect:</B></H3>
+<PRE>  day := <B>HIGH</B> (m1);
+  let := <B>HIGH</B> (m1 [Mon]);</PRE>
+
+<P><B>NOTES</B>: 1. This also illustrates that the indexing <I>inside</I> the procedure on the formal open array parameter always starts at the zeroth position, regardless of the indexing on the actual parameter type. (1 .. 5 is mapped to 0 .. 4 )</P>
+<P>	2. Older or non-standard versions of Modula-2 may not have multidimensional arrays.</P>
+<P>	3. One could use other than the zeroth element, so HIGH (odd1, [2, 3]) would also do, but in most cases, the zeroth element will be the array of choice upon which to operate with HIGH. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

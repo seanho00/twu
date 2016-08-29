@@ -1,0 +1,214 @@
+<HTML><HEAD><TITLE>17.6 Binary Coded Decimal Fixed Point Types</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Binary Coded Decimal Fixed Point Types">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>17.6 Binary Coded Decimal Fixed Point Types</B></H2>
+<P>An important variation on the idea of storing cardinals in a digit by digit fashion and then using a picture to print out the numbers with a decimal point is to store the digits along with a decimal point position.  In other words, each stored item is thought of as a decimal fraction with a specific number of places after the decimal.  Again, the storage representation is exact, so no rounding off errors take place.  One could modify the definition of the last section as:</P>
+
+<pre>  Decimal = 
+    <B>RECORD</B>
+      state : DecState;
+      isNeg : <B>BOOLEAN</B>;
+      number : <B>ARRAY</B> DecRange <B>OF</B> Digit;
+      decPlace : DecRange;
+    <B>END</B>;</pre>
+
+<P>The code for arithmetic operations will now be considerably more complicated, because the decimal place has to be taken into consideration each time, and each operand can have it in a different place.   The complexity of doing arithmetic also slows things down considerably. Yet such a numeric type is attractive for business arithmetic, and some vendors do wish to include such a facility. Indeed, some hardware has built in support in the machine language to which one is compiling for such a type.</P>
+<P>Ordinarily, as shown in Chapter 8, each machine nibble can code one hexadecimal digit in the range of 0 - F (hex) or 0 - 15 (decimal).  Arithmetic is performed by routines that handle carries from nibble to nibble automatically.  Thus, F + E produces 1C.  The number of nibbles that make up a numeric type (and for which such carrying is performed) determine how many hexadecimal digits can be stored by that type.</P>
+<P>Now, if a nibble can store a hexadecimal digit, it can surely store a decimal digit, and do so with room to space, because there are only ten possibilities rather than sixteen.  Many computers allow  for a switch to be set to tell the nibbles to do their carry in a decimal fashion rather than a hexadecimal fashion.  Thus, the digits A,B,C,D,E, and F are not used when arithmetic is in this mode, and the digit each nibble stores can be thought of as a decimal digit.  True, there is a little waste memory space this way, but this technique does answer the need of being able to store each decimal digit individually and therefore to do arithmetic without round off errors.</P>
+
+	<P><A NAME="BinaryCoded"></A><I>The name of any data type stored and manipulated in decimal digits at the binary level is <U>binary coded decimal</U> or <U>BCD</U> for short.</I></P>
+
+<P>Because putting the machine into BCD arithmetic mode (and changing it back again) requires a machine language instruction to set the mode switch, and because not all machines will support BCD at all, the BCD type is not in Modula-2 <i>per se</i>.  However, some vendors do add such support to their otherwise standard system.  When this is done, client modules will normally have to include </P>
+
+<pre><B>FROM </B>SYSTEM <B>IMPORT</B>
+  BCD;</pre>
+
+<P>before making any use of the type.  Because this is a numeric type, if the vendor does go to the trouble to provide it, arithmetic operations should work using the normal operators (overloaded) on items of type BCD from this point.  However the details will vary from one vendor to another.</P>
+
+<h3><B><a name="17.6.1">17.6.1</a> BCD Support in p1 Modula-2 (Optional)</B></h3>
+
+<P><B>NOTE:</B> Information in this section is implementation-specific to one product.  The modules described here may exist in other forms, with other names, or not at all in other Modula-2 systems.</P>
+
+<P>The p1 compiler is an example of a package that does include a BCD type that has to be imported from SYSTEM but for which the arithmetic operators are overloaded.  As one might expect from an otherwise ISO standard package, there is a module for doing I/O that has a rather standard-looking interface:</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> BcdIO;
+(* Input and output of bcd numbers in decimal text form *)
+ 
+<B>IMPORT</B> IOChan;
+<B>FROM</B> SYSTEM <B>IMPORT</B> BCD;
+ 
+(* the text form of a signed bcd number is
+     ["+" | "-"], decimal digit, {decimal digit}, [".", {decimal digit}] ["$"] *)
+ 
+<B>PROCEDURE</B> ReadBcd (cid: IOChan.ChanId; <B>VAR</B> bcd: <B>BCD</B>);
+  (* Skips leading spaces and removes any remaining characters that form part of a signed bcd number.  A corresponding value is assigned to the parameter bcd.  The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; bcd: <B>BCD</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of the parameter bcd in fixed-point text form, rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+  (* Examples of fixed point output:
+     value:     3923009   3.923009   0.0003923009
+     places
+     -5         3920000          0              0
+     -2         3923010          0              0
+     -1         3923009          4              0
+      0        3923009.         4.             0.
+      1       3923009.0        3.9            0.0
+      4    3923009.0000     3.9230         0.0004
+  *)
+ 
+<B>END</B> BcdIO.</pre>
+
+<P>There is also a module <I>SBcdIO</I>. Naturally, there are facilities like those in the last section, though a little more sophisticated, for converting to and from formatted strings.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> BcdStr;
+(* BCD/string conversions *)
+ 
+<B>IMPORT</B> ConvTypes, BcdConv;
+<B>FROM</B> SYSTEM <B>IMPORT</B> BCD;
+ 
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange, strWrongFormat, strEmpty *)
+  BcdFormat = BcdConv.BcdFormat; (* formatOk, decMarker, missingChar, illegalValue *)
+ 
+(* the string form of a signed bcd number is
+     ["+" | "-"], decimal digit, {decimal digit}, [".", {decimal digit}] ["$" *)
+ 
+<B>PROCEDURE</B> StrToBcd (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> bcd: <B>BCD</B>; <B>VAR</B> res: ConvResults);
+  (* Ignores any leading spaces in str.  If the subsequent characters in str are in the format of a signed bcd number, assigns a corresponding value to bcd.  Assigns a value indicating the format of str to res. *)
+ 
+<B>PROCEDURE</B> BcdToFixed (bcd: <B>BCD</B>; place: <B>INTEGER</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of bcd to fixed-point string form, rounded to the given place relative to the decimal point, and copies the possibly truncated result to str. *)
+ 
+<B>PROCEDURE</B> BcdToFree (bcd: <B>BCD</B>; format: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+                     <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> formatResult: BcdFormat);
+  (* If format is a well-format format string and bcd can be represented within this format, converts bcd to the given format, and assings the possibly truncated result to str, and "formatOk" to formatResult. Otherwise assigns a value indicating the error to formatResult. *)
+ 
+<B>END</B> BcdStr.</pre>
+
+<P>The lower level module that this one imports from defines the format or picture string type and also provides facilities for checking on the validity of such a string before making use of it.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> BcdConv;
+ 
+<B>IMPORT</B> ConvTypes;
+<B>FROM</B> SYSTEM <B>IMPORT</B> BCD;
+ 
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults;
+  BcdFormat = (
+    formatOk,          (* correct conversion format *)
+    decMarker,          (* none or more than one marker for the position
+                         of the decimal point specified  *)
+    missingChar,        (* missing characters after "=" or "\" *)
+    illegalValue        (* a value that is too great to be represented with this format *)
+    );
+
+(*
+The format string accepted by the conversion routines has the following rules:
+
+  Z : digit, leading " "
+  # : digit, leading " "
+  9 : digit, leading "0"
+  = : sign, the two following characters represent "+" and "-"
+  - : same as "= -"
+  + : same as "=+-"
+  ! : marks the position of the decimal point (no required representation)
+  , : same as "!\,"
+  . : same as "!\."
+  \ : escape character, the follow character is printed without
+     interpretation 
+  other characters: copied to the result string as they are.
+
+  Examples:
+  format: " ###\.###\.###\.##9,999 =HS"
+       23456.78  is converted to :  "    .   . 23.456,780 H"
+       -0.123  is converted to :  "    .   .   .  0,123 S"
+
+   "+999.99999"
+       23456.78  formatResult becomes illegalValue
+       -0.123  is converted to :  "-000.12300"
+
+  "DM - ZZZZZZ,ZZ"
+      23456.78  is converted to :  "DM    23456,78"
+      -0.123  is converted to :  "DM -       ,12"
+
+  "DM - #####9,99"
+      23456.78  is converted to :  "DM    23456,78"
+      -0.123  is converted to :  "DM -      0,12"
+
+*)
+<B>PROCEDURE</B> ScanBcd (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+           <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for bcd numbers - assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+ 
+<B>PROCEDURE</B> FormatBcd (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to BCD *)
+ 
+<B>PROCEDURE</B> ValueBcd (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): BCD;
+  (* If str is well-formed, returns the value corresponding to the bcd number string value str, otherwise an exception is raised. *)
+ 
+<B>PROCEDURE</B> LengthFixedBcd (bcd: BCD; place: <B>INTEGER</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the fixed-point string representation of bcd rounded to the given place relative to the decimal point. *)
+ 
+<B>PROCEDURE</B> TestFreeFormat (format: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): BcdFormat ;
+  (* Tests wether format is a format string accepted by conversion rouines, value checks cannot be done. *)
+
+<B>PROCEDURE</B> LengthFreeBcd (bcd: BCD; format: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* If format is a well-formed format string and bcd can be represented within this format, returns the number of characters in the given string representation of bcd, otherwise an exception is raised. *)
+ 
+<B>PROCEDURE</B> IsBcdConvException (): <B>BOOLEAN</B>;          (*V5.0b6*)
+ 
+<B>END</B> BcdConv.</pre>
+
+<P>Much of this is more or less as expected.  Procedures like <I>ScanBcd</I> are a little odd, but a fuller explanation of such scanners can be found in a later section of this chapter.  As can be seen, the string formatting rules are a little different (and more complicated) than in the simple example of the previous section, but there is no great uniformity in such matters, and the example begun there was deliberately kept as simple as possible so as not to confuse the concepts.
+
+</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

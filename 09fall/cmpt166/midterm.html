@@ -1,0 +1,207 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Midterm :: CMPT166 DS 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li> Compare and contrast <b>object-oriented</b> programming with procedural programming. <u>[4]</u>
+<br><i>Procedural programming is action-oriented: the code is a sequence of
+procedures, and the data structures are passed as parameters to the procedures.
+The focus is on the 'verbs'.  In contrast, object-oriented programming is
+data-oriented: code is organized into classes, centred around objects, and the
+procedures are treated as methods within each class.  The focus is on the
+'nouns'.
+</i>
+
+<li> Explain what the <b>JDK</b> and <b>JRE</b> are and contrast them.  <u>[3]</u>
+<br><i><dl>
+<dt> Java Runtime Environment
+<dd> what you need to run (other people's) Java programs: the Java
+virtual machine (command line: java).  
+<dt> Java Development Environment
+<dd> what you need to compile (make your own) Java programs: javac compiler.
+</dl></i>
+
+<li> Describe and contrast the eight Java <b>primitive types</b>. <u>[6]</u>
+<br> <i> <dl>
+<dt> <tt>bool</tt> <dd> boolean type, just true and false
+<dt> <tt>char</tt> <dd> a Unicode character
+<dt> <tt>byte</tt> <dd> an integer represented with 1 byte
+<dt> <tt>short</tt> <dd> an integer represented with 2 bytes
+<dt> <tt>int</tt> <dd> an integer represented with 4 bytes
+<dt> <tt>long</tt> <dd> an integer represented with 8 bytes
+<dt> <tt>float</tt> <dd> a real value represented with 4 bytes
+<dt> <tt>double</tt> <dd> a real value represented with 8 bytes
+</dl></i>
+
+<li> Describe the <b>MVC</b> design pattern <u>[4]</u>
+<br> <i><dl>
+<dt>Model:
+<dd>Data structures and methods to interact with the data.
+e.g., 2D array of letters for word-search
+<dt>View:
+<dd>Display/output, summary of the data, statistics, etc.
+e.g., Swing labels, text output
+<dt>Controller:
+<dd>Input/control from the user or other programs.
+e.g., Swing buttons, keyboard input
+</dl></i>
+
+<li> Explain and contrast method <b>overloading</b> with method
+<b>overriding</b>. <u>[4]</u>
+<br><i><dl>
+<dt> overloading
+<dd> multiple versions of the same method (same name) but with
+different number/types of parameters.
+<dt> overriding
+<dd> a method defined in a subclass overrides a method of the same name
+in the superclass.
+</dl></i>
+
+<li> What is an <b>abstract superclass</b>? What would you use one for?
+Give an example of such a situation (no code required, just describe the
+situation).  How do you declare a class to be abstract? <u>[4]</u>
+<br><i>An abstract class is not meant to be instantiated directly.
+  An abstract superclass can be used as a way of organizing its subclasses
+  under one category.  For example, Dog, Cat, and Cow all are within the
+  Mammal category.  It makes sense to have specific instances of Dog, Cat,
+  and Cow, but not of Mammal.  Mammal is the abstract superclass.
+  In Java, an abstract class is declared with the 'abstract' keyword.
+  Concrete subclasses must override all abstract functions and provide 
+  bodies to them.
+</i>
+
+<li> What is a Java class <b>interface</b>? Think of an example and
+describe it (need not be one standard to Java).  
+When might a designer choose to define an interface rather than
+an abstract superclass?  <u>[5]</u>
+<br> <i>An interface is a named set of methods, for instance the
+  ActionListener interface specifies the actionPerformed() method
+  and advertises that a class knows how to respond to action events.
+  Interfaces specify functionality, i.e., what a class knows how to do.
+  Abstract superclasses specify identity, i.e., what a class is.
+  Multiple classes that inherit from different superclasses may
+  implement the same interface, but in Java multiple inheritance is not
+  permitted.
+</i>
+
+<li> Describe and contrast the four options we have in Java for 
+<b>access modifiers</b> on attributes/methods. <u>[4]</u>
+<br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> (no modifier) <dd> methods in this class and this package can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i>
+
+<li> Name and briefly describe at least five <b>Swing widget</b> classes.
+<u>[4]</u>
+<br><i>
+  JLabel, JTextField, JPasswordField, JButton, JCheckBox, JRadioButton, 
+  JComboButton, JTextArea, JScrollPane, ...
+</i>
+
+<li> What <b>basic shapes</b> can Java's <tt>Graphics</tt> class draw?
+Name at least four.
+Also, name and describe the basic functions used to draw them. <u>[4]</u>
+<br><i>
+  drawLine(), drawRect(), drawOval(), drawArc(), drawPolyline(), drawPolygon(),
+  draw3DRect(), drawRoundRect(), ...
+</i>
+
+<li> In computer graphics (e.g., Java2D), what is <b>clipping</b>? <u>[4]</u>
+<br><i>
+  Clipping is removing primitives -- or portions of primitives -- that lie
+  outside the current 2D viewport.  This may involve changing the shape of
+  primitives to ensure they do not draw outside the viewport.
+</i>
+
+<li> Consider a student enrolment database like what we have at TWU: it holds
+students' personal information, transcripts, current enrolment, advising 
+notes, etc.  Design a <b>use-case</b> chart for such a system.  (You have a
+fair amount of freedom in how to design the system.) <u>[6]</u>
+<br><i>
+</i><br>
+
+<li class="break"> Declare simple Java classes and sketch a UML class diagram 
+that formalizes the following set of statements.  Declare and diagram
+every (non-primitive) class used.  Implementations of methods are not required.<u>[8]</u>
+<ul>
+  <li> Every <tt>Shape</tt> has a <tt>lineColour</tt> and <tt>fillColour</tt>.
+  <li> Every <tt>Shape</tt> knows how to <tt>draw</tt> itself.
+  <li> Everything that knows how to <tt>draw</tt> itself is called a <tt>Drawable</tt>;
+  <tt>Shape</tt>s are <tt>Drawable</tt>s.
+  <li> There are various kinds of <tt>Shape</tt>s: <tt>Rectangle</tt>s, <tt>Oval</tt>s,
+  and <tt>Dot</tt>s.  It doesn't make sense to have an instance of a <tt>Shape</tt>, only
+  instances of the subclasses.
+  <li> Every <tt>Rectangle</tt> has a <tt>width</tt> and <tt>height</tt>;
+  every <tt>Oval</tt> has a <tt>radius</tt> and an <tt>eccentricity</tt> (non-circularity).
+  <li> There are also <tt>Square</tt>s, which are <tt>Rectangle</tt>s where the
+  height is enforced to be equal to the width, and <tt>Circle</tt>s, which are 
+  <tt>Oval</tt>s with <tt>eccentricity=1</tt>.
+</ul>
+<br><br><i><pre>
+interface Drawable {
+	void draw();
+}
+abstract class Shape implements Drawable {
+	private Colour lineColour;
+	private Colour fillColour;
+	public void draw() {};
+}
+class Rectangle extends Shape {
+	private float width;
+	private float height;
+}
+class Oval extends Shape {
+	private float radius;
+	private float eccentricity;
+}
+class Dot extends Shape {}
+class Square extends Rectangle {}
+class Circle extends Oval {}
+</pre></i>
+
+<li> Write a Java class that takes a list of integers and outputs
+two columns of numbers: the first column shows the distinct numbers
+in the list; the second column shows the frequency with which that
+integer shows up in the list.  (This is a <b>frequency table</b>.)
+For example, if the input list was 
+(<tt>-12, 2, 0, 5, 2, 2, -12</tt>),
+then the output could be:<pre>
+N    Count
+-12  2
+2    3
+0    1
+5    1
+</pre>
+(Formatting/spacing of the output is not too important,
+and the output does not need to be in sorted order.)
+You do not need to write a complete program that tests this
+(and you do not need keyboard-interactive user input), just a
+class that provides a function to do this.
+Docstrings and comments are not necessary but may garner partial
+credit.  <u>[10]</u>
+<br><i>
+  See <a href="FreqTable.java">FreqTable.java</a>.
+</i>
+
+</ol>
+
+</body></html>

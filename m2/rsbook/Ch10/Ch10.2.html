@@ -1,0 +1,434 @@
+<HTML>
+<HEAD>
+<TITLE>10.2 Blocks, Global and Local Variables, Side Effects</TITLE>
+<meta NAME="keywords" CONTENT="scope, visibility, issues, block, structured, structure, block-structured, language, languages, blocks, global, local, variable, variables, side, effect, effects, declaration, declare, statement, sequence, identifier, error, visble, local, locality, modification, modify, for, illegal, threaten, threat, ignore, non-threatening, nonthreatening, meaning, form, nest, nested, procedure, outermost, outer, most, level, zero, one, level, forward">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><CENTER><B>Part A<!--</B>‹<B>-->--Scope and Visibility Issues</CENTER><BR>
+10.2 Blocks, Global and Local Variables, Side Effects</B></H2>
+<P>Notations like Modula-2 and Pascal are sometimes called <I>block-structured languages</I>.  What is meant by this is that code is organized or grouped into named sequences, called <I>blocks</I>. (In some languages, blocks do not need names, but they do in Modula-2).  Both modules and procedures contain blocks, and these blocks provide the framework for organizing (structuring) a program.  In general, the entire code following the line containing the name of the module or procedure is its main block, though subsidiary procedures inside it may contain other blocks.</P>
+<BLOCKQUOTE><I>A Modula-2  <U><A NAME="Block">block</A></U> consists of the declaration and body parts of a module or a procedure.  It is declared by a heading that includes the block name.  In the case of a procedure it also includes the parameter list. It contains<BR>
+(1) a declaration section<!--</I>‹<I>-->--definitions of entities to be used inside the block<BR>
+(2) a statement sequence known as the block body</I></BLOCKQUOTE>
+<PRE><B>BEGIN</B>
+  statement sequence
+<B>END</B> <!--<-->&lt;block name<!-->&gt;</PRE>
+
+<P><CENTER><IMG SRC="Figure/Figure_10.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>As already seen, blocks must have names in Modula-2, and the identifier must be named in the first line (right after the reserved word MODULE or PROCEDURE, as the case may be), and also on the last line, right after the reserved word END.</P>
+<P>A procedure may legally be written without a body:</P>
+<PRE>
+  <B>PROCEDURE</B> Disembodied;
+  <B>END</B> Disembodied;</PRE>
+<P>but it would hardly be of any use.  However, it may well happen that one would write an implementation part of a library module with no body, for it may have no need to do initializations of internal or exported items.  The definition part of a library module is not permitted to contain a body.</P>
+<P>A more substantial difference between modules and procedures is that the headings of procedures include parameter lists, and this is not applicable to the headings of modules.  Module blocks, on the other hand may be preceded in the module by import lists, and these are not relevant to procedures.</P>
+<P>The general purpose of blocks is to assist in structuring code for ease of organization.  They also assist in segregating variables and other entities for use in specific parts of a program and, to contain code that may be used repeatedly in various contexts.</P>
+<H3><B><A NAME="10.2.1">10.2.1</A> Procedure Blocks and Scope</B></H3>
+<P>As indicated in chapter three, any variables, constants, or other entities declared in a procedure have no existence whatsoever outside the scope of that procedure.  Any attempt to refer to such identifiers in the main program will result in an <I>identifier not declared error</I> or some similar message being delivered by the compiler.</P>
+<P>On the other hand, any variables that are declared in the scope surrounding a procedure<!--‹-->--whether it be the main program module or another procedure<!--‹-->--are available to all the procedures contained inside that scope.  This is true at every level, so that if one had:</P>
+<PRE>
+<B>MODULE</B> Visible;
+
+<B>VAR</B>
+  firstReal : <B>REAL</B>;
+
+  <B>PROCEDURE</B> DoOne;
+
+  <B>VAR</B>
+    secondReal : <B>REAL</B>;
+
+    <B>PROCEDURE</B> DoTwo;
+
+    <B>VAR</B>
+      thirdReal : <B>REAL</B>;
+
+    <B>BEGIN</B>
+      (* Body of DoTwo *)
+    <B>END</B> DoTwo;
+  
+
+  <B>BEGIN</B>
+    (* Body of DoOne *)
+  <B>END</B> DoOne;
+
+<B>BEGIN</B>
+  (* Body of Visible *)
+<B>END</B> Visible.</PRE>
+<P>then the procedure <I>DoTwo</I> can use <I>DoOne</I> and all three of <I>firstReal</I>, <I>secondReal</I>, and <I>thirdReal</I>. procedure <I>DoOne</I> can use itself, <I>DoTwo</I>, <I>firstReal</I> and <I>secondReal</I>, but not <I>thirdReal</I>. The main program module can use only <I>DoOne</I> and just <I>firstReal</I> of the variables.</P>
+<P>As far as any statement in the main module is concerned, the entities <I>DoTwo</I>, <I>secondReal</I> and <I>thirdReal</I> do not even exist.  Whenever a procedure is entered, its own particular variables (whether formal parameters or declared in a VAR statement) come into existence and can have values assigned to them.  As soon as this section is exited they cease to exist altogether, and the memory locations that they named are reclaimed for other uses by the program.  The following summarizes these concepts in a couple of formal definitions :</P>
+<BLOCKQUOTE><I>An <A NAME="Entity">entity</A> named in the parameter list of a procedure or in the declaration part of its block is said to be <U>local</U> to that block.  The same entity is <U>global</U> to any block inside the procedure in which it is declared. </I></BLOCKQUOTE>
+<P>Thus in the module <I>Visible</I>, <I>secondReal</I> is local to <I>DoOne</I> and global to <I>DoTwo</I>.  Some entities are more local than others.  In fact, it is technically more correct to assert that Modula-2 does not have entirely global entities, just ones that are local to the outer block, because a program module executes in exactly the same manner as does one of its procedures.  Perhaps it is best to refer to the surroundings and observe that an entity is local in the block in which it is declared, and global to any block contained within that.  This is illustrated in figure 10.2.</P>
+<P><CENTER><IMG SRC="Figure/Figure_10.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>The concept of locality applies not just to variables, but to constants, modules, procedures, and other entities as well.  Clearly, it is important to know where in a program a given entity is in fact usable. Consider the following definitions:</P>
+<BLOCKQUOTE><I><A NAME="Scope">If</A> an entity (variable, constant, procedure, etc.) is available for use in a statement in some portion of a program, one says that it is <U>visible</U> in that portion of the program.  </BLOCKQUOTE>
+<BLOCKQUOTE>The <U>scope</U> of an entity is the portion of a program in which it is visible.  Modules and procedures both define a scope for their entities, and an entity is visible in any procedure scope that is contained inside the one in which it is defined. </I></BLOCKQUOTE>
+<P><B>NOTES</B>:	1. An entity is visible throughout the entire scope within which it is defined, not just from the point at which it is declared onward, as in some versions of Pascal.  This characteristic of Modula-2 may have been sacrificed if the implementation you are using has a one-pass compiler.</P>
+<P>	2. The scope of a procedure starts immediately <I>after</I> its own name, and includes its formal parameters.</P>
+<H3><B><A NAME="10.2.2">10.2.2</A> Side effects and Counting Loops</B></H3>
+<P>In general, it is a poor programming practice to declare all of a program's variables globally to the entire program.  The larger the program is, the more likely this is to cause difficulties in keeping track of all the variables and their use.  Failure to do so may result in writing code that modifies the value of a variable that is important to the correct functioning of some other part of the program.  This difficulty increases approximately with the square of the size of the program, and tends to be particularly acute with procedures, because these usually have variables of their own, and may be written long after the main program at a time when the creator of the original code has either departed her employment or forgotten what its variables were for.  Given this, it is the product of a moment's carelessness or ignorance to write a procedure that, besides its intended action, also modifies some important program variable.</P>
+<BLOCKQUOTE><I><A NAME="SideEffect">The</A> modification by a procedure of some variable global to it  is called a <U>side effect</U> of the procedure.</I></BLOCKQUOTE>
+<P>Observe that some side effects are desirable, and may furnish the very reason for writing the procedure in the first place.  For instance, an invocation of <I>ReadChar(ch)</I> is made for the express purpose of changing the value of global variable <I>ch</I>.  On the other hand, some side effects are quite deleterious.  For instance, novice programmers, finding that they have many procedures containing counting loops such as:</P>
+<PRE>
+<B>WHILE</B> count <!--<-->&lt; 10
+  <B>DO</B>
+...
+   <B>INC</B> (count)
+  <B>END</B>;</PRE>
+<P>may be tempted to declare a single variable <I>count</I> at the outermost level of a program and allow it to be shared by all procedures.</P>
+<P>If this is done, then whatever the declared purpose of one of these procedures, its action has the additional side effect of changing <I>count</I>.  On some occasions, this is not be a problem, but what if one of these procedures calls another?</P>
+<PRE>  
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+<B>PROCEDURE</B> DoOne ( );
+<B>BEGIN</B>
+  count := 1;
+  <B>WHILE</B> count <!--<-->&lt; 4
+    <B>DO</B>
+      DoTwo;
+      <B>INC</B> (count);
+    <B>END</B> (* while *)
+<B>END</B> DoOne;
+
+<B>PROCEDURE</B> DoTwo ( );
+<B>BEGIN</B>
+  count := 12;
+  <B>WHILE</B> count <!-->&gt; 5
+    <B>DO</B>
+      Statement Sequence;
+      <B>DEC</B> (count, 2);
+    <B>END</B> (* while *)
+<B>END</B> DoTwo;</PRE>
+<P>What happens to the value of <I>count</I> that <I>DoOne</I> must maintain in order to execute correctly once <I>DoTwo</I> begins its own loop?  An invocation of <I>DoOne</I> starts by setting <I>count</I> to 1 and starting up <I>DoTwo</I>, which then sets that same global variable <I>count</I> to 12 before cycling it through 12,10,8,6, and 4.   When <I>DoOne</I> resumes control, it finds its loop control variable is now set to 4, so it will also exit<!--‹-->--without performing the rest of its loop.  This would be a difficult bug to locate, especially if the code for the two procedures were separated in the source file.</P>
+<P>If the variable is the loop control variable in a FOR statement, this code would not be allowed, because such loop control variables must be declared in the <I>same</I> scope as they are used.  That is, code such as</P>
+<PRE>
+<B>MODULE</B> TestFor;
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>; (* unused in code shown, but available. *)
+  
+<B>PROCEDURE</B> One;
+
+<B>BEGIN</B>
+<B>FOR</B> count := 1 <B>TO</B> 10 
+  <B>DO</B>
+  <B>END</B>;
+<B>END</B> One;
+
+<B>PROCEDURE</B> Two;
+
+<B>BEGIN</B>
+<B>FOR</B> count := 1 <B>TO</B> 10 
+  <B>DO</B>
+    One;
+  <B>END</B>;
+<B>END</B> Two;
+
+<B>END</B> TestFor.</PRE>
+<P>should produce error messages like</P>
+<PRE>
+#    9  FOR count := 1 TO 10 
+#####           ^ 205: illegal FOR variable
+ File <!--"-->&quot;TestFor.MOD<!--"-->&quot;; Line 9
+#   17  FOR count := 1 TO 10 
+#####           ^ 205: illegal FOR variable
+ File <!--"-->&quot;TestFor.MOD<!--"-->&quot;; Line 17</PRE>
+<P>This is because it is an error to <I>threaten</I> the value of a loop control variable in a FOR loop, and this code certainly does that.  Note, however, that some compilers do not take this error checking as seriously as they should, and may incorrectly ignore this error.  The correct way to write such code is:</P>
+<PRE>
+<B>MODULE</B> CorrectFor;
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>; (* unused in code shown, but available *)
+  
+<B>PROCEDURE</B> One;
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+<B>FOR</B> count := 1 <B>TO</B> 10 
+  <B>DO</B>
+  <B>END</B>;
+<B>END</B> One;
+
+<B>PROCEDURE</B> Two;
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+<B>FOR</B> count := 1 <B>TO</B> 10 
+  <B>DO</B>
+    One;
+  <B>END</B>;
+<B>END</B> Two;
+
+<B>END</B> CorrectFor.</PRE>
+<P>Notice that here each procedure has its own variable <I>count</I>.  A procedure may legally re-use an identifier that already exists in the surrounding scope.  A variable called <I>count</I> in the main program, and one called <I>count</I> in a procedure contained inside the program, are different entities<!--‹-->--they name different cells of the computer's memory.  In this example, all three items called <I>count</I> have their own memory, independent of the others, and so do not interfere with the others.</P>
+<P>The only effect this will have is that the original variable will not now be visible in the inner procedure.  The name is, after all, being used locally.  So, the multiple use of <I>count</I> causes no conflicts<!--‹-->--all are distinct.</P>
+<P>The <I>non-threatening</I> rule only applies to FOR loops, not to WHILE or REPEAT loops, but the side effect problem can be fixed the same way, by declaring variables that are local to the scope containing the loop.</P>
+<P>The point is that side effects can easily destroy the validity of a program, and that such side effects should therefore be avoided.  It follows that the best way to use procedures is to construct them as <I>black boxes</I> that take in certain input, produce well-defined output and do not otherwise affect the surrounding program through their inner workings.</P>
+<H3><B><A NAME="10.2.3">10.2.3</A> Other Global side effects</B></H3>
+<P>Apart from the damage done to loop control variables, there are other deleterious side effects involving local modification of global variables.  To illustrate, consider the following pathological example:</P>
+<PRE>
+<B>MODULE</B> BadSideEffect;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>CONST</B>
+  two = 2;
+<B>VAR</B>
+  result, global : <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> Func (local : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  local := global + local;
+  <B>INC</B> (global);
+  <B>RETURN</B> local;
+<B>END</B> Func;
+
+<B>BEGIN</B>  (* main *)
+  global := 5;
+  result := Func (two) + Func (two);
+  WriteCard (result, 0);
+  WriteLn;
+  global := 5;
+  result := 2 * Func (two);
+  WriteCard (result, 0);
+  WriteLn;
+<B>END</B> BadSideEffect.</PRE>
+<P>When this program was run, the output was</P>
+<PRE>
+15
+14</PRE>
+<P>Whoops!  Surely it ought to be the case that any function procedure has the property that</P>
+<P>Func(two) + Func(two)  equals  2 * Func(two)</P>
+<P>as it does in most reasonable mathematics, but here it does not. Here's why.  When the statement</P>
+<PRE>
+result := Func (two) + Func (two)</PRE>
+<P>is executed, the procedure is entered twice.  On first entry, <I>global</I> has the value 5, and on first exit the value returned by <I>Func</I> is 7 and that of <I>global</I> is now 6.  The second call returns the function value 8.  The sum of the two function results is 15.  On the other hand, when the statement</P>
+<PRE>
+result := 2 * Func (two)</PRE>
+<P>is executed with <I>global</I> first set back to 5, the procedure is entered only once, returning 7; this is doubled; and 14 is output.</P>
+<P>The example further illustrates that procedures should modify only local variables, not global ones.  It also illustrates that a piece of code must be read for its <I>meaning</I> rather than simply for its <I>form</I> in order to understand the effect of executing that code.</P>
+<P>Here are two suggestions for avoiding deleterious side effects of this kind:</P>
+<BLOCKQUOTE><I>1:  Avoid manipulating global variables within local routines if possible.  Pass more parameters instead.</BLOCKQUOTE>
+<BLOCKQUOTE>2:  Declare only those variables as global that are necessary.  If only a few  procedures will use a variable, it may not belong in the outer block.</BLOCKQUOTE>
+<BLOCKQUOTE>3:  Re-use names where appropriate; the compiler will know to employ a different memory cell.</I></BLOCKQUOTE>
+<H3><B><A NAME="10.2.4">10.2.4</A> Nested Procedure Scopes</B></H3>
+<P>As noted in passing above, when a name is re-used in an inner (nested) scope, all references to that name in the inner scope are to the entity declared in that scope, not to the global entity of the same name.  The re-use of the name <I>cuts off</I> the access to the global entity of the same name.  Here is another illustration:</P>
+<PRE>
+<B>MODULE</B> Nested;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal;
+<B>VAR</B>
+  number1, number2 : <B>REAL</B>;
+
+<B>PROCEDURE</B> DoOne;
+<B>VAR</B>
+  number1 : <B>REAL</B>;
+
+  <B>PROCEDURE</B> DoTwo;
+  <B>VAR</B>
+    number1, number2 : <B>REAL</B>;
+  <B>BEGIN</B>   (* for DoTwo *)
+    number1 := 1.0;  (* no change to number1 in DoOne or Nested *)
+    number2 := 2.0;  (* doesn't affect number2 in main program *)
+  <B>END</B> DoTwo;
+
+<B>BEGIN</B>   (* for DoOne *)
+    number1 := 3.0;  (* no effect on number1 in Main program *)
+    number2 := 4.0;  (* does affect number2 in main program *)
+    DoTwo;
+<B>END</B> DoOne;
+
+<B>BEGIN</B>
+  number1 := 5.0;
+  number2 := 6.0;
+  DoOne;
+  WriteReal (number1, 5);
+  WriteLn;
+  WriteReal (number2, 5)
+<B>END</B> Nested.</PRE>
+<P>The output for the above module is</P>
+<PRE>
+5.000
+4.000</PRE>
+<P>for <I>number1</I> and <I>number2</I> respectively, for when an assignment is made to a variable inside a procedure, it will be done with the locally defined entity of that name.  No search outside the procedure will be instituted unless the identifier cannot found locally.</P>
+<BLOCKQUOTE><I><A NAME="Level">An</A> entity declared in the main module is said to be at the <U>outermost level</U>, or <U>level zero</U>.  An entity declared in a procedure belonging to the main module (one scope inside the main one) is at <U>level one</U>.  An entity declared in a procedure nested n scopes inside the main scope is at <U>level n</U>.</I></BLOCKQUOTE>
+<P>Naturally, if two procedures are declared at the same level, they cannot make any use of each other's entities<!--‹-->--including any procedures hidden inside each other.  Figure 10.3 illustrates:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_10.3.GIF" BORDER="1"></CENTER><!----></P>
+<P><B>NOTE</B>:	There may be an implementation specific restrictions on the use of the procedure <I>Three</I> inside the procedure <I>One</I> because of declare-it-before-you-use-it restrictions.  If that is the case, declare <I>Three</I> FORWARD as shown in <A HREF="../Ch4/Ch4.8.html">section 4.8</A>.</P>
+<P>To illustrate the use of nested procedures, consider this little program that draws bar graphs on up to three quantities and up to 30 units wide.  Observe the multiple use in different scopes of the counting variable and the use of subprocedures by a main procedure that do not need to be visible to the entire program (and so are not).</P>
+<A NAME="BarGraph"></A><PRE>
+<B>MODULE</B> BarGraph;
+(* by R. Sutcliffe
+To illustrate nested procedures and scope
+revised 1994 04 06 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar, WriteString, ReadChar, SkipLine, WriteLn;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+  
+<B>PROCEDURE</B> DrawBar (wide : <B>CARDINAL</B>; desc : <B>CHAR</B>);
+(* This procedure draws the entire bar using two subprocedures. *)
+
+<B>PROCEDURE</B> MakeSide (howWide : <B>CARDINAL</B>);
+    (* This subprocedure makes one side of the bar. *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  WriteChar (<!--"-->&quot; <!--"-->&quot;);
+  <B>FOR</B> count := 1 <B>TO</B> howWide-1
+    <B>DO</B>
+      WriteChar (<!--"-->&quot;-<!--"-->&quot;);
+    <B>END</B>;  (* if *)
+<B>END</B> MakeSide;
+  
+<B>PROCEDURE</B> MakeEnds (howWide : <B>CARDINAL</B>);
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  WriteChar (<!--"-->&quot;|<!--"-->&quot;);
+  <B>FOR</B> count := 2 <B>TO</B> howWide
+    <B>DO</B>
+      WriteChar (<!--"-->&quot; <!--"-->&quot;);
+    <B>END</B>;  (* for *)
+  WriteChar (<!--"-->&quot;|<!--"-->&quot;);
+ <B>END</B> MakeEnds;
+
+<B>BEGIN</B> (* Main DrawBar  procedure *)
+  MakeSide (wide);
+  WriteLn;
+  MakeEnds (wide);
+  WriteChar (desc);
+  WriteLn;
+  MakeSide (wide);
+  WriteLn;
+<B>END</B> DrawBar;
+  
+<B>PROCEDURE</B> GetInfo (<B>VAR</B> size : <B>CARDINAL</B>; <B>VAR</B> desc : <B>CHAR</B>);
+
+<B>VAR</B>
+  done : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>REPEAT</B>   (* for Range checking *)
+    ReadCard (size);
+    done := (ReadResult () = allRight) <B>AND</B> (size <!--<-->&lt;= 30);
+    <B>IF</B> <B>NOT</B> done
+      <B>THEN</B> (* bad read or bad info *)
+        WriteLn;
+        WriteString (<!--"-->&quot; Invalid width input for a bar graph<!--"-->&quot;);
+      <B>END</B>;   (* if beyond range for graph size *)
+    SkipLine;
+  <B>UNTIL</B> ReadResult () = allRight;
+  WriteString (<!--"-->&quot;Please type in a one character description ==<!-->&gt; <!--"-->&quot;);
+  ReadChar (desc);
+  SkipLine;
+  WriteLn;
+<B>END</B> GetInfo;
+
+<B>CONST</B>
+  numItems = 3;
+<B>TYPE</B>
+  Bar = 
+    <B>RECORD</B>
+      width : <B>CARDINAL</B>;
+      info : <B>CHAR</B>;
+    <B>END</B>;
+<B>VAR</B>
+  bars : <B>ARRAY</B> [1..numItems] <B>OF</B> Bar;
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>   (* Main Program is a simple test of procedures *)
+  <B>FOR</B> count := 1 <B>TO</B> numItems
+    <B>DO</B>
+      <B>WITH</B> bars[count]
+        <B>DO</B>
+          WriteString (<!--"-->&quot;How many units wide is bar # <!--"-->&quot;);
+          WriteCard (count, 1);
+          WriteString (<!--"-->&quot; ==<!-->&gt; <!--"-->&quot;);
+          GetInfo (width, info);
+        <B>END</B>;
+    <B>END</B>;
+   <B>FOR</B> count := 1 <B>TO</B> numItems
+    <B>DO</B>
+      <B>WITH</B> bars[count]
+        <B>DO</B>
+          DrawBar (width, info);
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> BarGraph.</PRE>
+<P>Here is a sample run from this program with the user inputs in bold type .</P>
+<PRE>
+How many units wide is bar # 1 ==<!-->&gt; <B>25</B>
+Please type in a one character description ==<!-->&gt; <B>a</B>
+
+How many units wide is bar # 2 ==<!-->&gt; <B>12</B>
+Please type in a one character description ==<!-->&gt; <B>b</B>
+
+How many units wide is bar # 3 ==<!-->&gt; <B>27</B>
+Please type in a one character description ==<!-->&gt; <B>c</B>
+
+ ------------------------
+|                        |a
+ ------------------------
+ -----------
+|           |b
+ -----------
+ --------------------------
+|                          |c
+ --------------------------</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

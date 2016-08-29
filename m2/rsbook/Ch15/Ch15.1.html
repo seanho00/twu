@@ -1,0 +1,189 @@
+<HTML><HEAD><TITLE>15.1 B-trees</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; B-trees">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>15.1 B-trees</B></H2>
+<P>It is important to note that the "<i>B</i>" in the name <i>B-tree </i>does NOT stand for "<i>Binary</i>" but for "<i>Balanced</i>." Confusing the two is a common beginners' mistake. The reader should also be warned that there are other kinds of "balanced" trees than B-trees.</P>
+
+<B><h3><a name="15.1.1">15.1.1</a> B-trees Defined</h3></B>
+<P>The trees considered so far have always had one (potential) data items in each node, and each node had the same number of (potential) descendents. By contrast, B-trees may have more than one data item in a node, and the number of descendents of a node depends on whether the node is a root or not and how large the tree happens to be.  B-trees are wider than binary trees, and not as deep. They are automatically kept balanced by the use of carefully constructed insertion and deletion algorithms so that the height of all the leaf elements is the same. This assists in such tasks as searching for data. Each B-tree has a number associated with it, called its order, that determines the maximum amount of data in a node.</P>
+<I>
+<blockquote><A NAME="BTree"></A>	  A <U>B-tree of order n</U> has  - a root node containing from 1 to 2n elements  - from n to 2n elements in all other nodes  - from 0 to k+1 descendents for a node having k elements  - all leaves at the same level.
+</blockquote>
+<P></I>Conceptually, each node contains a number <i>k</i> of data items as well as the linkage to k+1 other nodes. It could be thought of as a sequence</P>
+
+<P>p<sub>0</sub>, d<sub>1</sub>, p<sub>1</sub>, d<sub>2</sub>, p<sub>2</sub>, d<sub>3</sub>, ... d<sub>n</sub>, p<sub>n</sub>, ... d<sub>2n</sub>, p<sub>2n</sub></P>
+
+<P>where each p<sub>i</sub> is  pointer to a successor node and each d<sub>i</sub> is a data item. Only the first k data positions and k+1 pointer positions are in use at a given time. Observe that if all 2n data positions are occupied, there are 2n+1 descendent nodes.  Several implementations are possible.  One could have, for instance:</P>
+<pre>
+<B> CONST</B>
+  min = order;
+  max = 2*order;
+<B>TYPE</B>
+  range = [1 .. max];
+  BTree = <B>POINTER</B> <B>TO</B> BNode;
+  NodeItem = 
+    <B>RECORD</B>
+      data : ItemType;
+      rPoint : BTree;
+    <B>END</B>;
+  BTreeNode = 
+    <B>RECORD</B>
+      lPoint : BTree;  (* the zeroth pointer; left of first item *)
+      data : <B>ARRAY</B> Range <B>OF</B> NodeItem;
+      lastUsed : Range;
+    <B>END</B>;
+</pre>
+<P>or, still using arrays:</P>
+<pre>
+<B>TYPE</B>
+  dRange = [1 .. max];
+  pRange = [1 .. max+1];
+  BTree = <B>POINTER</B> <B>TO</B> BNode;
+  BTreeNode = 
+    <B>RECORD</B>
+      successor : <B>ARRAY</B> Range <B>OF</B> BTree;
+      data : <B>ARRAY</B> Range <B>OF</B> ItemType;
+      lastUsed : Range;
+    <B>END</B>;
+</pre>
+
+<P>Alternately, each node could be constructed as a linked list of pointers and data.</P>
+<P>In order to enter the data into a B-tree, one uses the same "left-is-less and right-is-greater" rule as for binary search trees.  Moreover, the data in each node is kept sorted from lowest to highest. The B-tree is kept balanced by splitting nodes when they become full. To illustrate, suppose a B-tree of order 2 (maximum data items per node is four) has cardinal data arriving in the order:</P>
+
+<P>15, 4, 6, 12, 11, 17, 20, 30, 31, 5, 16, 37</P>
+
+<P>The first four items are sorted into the root node until it looks like:</P>
+
+<CENTER><IMG SRC="Figure/Figure15.1.GIF" BORDER="1"></CENTER><!---->
+
+<P>No successor pointers are shown yet, because none are needed.  The arrival of the next item causes the middle one of the five to be passed up a level (occupying a new root) and the node with the other four to be split in two. Everything is arranged with the "left-is-less and right-is-greater" rule and the tree now looks like this:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.2.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>The next three items (17, 20, and 30) all go into the second node, and on the arrival of the number 30, it splits as well, promoting the middle item up to its parent.  Since there is room for it there, a new root need not be created.  If there is not room for the promoted item, a split may take place on that level and an item (not necessarily the same one) promoted up one more level.  Such splits and promotions either stop at a level where there is room, or propagate all the way to the root, and are either entered there or cause a new root to be created.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.3.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>The last three items (31, 5, 16, and 37) contribute to the filling of the nodes on the second level, but do not cause any more splits.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.4.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>To maintain the shallow structure of the B-tree, deletion of data items must proceed conversely. If a node with more than n items has one deleted, the structure remains the same.  However, if a deletion would cause the number of data items in a node to become fewer than the minimum n (the order) then the node is combined with the node on its left or right and the parent data item separating them is pulled down.  If the combined number items is exactly 2n, the deletion is finished.  If it is more, the node is split, causing a different item than before to be promoted back up.  For instance, assuming that both the 15 and 16 were deleted, and the rule is "combine with the node containing the larger data if you can", the result would be:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.5.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>On a further deletion of the items 37 and then 12, its node finds there are only n items in the node with greater data, so it borrows from the one with the lesser data instead, producing:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.6.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>If 17 is deleted, its node cannot borrow from the node with the greater data or the lesser data (in that order), so it combines with the one with the lesser data and the result is:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.7.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>If the last item in the root node is ever deleted, the two successor nodes are combined (and then split if necessary).  If the result is a single node of 2n elements, it becomes the root.</P>
+
+<B><h3><a name="15.1.2">15.1.2</a> Defining A Semi-Generic B-tree</h3></B>
+<P>Since in "real life" the data type to be entered will not likely be as simple as a cardinal, provision is made in the following for the easy replacement of the type to be entreed. The illustration above seems to indicate that inorder traversal is the only one worth using, so no provision is made for preorder and postorder traversals.</P>
+<pre>
+<B>DEFINITION</B> <B>MODULE</B> BTrees;
+
+(******************
+  Design by R. Sutcliffe copyright 1995-1996
+  Initial Code by Gordon Tisher
+  June 9, 1995; last modified June 23, 1995
+  Modified by R. Sutcliffe 1996 10 11
+  This module provides a B-Tree ADT.
+ ******************)
+
+<B>FROM</B> DataADT <B>IMPORT</B>
+  KeyFieldType, DataType, ActionProc;
+
+(* rename the imported types to the local ones. This makes things more generic and easier to change. *)
+<B>TYPE</B>
+  ItemType = DataType;
+  KeyType = KeyFieldType;
+  
+<B>CONST</B>
+  order = 2;
+
+<B>TYPE</B>
+  BTree;
+  BTreeState = (allRight, empty, entreeFailed);
+
+<B>PROCEDURE</B> Status (tree : BTree) : BTreeState;
+(* Pre : t is a valid initialized BTree
+   Post : The State of the tree is returned *)
+
+<B>PROCEDURE</B> Init (<B>VAR</B> tree : BTree);
+(* Allocates memory for a new tree sets state to allRight *)
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> tree : BTree);
+(* disposes the whole tree *)
+
+<B>PROCEDURE</B> Add (<B>VAR</B> tree : BTree; data : ItemType);
+(* Adds a new item to the tree. If successful sets state to allRight, else to entreeFailed *)
+  
+<B>PROCEDURE</B> Delete (<B>VAR</B> tree : BTree; key : KeyType);
+(* deletes an item whose key is defined equal to _key_ from the tree. If successful sets state to allRight; if tree was empty sets state to empty *)
+  
+<B>PROCEDURE</B> Depth (tree : BTree) : <B>CARDINAL</B>;
+(* returns the number of levels in the tree *)
+
+<B>PROCEDURE</B> Search (tree : BTree; key : KeyType; <B>VAR</B> data : ItemType) : <B>BOOLEAN</B>;
+(* if found, returns <B>TRUE</B> and _data_ returns item at that point  *)
+
+<B>PROCEDURE</B> WriteTree (tree : BTree);
+(* writes out the tree.  This is for testing purposes and likely would not be included in a finished product. *)
+
+<B>PROCEDURE</B> Traverse (tree : BTree; Proc : ActionProc);
+(* Pre : tree is a valid initialized BTree
+   Post : the nodes are traversed inorder and Proc is performed on each data item. *)
+     
+<B>END</B> BTrees.</pre>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

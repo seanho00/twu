@@ -1,0 +1,325 @@
+<HTML>
+<HEAD>
+<TITLE>4.1 What is a Procedure, and Why Use It?</TITLE>
+<meta NAME="keywords" CONTENT="procedure, code, unit, sub-task, sub, task, black, box, subordinate, program, execute, reserved, word, module, block, head, end, begin, scope, generic, data, used, produced, parameter, list, invocation, invoke, parameters">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Procedures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>4.1 What is a Procedure, and Why Use It?</B></H2>
+<P>This text has employed procedures many times already, even though no formal definition of the concept has been supplied.  Any time a program uses something like:</P>
+<PRE>
+  WriteString (<!--"-->&quot;answer here<!--"-->&quot;);
+  ReadReal (theNumber);</PRE>
+
+<P>or</P>
+<PRE>
+  <B>INC</B> (aNumber);</PRE>
+
+<P>it relies on code found elsewhere to operate upon some item(s) and/or to obtain a result.  Many of the built-in and imported identifiers name procedures.</P>
+<BLOCKQUOTE><I><A NAME="Procedure">A</A> <U>procedure</U> is a unit of code designed to perform a particular sub-task of some main task.  It is elaborated (written out) only once in some module, but can be used many times. </I></BLOCKQUOTE>
+<P>One way to think of a procedure is as a <I>black box</I> that performs some action whenever it is invoked by the flow of the program.  The action taken may:</P>
+<P>(i) be the same every time, as in:</P>
+<PRE>
+  WriteLn;</PRE>
+
+<P>(ii) depend on data supplied to it, as in:</P>
+<PRE>
+  WriteString (string to write);</PRE>
+
+<P>(iii) produce or alter data:</P>
+<PRE>
+  ReadCard (theNumber);</PRE>
+
+<P>(iv) involve both (ii) and (iii):</P>
+<PRE>
+  ch := <B>CAP</B> (ch);
+  <B>INC</B> (theNumber, theIncrement);</PRE>
+
+<P>The possibilities are summarized in figure 4.1.</P>
+<P><CENTER><IMG SRC="Figure/Figure_4.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>A procedure may best be regarded as code that is subordinate to a program in its operation<!--‹-->--in the sense that the main program suspends operation in order to call the procedure to execute its code.  When the latter is finished, the main program resumes control. </P>
+<P>Besides the built-in procedures named by standard identifiers, (CAP, INC, etc.) and the ones available from various libraries, (WriteString, ReadCard, etc.) a program may define and use its own procedures.</P>
+<H3><B>Example: (first type; no data used or produced)</B></H3>
+<P>Write a program that can compute the voltage in a circuit given the voltage, current and resistance.</P>
+<H3><B>Discussion:</B></H3>
+<P>The relationship among these three is based on Ohm's law, which can be expressed as E = IR where E is the voltage, I the current in Amps, and R the resistance in Ohms.  The initial formulation of the solution is scarcely changed from programs in previous chapters, except that the routines that print out the program header have been removed to a procedure of the first type above<!--‹-->--one that neither produces nor consumes data, but merely takes an action.</P>
+<PRE>
+<B>MODULE</B> OhmsLaw1;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate a simple procedure *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 25 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+    
+(**********************************************)
+<B>PROCEDURE</B> DisplayInfo;
+
+<B>BEGIN</B>
+
+  WriteString (<!--"-->&quot;OhmsLaw1 was written by R.J. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;to illustrate a simple procedure<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;This program computes the voltage in a circuit<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot; given the current and resistance.<!--"-->&quot;);
+  WriteLn;
+
+<B>END</B> DisplayInfo;
+(**********************************************)
+
+<B>VAR</B>
+  voltage, current, resistance : <B>REAL</B>;
+  answer : <B>CHAR</B>;
+
+<B>BEGIN</B> 
+  DisplayInfo;  (* invoke the above procedure *)
+  (* Gather the information from the user *)
+  WriteString (<!--"-->&quot;What is the current in amperes? ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (current);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;What is the resistance in ohms? ==<!-->&gt; <!--"-->&quot;);
+  ReadReal (resistance);
+  SkipLine;
+  WriteLn;
+
+  (* Now, compute the voltage. *)
+  voltage := current * resistance;
+
+  WriteString (<!--"-->&quot;A current of <!--"-->&quot;);
+  WriteFixed (current, 2, 0);
+  WriteString (<!--"-->&quot; amps running through a resistance of <!--"-->&quot;);
+  WriteFixed (resistance, 2, 0);
+  WriteLn;
+  WriteString (<!--"-->&quot; ohms produces a voltage of <!--"-->&quot;);
+  WriteFixed (voltage, 2, 0);
+  WriteString (<!--"-->&quot; volts. <!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+
+  WriteString ( <!--"-->&quot;Press any key to continue.<!--"-->&quot;);
+  ReadChar (answer);
+
+<B>END</B> OhmsLaw1.
+</PRE><P>Here is a sample run:</P>
+<PRE>
+OhmsLaw1 was written by R.J. Sutcliffe
+to illustrate a simple procedure
+
+This program computes the voltage in a circuit
+ given the current and resistance.
+What is the current in amperes? ==<!-->&gt; <B>12.3</B>
+What is the resistance in ohms? ==<!-->&gt; <B>14.2</B>
+A current of 12.30 amps running through a resistance of 14.20
+ ohms produces a voltage of 174.66 volts. 
+
+Press any key to continue.</PRE>
+
+<P><B>NOTES</B>: 1. PROCEDURE is a reserved word.  It marks the commencement of a subordinate section of code in much the same way as the word MODULE marks the start of the main program.</P>
+<P>	2. User defined procedures are named with the usual identifier rules.  It is customary to begin a procedure name with an upper case letter, and to use for its name a verb that describes its action.</P>
+<P>	3. A procedure is defined by placing the heading and block of code in the declaration section of a program module, along with the variable declarations.</P>
+<P>	4. A procedure defined in a program is run (or <I>invoked</I>) by using its name, just as for the built-in ones.</P>
+<P>	5. Since it has a named <!--"-->&quot;block<!--"-->&quot; of code (like a Module), the procedure must also have that same name with its END.</P>
+<H3><B>Example: (second type; data used, but none produced.)</B></H3>
+<P>Write a module that converts percentages into letter grades and prints them out.</P>
+<H3><B>Discussion:</B></H3>
+<P>Most of the work in the program below has been pushed off into the procedure that accepts as data the average mark and selects and prints the letter grade.  To shorten things down somewhat, this program writes no header at all.</P>
+<PRE>
+<B>MODULE</B> LetterGrade;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate a data consuming procedure *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 25 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>VAR</B>
+  theMark : <B>REAL</B>;
+  ok : <B>BOOLEAN</B>;
+
+(************************************************)
+<B>PROCEDURE</B> PrintGrade (average : <B>REAL</B>);
+
+<B>VAR</B>
+  grade : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> average <!--<-->&lt; 40.0
+    <B>THEN</B>
+      grade := <!--"-->&quot;F<!--"-->&quot;
+    <B>ELSIF</B> average <!--<-->&lt; 50.0 <B>THEN</B>
+      grade := <!--"-->&quot;D<!--"-->&quot;
+    <B>ELSIF</B> average <!--<-->&lt; 73.0 <B>THEN</B>
+      grade := <!--"-->&quot;C<!--"-->&quot;
+    <B>ELSIF</B> average <!--<-->&lt; 86.0 <B>THEN</B>
+      grade := <!--"-->&quot;B<!--"-->&quot;
+    <B>ELSE</B>
+      grade := <!--"-->&quot;A<!--"-->&quot;
+    <B>END</B>;
+  WriteString (<!--"-->&quot;an average mark of <!--"-->&quot;);
+  WriteFixed (average, 2, 0);
+  WriteString (<!--"-->&quot; percent earns a letter grade of <!--"-->&quot;);
+  WriteChar (grade);
+  WriteLn;
+  WriteLn;
+
+<B>END</B> PrintGrade;
+(************************************************)
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program converts averages into grades. <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Enter an invalid real when done. <!--"-->&quot;);
+  WriteLn;
+
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;enter the average mark to convert here ==<!-->&gt; <!--"-->&quot;);
+    ReadReal (theMark);
+    ok := (ReadResult() = allRight);
+    SkipLine;
+    WriteLn;
+    <B>IF</B> ok
+      <B>THEN</B>
+        PrintGrade (theMark);
+      <B>END</B>;
+
+  <B>UNTIL</B> <B>NOT</B> ok;
+
+<B>END</B> LetterGrade.</PRE>
+
+<P>Here is an output run:</P>
+<PRE>
+This program converts averages into grades. 
+Enter an invalid real when done. 
+enter the average mark to convert here ==<!-->&gt; <B>12.0</B>
+an average mark of 12.00 percent earns a letter grade of F
+
+enter the average mark to convert here ==<!-->&gt; <B>34.0</B>
+an average mark of 34.00 percent earns a letter grade of F
+
+enter the average mark to convert here ==<!-->&gt; <B>56.0</B>
+an average mark of 56.00 percent earns a letter grade of C
+
+enter the average mark to convert here ==<!-->&gt; <B>78.0</B>
+an average mark of 78.00 percent earns a letter grade of B
+
+enter the average mark to convert here ==<!-->&gt; <B>89.0</B>
+an average mark of 89.00 percent earns a letter grade of A
+
+enter the average mark to convert here ==<!-->&gt; <B>aaa</B></PRE>
+
+<P><B>NOTES</B>: 1. In the example above, <I>average</I> is a temporary variable to which the value of <I>theMark</I> is assigned.  This allows the value of <I>theMark</I> to be manipulated inside the procedure.</P>
+<P>	2. No variables declared inside a procedure (like <I>grade</I>) have any meaning outside it.  If the procedure is re-entered later, its variables must be re-initialized if they are to have a specific value.  This also means that variables in one procedure may have the same names as those in another one, or as in the main program.  The compiler will not become confused by this, but the programmer may.</P>
+<P>	3. A consequence of this last point is that, when a reference to some identifier is made inside a procedure, a check is first made to see if that name is defined in the procedure.  If so, that is the one used; if not, the enclosing procedure is checked next, and so on out to the main module.  See a later section on <I>scope</I> for a further discussion of this.</P>
+<H3><B>Example: (third type; data produced only.)</B></H3>
+<P>Write a procedure that can be used in various programs to obtain data from the keyboard with some error checking.</P>
+<H3><B>Discussion:</B></H3>
+<P>Procedures of this kind are often used to avoid writing out the same (or a very similar) statement sequence several times in a single program.  Instead, the code is made <I>generic</I> and then is called upon from all the appropriate places in the program.  Examples in this chapter will use variations on the following:</P>
+<PRE>
+  <B>PROCEDURE</B> GetNum (<B>VAR</B> theNum : <B>REAL</B>);
+
+  <B>VAR</B>
+    ok : <B>BOOLEAN</B>;
+
+  <B>BEGIN</B>
+    <B>REPEAT</B>
+      WriteString (<!--"-->&quot;Type the number here ==<!-->&gt; <!--"-->&quot;);
+      ReadReal (theNum);
+      ok := (ReadResult() = allRight); (* save result here *)
+      SkipLine;  (* because this will change ReadResult() *)
+      <B>IF</B> <B>NOT</B> ok (* use saved value for testing *)
+        <B>THEN</B>
+          WriteLn;
+          WriteString (<!--"-->&quot;error in input number; try again.<!--"-->&quot;);
+          WriteLn;
+        <B>END</B>;
+    <B>UNTIL</B> ok;
+  <B>END</B> GetNum;</PRE>
+
+<P>When the main program invokes this procedure, it may print part of the prompt itself, then call on <I>GetNum</I> with a variable name of its own.  Data assigned to a local variable whose name in the procedure heading is preceded by VAR will be passed back to the program variable used when the procedure is invoked.  That is, if this procedure is invoked by the line</P>
+<PRE>
+  GetNum (sideLength);</PRE>
+
+<P>then the program variable <I>sideLength</I> will be assigned whatever value is read by the procedure into the variable it calls <I>theNum</I>.</P>
+<H3><B>Example: (fourth type; data used and produced.) </B></H3>
+<P>Write a procedure to round off real numbers to the nearest integer.</P>
+<H3><B>Discussion:</B></H3>
+<P>This problem is not a new one; the code to do this came up during the course of <A HREF="../Ch3/Ch3.12.html">section 3.12</A>, program <I>DateCalc</I>, where it was observed that there is no such round off procedure built in to Modula-2 (though there is one in the library for integers.)  Here is one way to write the code:</P>
+<PRE>
+  <A NAME="Round"></A><B>PROCEDURE</B> Round (input : <B>REAL</B>; <B>VAR</B> output : <B>CARDINAL</B>);
+
+  <B>BEGIN</B>
+    output := <B>TRUNC</B> (input + 0.5);
+  <B>END</B> Round;
+</PRE>
+
+<P>This procedure would be invoked in a program by writing</P>
+<PRE>
+  Round (numToRound, roundedNum);</PRE>
+
+<P>where <I>numToRound</I> is a real variable, and <I>roundedNum</I> is a cardinal variable.  Notice, however, that this procedure does not take into account the fact that the real input may be negative.  One of the exercises asks the reader to make the necessary modifications.</P>
+<P>This introduction to procedures is concluded by giving some additional formal definitions.</P>
+<BLOCKQUOTE><I><A NAME="Parameter">The</A> list of variables in parentheses after the name of a procedure is called a <U>parameter list</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>An <U>invocation</U> of a procedure is the occurrence of its name somewhere in a program.  The invocation instructs the processor to execute the code of the procedure. </I></BLOCKQUOTE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

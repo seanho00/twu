@@ -1,0 +1,206 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+h2 { border-top: 1px solid black; }
+li { font-size: 10pt; }
+--></style>
+<title>CMPT140 Fall 2007 Final Exam (part 2), Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>In this part of the exam you will be designing and coding a Python program.
+<br>The sections of the exam correspond to the sections of a lab writeup.
+
+<br>Total points: 40
+
+<h2>Problem Statement:</h2>
+
+<p>Design and write a library <tt>cplx</tt> that implements an abstract
+data type for complex numbers, similar to what Python has built-in.
+Your library should provide, at a minimum:
+<ul>
+<li> A way for users to create a new complex number
+  object, as well as access its real and imaginary parts (set/get).
+<li> Functions to add, subtract, and multiply complex numbers.
+<li> A function <tt>intpow(c, n)</tt> that raises a complex
+  number <tt>c</tt> to a positive integer power <tt>n &ge; 0</tt>.
+<li> A function <tt>rand()</tt>
+that returns a complex number with randomly generated real and imaginary 
+parts between 0 and 1 (you may use Python's own random number generator).
+</ul>
+
+<p>
+Recall that complex numbers are <tt>a + bj</tt>, where <tt>a</tt> and
+<tt>b</tt> are real numbers and <tt>j=sqrt(-1)</tt>.
+Complex numbers multiply like ordinary binomials, but <tt>j**2 == -1</tt>;
+collect the real and imaginary terms together.
+
+<p>
+Docstrings with pre/post-conditions are required for your library and each 
+function.  Comments are not required but may be helpful for partial credit if
+your code isn't perfect.
+
+<h2>Problem Suitability: <u>[2]</u> </h2>
+<i>
+Numerical calculations with complex numbers are doable by hand for short,
+simple problems, but a computer is designed to do these mathematical
+calculations much faster.
+</i>
+<br><br><br><br><br>
+<br><br><br><br><br>
+
+<h2>Problem Restatement: <u>[3]</u> </h2><ul>
+  <li> <b>Given:</b><br><i>
+    <tt>cplx()</tt>: two float numbers<br>
+    <tt>real()</tt>: a cplx number<br>
+    <tt>imag()</tt>: a cplx number<br>
+    <tt>add()</tt>: two cplxs<br>
+    <tt>sub()</tt>: two cplxs<br>
+    <tt>mul()</tt>: two cplxs<br>
+    <tt>intpow()</tt>: a cplx and a positive integer<br>
+    <tt>rand()</tt>: no parameters<br>
+    </i><br><br><br><br>
+  <li> <b>To Do:</b><br><i>
+    <tt>cplx()</tt>: make a new cplx number<br>
+    <tt>real()</tt>: get the real part of a cplx number<br>
+    <tt>imag()</tt>: get the imaginary part of a cplx number<br>
+    <tt>add()</tt>: return the sum<br>
+    <tt>sub()</tt>: return the difference<br>
+    <tt>mul()</tt>: return the product<br>
+    <tt>intpow()</tt>: raise the cplx to the given power<br>
+    <tt>rand()</tt>: return a new random cplx number<br>
+    </i><br><br><br><br><br><br><br>
+  <li> <b>Desired Result:</b><br><i>
+    <tt>cplx()</tt>: new cplx<br>
+    <tt>real()</tt>: real part (float)<br>
+    <tt>imag()</tt>: imaginary part (float)<br>
+    <tt>add()</tt>: sum (cplx)<br>
+    <tt>sub()</tt>: difference (cplx)<br>
+    <tt>mul()</tt>: product (cplx)<br>
+    <tt>intpow()</tt>: cplx raised to the given power (cplx)<br>
+    <tt>rand()</tt>: random cplx with real and imaginary parts between 0 and 1
+    (cplx)<br>
+    </i><br><br><br><br><br>
+</ul>
+
+<h2>Libraries: <u>[2]</u> </h2>
+<br><i>
+Just the <tt>random</tt> standard library.
+</i><br><br>
+
+<h2>Problem Refinement (natural language): <u>[5]</u> </h2>
+<i>
+<br><br><tt><b>cplx()</b></tt>: takes two parameters, real and imaginary parts,
+and returns a new "cplx object" -- for our internal representation, we'll use a
+tuple of two floats.
+<br><br><tt><b>real()</b></tt>: takes one parameter which is a "cplx object"
+(really, just a tuple of two floats), and returns the "real part" (really, just
+the first float in the tuple).
+<br><br><tt><b>imag()</b></tt>: takes one parameter which is a "cplx object"
+(really, just a tuple of two floats), and returns the "imaginary part" (really, 
+just the second float in the tuple).
+<br><br><tt><b> add()</b></tt>: takes two "cplx objects" as parameters, and
+returns a new "cplx object" (a new tuple): add real part to real part, add
+imaginary part to imaginary part.
+<br><br><tt><b> sub()</b></tt>: Similar to add(), but subtract real part from
+real part, subtract imaginary part from imaginary part.
+<br><br><tt><b> mul()</b></tt>: Multiply two "cplx objects" according to
+the rules for complex numbers, i<sup>2</sup> = -1.  Return the product as a new
+"cplx object".
+<br><br><tt><b>intpow()</b></tt>: Raise a complex number to a positive integer
+power; i.e., iterated multiplication.
+<br><br><tt><b>rand()</b></tt>: Create and return a new complex number, where
+the real part is a random number between 0 and 1, and the imaginary part is a
+random number between 0 and 1.
+</i>
+
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+
+<h2>Data Tables: <u>[3]</u> </h2>
+<h3>Variables:</h3><br><i>
+No static variables internal to the library (e.g., <tt>seed</tt> in the
+pseudorandom library), but our internal representation of a cplx number
+is a tuple of two floats: <tt>(real, imag)</tt>.
+</i><br><br><br>
+
+<h2>Sample I/O: <u>[2]</u> </h2>
+For this section, write a short testbed program to demonstrate your library.
+This need not have user input; it can just have a few test cases hard-coded.
+The testbed program does not need pseudocode.
+<br><br><i>
+<a href="http://twu.seanho.com/python/cplxtest.py">
+(See separate file: cplxtest.py)</a>
+</i><br><br><br>
+<br><br><br><br><br>
+
+<h2 class="break">User Manual: <u>[5]</u> </h2>
+<i>
+<br><br><tt><b>cplx(r, i)</b></tt>: This is the function you'd use to create a new
+instance of our ADT -- a new complex number -- when you know the real and
+imaginary parts.  It takes two parameters of type float.
+<br><br><tt><b>real()</b></tt>:  This is a "get" accessor function that returns
+just the real part of a complex number.
+<br><br><tt><b>imag()</b></tt>: This is a "get" accessor function that returns
+just the imaginary part of a complex number.
+<br><br><tt><b> add()</b></tt>: This operator takes two complex numbers (such
+as are created by <tt>cplx()</tt>) and returns the sum of the two.
+The sum is done component-wise.
+<br><br><tt><b> sub()</b></tt>: This operator takes two complex numbers (such
+as are created by <tt>cplx()</tt>) and returns the difference: c1 - c2.
+<br><br><tt><b> mul()</b></tt>: This operator takes two complex numbers (such
+as are created by <tt>cplx()</tt>) and returns the product, using the rules of
+complex number multiplication.
+<br><br><tt><b>intpow()</b></tt>: This operator takes a complex number c and a
+positive integer n, and raises the complex number to the n-th power, returning
+the result as a complex number.
+<br><br><tt><b>rand()</b></tt>: This function takes no parameters, and every
+time you call it, it returns a different complex number randomly chosen from
+within the square in the complex plane bounded by 0+0j, 1+0j, 1+1j, 0+1j.
+</i>
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+<br><br><br><br><br>
+
+<h2>Pseudocode: <u>[10]</u> </h2>
+<i>
+<br><br><tt><b>cplx()</b></tt>: Return a new tuple (r,i)
+<br><br><tt><b>real()</b></tt>: Return the first entry in the tuple: c[0]
+<br><br><tt><b>imag()</b></tt>: Return the second entry in the tuple: c[1]
+<br><br><tt><b> add()</b></tt>: Return a new tuple where the first entry is the
+sum of real parts, the second entry is the sum of imaginary parts:
+(r1+r2, i1+i2)
+<br><br><tt><b> sub()</b></tt>: Make a helper function <tt>neg()</tt> which
+negates real and imaginary parts: then sub(c1,c2) is just add(c1, neg(c2)).
+<br><br><tt><b> mul()</b></tt>: Use rules of complex multiplication:
+(r1*r2 - i1*i2, r1*i2 + r2*i1).
+<br><br><tt><b>intpow()</b></tt>:<br><pre>
+	result = 1
+	repeat n times:
+		result *= c (using our mul() function)
+	return result
+</pre>
+<br><br><tt><b>rand()</b></tt>: Return a new tuple where each entry
+is a call to random.random().
+</i>
+
+<h2 class="break">Code: <u>[8]</u> </h2>
+
+<i><a href="http://twu.seanho.com/python/cplx.py">
+(See separate file: cplx.py)</a></i>
+
+</body></html>
+

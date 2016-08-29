@@ -1,0 +1,528 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 7 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 7</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	A Modula-2 string is an ARRAY [0..n-1] OF CHAR, zero based, and terminated (usually by the null character).</P>
+
+<P>2.	An implied abstract type has its basic structure visible, but can be treated abstractly.  Modula-2 allows an array of char to be thought of and used in most cases as an abstract string.</P>
+
+<P>3.	(a)  E = "dogs chasecats "<BR>
+	(b)  m = 5<BR>
+	(c)  found = FALSE, position = undefined;<BR>
+	(d)  i = less<BR>
+	(e)  cogs<BR>
+	(f)  str1 = docatsg<BR>
+	(g)  found = TRUE, position = 8<BR>
+	(h)  found = TRUE, position = 4</P>
+
+<P>4.	Silent truncation is the discarding of characters in a string without the user knowing.  This arises, for example, when two strings are concatenated and the result does not have enough room for both strings.  In the case of Concat, the first string is placed in the result and the second string (whatever can fit),  is then placed in the rest of the array.</P>
+
+<P>5.	Length returns of the number of characters in the string whereas HIGH returns the highest index used when the actual parameter array is assigned to the open formal parameter array.  The latter depends on the string type, not its contents.</P>
+
+<P>6.	(a)  greater; 	"r" > "i"<BR>
+	(b)  greater;  	lower case letters have higher ASCII values than upper case letters.</P>
+	(c)  greater;	same as (b)<BR>
+	(d)  less;	"%" < "p"<BR>
+	(e)  less;	"1" < "0"</P>
+
+<P>7.	An unused (uninitialized) string will contain characters that are in the memory location at that moment.  The user will not know what that will be and it will therefore affect the output of the string.</P>
+
+<P>8.	See <A HREF="http://searchSecurity.techtarget.com/sDefinition/0,,sid14_gci213893,00.html">http://searchSecurity.techtarget.com/sDefinition/0,,sid14_gci213893,00.html</A></P>
+
+<P>9.	The mean is the ordinary average.  More formally, the mean of a group of data is their sum divided by the number of items in the group.<BR>
+	Variance is the mean of the squares of the differences between data items and the mean.<BR>   If the data is a sample, we divide by (n-1) rather then n when calculating variance.</P>
+	Standard deviation is the square root of variance.
+
+<P>10.	The median is the middle observation of an ordered distribution.  One needs a facility to find whether the data set size is even or odd and to sort the data.</P>
+
+<P>11.	The mode is the value that occurs the most in a data set.  One needs a facility to keep track of how many occurrences of each data item there are.</P>
+
+<P>12.	Separating low and high level functions makes code easier to debug.  All procedures in the modules are small and therefore easy to manage.  </P>
+
+<P>13.	Random numbers generated from a formula produce the same sequence every time.  They are better defined as pseudo-random numbers.  To make the numbers more random, a seed can be used and a new seed produced every time a random number is called for.</P>
+
+<P>14.	A matrix is a rectangular arrangement of symbols in a two dimensional array.  They are used for such tasks as equation solving, expressing tables, representing abstract graphs and as abstractions in and of themselves.</P>
+
+<P>15.	A vector is an entity that has magnitude and direction.  In computing science, it can be represented as a one-dimensional array.  They are used to represent velocities, forces, displacements, and accelerations.</P>
+
+<P>16.	The ADT Vectors include the following procedures not in the ADT Points:<BR>
+	PROCEDURE assignP (ABS, ARG: REAL) : Vector;<BR>
+	PROCEDURE add (u, v : Vector) : Vector;<BR>
+	PROCEDURE sub (u, v : Vector) : Vector;<BR>
+	PROCEDURE dotProduct (u, v : Vector) : REAL;</P>
+
+<P>	The ADT Points include the following procedures not in the ADT Vectors:<BR>
+	PROCEDURE polarToRect (abs, arg : REAL) : Point;<BR>
+	PROCEDURE reflectX (p: Point) : Point;<BR>
+	PROCEDURE reflectY (p: Point) : Point;<BR>
+	PROCEDURE reflect0 (p: Point) : Point;<BR>
+	PROCEDURE reflect45 (p: Point) : Point;<BR>
+	PROCEDURE rotate (p :  Point; rotAngle : REAL) : Point;<BR>
+	PROCEDURE translate (p : Point; deltaX, deltaY : REAL) : Point;</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note: Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*   Translated to ISO standard Modula-2
+    June 15 1999
+    Chapter 7 Question 18
+    NO ERROR TRAPPING  *)
+
+DEFINITION MODULE StringFunc;
+
+TYPE
+   STRING = ARRAY [0..80] OF CHAR;
+
+CONST
+   nul = CHR(0);
+
+VAR
+   strDone : BOOLEAN;
+
+PROCEDURE Insert (VAR str, substr : ARRAY OF CHAR; pos : CARDINAL);
+(* inserts a string into another string *)
+
+PROCEDURE Delete (VAR str : ARRAY OF CHAR; pos, len : CARDINAL);
+(* deletes n characters from a specifed index from a string *)
+
+PROCEDURE ConCat (VAR str1, str2, result : ARRAY OF CHAR);
+(* concatenates 2 strings and puts it in the variable result *)
+
+PROCEDURE Length (str : ARRAY OF CHAR) : CARDINAL;
+(* returns the length of a string *)
+
+END StringFunc.
+
+
+IMPLEMENTATION MODULE StringFunc;
+
+PROCEDURE Insert (VAR str, substr : ARRAY OF CHAR; pos : CARDINAL);
+
+VAR
+   len, count, subcount : CARDINAL;
+
+BEGIN
+
+  (* see if we have room to fit the entire substring into the string if
+     so then strDone = TRUE and set 'len' to the length of the substring
+     otherwise strDone = FALSE and set 'len' to the max size it can be,
+     that is the HIGH of the string minus the string's length.           *)
+
+  IF Length (str) + Length (substr) <= HIGH (str)
+    THEN
+      strDone := TRUE;
+      len := Length (substr);
+    ELSE
+      strDone := FALSE;
+      len := HIGH (str) - Length (str)
+    END;
+
+  (* make room within the string to insert the substring *)
+  FOR count := Length (str) TO pos BY -1
+    DO
+      str [count + len] := str [count]
+    END;
+
+  (* insert the substring into the string at the position 'pos' *)
+  subcount := 0;  (* init the substring counter to 0 *)
+  FOR count := pos TO pos + len
+    DO
+      (* if this character isn't the string terminator then insert it *)
+      IF substr [subcount] # nul
+        THEN
+          str [count] := substr [subcount];
+          INC (subcount)
+        END
+    END;
+
+  (* if the new string doesn't fill the string set a null terminator at end *)
+  IF Length (str) <= HIGH (str)
+    THEN
+      str [Length (str)] := nul  (* mark end of the new string *)
+    END
+
+END Insert;
+
+(*-------------------------------------------------------------------------*)
+
+PROCEDURE Delete (VAR str : ARRAY OF CHAR; pos, len : CARDINAL);
+
+VAR
+  count, count2 : CARDINAL;
+
+BEGIN
+
+  (* if there is something beyond the deleted part of the string
+     move it down, and set strDone to TRUE; otherwise delete the
+     remainder of the string and set strDone to FALSE.           *)
+
+  IF len + pos < Length (str)
+    THEN
+      strDone := TRUE;
+
+      (* move remainder of the string down to overwrite the deleted part *)
+      count2 := pos;  (* init to start of area to delete *)
+      FOR count := pos + len TO Length (str)
+        DO
+          str [count2] := str [count];
+          INC (count2);
+        END;
+
+      str [Length (str)] := nul  (* mark end of new string *)
+    ELSE
+      strDone := FALSE;
+      str [pos] := nul;
+    END
+
+END Delete;
+
+(*-------------------------------------------------------------------------*)
+
+PROCEDURE ConCat (VAR str1, str2, result : ARRAY OF CHAR);
+
+VAR
+  count, count2 : CARDINAL;
+
+BEGIN
+
+  (* initialize variables *)
+  FOR count := 0 TO Length (str1)
+    DO
+      result [count] := str1 [count]   (* set result equal to string1 *)
+    END;
+  count2 := 0;  (* init string2 counter to 0 *)
+
+    (* check to see if both strings will fit into the result,
+       if so then set strDone to TRUE, othewise to FALSE.     *)
+  IF Length (str1) + Length (str2) <= HIGH (result)
+    THEN
+      strDone := TRUE
+    ELSE
+      strDone := FALSE
+    END;
+
+    (* insert string2 onto the end of result until you run out of room *)
+  FOR count := Length (result) TO HIGH (result)
+    DO
+      result [count] := str2 [count2];
+      INC (count2)
+    END;
+
+    (* put a string terminator at the end of the new string if it isn't full *)
+  IF Length (result) < HIGH (result)
+    THEN
+      result [Length (result)] := nul
+    END
+
+END ConCat;
+
+PROCEDURE Length (str : ARRAY OF CHAR) : CARDINAL;
+
+VAR
+  count : CARDINAL;
+
+BEGIN
+
+  count := 0;  (* init count (* number of characters in string *) to 0 *)
+
+    (* check to see if there is anything in the string *)
+  IF str [count] # nul
+    THEN
+      strDone := TRUE;  (* if yes then set strDone to TRUE, find its length *)
+
+        (* loop through the string to the end of it *)
+      REPEAT
+        INC (count)
+      UNTIL (count > HIGH (str)) OR (str [count] = nul)
+    ELSE
+      strDone := FALSE  (* if not then set strDone to TRUE and return 0 *)
+    END;
+
+  RETURN count
+
+END Length;
+
+(*=========================================================================*)
+(*
+BEGIN
+
+  strDone := TRUE;  (* init to TRUE so that it is initialized before a *)
+(* procedure from StringFunc is called *)
+*)
+END StringFunc.
+
+
+MODULE StringTest;
+
+FROM STextIO IMPORT
+  WriteLn, WriteString, ReadChar, ReadString, SkipLine;
+
+FROM SWholeIO IMPORT
+  WriteCard, ReadCard;
+
+FROM StringFunc IMPORT
+  STRING, Insert, Delete, ConCat, Length;
+
+
+(*=========================================================================*)
+
+
+VAR
+  str1, str2, str3 : STRING;
+  len, pos : CARDINAL;
+  ch : CHAR;
+
+
+(*=========================================================================*)
+
+
+BEGIN  (* Main Body *)
+
+  (* Start up *)
+
+  REPEAT
+
+  (* Introduction *)
+
+    WriteLn;
+    WriteString ("This little program tests the String module that we just");
+    WriteString ("created.");
+    WriteLn;
+    WriteLn;
+
+  (* Calculations *)
+
+      (* Insertion *)
+    WriteString ("Enter a string please ==> ");
+    ReadString (str1);
+    SkipLine;
+    WriteLn;
+    WriteLn;
+    WriteString ("     Insertion");
+    WriteLn;
+    WriteString ("Enter a string to insert into the previous ==> ");
+    ReadString (str2);
+    SkipLine;
+    WriteLn;
+    WriteString ("At what position do you want it inserted ==> ");
+    ReadCard (pos);
+    SkipLine;
+    WriteLn;
+    WriteLn;
+    Insert (str1, str2, pos);
+    WriteString (str1);
+    WriteLn;
+    WriteLn;
+
+    (* Deletion *)
+    WriteString ("     Deletion");
+    WriteLn;
+    WriteString ("Where do you want to start deleting from the first string ");
+    WriteString ("==> ");
+    ReadCard (pos);
+    SkipLine;
+    WriteLn;
+    WriteString ("How much do you want to delete ==> ");
+    ReadCard (len);
+    SkipLine;
+    WriteLn;
+    WriteLn;
+    Delete (str1, pos, len);
+    WriteString (str1);
+    WriteLn;
+    WriteLn;
+
+      (* ConCatination *)
+    WriteString ("     Concatination");
+    WriteLn;
+    WriteString ("What do you want to add to the first string ==> ");
+    ReadString (str2);
+    SkipLine;
+    WriteLn;
+    WriteLn;
+    ConCat (str1, str2, str3);
+    WriteString (str3);
+    WriteLn;
+    WriteLn;
+
+      (* Length *)
+    WriteString ("     Length ");
+    WriteLn;
+    len := Length (str1);
+    WriteString ("The length of the first string was ");
+    WriteCard (len,0);
+
+  (* Conclusion *)
+
+    WriteLn;
+    WriteLn;
+    WriteString("Press 'Q' to quit, any other key to continue. ");
+    ReadChar (ch);
+  UNTIL CAP (ch) = 'Q';
+
+  WriteLn;
+
+END StringTest.</pre>
+
+
+<pre>(*  Translated to ISO standard Modula-2
+    June.15.1999
+    Chpater 7 Question 20
+    NO ERROR TRAPPING
+
+    MODIFICATIONS: Created a pascal string type (str255)
+                                Created a procedure to write the pascal string type since
+                                there was no library for the original created.
+                                Added a WriteCard to show the lenght of the string *)
+
+MODULE ModToPas;
+
+FROM STextIO IMPORT
+  WriteLn, WriteChar, WriteString, ReadString, ReadChar, SkipLine;
+FROM SWholeIO IMPORT
+  WriteCard;
+
+TYPE
+  Str255 = ARRAY [0..255] OF CHAR;
+
+VAR
+  ModStr : ARRAY [0..80] OF CHAR;
+  PasStr : Str255;
+  ch : CHAR;
+
+(* <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> *)
+
+PROCEDURE StrModToPas (VAR source : ARRAY OF CHAR;
+                       VAR result : Str255);
+
+VAR
+  count : CARDINAL;
+
+BEGIN
+  count := 0;	(* initialize *)
+
+  (* loop through until the end of the source is reached *)
+
+  WHILE (source[count] # 0C) AND (count < HIGH (source))
+    DO
+      result[count + 1] := source[count];
+      INC (count)
+    END; (* while *)
+
+  result[0] := CHR (count)     (* length of source read into result *)
+END StrModToPas;
+
+PROCEDURE WritePascal (str : ARRAY OF CHAR);
+(*  pre: str has to be a pascal string already.
+   post: writes out the pascal string without str[0] *)
+
+VAR
+  count : CARDINAL;
+
+BEGIN
+   count := 1;
+
+   WHILE (count < 255) OR (str[count] # 0C)
+     DO
+       WriteChar (str[count]);
+       INC (count);
+     END;
+
+END WritePascal;
+
+
+(* <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> *)
+
+(* main program *)
+
+BEGIN
+  WriteString ('We will be testing the conversion from Modula-2 strings to');
+  WriteString (' Pascal strings');
+  WriteLn;
+  WriteLn;
+  WriteLn;
+  WriteString ('Please input a Modula-2 string now.');
+  WriteLn;
+  ReadString (ModStr);
+  SkipLine;
+  WriteLn;
+  WriteLn;
+  WriteLn;
+  StrModToPas (ModStr, PasStr);     (* convert *)
+  WriteString ("The pascal string seen as M2 string:");
+  WriteLn;
+  WriteString (PasStr);
+  WriteLn;
+  WriteString ('The Pascal string is:');
+  WriteLn;
+  WritePascal (PasStr);
+  WriteLn;
+
+  (* this line added to show the length in the first element of the array--ry *)
+  WriteString ("String length PasStr[0]: ");
+  WriteLn;
+  WriteCard (ORD(PasStr[0]), 1);
+
+  WriteLn;
+  WriteLn;
+  WriteLn;
+  WriteString ('Press any key to return to the desktop.');
+  ReadChar (ch);
+  SkipLine;
+END ModToPas.</pre>
+
+</BODY>
+
+</HTML>

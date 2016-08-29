@@ -1,0 +1,81 @@
+
+<HTML>
+<HEAD>
+	<TITLE>Modula-2 Instructor Notes</TITLE>
+<META NAME="Description" CONTENT="Modula-2 shareware textbook by Rick Sutcliffe">
+<META name="keywords" content="Modula-2 shareware textbook, Rick Sutcliffe, Wirth, programming data structures, modular programming, ISO Standard">
+<META name="Author" content="Rick Sutcliffe">
+
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+// if the URL has a search part to it (?.....) then we'll take that as the section they want to go to
+if (top.window.location.search != "")
+{
+document.location.replace("blank.html")
+}
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"index.html\" TARGET=\"_top\"><IMG SRC="images/leftarrow.gif" ALT="open index frame (javascript)" HEIGHT=12 WIDTH=7 BORDER=0 ALIGN=\"TOP\">Show left (navigation) frame</A></CENTER><HR>')
+}
+//-->
+</SCRIPT>
+<center><B>Instructor Notes</center></b>
+<P>Interchapter materials are generally incomplete, and only some are included.  Comparisons made in the material below are with the older version of the text, published by Charles Merrill.</P>
+
+<P><B>1. Planning for the Solution of Problems</B></P>
+
+<BLOCKQUOTE>There is no Modula-2 in Chapter 1.  The theme is abstractions and their role in computer assisted problem solving.  These are discussed under four categories‹those for data representation, data manipulation, computing machines, and programming.  The computing process is considered abstractly as a tool for problem solving.  To this end, problem solving is presented as a technique, and computing systems as tools to assist in the task.  A sample problem is analyzed, and from its solution are abstracted the fundamental computing control paradigms of sequence, selection, and iteration.  The idea of storage for data, variables and expressions are all introduced here in a notation-free context, and actual programs are given in pseudocode.</BLOCKQUOTE>
+
+<P><B>2. From Plan to Program</B></P>
+
+<BLOCKQUOTE>This section has been tightened up.  Students now come into the course with a much more substantial background than three years ago.  Almost all version-specific material in the original text is being removed.  At the same time, the material is accessible to a broad range of students.  Those with an extensive programming background can go through chapters 2 and 3 rather quickly; those with less experience need to work through them very carefully.  Note that almost every section has a full module as an example; some have a fully planned and worked out example.  Modula-2 WHILE loops are included as a realization of repetition, though they are not discussed formally until chapter 3.  Some comments on the ISO standard versus classical Modula-2 are included.</BLOCKQUOTE>
+
+<P><B>3. Basic Program Structure Abstractions</B></P>
+
+<BLOCKQUOTE>If Chapter 2 was principally concerned with the role of simple data abstractions in programs, Chapter 3 emphasizes the structure of programs themselves.   Note that section 5.1 on the FOR statement could be taken up in Chapter 3 after section 3.5 with students who have seen it before in other notations.  However, those who have little previous experience ought to practice writing loops using WHILE and REPEAT before using the more specialized FOR.</BLOCKQUOTE>
+
+<P><B>4. Program Organization and Procedures</B></P>
+
+<BLOCKQUOTE>Procedures are introduced very early, and their use encouraged thereafter.  This chapter has been lightened up somewhat, and the more esoteric points of value and variable parameters, scope, and side effects postponed to a later chapter.  Examples from previous chapters are revisited and some of the code re-cast as Procedure calls.  The section on predicates is new here; this version of the text emphasizes the role of preconditions and post conditions in the writing and calling of procedures.  The material on recursion is more extensive for this initial chapter. </BLOCKQUOTE>
+
+<P><B>5. Iterations, Enumerations, and Arrays</B></P>
+
+<P>This chapter is organized around the theme of implicitly and explicitly numbered data and programming abstractions.  Thus, enumerations, subranges, arrays, and the FOR loop have a unifying theme.  Note that the sections on sets have been moved much later in the text, though they could also be taken up before or after this chapter, as they are presented in a more or less self-contained way.  The introductory section on the FOR statement could be taken up in Chapter 3 after the REPEAT statement has been covered, but it is postponed to this point in order to ensure that the (simpler) logic of the WHILE version of the top-of-loop tested repetition structure is understood.</P>
+
+<P><B>6. Program Organization and Modules</B></P>
+
+<BLOCKQUOTE>Again, some of the material that was at this point in the earlier editions has been postponed to more advanced sections later in the text.  This includes the detailed discussion of scope, and indeed the entire topic of nested local modules.  Note that the author regards the construction of Abstract Data Types using the library module mechanism as both fundamental and elementary to modern programming and not as an advanced technique.  That is why it comes almost immediately after Procedures.</BLOCKQUOTE>
+<P><B>7. Solving Real World Problems in Modula-2</B></P>
+
+<BLOCKQUOTE>This chapter introduces few, if any, new concepts in programming. The idea is to have students see a number of detailed examples and to explore the ideas already encountered before taking up any new techniques.  The first part examines the implied abstract data type STRING in some detail, and offers some detailed examples.  The second part treats a somewhat different topic in each section, each of which is self-contained.  Any or all of the sections of Part B may be left out or replaced as suited to the class interests.  No extended example section is needed in this chapter as there are several in it.</BLOCKQUOTE>
+<P>Note the major departures from existing practice:</P>
+<UL><!--€--><LI> emphasis on theory and abstraction early on and throughout</LI>
+<!--€--><LI> data structure course material included in same book</LI>
+<!--€--><LI> sets treated as an intermediate structure</LI>
+<!--€--><LI> lots of material on files</LI>
+<!--€--><LI> ideas introduced and used before being taken up formally and in detail</LI>
+<!--€--><LI> some ideas introduced in code examples and explained in notes below</LI></UL>
+
+<P>Comparison to last edition:</P>
+<UL><!--€--><LI> about 70-80 pages of version specific and other material gone</LI>
+<!--€--><LI> about 450 pages of new material, so far mostly on abstraction, data structures and ADTs</LI>
+<!--€--><LI> estimated total final manuscript pages : 1200+</LI>
+<!--€--><LI> reorganized to suit a curriculum that has a two (or even three) course sequence incorporating the first programming course with data structures</LI>
+<!--€--><LI> tone is slightly more serious (Am I getting old?)</LI>
+<!--€--><LI> more inter-chapter materials (negotiable, to come)</LI>
+<!--€--><LI> more and longer examples; complete modules in almost every section</LI>
+<!--€--><LI> more emphasis on process and planning, pseudo-code now used where appropriate to explain algorithms</LI>
+<!--€--><LI> more than 60 errors corrected, many definitions sharpened up</LI>
+<!--€--><LI> many more assignments, especially of the challenging variety</LI></UL>
+
+<P>Version History:</P>
+<P>4.0 with HTML markup by Gordon Tisher May 1995</P></BODY></HTML>
+
+4.0.1 corrected July 1996

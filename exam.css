@@ -1,0 +1,42 @@
+/* exam.css
+ * style sheet for printed exams.  Use nested <ol>.
+ * Indicate number of points in <u>.  Wrap solutions in <i>.
+ */
+
+/* General defaults */
+body, p, td, li { font-size:12pt }
+
+/* Questions */
+.main li { margin-top: 1em; }
+
+/* sub-parts of a question are numbered (a), (b), (c), etc. */
+.subparts li { margin: 0.5em 0 0 -0.5em; counter-increment:sub} 
+ol.subparts { list-style:none; counter-reset:sub}
+.subparts > li:before { content:"(" counter(sub,lower-alpha) ")" }
+
+/* flag something as class="break" to put it on a new page */
+.break { page-break-before: always }
+
+/* Name at top right of page */
+table.nameblock {text-align:right; position:absolute; top:0; right:0}
+
+/* inspiring Scripture quote */
+.inspiration {font-size:0.8em; display:block; width:70%;
+  margin:0.2em auto; padding:0.5em 0.5em; border:gray groove}
+
+/* Instructions to student */
+.instructions li { font-size:0.8em }
+
+/* How many marks/pts per question */
+u {color:red; font-weight:bold; text-decoration:none}
+
+/* Solutions (use exam.js to show) */
+i {color:blue; font-style:normal; display:none}
+
+/* Space for students to write answers */
+.answerbox { }
+
+/* Data tables */
+table.data, table.data td {border:1px solid black}
+table.data td {padding:0.1em 1em}
+

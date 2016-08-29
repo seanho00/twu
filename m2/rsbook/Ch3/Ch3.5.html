@@ -1,0 +1,266 @@
+<HTML>
+<HEAD>
+<TITLE>3.5 Repetition</TITLE>
+<meta NAME="keywords" CONTENT="repetition, repeat, loop, statement, until, greatest, common, divisor, gcd, relatively, prime, solution, algorithm, algorithms, data, table, imports, import, module, euclid">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.5 Repetition (2) <!--</B>‹<B>-->-- the REPEAT Statement</B></H2>
+<P>The while loop tests the indicated boolean expression at the top of the loop and does not execute the loop if the condition is false.  There are times, however, when one wishes to have the loop execute at least once in any case, and then to test the condition before continuing for a second pass.  As indicated in <A HREF="../Ch1/Ch1.9.html#1.9.1">section 1.9.1</A>, this is achieved with the repeat loop construction.  In Modula-2, as in many computing notations, the general form of this type of loop is:</P>
+<PRE>
+<B>REPEAT</B>
+  Statement Sequence;
+<B>UNTIL</B> Boolean Expression;</PRE>
+
+<P>or diagrammatically as in figure 3.6:</P>
+<P><CENTER><IMG SRC="Figure/Figure_3.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>Notice that the UNTIL concludes the statement sequence so that there is no END.  There is also no DO.  This type of loop repeats the enclosed statement sequence as long as the boolean expression is FALSE and then, when it becomes TRUE, control <!--"-->&quot;falls out<!--"-->&quot; to the next statement beneath.  Some of the code in the examples above could have been written more efficiently.  Instead of</P>
+<PRE>
+  again := <B>TRUE</B>;
+  <B>WHILE</B> again
+    <B>DO</B>
+      statement sequence;
+      WriteLn;
+      WriteString (<!--"-->&quot;Do you want to do another one? <!--"-->&quot;);
+      ReadChar (answer);
+      WriteLn;
+      again := (answer = 'Y') <B>OR</B> (answer = 'y');
+    <B>END</B>;</PRE>
+
+<P>it is more efficient to write:</P>
+<PRE>
+  <B>REPEAT</B>
+    statement sequence
+    WriteLn;
+    WriteString (<!--"-->&quot;Do you want to do another one? <!--"-->&quot;);
+    ReadChar (answer);
+    WriteLn;
+    again := (answer = 'Y') <B>OR</B> (answer = 'y');
+  <B>UNTIL</B> <B>NOT</B> again;</PRE>
+
+<P>Here is a simple problem from mathematics whose solution illustrates the use of the REPEAT statement and at the same time shows the necessity of careful planning and an intimate knowledge of the problem itself.</P>
+<H3><B>Example:</B></H3>
+<P>Write a program which will find the Greatest Common Divisor (GCD) of two given numbers.</P>
+<H3><B>Discussion:</B></H3>
+<P>When solving problems like this one, it is essential that the terms used in the question are clearly understood.</P>
+<BLOCKQUOTE><I><A NAME="GCD">The </A><U>Greatest Common Divisor</U>  (GCD) of two numbers is the largest positive whole number which divides evenly (without remainder) into both.  If their Greatest Common Divisor is one, two numbers are said to be <U>relatively prime</U>.</I></BLOCKQUOTE>
+<P>For instance,</P>
+<P>GCD (6, 8) = 2</P>
+<P>GCD (24, 160) = 8</P>
+<P>GCD (25, 16) = 1, so 25 and 16 are relatively prime.</P>
+<P>GCD (2, 0) = 2 (every number divides zero)</P>
+<P>A number of methods are commonly taught in Junior High School mathematics to solve such problems.  To illustrate, consider the following method for determining the Greatest Common Divisor of 432 and 1800.</P>
+<H3><B>Solution A:</B></H3>
+<PRE>1. List all the divisors of 432 and 1800.
+2. Examine the two lists and select the largest number appearing in both.
+
+Algorithm for listing divisors:
+
+empty the list
+set trial divisor to 1
+repeat
+  divide number by trial divisor
+  if remainder is zero then
+    put trial divisor in list
+    put quotient in list
+  add one to trial divisor
+until trial divisor is greater than the square root of the number</PRE>
+
+<P>The latter provision is feasible since the algorithm adds both to the bottom and the top of the list simultaneously.  Thus, once the square root of the number is passed on the way up, the top end contains all the divisors down to that point as well, and the process may be concluded.</P>
+<PRE>
+Algorithm for selecting the largest number in two lists:
+
+repeat
+  find the largest number in each of the two lists
+  if these are not equal then
+    discard the greater of these two numbers from its list
+until the largest numbers in each list are equal; this is the GCD</PRE>
+
+<P>For the example cited, this method produces the two lists:</P>
+<P></P>
+<P>432:1,2,3,4,6,8,9,12,16,18,24,27,36,48,54,72,108,144,231,432</P>
+<P>1800:1,2,3,4,5,6,8,9,10,12,15,18,20,24,25,30,36,40,45,50,60,72,75,90,100,120,150,200,225,300,360,450,600,900,1800</P>
+<P></P>
+<P>Finally, examination of the lists for the highest number in both quickly produces 72 as the GCD.</P>
+<P>There are a number of difficulties with this method.  It uses the concept of square root, which is not very satisfactory when working with whole numbers.  How to translate the <!--"-->&quot;list<!--"-->&quot; abstraction employed here into a computing notation is not at all clear.  Neither is how to implement the idea of discarding an item from a list.   Such difficulties cause one to consider another method, and this one too is taught in high school mathematics.</P>
+<H3><B>Solution B:</B></H3>
+<P>1. Factor the two numbers into products of primes.</P>
+<P>2. Construct the GCD as the product of the largest common number of factors of each prime taken individually.</P>
+<P></P>
+<P>Thus, 432 = 2<sup>4</sup> * 3<sup>3</sup> and 1800 = 2<sup>3</sup> * 3</sup>2 * 5<sup>2</sup></P>
+<P>Examining the common factors gives the GCD as 2<sup>3</sup> * 3<sup>2</sup> = 72.</P>
+<P>However, this method is even more difficult to implement as an algorithm and translate into a computing notation.  It requires that the problem be refined into methods for determining primes, keeping a list of them, and maintaining lists of the prime factors of numbers, together with the appropriate exponents.  Such a refinement will not be given here, as there is a better way.  To see what that better way is, it is necessary to examine carefully the definition of a divisor.</P>
+<BLOCKQUOTE><I><A NAME="Divisor">We</A> say that d is a <U>divisor</U> of x if there is a number m with x = d <!--¥-->* m.</I></BLOCKQUOTE>
+<P>Thus, for two positive numbers x and y with a common divisor d, there would be numbers m and n with x = m * d and y = n * d.  (There is always at least one such number, because 1 is a common divisor of all other natural numbers.)</P>
+<P>To progress from this point requires a flash of insight.  Suppose that x is the larger of the two numbers.  Observe that</P>
+<P>x - y = m * d - n * d = (m - n) * d</P>
+<P>The latter expression gives the difference of the two numbers as a product of a natural number with their common divisor d. Put another way, this means that every divisor of the two given numbers is also a divisor of their difference.  In particular, this is true of the greatest common divisor of the two:</P>
+<P>either GCD (x, y) = GCD (x - y, y) OR  GCD (x, y) = GCD (x, y - x)  (1)</P>
+<P>(depending on whether x <!-->&gt; y or y <!-->&gt; x)</P>
+<P> It ought also to be evident that</P>
+<P>If x = y then GCD (x, y) = x  (2)</P>
+<P>These two formulas help by reduceing the problem to that of finding the GCD of successively smaller pairs of numbers than the originals, until the pair is equal, at which point either is the GCD.  A trace of this logic by hand for the earlier example produces:</P>
+<P>GCD (1800, 432) = GCD (1368, 432)</P>
+<P>	= GCD (936, 432)</P>
+<P>	= GCD (504, 432)</P>
+<P>	= GCD (72, 432)</P>
+<P>	= GCD (72, 360)</P>
+<P>	= GCD (72, 288)</P>
+<P>	= GCD (72, 216)</P>
+<P>	= GCD (72, 144)</P>
+<P>	= GCD (72, 72)</P>
+<P>	= 72</P>
+<P>This hand trace reveals that yet another simplification to the algorithm is possible.  At one stage, the number 72 was subtracted several times in succession so what is left is really just the remainder after the larger number was divided by the smaller.  For convenience, assume that the first number is the larger, and keep them in order throughout.  That is,</P>
+<P>GCD (x, y) = GCD (y, x MOD y)  (1a)</P>
+<P>(assuming always x <!-->&gt; y and neither x nor y is zero)</P>
+<P>Note that once the smaller number divides the larger exactly, the smaller is the GCD and the process can stop.  With the properties (1a) and (2) it is possible to produce a refinement that is easy to render in computing notation that uses only comparisons and divisions, neatly evading all the messy considerations of primes, factors, divisors, and the keeping of lists.</P>
+<H3><B>Solution C:</B></H3>
+<PRE>Ask the user for the two numbers.
+  Read them into cardinal variables.
+  Arrange the two numbers in the order (larger, smaller)
+Compute the GCD.
+  let the gcd be the larger
+  while the smaller is greater than zero
+    suppose the gcd is the smaller
+    Replace the smaller with (larger MOD smaller) and
+      the larger with the last smaller (saved as trial gcd)
+  end while
+  Say what the GCD is</PRE>
+
+<H3><B>Data Table:</B></H3>
+<PRE>1. Imports required
+	From STextIO: WriteString, WriteLn,
+	From SWholeIO: ReadCard, WriteCard
+
+2. Variables required
+	x, y : cardinals to hold the two numbers for the GCD calculation
+	gcd : the cardinal result
+	temp : a cardinal for use in swapping</PRE>
+
+<P>To conserve space, the user manual has been left out.  Here is the code:</P>
+<PRE>
+<B>MODULE</B> GCD;
+(* This program computes the GCD of two cardinal numbers 
+    by R. Sutcliffe
+    revised 1993 02 15 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+
+<B>VAR</B>
+  x, y, temp, gcd : <B>CARDINAL</B>;
+  again : <B>BOOLEAN</B>;
+  answer, cr : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  (* write information *)
+  WriteString (<!--"-->&quot;This program computes the GCD <!--"-->&quot;);
+  WriteString (<!--"-->&quot;of two whole numbers.<!--"-->&quot;);
+  WriteLn;
+  <B>REPEAT</B>
+   (* get the numbers *)
+    WriteString (<!--"-->&quot;Enter the first number ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (x);  (* read first number *)
+    SkipLine; (* and end of line *)
+    WriteLn;
+    WriteString (<!--"-->&quot;And now, the second ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (y);  (* read second number *)
+    SkipLine; (* and end of line *)
+    WriteLn;
+    
+    (* arrange the numbers in order *)
+    <B>IF</B> y <!-->&gt; x
+      <B>THEN</B> (* swap the numbers *)
+        temp := x;
+        x := y;
+        y := temp;
+      <B>END</B>;
+     (* compute the GCD *)
+    gcd := x;  (* initial gcd in case y = 0 *)
+    <B>WHILE</B> y <!-->&gt; 0
+      <B>DO</B>
+        gcd := y;  (* let the gcd be the smaller of the two *)
+        y := x <B>MOD</B> y; (* replace smallest with new remainder *)
+        x := gcd; (* and larger with smaller from last step *)
+      <B>END</B>;
+    WriteString (<!--"-->&quot;The GCD is <!--"-->&quot;);
+    WriteCard (gcd, 0);
+
+    WriteLn;
+    (* check for another *)
+    WriteString (<!--"-->&quot;Do you want to do another one? <!--"-->&quot;);
+    ReadChar (answer);
+    SkipLine; (* and end of line *)
+    WriteLn;
+    again := (answer = 'Y') <B>OR</B> (answer = 'y');
+  <B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> GCD.</PRE>
+
+<P>Here is a run from this module with some of the on-screen carriage returns deleted to save space.</P>
+<PRE>
+This program computes the GCD of two whole numbers.
+Enter the first number ==<!-->&gt; <B>200</B>
+And now, the second ==<!-->&gt; <B>4780</B>
+The GCD is 20
+Do you want to do another one? <B>y</B>
+Enter the first number ==<!-->&gt; <B>50</B>
+And now, the second ==<!-->&gt; <B>1001</B>
+The GCD is 1
+Do you want to do another one? <B>y</B>
+Enter the first number ==<!-->&gt; <B>0</B>
+And now, the second ==<!-->&gt; <B>5</B>
+The GCD is 5
+Do you want to do another one? <B>n</B></PRE>
+
+<P>If this example illustrates nothing else, it is that while simple algorithms take considerable intelligent human effort to discover, the repetitive calculations can then be left to the computing device.  In this case, the algorithm that was finally coded here was first reported on by the Greek mathematician Euclid about 300 B.C.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

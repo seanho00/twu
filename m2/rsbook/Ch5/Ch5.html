@@ -1,0 +1,91 @@
+<HTML><HEAD><TITLE>Chapter 5: Iterations, Enumerations, and Arrays</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H1><B><CENTER>Chapter 5<BR>
+Iterations, Enumerations, and Arrays</CENTER></B></H1>
+
+
+<BR><A class = navgrn HREF="Ch5.0.html">5.0 Chapter Goals</A><!--	180-->
+<BR><A class = navgrn HREF="Ch5.1.html">5.1 Abstract and Transparent Data Types in Modula-2</A><!--	180-->
+<BR><A class = navgrn HREF="Ch5.2.html">5.2 Making One's Own Data Types</A><!--	181-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.2.html#5.2.1">  5.2.1 Ordinal and Enumerated Types</A><!--	181-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.2.html#5.2.2">  5.2.2 Subranges Of Existing Types</A><!--	185-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.2.html#5.2.3">  5.2.3 Summary of some Modula-2 compatibility issues:</A><!--	187-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.2.html#5.2.4">  5.2.4 Summary of some Modula-2 types</A><!--	187-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.2.html#5.2.5">  5.2.5 Making comparisons</A><!--	188-->
+<BR><A class = navgrn HREF="Ch5.3.html">5.3 Indexed Data Types<!--‹-->--Arrays</A><!--	188-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.3.html#5.3.1">  5.3.1 A First Look at String Variables</A><!--	189-->
+<BR><A class = navgrn HREF="Ch5.4.html">5.4 The FOR Statement</A><!--	190-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.4.html#5.4.1">  5.4.1 The FOR Loop and the WHILE Loop</A><!--	193-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.4.html#5.4.2">  5.4.2 The FOR Loop in Use</A><!--	196-->
+<BR><A class = navgrn HREF="Ch5.5.html">5.5 Manipulating Arrays</A><!--	199-->
+<BR><A class = navgrn HREF="Ch5.6.html">5.6 Arrays as Parameters</A><!--	202-->
+<BR><A class = navgrn HREF="Ch5.7.html">5.7 Multi-Dimensional Arrays</A><!--	206-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.7.html#5.7.1">  5.7.1 Arrays of More than Two Dimensions</A><!--	208-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch5.7.html#5.7.2">  5.7.2 Multidimensional Open Array Parameters</A><!--	209-->
+<BR><A class = navgrn HREF="Ch5.8.html">5.8 Manipulating Multi-Dimensional Arrays</A><!--	209-->
+<BR><A class = navgrn HREF="Ch5.9.html">5.9 An Extended Example (Finding Prime Numbers)</A><!--	213-->
+<BR><A class = navgrn HREF="Ch5.10.html">5.10 Chapter Summary</A><!--	218-->
+<BR><A class = navgrn HREF="Ch5.11.html">5.11 Assignments</A><!--	219-->
+
+<!--Version History:
+Version 3.0 released to MS 93 07 19
+Version 3.01 with character graphics to Deane 94 01 24
+Version 3.02 with table of contents 94 08 25
+Version 3.02.1 with table of contents corrected 94 09 13
+Version 3.02b with array comparison corrected 94 11 25
+Version 4.0 with HTML markup by G Tisher
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 06 16 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch5.0.html»
+«INCLUDE Ch5.1.html»
+«INCLUDE Ch5.2.html»
+«INCLUDE Ch5.3.html»
+«INCLUDE Ch5.4.html»
+«INCLUDE Ch5.5.html»
+«INCLUDE Ch5.6.html»
+«INCLUDE Ch5.7.html»
+«INCLUDE Ch5.8.html»
+«INCLUDE Ch5.9.html»
+«INCLUDE Ch5.10.html»
+«INCLUDE Ch5.11.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

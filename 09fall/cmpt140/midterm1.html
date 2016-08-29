@@ -1,0 +1,211 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Midterm 1 :: CMPT140 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.<br>
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<br><b>Also:</b> describe each step in your own words,
+and why it is important!
+<u>[5]</u><ul>
+<li><i>Write</i><br>
+<li><i>Apprehend</i><br>
+<li><i>Design</i><br>
+<li><i>Execute</i><br>
+<li><i>Scrutinize</i><br>
+</ul>
+
+<li>
+Name the five computer <b>hardware</b> abstractions
+we talked about in class.  For each one, name one
+computer-related example, and also describe one
+non-computer-related example of the abstraction.
+<u>[6]</u><ul>
+<li><i>Input: keyboard; steering wheel</i><br>
+<li><i>Storage: RAM; odometre</i><br>
+<li><i>Processing: CPU; ECU</i><br>
+<li><i>Control: chipset; suspension/supporting systems</i><br>
+<li><i>Output: screen; wheels</i><br>
+</ul>
+
+<li>
+Show the <b>output</b> of the following Python loop:
+<u>[4]</u>
+<pre>
+distance = 0.8
+while True:
+	print "%.1f" % distance,		# in Py3: print("%.1f" % distance, end=' ')
+	distance -= 0.1
+	if distance == 0.0:
+		print "Boom!"			# in Py3: print("Boom!")
+		break
+</pre>
+<i>
+  Infinite loop!  Due to inaccuracy in floating-point, distance
+  may miss the sentinel value 0.0 and keep going negative, forever!
+</i>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to indicate
+whether it can be used as a valid name for a user-defined Python variable.
+If "no", indicate why.
+<u>[6]</u><br>
+<br><tt>four		</tt><i>-- yes</i>
+<br><tt>for		</tt><i>-- no (reserved)</i>
+<br><tt>3D_Gaming	</tt><i>-- no (starts with digit)</i>
+<br>
+<br><tt>wagesIn$USD	</tt><i>-- no (punctuation)</i>
+<br><tt>__0__		</tt><i>-- yes</i>
+<br><tt>In-N-Out	</tt><i>-- no (punctuation)</i>
+
+<li class="break">
+The following is meant to be a guessing game that quits only
+when the user types the magic number ("42").  Find all the
+<b>bugs</b> in the code, and fix them. <u>[6]</u><br><br>
+<pre>
+while true:
+	guess == raw_input('Bet you can't guess my number! ')
+	if guess &gt; 42:
+		print 'Sorry, too high!'
+	else if guess &lt; 42:
+		print 'Sorry, too low!'
+	# guess = 42
+	print 'You got it!';
+	continue
+print "Bye bye!"
+</pre>
+<em>(In Py3):</em><pre>
+while true:
+	guess == input('Bet you can't guess my number! ')
+	if guess &gt; 42:
+		print('Sorry, too high!')
+	else if guess &lt; 42:
+		print('Sorry, too low!')
+	# guess = 42
+	print('You got it!');
+	continue
+print("Bye bye!")
+</pre></em>
+<i>
+  (1) True;<br>
+  (2) guess =, not guess ==<br>
+  (3) input(), not raw_input()<br>
+  (4) Double-quotes to protect "can't"<br>
+  (5) elif, not else if<br>
+  (6) Last two lines should be in an else clause<br>
+  (7) Delete semicolon at end of 'You got it!'<br>
+  (8) Use break instead of continue<br>
+</i>
+<br><br>
+
+<li>
+Use the Python <tt>range()</tt> function to create the following list.
+<br>(There are several possible correct answers.)<br>
+<b><tt>[-8, -3, 2, 7, 12]</tt></b>. <u>[3]</u>
+<br><i>range(-8, 13, 5), or ..., up to range(-8, 17, 5)
+  <br><em>(in Py3: the above would be acceptable, or list(range(...)).)</em></i>
+<br>
+
+<li>
+Compare and contrast <b>static</b> typing versus <b>dynamic</b> typing.
+What are pros/cons of each?
+<u>[4]</u><br>
+<i>
+  (The key here is <b>type</b>: not whether the values of the variables can
+  change, but whether their <b>types</b> can change.)
+  <br><b>Static typing</b>: variables cannot change type.
+  Must declare type of variable and initialize value.
+  Compiler enforces correct type.
+  <br><b>Dynamic typing</b>: can change type.
+  More flexible, but usually we don't want variables to change type.
+</i>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Compare and contrast <b>C arrays</b> and <b>Python lists</b>.
+What are the limitations of arrays as compared with Python lists?
+<u>[5]</u><br>
+<i>
+Python lists can change length (can insert/delete), can have items of
+differing type, can have items which change type (due to Python's
+dynamic typing), and have various operators/functions defined on them,
+such as del, len(), negative indexing, list slicing, etc.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li class="break">
+Compare and contrast <b>Call-by-value</b> versus <b>call-by-reference</b>.
+Describe a situation in which you might want to use call-by-reference
+instead of call-by-value.
+<u>[6]</u><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume only the following initialization:
+<u>[15]</u>
+<pre>	myApple = "McIntosh"	</pre>
+  <ol class="subparts">
+<li><tt> myApple[2:4].upper()	</tt> <i>'IN'</i>
+<li><tt> list(range(5,5))	</tt> <i>[] (empty list)</i>
+<li><tt> 10 - 21 / 2 / 3</tt> <i>7 (in Py3: 6.5)</i>
+<li><tt> 4 % 2</tt> <i>0</i>
+<li><tt> "04d" % 2</tt> <i>TypeError: mismatch in arguments</i>
+<li><tt> "1%04d.%s" % (23.92, 'jpg')	</tt> <i>'10023.jpg'</i>
+<li><tt> "%06.3f" % 3.1415926	</tt> <i>'03.142'</i>
+<li><tt> math.pi &gt; 5 and 12%0 == 0</tt> <i>False</i>
+<li><tt> len(myApple) </tt> <i>8</i>
+<li><tt> len(myApple) /= 7 or len(myApple) /= 9</tt> <i>SyntaxError: can't assign</i>
+<li><tt> I in myApple</tt> <i>NameError: I is not a variable</i>
+<li><tt> chr(ord('d') + 3) </tt> <i>'g'</i>
+<li><tt> ord('f') - ord('d') </tt> <i>2</i>
+<li><tt> 'f' * 'd' </tt> <i>TypeError: can't multiply string</i>
+<li><tt> 2*"x" + 3*"y" + "z" </tt> <i>'xxyyyz'</i>
+</ol>
+
+<li>
+Write a Python <b>function</b> <tt>harmonic(n)</tt> that returns the
+mathematical sum <br>1 + 1/2 + 1/3 + 1/4 + ... + 1/n.
+(This is called the <b>harmonic series</b>.)
+<u>[10]</u>
+
+<p>
+Docstrings, including pre- and post-conditions, <b>are</b> required!
+Comments are not required, however if your code is incorrect, your 
+comments or pseudocode may earn you partial credit if they show good 
+design thinking.
+Little partial credit will be given for uncommented incorrect code.
+<br>
+<i>
+  See <a href="http://twu.seanho.com/python/harmonic.py"><tt>harmonic.py</tt></a>.
+</i>
+
+</ol>
+
+</body></html>
+
+

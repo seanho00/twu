@@ -1,0 +1,264 @@
+<HTML>
+<HEAD>
+<TITLE>5.9 An Extended Example (Finding Prime Numbers)</TITLE>
+<meta NAME="keywords" CONTENT="extended, example, prime, number, numbers, examples, math, mathematics, mathematicians, calculate, compute, calculation, calculations, computation, computations, root, test, tested, testing, algorythm, algorythmic, formula, sieve, eratosthenes, erastosthenes, limit, limitations, limitation, implements, implementation, implementations, array, index, indices, arrays">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<H2><B>5.9 An Extended Example (Finding Prime Numbers)</B></H2>
+<P>In previous discussion on the greatest common divisor, it was mentioned that the GCD could be found by factoring the two numbers into products of primes, that is numbers with exactly two different positive divisors.  The sequence of prime numbers</P>
+<P>2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, and so on</P>
+<P>has long fascinated mathematicians because of their usefulness and their unique properties.</P>
+<P>Although this is a sequence, because it can be numbered off in order with the natural numbers, it is possible to prove that there does not exist a formula that can be used to compute the i<sup>th</sup> term of the sequence.  In order to obtain a list of primes, it is therefore necessary to resort to computational methods that produce them one at a time.  A possible algorithm for determining if a number is prime is:</P>
+<PRE>
+let a trial divisor have the value 2
+set a boolean Prime to true
+while Prime or the trial divisor £ the square root of the test number
+  divide the number being tested by the trial divisor
+  if there is no remainder, set Prime to false
+  increment the trial divisor</PRE>
+
+<P>Once the square root of the test number has been reached, there is no point in checking for more divisors, as there can be a divisor larger than this only if there was also one smaller.  Here is some Modula-2 code to implement and test this algorithm:</P>
+<PRE>
+<B>MODULE</B> CheckPrime;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* last revision 1991 03 01 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> RealMath <B>IMPORT</B>
+  sqrt;
+  
+<B>VAR</B>
+  theNum : <B>CARDINAL</B>;
+  ans : <B>CHAR</B>;
+
+<B>PROCEDURE</B> IsPrime (testNum : <B>CARDINAL</B>) : <B>BOOLEAN</B>;
+
+<B>VAR</B>
+  prime : <B>BOOLEAN</B>;
+  trialDiv, stop : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> (testNum = 0) <B>OR</B> (testNum = 1)
+    <B>THEN</B>
+      prime := <B>FALSE</B>
+    <B>ELSE</B>
+      prime := <B>TRUE</B>;
+      trialDiv := 2;
+      stop := <B>TRUNC</B> (sqrt (<B>FLOAT</B> (testNum)));
+      <B>WHILE</B> (trialDiv <!--<-->&lt;= stop) <B>AND</B> prime
+        <B>DO</B>
+        <B>IF</B> testNum <B>MOD</B> trialDiv = 0
+          <B>THEN</B>
+            prime := <B>FALSE</B>
+          <B>END</B>;
+        <B>INC</B> (trialDiv);
+      <B>END</B>; (* while *)
+    <B>END</B>;  (* if *)
+  <B>RETURN</B> prime;
+<B>END</B> IsPrime;
+
+<B>BEGIN</B> (* main *)
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;The number you type will be checked <!--"-->&quot;);
+    WriteString (<!--"-->&quot;to see if it is prime ==<!-->&gt;<!--"-->&quot;);
+    ReadCard (theNum);
+    SkipLine;
+    WriteLn;
+    WriteString (<!--"-->&quot;the number <!--"-->&quot;);
+    WriteCard (theNum, 0);
+    WriteString (<!--"-->&quot; is <!--"-->&quot;);
+    <B>IF</B> <B>NOT</B> IsPrime (theNum)
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;not<!--"-->&quot;);
+      <B>END</B>;
+    WriteString (<!--"-->&quot; prime.<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;Do another? Y/N  <!--"-->&quot;);
+    ReadChar (ans);
+    SkipLine;
+  <B>UNTIL</B> <B>CAP</B> (ans) = <!--"-->&quot;N<!--"-->&quot;;
+<B>END</B> CheckPrime.</PRE>
+
+<P>This code will do, if all that is required is to test a single number.  However, it has two drawbacks.  First, it is inefficient.  It is not necessary to use <I>every</I> number from 2 through the square root of the number being tested as a trial divisor; only the primes in that range.  If a way can be found to do this, the number of computations is greatly reduced.  Second, no record or list of primes is kept by this program.  A number that is given to it twice must be tested twice.  Although this algorithm cannot be replaced by a simple call to a closed formula, it can be improved upon considerably.</P>
+<P>A much more efficient method of finding primes is often given in elementary mathematics textbooks.  It is called the <I>Sieve of Eratosthenes</I> (after the Greek mathematician) and when done by hand it works like this:</P>
+<P>1. Write down the numbers to be tested in convenient rows</P>
+<P><IMG SRC="Figure/Sieve1.GIF"><!----></P>
+<P>2. Cross out 1 and circle the number 2<!--‹-->--it is prime.</P>
+<P>3. Cross out all multiples of 2; they cannot be prime.</P>
+<P><IMG SRC="Figure/Sieve2.GIF"><!----></P>
+<P>4. The next number not crossed out is a prime; circle it and cross out all its multiples that are not already crossed out.  When looking for multiples, start with the square of the number just circled; any lesser multiples have already been crossed out.</P>
+<P><IMG SRC="Figure/Sieve3.GIF"><!----></P>
+<P>5. Repeat steps 3  and 4 until all the numbers less than the square root of the largest number that was written down are either circled (prime) or crossed out (composite).</P>
+<P><IMG SRC="Figure/Sieve4.GIF"><!----></P>
+<P>6. All remaining numbers of those written down are prime, and may now be circled.</P>
+<P><IMG SRC="Figure/Sieve5.GIF"><!----></P>
+<P>A count of the circled numbers reveals that there are 25 primes less than 100.  This hand method works very well for checking up to a few hundred numbers, but becomes rather tedious beyond that point.  The calculations are, however, very simple to computerize.  Using the numbers above for the steps:</P>
+<PRE>1. Create an array of booleans and set them all to <I>true</I> at first. (true = prime)
+2. Set array element 1 to <I>false</I>. Now 2 is prime.
+3. Set the values whose index in the array is a multiple of the last prime found to <I>false</I>.
+4. The next index where the array holds the value <I>true</I> is the next prime.
+5. Repeat steps 3 and 4 until the last prime found is greater than the square root of the largest number in the array.</PRE>
+
+<P>The program that follows tested the numbers to 1000 and printed out the primes it found, ten to a line.</P>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> Sieve;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* last revision 1993 03 01 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> RealMath <B>IMPORT</B>
+  sqrt;
+
+<B>CONST</B>
+  size = 1000;
+
+<B>VAR</B>
+  primeFlags : <B>ARRAY</B> [1 .. size] <B>OF</B> <B>BOOLEAN</B>;
+  numFound,
+  numToTest, (* the candidate for primality *)
+  count, lineCount,        (* Loop counters *)
+  mul,   (* for multiples *)
+  max    (* largest to test *) : <B>CARDINAL</B>;
+  key : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  numFound := 0;
+  max := <B>TRUNC</B> (sqrt (<B>FLOAT</B>(size))); 
+  primeFlags [1] := <B>FALSE</B>;
+  <B>FOR</B> count := 2 <B>TO</B> size
+    <B>DO</B>    (* Initialize variables *)
+      primeFlags [count] := <B>TRUE</B>
+    <B>END</B>;
+
+  (* Find primes *)
+  <B>FOR</B> numToTest := 2 <B>TO</B> max
+    <B>DO</B>
+      <B>IF</B> primeFlags [numToTest]
+        <B>THEN</B>  (* got the next prime here *)
+          <B>INC</B> (numFound);  (* count them as we go *)
+          mul := numToTest * numToTest;  (* start at its square *)
+          <B>WHILE</B> mul <!--<-->&lt;= size
+            <B>DO</B>
+              primeFlags [mul] := <B>FALSE</B>;   (* Cross out *)
+              <B>INC</B> (mul, numToTest)    (* Do all multiples *)
+            <B>END</B>  (* while *)
+        <B>END</B>  (* if *)
+    <B>END</B>;  (* for *)
+  
+  (* now, count the rest *)
+  <B>FOR</B> numToTest := max + 1 <B>TO</B> size
+    <B>DO</B>
+      <B>IF</B> primeFlags [numToTest]
+        <B>THEN</B>  (* got the next prime here *)
+          <B>INC</B> (numFound);  (* count them as we go *)
+        <B>END</B>  (* if *)
+    <B>END</B>;  (* for *)
+
+  (* Now print them out 10 to a line *)
+
+  lineCount := 0;
+  <B>FOR</B> count := 2 <B>TO</B> size
+    <B>DO</B>
+      <B>IF</B> primeFlags [count]
+        <B>THEN</B>
+          WriteCard (count, 6);
+          <B>INC</B> (lineCount)
+        <B>END</B>;
+      <B>IF</B> lineCount = 10 
+        <B>THEN</B>
+          lineCount := 0;  (* reset line count *)
+          WriteLn;   (* and start new line *)
+        <B>END</B>
+    <B>END</B>;   (* for *)
+  WriteLn;
+  WriteString (<!--"-->&quot; ... a total of <!--"-->&quot;);
+  WriteCard (numFound, 6);
+  WriteString (<!--"-->&quot; primes <!--"-->&quot;);
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->&gt; <!--"-->&quot;);
+  ReadChar (key);
+<B>END</B> Sieve.</PRE>
+
+<H3><B>Results:</B></H3>
+<PRE>     2     3     5     7    11    13    17    19    23    29
+    31    37    41    43    47    53    59    61    67    71
+    73    79    83    89    97   101   103   107   109   113
+   127   131   137   139   149   151   157   163   167   173
+   179   181   191   193   197   199   211   223   227   229
+   233   239   241   251   257   263   269   271   277   281
+   283   293   307   311   313   317   331   337   347   349
+   353   359   367   373   379   383   389   397   401   409
+   419   421   431   433   439   443   449   457   461   463
+   467   479   487   491   499   503   509   521   523   541
+   547   557   563   569   571   577   587   593   599   601
+   607   613   617   619   631   641   643   647   653   659
+   661   673   677   683   691   701   709   719   727   733
+   739   743   751   757   761   769   773   787   797   809
+   811   821   823   827   829   839   853   857   859   863
+   877   881   883   887   907   911   919   929   937   941
+   947   953   967   971   977   983   991   997
+ ... a total of    168 primes </PRE>
+
+<P><B>NOTES</B>: 1. The value of <I>size</I> could have been set much higher, but there was no need to print any more primes here.</P>
+<P>	2. In some implementations of Modula-2, the maximum array index range is limited to a number much less than MAX (CARDINAL), and if <I>size</I> were to be greater than this, the program would not compile.  This is due to limitations on the total size of a variable.</P>
+<P>	3. A file of primes could be kept on hand for use in other problems.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

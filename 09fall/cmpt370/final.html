@@ -1,0 +1,315 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Final Exam :: CMPT370 DS 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ ans ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+<!-- bit long; Sky took 2.5hrs -->
+
+<ol class="main">
+
+<!--
+<div class="break"></div>
+-->
+
+<li> Name at least three of the groundbreaking innovations in Engelbart's NLS
+prototype demonstration in 1968. <u>[3]</u>
+<br><i>
+mouse, windowing system, hyperlinks, chording keyboard,
+collaborative work (email, IM, video conf)
+</i>
+
+<li> Describe Flynn's taxonomy of parallel computing.
+(Give more detail than just expanding the acronyms!) <u>[6]</u>
+<br><i><dl>
+<dt>SISD:</dt><dd>regular serial uniprocessor computing</dd>
+<dt>SIMD:</dt><dd>multiple processors each doing the same task, but on
+different parts of the data.  Vector processing.</dd>
+<dt>MISD:</dt><dd>the same data being run through different operations in
+parallel.   Certain kinds of image processing, perhaps encryption breaking.
+Rarely used.</dd>
+<dt>MIMD:</dt><dd>multiple processors doing different tasks on different data.
+Most general form of parallel computing; also most common nowadays.</dd>
+</dl></i>
+
+<li> Describe the (1) shared, (2) distributed, and (3) hybrid
+memory models of parallel computing.  Draw the diagrams illustrating how memory
+and processors are tied together.  What are the advantages/disadvantages of
+shared memory vs.  distributed memory models? <u>[6]</u>
+<br><i><dl>
+<dt>Shared:</dt><dd>All processors share same address space for main memory.
+The assumption is that memory access times are the same for all processors.
+Easier to program: threads communicate simply by sharing data structures
+directly.  For small numbers of processors, often faster due to less overhead.
+Does not scale well.</dd>
+<dt>Distributed:</dt><dd>Each processor has its own address space.  No data
+structures can be shared with other processors.  All communication must be
+explicit via networking, which makes programming more complicated due to
+synchronization and latency issues.  Scales to hundreds of thousands of
+processors.</dd>
+<dt>Hybrid:</dt><dd>Each node has a few (often 4-8) processors which share
+that node's memory.  Nodes cannot directly see the memory of other nodes.</dd>
+</dl></i>
+
+<li> We have occasionally considered linking together all 22 computers in the
+main lab to behave as one clustered parallel computer.  Each computer has its
+own RAM and hard disk, as well as a dual-core CPU, and a Gigabit Ethernet
+connection to a single network switch that serves all 22 computers.
+Which of the three memory models from the previous question would make the most
+sense for such a cluster?  What kind of programs could fully utilize such a 
+cluster?  Describe the behaviour of such programs and explain why such a cluster
+would be an appropriate system on which to run them. <u>[6]</u>
+<br><i>
+Hybrid (shared+distributed) memory would make the most sense for a cluster:
+there are high-speed symmetric links between cores of the same CPU, but the
+links between nodes/computers are relatively slow.  Programs that would run
+well on this should not need to communicate large volumes of data between nodes.
+Each node may utilize several hundred GB of local space, but should not be
+sending GB of data over the network.  A GigE LAN could support frequent small
+messages between nodes, but not large volumes of data (even infrequently).
+An example application could be a numerical simulation of weather, where each
+node works on a block of the atmosphere -- the communication between nodes just
+deals with the edges of the blocks.  Another application could be 3D rendering,
+where each node renders a part of the geometry in the scene, which is then
+composited together.
+</i>
+
+<li> The four main kinds of OpenMP synchronization #pragmas are
+<b><tt>parallel</tt></b>, <b><tt>critical</tt></b>, <b><tt>single</tt></b>, and
+<b><tt>barrier</tt></b>.  Describe each of these and contrast them. <u>[6]</u>
+<br><i>
+  <b><tt>parallel</tt></b>: Each thread runs a separate copy of the following
+  block of code.  Variables declared beforehand are shared; variables declared
+  within the parallel block are private to each thread.<br>
+  <b><tt>critical</tt></b>: The following block is run by each thread one at a
+  time; no threads run the block at the same time with each other.
+  This is useful if the threads need to access a shared resource.<br>
+  <b><tt>single</tt></b>: The following block is run by only one thread.  The
+  difference with <tt>critical</tt> is whether there are many copies or just
+  one copy of the block being run.<br>
+  <b><tt>barrier</tt></b>: A barrier is a synchronization point; execution halts
+  at this point until all threads have caught up.
+</i>
+
+<li> What are the <b>RGB</b> and <b>CMYK</b> colour spaces?  What is the 
+difference between them?  What are they used for?  Why are R, G, and B called 
+the "primary" colours?  <u>[5]</u>
+<br><i>
+RGB is an additive colour space; adding more R, G, and B brings the mixture
+closer to white.  RGB are primary colours because the human eye has light-
+receptor cells whose frequency response curves peak around those colours.
+CMYK is the subtractive colour space which is complementary to RGB:
+cyan is the opposite of red, magenta of green, and yellow of blue.  CMYK is
+used for dyes and inks: adding more of the colours brings the mixture closer
+to black.  Since black is often used, a fourth ink 'K' is dedicated to black.
+</i>
+
+<li>
+Describe the four types of <b>lights</b> offered by OpenGL. 
+List all the properties for each type of light. <u>[8]</u>
+<br><i><dl>
+<dt>Point:</dt><dd>has a location and RGBA colours (ambient, diffuse, specular).
+Similar to a candle.</dd>
+<dt>Directional:</dt><dd>has a direction and colours, but no location.  Similar
+to the sun.  Specified in OpenGL the same way as point lights, but using
+homogeneous coordinates to specify a vector instead of a point.</dd>
+<dt>Spot:</dt><dd>has a location, direction, cutoff depth, falloff exponent, and
+colours.  Similar to a theatre spotlight.</dd>
+<dt>Global ambient:</dt><dd>We can specify an ambient light that uniformly
+illuminates the whole scene.  Similar to a very evenly lit scene like an open
+field on a cloudy day.</dd>
+<dt>(Area light):</dt><dd>(not offered by OpenGL, but we can model it using
+global illumination techniques like radiosity.)</dd>
+<dt>(Emissive):</dt><dd>(Emissive OpenGL objects don't count as lights because
+they don't cast light on other objects.)</dd>
+</dl></i>
+
+<li> In geometry, what is the difference between a <b>point</b> and a
+<b>vector</b>?  Aren't they both just tuples of 3 floats? <u>[2]</u>
+<br><i>
+A point represents a location in space, with no direction.
+A vector represents a direction and magnitude, with no location.
+</i>
+
+<li>
+Write a C/C++ function that takes two points in normalized mouse coordinates 
+(x0,y0,x1,y1) and finds the <b>axis-angle</b> (vector-angle)
+representation of the virtual trackball rotation.  Normalize mouse coordinates
+are floats in the range 0 to 1.  Such an axis-angle representation could, for
+example, be passed to <tt>glRotate()</tt> to create a 4x4 rotation matrix.
+You may assume the presence of 3D-vector helper functions <tt>normalize()</tt>,
+<tt>magnitude()</tt>, <tt>dotproduct()</tt>, and <tt>crossproduct()</tt>, as
+well as <tt>sqrt()</tt>.  Syntax is not as important as concept/pseudocode.
+<u>[6]</u>
+<br><i><pre>
+void getAxisAngle(float x0, float y0, float x1, float y1, float& axis, float& ang) {
+	float vec0[3], vec1[3], xprod[3];
+	vec0[0] = x0; vec0[1] = y0;
+	vec1[0] = x1; vec1[1] = y1;
+	vec0[2] = sqrt(1 - x0*x0 + y0*y0);
+	vec1[2] = sqrt(1 - x1*x1 + y1*y1);
+	xprod = crossproduct(vec0, vec1);
+	axis = normalize(xprod);
+	ang = arcsin(magnitude(xprod));
+}
+</pre></i>
+
+<li> What is an <b>environment map</b>, and what is it used for?  <u>[4]</u>
+<br><i>
+Reflections in specular surfaces use colours taken
+from an image, to simulate the reflection of a complex scene in a shiny object.
+</i>
+
+<li> What is <b>mip-mapping</b>?  Why is it cool? <u>[4]</u>
+<br><i>
+Mip-maps are precalculated smaller versions of the texture at various levels of
+detail.  e.g., a version with half the length and half the width; another
+version with one-quarter the length and one-quarter the width, etc.  They are
+used in texture mapping to avoid aliasing: unsightly jagged edges and artifacts
+that would otherwise occur when the texture's projected fragment on the screen is
+very small.
+</i>
+
+<li> Describe how you might implement <b>Phong</b> shading using
+<b>vertex/fragment shaders</b>.  What variables do the shaders need?
+Should they be <tt>uniform, attribute, or varying</tt>?
+Exact GLSL code is not necessary; just provide a high-level description
+of what the vertex and fragment shaders would do.  <u>[5]</u>
+<br><i>
+Vertex shader computes vector to light and reflection vector 
+(as <tt>varying</tt>).  Rasterizer interpolates those over the fragment.
+Fragment shader uses interpolated light and reflection vectors, together with
+material properties, to calculate final shade.
+</i>
+
+<li> Describe and contrast <b>C<sup>0</sup>, C<sup>1</sup>, C<sup>2</sup>, and
+G<sup>1</sup></b> continuity for splines. <u>[4]</u>
+<br><i><dl>
+<dt>C<sup>0</sup>:</dt><dd> Curve segments touch; basic continuity.</dd>
+<dt>C<sup>1</sup>:</dt><dd> Curves touch and velocity vectors also match at the
+joins</dd>
+<dt>C<sup>2</sup>:</dt><dd> Curves touch, velocity vectors match, and even the
+curvatures match at the joins</dd>
+<dt>G<sup>1</sup>:</dt><dd> Curves touch, and velocity vectors point in the
+same direction (but might not be the same magnitude).  In between C<sup>0</sup>
+and C<sup>1</sup>.</dd>
+</dl></i>
+
+<li> What is a <b>NURBS</b>?  Explain each part of the acronym in detail.
+<em>(Hint: it is not plural!)</em> <u>[6]</u>
+<br><i><dl>
+<dt>NU (non-uniform):</dt><dd>the knots (joins between Bezier segments) need
+not be uniformly spaced in u (the parameter space).  For instance, this can be
+used to make the NURBS interpolate its endpoints, by repeating knots four times
+at the start (u=0) and end (u=1).</dd>
+<dt>R (rational):</dt><dd>Each control point has a relative weighting
+associated with it which biases its influence on the curve.</dd>
+<dt>BS (B-spline, Bezier spline):</dt><dd>A B-spline is a spline made up of
+cubic Bezier segments, joined in a particular way so as to get C<sup>2</sup>
+continuity.</dd>
+</dl></i>
+
+<li> What are <b>quadric</b> surfaces?  Why do raytracers like to use them?
+List some examples of quadric surfaces. <u>[5]</u>
+<br><i>
+A quadric is any implicit surface that is defined by a quadratic (degree 2
+polynomial) in x, y, and z.  Examples include spheres, ellipses, cylinders,
+cones, and hyperboloids.  The ray-surface intersection test, so critical in
+raytracing, is analytically solvable for quadrics, using the quadratic formula.
+As a result, finding intersections with quadrics is relatively easy, which
+speeds up raytracing.
+</i>
+
+<li> Expand the acronym <b>BRDF</b> and explain what it is.  
+What are its inputs, and what is its output?  <u>[4]</u>
+<br><i>
+Bidirectional reflectance distribution function: defines what fraction of the 
+incoming flux density along the given incoming direction is reflected along 
+the given outgoing direction.  Inputs: position along surface, incoming ray,
+outgoing ray.  Output: scalar (fraction of flux density).
+</i>
+
+<li> What simplifying <b>assumption</b> is made about BRDFs in classical
+radiosity?  Describe a real-world surface that might have  BRDF that violates
+this assumption.  <u>[4]</u>
+<br><i>
+Radiosity assumes Lambertian surfaces, which means that the BRDF is constant
+across all incoming and outgoing directions.  This constant is called the 
+albedo.  Non-Lambertian surfaces include any shiny surface (specular highlight),
+brushed aluminum (the direction of brushing affects the BRDF), etc.
+</i>
+
+<li> Describe and contrast: <b>spatial grids</b>, <b>octrees</b>, <b>k-d</b>
+trees, and <b>BSP</b> trees. <u>[6]</u>
+<br><i><dl>
+<dt>Grids:</dt><dd>subdivide space into equal voxels, regularly spaced</dd>
+<dt>Octrees:</dt><dd>Adaptive subdivision: where needed, each cell is
+subdivided into eight equal subcells along the coordinate axes.</dd>
+<dt>k-d trees:</dt><dd>Also adaptive like octrees, but cells are subdivided
+along one axis at a time.  Cells need not be split into equal-size
+subcells.</dd>
+<dt>BSP trees:</dt><dd>Even more flexible than k-d trees: each time a cell is
+split using a (k-1)-dimensional hyperplane (a regular plane in 3D), oriented in
+any way (need not be along a coordinate axis).</dd>
+</dl></i>
+
+<li> What are <b>scene graphs</b>?  Why are they cool? Describe an example.
+<u>[4]</u>
+<br><i>
+Hierarchical grouping of 3D objects: geometry (e.g., triangle meshes), transforms
+(e.g., rotation, translation), material properties (e.g., colour).  Allows grouping
+of related objects, as well as chaining of transforms.  E.g., an Arm might have
+a shoulder rotation, then the upper arm, then an elbow rotation, then the forearm,
+then a wrist rotation, then the hand, etc.  The entire arm can be moved by 
+adjusting the shoulder rotation, rather than moving each vertex individually.
+</i>
+
+<li> A simple "Monte Carlo" estimate of &pi; is to generate random points (x,y)
+within the unit square (i.e., 0&le;x&lt;1 and 0&le;y&lt;1) and count how many 
+points lie within the unit quarter-circle (i.e., x<sup>2</sup>+y<sup>2</sup> &lt; 1).
+(This is a crude way of calculating areas.)  The fraction (very slowly)
+approximates &pi;/4.  This problem is ripe for parallelization.
+Write an OpenMP program to estimate &pi;/4 in this way. <u>[6]</u>
+<br><i>
+See <a href="http://twu.seanho.com/09spr/cmpt370/openmp/pi/pi-monte.cpp">
+pi-monte.cpp</a>.
+</i>
+
+<li> Describe at least four distinct <b>principles</b> of user-interface design.
+(There is flexibility here, but the principles should not overlap or be
+restatements of the same thing.) <u>[4]</u>
+<br><i>
+Fitt's Law; know your users; be consistent with colours/names/layout; use 
+metaphors carefully; use multiple levels of complexity/visibility 
+(safety vs. control); always show current state (don't leave user hanging);
+design around the epicentre; save user's work; etc.
+</i>
+
+<li>
+Using the design principles you described above and others, critique the 
+<b>user interface</b> of Word 2007.  A screenshot is below to remind you, but
+you may draw upon your own experience with the program, not just what's in the
+screenshot.  Be as specific as possible, and reference which user design
+principles you feel the program follows or violates.
+Talk about both positive and negative aspects. <u>[6]</u>
+<br>
+<a href="http://www.qweas.com/downloads/business/office-suites-tools/screenshots-microsoft-office-word-2007.html"><img src="word2007.png" width="100%"/></a>
+<br>
+
+</ol>
+
+</body></html>
+
+

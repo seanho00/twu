@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<TITLE>10.10 Controlling Program Termination</TITLE>
+<meta NAME="keywords" CONTENT="control, program, termination, terminate, end, return, halt, abnormal, implement, implementation, language, difference, different">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.10 Controlling Program Termination</B></H2>
+<P>Besides the normal program termination events triggered by concluding the program and arriving at the END or by a RETURN from the program module body, it is possible to terminate programs in other ways.  This section discusses one of those ways, and also presents some strategies for action <I>after</I> a termination event has taken place.</P>
+<H3><B><A NAME="10.10.1">10.10.1</A> HALT and Abnormal Termination</B></H3>
+<P>Some programmers may feel it necessary to <I>kill</I> a program that has encountered serious difficulties of some kind.  Modula-2 provides the HALT command for such cases.  It is similar to a simple RETURN, except that HALT:</P>
+<UL><!--€--><LI> is not thought of as a transfer of control, but as a program abort</LI>
+<!--€--><LI> will kill a program from anywhere, not just the main module body</LI>
+<!--€--><LI> is reported to the user by many (but not all) operating systems (non-silent termination)</LI>
+<!--€--><LI> is a termination-with-extreme-prejudice or <i>abnormal termination</i></LI>
+<!--€--><LI> should be used even less frequently than RETURN</LI></UL>
+<P>For instance, when the following Module was run, the memory allocated to the boolean flag happened to be interpreted as TRUE, and the program halted.</P>
+<PRE>
+<B>MODULE</B> HaltDemo1;
+<B>VAR</B>
+  reallyAwfulCondition : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  (* some code *)
+  <B>IF</B> reallyAwfulCondition
+    <B>THEN</B>
+      <B>HALT</B>
+    <B>END</B>;
+  (* some more code *)
+<B>END</B> HaltDemo1.</PRE>
+<P>In one specific version used, a debugging environment was entered, part of the display for which is shown in figure 10.8.</P>
+<P><CENTER><IMG SRC="Figure/Figure_10.8.GIF" BORDER="1"></CENTER><!----></P>
+<P>Of course, the precise behaviour <I>after</I> the HALT is called is implementation defined, and some implementations will report nothing at all.  In such implementations, a separate non-standard command such as BREAK (perhaps in a compiler directive) may be employed to invoke the debugging environment.  There is a <I>language</I> difference between HALT and a normal termination, however, and this will be detailed as part of the next section.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

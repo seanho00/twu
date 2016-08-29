@@ -1,0 +1,169 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.5em; } 
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+h2 { border-top: 1px solid black; }
+--></style>
+
+<title>CMPT140 Fall2006 FINAL ch1-8 Part2, Trinity Western.
+26 Oct 2006.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>______<i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+In this part of the exam you will be designing and coding a Python program.
+<br>The sections of the exam correspond to the sections of a lab writeup.
+
+<h2>Problem Statement:</h2>
+One (very slow) way to calculate the value of pi is to compare the area of 
+the unit
+quarter-circle with the area of the unit square.  We can estimate this by
+generating random points in the unit square, and counting how many lie
+within the quarter-circle.  The ratio should approximate pi/4 as the number of
+points increases.
+
+<p>
+Write a function <tt>circle_pi(count, freq)</tt> that uses <tt>count</tt>
+points to estimate pi, printing out estimates every <tt>freq</tt> iterations
+(to show its progress).
+<p>
+Write a testbed program that calls your function, but saves the printed
+output to a file instead of printing to the screen.
+
+<p>
+Docstrings are required for your program and your function; comments
+are not required but may be helpful for partial credit if your code isn't
+perfect.
+
+<h2>Problem Suitability: <u>[2]</u> </h2>
+<br>
+<i>
+The heavy computational load of a large number of repetitive calculations
+is particularly well-suited to a computer program, especially when run
+on a fast CPU.  For the more general task of calculating pi, however,
+other algorithms may be faster.  This algorithm could also be done by
+hand (e.g., by tossing coins onto a piece of paper), but it would be very
+slow.
+</i>
+
+<h2>Problem Restatement: <u>[3]</u> </h2><ul>
+  <li> <b>Given:</b>
+  <i>count, the number of iterations, and freq, the frequency with which status
+  updates are printed.</i>
+  <li> <b>To Do:</b>
+  <i>Estimate pi by generating random points in the unit square, and
+  counting what fraction of those points lie in the unit circle.</i>
+  <li> <b>Desired Result:</b>
+  <i>Return the estimate of pi, and print estimates along the way.</i>
+</ul>
+
+
+<h2>Libraries: <u>[2]</u> </h2>
+<br><i>
+math.sqrt, random.random, sys.stdout
+</i>
+
+<h2>Problem Refinement (English): <u>[5]</u> </h2>
+<br><i>
+Each time we generate a new random point, find its distance from the origin.
+If its distance is less than one, it lies within the unit circle, so we
+increment a counter.  Our current estimate of pi is four times the ratio
+of the number of points in the unit circle to the total number of points
+we've generated thus far.
+<p>
+Every <tt>freq</tt> points, we print our current estimate.  When we're done,
+we return our current estimate of pi.
+</i>
+
+<h2>Data Tables: <u>[3]</u> </h2>
+<h3>Variables:</h3><i>incircle (count of how many points lie in the circle),
+and i (how many points total thus far).</i>
+
+<h2>Sample I/O: <u>[2]</u> </h2>
+<br><i><pre>
+How many iterations should I use to approximate pi? 100000
+How often would you like updates? 10000
+Approximating pi....
+3.1144
+3.1306
+3.12746666667
+3.1259
+3.13176
+</pre></i>
+
+<h2 class="break">User Manual: <u>[5]</u> </h2>
+<br><i>
+This program estimates the value of pi by counting how many randomly generated
+points in the unit square lie inside the unit quarter-circle.  This is like
+throwing darts at a square board and counting how many lie inside the 
+quarter-circle.  As the user, you get to choose how many darts to throw.
+Since accurate results require throwing a lot of darts, you can ask for 
+status updates (the current estimate).
+<p>
+The program will prompt you for the number of darts to throw:
+<pre>
+How many iterations should I use to approximate pi? 
+</pre>
+Type in a positive integer (100,000 is good).
+<p>
+The program will then ask you how often you'd like it to print a progress
+report:
+<pre>
+How often would you like updates? 
+</pre>
+Type in a positive integer (1,000 is good).
+<p>
+This program then redirects the output to the file "circlepi.log",
+where you can find the estimates of pi.  They should converge (albeit slowly)
+to the true value of pi.
+</i>
+
+<h2>Pseudocode: <u>[10]</u> </h2>
+<i>
+<ul>
+<li> Initialize counters incircle=0 and iteration=1.
+<li> While iteration &le; count:<ul>
+  <Li> generate a new point: (random(), random()).
+  <li> If the distance from the point to the origin is less than 1: <ul>
+    <li> Increment incircle
+    </ul>
+  <li> Our estimate of pi is 4.0*incircle/iteration
+  <li> If iteration modulo freq is zero: <ul>
+    <li> Print our estimate
+    </ul>
+  <li>Increment iteration
+  </ul>
+  <li> Return our estimate of pi
+</ul>
+</i>
+
+<h2 class="break">Code: <u>[8]</u> </h2>
+<br><a href="http://twu.seanho.com/python/circlepi.py">(circlepi.py)</a>
+
+</body></html>
+

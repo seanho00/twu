@@ -1,0 +1,274 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT370 Spr2007 Practice Final Exam, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">(toggle answers)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+<p> These practice questions only cover the material since the second midterm;
+the actual final will cover the whole course.  See the other practice exams for
+earlier material.
+
+<ol class="main">
+
+<li> How does <b>Gouraud</b> shading work?  How does <b>Phong</b> shading work?
+What are pros/cons of each?
+<br><i><dl>
+<dt>Gouraud shading:</dt><dd>Calculate shades at each vertex, interpolate RGB
+shades across the polygon</dd>
+<dt>Phong shading:</dt><dd>Interpolate normal vectors across polygon; calculate
+shades at each pixel</dd>
+</dl>
+Phong shading looks better but requires more computation: the local
+illumination model is performed at each pixel across the polygon instead of just
+once for each vertex.  Gouraud shading is built-in to OpenGL.
+</i>
+
+<li>Contrast <b>texture</b> maps, <b>bump</b> maps, and <b>environment</b>
+maps.
+<br><i><dl>
+<dt>Texture map:</dt><dd>an image pasted on a surface in 3D.  Colours of the
+surface are taken from the image.</dd>
+<dt>Bump map:</dt><dd>the normal vectors on the surface are wobbled to
+simulate a perturbation of the surface (in/out) by an amount given in the bump
+map image.</dd>
+<dt>Environment map:</dt><dd>reflections in specular surfaces use colours taken
+from an image, to simulate the reflection of a complex scene in a shiny object.
+</dd>
+</dl></i>
+
+<li> What is an OpenGL <b>texture object</b>?  How is one used?  Why are they
+cool?
+<br><i>
+A texture object represents an image loaded into the graphics card's texture
+memory.  We can bind a number of texture objects with glBindTexture(), and load
+pixel values and set various parameters such as the wrapping mode and filtering
+for minimization/magnification.  Then, when we wish to apply the texture to a
+surface, we simply call glBindTexture() again to set the OpenGL context to the
+appropriate texture object.  This is very useful when we wish to use the same
+texture on multiple objects in a scene.
+</i><br>
+
+<li> Contrast the <b>GL_OBJECT_LINEAR</b> and <b>GL_EYE_LINEAR</b> modes of
+OpenGL automatic texture coordinate generation.
+<br><i>
+With GL_OBJECT_LINEAR, the generated texcoords are in the model's coordinate
+system; i.e., the texture is fixed relative to the model.  So if the model
+moves, the texture moves with it -- it is pasted on.  With GL_EYE_LINEAR, the
+generated texcoords are fixed relative to the camera/eye coordinate system and
+not to the model.  So if the model moves, it appears to "swim" in the
+texture -- as though the texture were projected by an LCD projector onto the
+object.
+</i><br>
+
+<li> What is <b>mip-mapping</b>?  Why is it cool?
+<br><i>
+Mip-maps are precalculated smaller versions of the texture at various levels of
+detail.  e.g., a version with half the length and half the width; another
+version with one-quarter the length and one-quarter the width, etc.  They are
+used in texture mapping to avoid aliasing: unsightly jagged edges and artifacts
+that would otherwise occur when the texture's projected fragment on the screen is
+very small.
+</i><br>
+
+<li> Recall that a parameterized curve in 3D is a function p(u) = [ x(u), y(u),
+z(u) ] (thought of as a column vector).  Write the general form for a <b>cubic
+polynomial</b> curve in 3D.
+<br><i>
+p(u) = &Sigma;<sub>k=0</sub><sup>3</sup> (c<sub>k</sub> u<sup>k</sup>)
+<br> = c<sub>0</sub> + c<sub>1</sub>u + c<sub>2</sub>u<sup>2</sup>
++ c<sub>3</sub>u<sup>3</sup>
+<br> = &Sigma;<sub>k=0</sub><sup>3</sup> [ c<sub>xk</sub> u<sup>k</sup>,
+c<sub>yk</sub> u<sup>k</sup>, c<sub>zk</sub> u<sup>k</sup> ]
+</i><br>
+
+<li> What is a <b>blending function</b> for splines?
+<br><i>
+A blending function describes the contribution each control point makes at each
+point along the curve.  At each point the sum of all the blending curves should
+add up to 1.
+</i><br>
+
+<li> Contrast <b>interpolating</b> cubic polynomial curves, <b>Hermite</b>
+curves, and <b>Bezier</b> curves.  For each type of cubic polynomial curve,
+what information is needed to uniquely specify a curve?
+<br><i><dl>
+<dt>Interpolating:</dt><dd>Specify four points; the curve goes through all
+four.</dd>
+<dt>Hermite:</dt><dd>Specify positions and tangent/velocity vectors at the 
+start and end of the curve.</dd>
+<dt>Bezier:</dt><dd>Specify four Bezier control points.  Two are the start and
+end of the curve (interpolated).  The other two control points are used to
+derive the velocity vectors (3 times the difference vector) for the start and end
+points.</dd>
+</dl></i>
+
+<li> Describe and contrast <b>C<sup>0</sup>, C<sup>1</sup>, C<sup>2</sup>, and
+G<sup>1</sup></b> continuity for splines.
+<br><i><dl>
+<dt>C<sup>0</sup>:</dt><dd> Curve segments touch; basic continuity.</dd>
+<dt>C<sup>1</sup>:</dt><dd> Curves touch and velocity vectors also match at the
+joins</dd>
+<dt>C<sup>2</sup>:</dt><dd> Curves touch, velocity vectors match, and even the
+curvatures match at the joins</dd>
+<dt>G<sup>1</sup>:</dt><dd> Curves touch, and velocity vectors point in the
+same direction (but might not be the same magnitude).  In between C<sup>0</sup>
+and C<sup>1</sup>.</dd>
+</dl></i>
+
+<li> Suppose a Bezier curve has already been defined in an OpenGL evaluator
+using <tt>glMap1f()</tt>.  Write OpenGL drawing code to plot the curve from u=0
+to u=1.
+<br><i><pre>
+glBegin( GL_LINE_STRIP );
+for (GLfloat u=0; u&lt;1.0; u += 0.02)
+	glEvalCoord1f( u );
+glEnd();
+</pre></i>
+
+<li> What is a <b>NURBS</b>?  Explain each part of the acronym in detail.
+<br><i><dl>
+<dt>NU (non-uniform):</dt><dd>the knots (joins between Bezier segments) need
+not be uniformly spaced in u (the parameter space).  For instance, this can be
+used to make the NURBS interpolate its endpoints, by repeating knots four times
+at the start (u=0) and end (u=1).</dd>
+<dt>R (rational):</dt><dd>Each control point has a relative weighting
+associated with it which biases its influence on the curve.</dd>
+<dt>BS (B-spline, Bezier spline):</dt><dd>A B-spline is a spline made up of
+cubic Bezier segments, joined in a particular way so as to get C<sup>2</sup>
+continuity.</dd>
+</dl></i>
+
+<li> What are <b>shadow rays</b>?  Why is it important to optimize their
+intersection tests?
+<br><i>
+Every time a ray (either cast from the camera or recursively produced via
+reflection/refraction) strikes a surface, shadow rays get sent to each light
+source.  If the shadow ray intersects an opaque surface, that light source does
+not contribute to the local diffuse illumination at that patch.
+The number of shadow rays cast is usually much more than the number of
+reflection/refraction rays cast.
+</i><br>
+
+<li> Describe how to find all the intersection points between a ray and a
+sphere.
+<br><i>
+Equation of a sphere with radius r and centre
+(x<sub>c</sub>, y<sub>c</sub>, z<sub>c</sub>):
+</i><br>
+
+<li> What are <b>quadric</b> surfaces, and why are they cool in raytracing?
+List some examples.
+<br><i>
+A quadric is any implicit surface that is defined by a quadratic (degree 2
+polynomial) in x, y, and z.  Examples include spheres, ellipses, cylinders,
+cones, and hyperboloids.  The ray-surface intersection test, so critical in
+raytracing, is analytically solvable for quadrics, using the quadratic formula.
+As a result, finding intersections with quadrics is relatively easy, which
+speeds up raytracing.
+</i><br>
+
+<li> Contrast <b>axis-aligned</b> and <b>oriented</b> bounding boxes.  What are
+they used for?
+<br><i>
+The sides of axis-aligned bounding boxes are parallel to the coordinate frame
+(x,y,z).  Oriented bounding boxes can be oriented in any way.  Both can be used
+to simplify geometry to speed up ray-surface intersection tests in raytracing,
+or for collision detection, etc.
+</i><br>
+
+<li> Describe and contrast: <b>spatial grids</b>, <b>octrees</b>, <b>k-d</b>
+trees, and <b>BSP</b> trees.
+<br><i><dl>
+<dt>Grids:</dt><dd>subdivide space into equal voxels, regularly spaced</dd>
+<dt>Octrees:</dt><dd>Adaptive subdivision: where needed, each cell is
+subdivided into eight equal subcells along the coordinate axes.</dd>
+<dt>k-d trees:</dt><dd>Also adaptive like octrees, but cells are subdivided
+along one axis at a time.  Cells need not be split into equal-size
+subcells.</dd>
+<dt>BSP trees:</dt><dd>Even more flexible than k-d trees: each time a cell is
+split using a (k-1)-dimensional hyperplane (a regular plane in 3D), oriented in
+any way (need not be along a coordinate axis).</dd>
+</dl></i>
+
+<li> What are the basic assumptions for classical <b>radiosity</b>?
+<br><i>
+Most important assumption: Lambertian (perfectly diffuse) surfaces -- no
+specularity, no translucency.  Other assumptions (not so important to get):
+light transfer from one element to another is <em>linear</em>, no fog, can
+solve for radiosity in RGB space, radiosity constant across each element.
+</i><br>
+
+<li> What is <b>radiant power</b>?  What are the SI units used to describe it?
+<br><i>
+Light energy per unit time: rate at which light energy is transmitted.  In
+watts (W), which is the same as Joules/second (J/s).
+</i><br>
+
+<li> What is <b>radiosity</b>? (in physics/optics/radiometry)
+<br><i>
+Exitant flux density: radiant power per unit surface area.
+</i><br>
+
+<li> Explain what a <b>BRDF</b> is.  What simplifying assumption is made about
+the BRDF in classical radiosity?  What sort of surfaces is radiosity unable to
+model as a result?
+<br><i>
+Bidirectional reflectance distribution function: defines for every combination
+of an incoming direction and an outgoing direction, what fraction of the 
+incoming flux density along the given incoming direction is reflected along 
+the given outgoing direction.  In general, the BRDF varies along the surface
+and also varies with both incoming and outgoing direction vectors.  Radiosity
+assumes Lambertian surfaces, which means that the BRDF simplifies to a
+constant, called the albedo.
+</i><br>
+
+<li> Explain what <b>albedo</b> is.  Give examples of surfaces that might have
+high or low albedo.
+<br><i>
+Albedo is the ratio of outgoing reflected radiosity to incoming irradiance: in 
+other words, how much of incoming light is reflected back.  Albedo is averaged
+over all incoming and outgoing direction vectors.  High albedo: snow, sand.
+Low albedo: dirt, trees.  (Albedo is not so easy to estimate for highly
+specular surfaces like glass or water, because all directions need to be
+considered, including those not along the reflection ray.)
+</i><br>
+
+<li> Describe the general <b>radiosity equation</b> describing the interaction
+between a given surface element <tt>i</tt> and all other surface elements
+<tt>j</tt>.
+<br><i>
+A<sub>i</sub> B<sub>i</sub> = A<sub>i</sub> E<sub>i</sub> + 
+&rho;<sub>i</sub> &Sigma;<sub>j</sub> ( F<sub>ji</sub> A<sub>j</sub>
+B<sub>j</sub> ), where:<dl>
+<dt>A<sub>i</sub></dt><dd>is the area of element i,</dd>
+<dt>B<sub>i</sub></dt><dd>is the radiosity of element i (what we're solving
+for),</dd>
+<dt>E<sub>i</sub></dt><dd>is the emittance (irradiance) from element i,</dd>
+<dt>&rho;<sub>i</sub></dt><dd>is the albedo (reflectance) of element i,
+and</dd>
+<dt>F<sub>ji</sub></dt><dd>is the visibility form-factor from element j to
+element i</dd>
+</dl></i>
+
+<li> Contrast and describe pros/cons: realtime <b>OpenGL</b> pipeline, vs.
+<b>ray tracing</b>, vs. <b>radiosity</b>.
+<br><i>
+</i><br>
+
+</ol>
+
+</body></html>
+
+

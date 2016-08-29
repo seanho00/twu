@@ -1,0 +1,74 @@
+<HTML><HEAD><TITLE>19.n Comparisons</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Language comparisons">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<P><b>Programming Note<!--‹-->--Comparisons With Other Object Notations</b></P>
+
+<TABLE><TR><TD></TD>	<TH>OO Modula-2</TH>	<TH>C++</TH>	<TH>Java</TH></TR>
+
+<TR><TD>Inheritance : Arity</TD>	<TD>Single</TD>	<TD>multiple</TD>	<TD>single, but multiple interfaces</TD></TR>
+<TR><TD>                  : syntax</TD>	<TD>INHERIT</TD>	<TD>public: <parent> (heading)</TD>	<TD>extends</TD></TR>
+<TR><TD>Assignment semantics</TD>	<TD>reference</TD>	<TD>pointer (can be overloaded)</TD>	<TD>reference</TD></TR>
+<TR><TD>Predefined Base Class</TD>	<TD>no</TD>	<TD>no</TD>	<TD>Object</TD></TR>
+<TR><TD>Traced  objects tag</TD>	<TD>TRACED (class)</TD>	<TD>n/a</TD>	<TD>all are traced</TD></TR>
+<TR><TD>Untraced objects tag</TD>	<TD>UNSAFEGUARDED (module)</TD>	<TD>all are untraced</TD>	<TD>n/a</TD></TR>
+<TR><TD>Class Definition/declaration</TD>	<TD>CLASS</TD>	<TD>class</TD>	<TD>class</TD></TR>
+<TR><TD>Abstract classes</TD>	<TD>ABSTRACT</TD>	<TD>n/a</TD>	<TD>abstract</TD></TR>
+<TR><TD>    methods</TD>	<TD>ABSTRACT</TD>	<TD>virtual; =0 (after heading)</TD>	<TD>abstract</TD></TR>
+<TR><TD>Instantiation</TD>	<TD>declare & CREATE</TD>	<TD>declare or new, automatic</TD>	<TD>new</TD></TR>
+<TR><TD>Automatic Constructor</TD>	<TD>class body</TD>	<TD>method of class name</TD>	<TD>method of class name</TD></TR>
+<TR><TD>Automatic initialization</TD>	<TD>class body</TD>	<TD>constructor initializer clause</TD>	<TD>use constructor</TD></TR>
+<TR><TD>Destruction : manual</TD>	<TD>DESTROY (untraced)</TD>	<TD>~ in front of class name</TD>	<TD>n/a</TD></TR>
+<TR><TD>                   : extra steps</TD>	<TD>FINALLY (untraced)</TD>	<TD>n/a</TD>	<TD>Finalize (called on collection)</TD></TR>
+<TR><TD>Overload constructors, operators</TD>	<TD>n/a</TD>	<TD>yes</TD>	<TD>yes</TD></TR>
+<TR><TD>Make data attributes immutable</TD>	<TD>READONLY</TD>	<TD>const</TD>	<TD>final (not strictly immutable)</TD></TR>
+<TR><TD>Override attribute components</TD>	<TD>n/a</TD>	<TD>n/a</TD>	<TD>yes, statically</TD></TR>
+<TR><TD>   Parent permission to override</TD>	<TD>n/a</TD>	<TD>virtual</TD>	<TD>n/a</TD></TR>
+<TR><TD>   keyword</TD>	<TD>OVERRIDE</TD>	<TD>virtual (optional)</TD>	<TD>redeclare in child class</TD></TR>
+<TR><TD>   forbidding of</TD>	<TD>n/a</TD>	<TD>n/a</TD>	<TD>final</TD></TR>
+<TR><TD>Visibility to clients</TD>	<TD>REVEAL</TD>	<TD>public</TD>	<TD>public (each member)</TD></TR>
+<TR><TD>    to implementation</TD>	<TD>put in implementation module</TD>	<TD>private</TD>	<TD>private (each member)</TD></TR>
+<TR><TD>    to subclasses only</TD>	<TD>place in declaration</TD>	<TD>protected</TD>	<TD>protected</TD></TR>
+<TR><TD>    to friend classes</TD>	<TD>n/a</TD>	<TD>friend</TD>	<TD>n/a</TD></TR>
+<TR><TD>Object Selection/assertion</TD>	<TD>GUARD..AS</TD>	<TD>n/a</TD>	<TD>n/a</TD></TR>
+<TR><TD>Class membership</TD>	<TD>ISMEMBER</TD>	<TD>n/a</TD>	<TD>instanceof</TD></TR>
+<TR><TD>Reference to : empty object</TD>	<TD>EMPTY</TD>	<TD>null</TD>	<TD>null</TD></TR>
+<TR><TD>                    : self</TD>	<TD>SELF</TD>	<TD>this</TD>	<TD>this</TD></TR>
+<TR><TD>Combining OO and Generics</TD>	<TD>define in generic def mod</TD>	<TD>use container classes</TD>	<TD>n/a</TD></TR></TABLE>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

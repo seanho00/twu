@@ -1,0 +1,335 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT370 Spr2007 Midterm 2, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">(toggle answers)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70 (actual exam will be a bit shorter than this)
+
+<ol class="main">
+
+<li>
+In your own words, compare the complementary fields of <b>computer graphics</b>
+and <b>image analysis</b>.
+<br><br>
+<i>
+Synthesis vs. analysis: both are components of visual computing.  Computer
+graphics starts with digital representations of objects (triangle meshes,
+lights, etc.) and produces images on screen.  Image analysis starts with images
+(digital camera, satellite, MRI, etc.) and produces digital representations of
+the objects in the images.
+
+</i>
+
+<li> The <a href="http://debevec.org/Parthenon/">USC Parthenon</a> project
+whose video we saw in class used a variety of visual computing techniques.
+For each of the following techniques, discuss whether you'd classify it as 
+computer graphics or image analysis, or a combination thereof:<ul>
+  <li> Panoramic laser range-finder scans to construct a 3D model of the
+  geometry of the Parthenon.
+  <br><br>
+  <i>
+  Scanning is image acquisition/analysis: the "images" are depth maps from
+  the laser range-finder; the output is digital representation (3D model).
+  </i>
+
+  <li> Movie rendered using the Arnold global illumination software package
+  (statistical solution to the global rendering equation).
+  <br><br>
+  <i>
+  Rendering is computer graphics: from digital representation, producing a
+  movie.
+  </i>
+
+  <li> Time-lapse background sky images acquired in high dynamic range in
+  Marina del Rey, California.
+  <br><br>
+  <i>
+  Acquiring images is part of image analysis: digital photography, capturing
+  the world.
+  </i>
+
+  <li> Texture-mapping of digital photos of sculptures onto 3D models.
+  <br><br>
+  <i>
+  Texture-mapping is computer graphics: from digital photos and 3D models,
+  producing images/movies.
+  <br>(The categorizations in this problem are somewhat subjective, so 
+  you're free to disagree, as long as you provide a cogent explanation.)
+  </i>
+</ul>
+
+<li>
+Describe the <b>pinhole</b> synthetic camera model used in computer graphics.
+<br><br>
+<i>
+In a real pinhole camera, light rays from the world converge at the pinhole,
+and are projected onto the image plane upside-down and backwards.  In the
+synthetic camera model, we place the image plane in front of the center of
+projection.  Rays are cast from the center of projection through each pixel of
+the image plane and into the world, in order to calculate the intensity value
+to be assigned to that pixel.
+</i>
+
+<li>
+What is <b>colour</b>?  Is an RGB triple (e.g., "#00FF77") a colour?  Discuss.
+<br><br>
+<i>
+Colour is a distribution of light energy across the visible spectrum ("frequency
+distribution").  An RGB triple is a point in a colour space, a 
+combination of three chromaticities.  Without specifying what those
+chromaticities are or how they are combined, an RGB triple is not a colour.
+</i>
+
+<li>
+Contrast the <b>RGB</b>, <b>CMYK</b>, and <b>HSV</b> colour models.
+<br><br>
+<i>
+All three are relative colour spaces; as in the previous question, they do not
+define absolute colours but are defined relative to chromaticities (e.g., to
+define what "Red" is).  CMYK is related to RGB by the linear transform: C =
+1-R, M = 1-G, Y = 1-B.  (K is to make it easier to reproduce blacks.)
+Whereas RGB is for additive colour (e.g., phosphors on
+a screen), CMYK is for subtractive colour (e.g., inks on a page).  
+HSV is again a linear transform from RGB, where Hue specifies the colour in the
+rainbow (e.g., red, orange, yellow, etc.), Saturation specifies how grey or
+coloured it is (e.g., zero saturation is shades of grey), and Value specifies
+the lightness (dark to bright).
+</i>
+
+<li>
+Contrast the goals of <b>off-line</b> rendering vs. <b>real-time</b> graphics.
+Which is OpenGL generally used for?
+<br><br>
+<i>
+Off-line rendering prioritizes photorealism and image quality over rendering
+time -- it's okay if each frame takes days to render, as long as it looks
+really good.  Real-time graphics places a constraint of rendering time -- we
+still want it to look good, but not if that means our framerate drops below,
+say, 60 frames per second.
+OpenGL is generally used for real-time rendering.
+</i>
+
+<li>
+Describe <b>back-face culling</b>.  Why is it useful?
+<br><br>
+<i>
+Back-face culling removes polygons whose normal vectors point away from the
+camera.  The idea is that in a closed object, all polygons that point away from
+the camera are on the back side of an object and are occluded by front-facing
+polygons, so we won't see them, so they don't need to be rendered, so we can
+delete them from the graphics pipeline, which speeds up our rendering.
+</i>
+
+<li>
+What is a <b>fragment</b>?
+<br><br>
+<i>
+A fragment is a portion of framebuffer which corresponds to a single primitive.
+For instance, a triangle may project to a certain region in screen coordinates;
+its fragment consists of those pixels in the framebuffer, shaded and
+texture-mapped according to the illumination model.
+</i>
+
+<li>
+What is <b>clipping</b>?
+<br><br>
+<i>
+Clipping removes primitives which are outside the view frustum, the volume of
+space which is visible by the camera.  (Note that back-face culling is
+different; back-face culling may remove primitives which are inside the view
+frustum.)
+</i>
+
+<li>
+Describe the four types of <b>lights</b> offered by OpenGL.
+<br><br>
+<i>
+<ul>
+<li> Point: has a location and colours (ambient, diffuse, specular).  Similar
+to a candle.
+<li> Directional: has a direction and colours, but no location.  Similar to
+the sun.  Specified in OpenGL the same way as point lights, but using
+homogeneous coordinates to specify a vector instead of a point.
+<li> Spot: has a location, direction, cutoff depth, falloff exponent, and
+colours.  Similar to a theatre spotlight.
+<li> Global ambient: We can specify an ambient light that uniformly illuminates
+the whole scene.  Similar to a very evenly lit scene like an open field on a
+cloudy day.
+<li> (Area light: not offered by OpenGL, but we can model it using global
+illumination techniques like radiosity.)
+<li> (Emissive OpenGL objects don't count as lights because they don't cast
+light on other objects.)
+</ul>
+</i>
+
+<li>
+Discuss what is meant by calling OpenGL a <b>"state machine"</b>.
+<br><br>
+<i>
+Most OpenGL commands modify the current state, e.g., the current model-view
+matrix, or the current material properties.  When a primitive is added, e.g., a
+vertex of a polygon, that primitive takes on whatever OpenGL state that was 
+current at the time.  The impact on coding is that we need to specify all the
+properties for a vertex <em>before</em> its <tt>glVertex()</tt> call.
+</i>
+
+<li>
+How many <b>parameters</b>, and of what type, are required for the OpenGL C 
+function <tt>glVertex3fv()</tt>?
+<br><br>
+<i>
+One parameter, which is a pointer to an array of three floats.
+</i>
+
+<li>
+Name and describe four of the nine OpenGL geometric <b>primitives</b>.
+<br>
+<i><ul>
+<li> GL_POINTS: a cloud of disconnected dots
+<li> GL_LINES: a bundle of separate toothpicks
+<li> GL_LINE_STRIP: a continuous, segmented, piecewise-linear curve
+<li> GL_LINE_LOOP: like GL_LINE_STRIP, but the last vertex connects to the
+first vertex, making a loop
+<li> GL_POLYGON: a planar filled region bounded by line segments, without
+self-intersection
+<li> GL_QUADS: a bunch of disconnected four-sided polygons
+<li> GL_QUAD_STRIP: a strip of connected quads
+<li> GL_TRIANGLES: a bunch of disconnected three-sided polygons
+<li> GL_TRIANGLE_STRIP: a strip of connected triangles
+<li> GL_TRIANGLE_FAN: a group of triangles all connected at one vertex
+</ul></i>
+
+<li>
+Write a short C code snippet that draws a green <b>triangle</b> in OpenGL, with
+vertices at 
+<tt>A = (0, 0, 0)</tt>,
+<tt>B = (1, 0, 0)</tt>, and
+<tt>C = (0, 1, 0)</tt>.
+<br>
+<i><pre>
+	glBegin( GL_TRIANGLES );
+	glColor3f ( 0.0, 1.0, 0.0 );
+	glVertex3f( 0.0, 0.0, 0.0 );
+	glVertex3f( 1.0, 0.0, 0.0 );
+	glVertex3f( 0.0, 1.0, 0.0 );
+	glEnd();
+</pre></i>
+
+<li>
+The two most important transform matrices in OpenGL are 
+the <b>model-view</b> matrix (<tt>glMatrixMode( GL_MODELVIEW )</tt>) and 
+the <b>projection</b> matrix (<tt>glMatrixMode( GL_PROJECTION )</tt>).
+Contrast the roles of these two matrices.
+<br><br>
+<i>
+The model-view matrix transforms from world coordinates to camera coordinates:
+it specifies the location of objects in the virtual world relative to the
+camera.  It is also what we use to position objects relative to each other.
+The projection matrix transforms from camera coordinates to screen coordinates:
+it converts from 3D points to 2D points.
+</i>
+
+<li>
+What does it mean for a set of vectors to be <b>linearly independent</b>?
+<br><br>
+<i>
+A set of vectors is linearly independent if no one vector in the set can be
+expressed as a linear combination of the other vectors.  If we were to remove
+any vector from the set, then the vector space spanned by the set would
+collapse by a dimension.
+</i>
+
+<li>
+What is a vector <b>basis</b>?  What is a <b>frame</b>?  Contrast the two.
+<br><br>
+<i>
+A basis for a vector space is a set of vectors such that any given vector in
+the space can be written as a linear combination of the basis vectors.
+A frame is a basis together with a point defining the origin -- the basis by
+itself holds no location information; with a frame, we can represent both
+vectors and points relative to the frame.
+</i>
+
+<li>
+Describe the <b>convex hull</b> of a set of points.
+<br><br>
+<i>
+The convex hull is the smallest polygon that encloses all the points.  It is
+like a "shrink-wrap" around the points.  The vertices of the convex hull are a
+subset of the original set of points.
+</i>
+
+<li>
+Describe the four <b>operations</b> allowed in an <b>affine space</b>.
+<br>
+<i><ul>
+<li> Vector addition (a vector plus a vector): u + v
+<li> Scalar multiplication (a scalar times a vector): alpha * v
+<li> Point-vector addition (a point plus a vector): p + v
+<li> Scalar operations (scalar times/plus a scalar): alpha * beta + gamma
+</ul></i>
+
+<li>
+Tell me everything you know about <b>homogeneous coordinates</b>.
+
+<li>
+Create a 4x4 matrix <tt>M</tt> that first <b>scales</b> a point <tt>p</tt> by
+a vector <tt>s = (s<sub>x</sub>, s<sub>y</sub>, s<sub>z</sub>)</tt>, then
+<b>translates</b> by 
+a vector <tt>v = (v<sub>x</sub>, v<sub>y</sub>, v<sub>z</sub>)</tt>.
+Assume <tt>p</tt> is a column vector in homogeneous coordinates, and
+the transformed point is <tt>p' = M p</tt>.
+For example, if <tt>p</tt> is the point (1, 0, 0), the scaling is (2, 1, 1),
+and the translation is (3, 0, 0), then the transformed point <tt>p'</tt>
+should be (5, 0, 0).
+
+<li>
+Write <b>OpenGL</b> C code to do the same.
+
+<li>
+Describe the four ways of defining 3D <b>rotations</b> discussed in class.
+
+<li>
+Write a C function that takes two points in normalized mouse coordinates 
+(x,y), with 0 &lt; x, y &lt; 1, and finds the <b>axis-angle</b> (vector-angle)
+representation of the
+virtual trackball rotation.  Such an axis-angle representation could, for
+example, be passed to <tt>glRotate()</tt> to create a 4x4 rotation matrix.
+
+<li>
+What are OpenGL <b>display lists</b>?  Why use them?  Any disadvantages?
+
+<li>
+Contrast <b>orthographic</b> projection with <b>perspective</b> projection.
+
+<li>
+What is the global <b>rendering equation</b>, and why is it infeasible to solve
+analytically in real-time?
+
+<li>
+Name and describe the four terms in the OpenGL local <b>illumination model</b>.
+For each term, list what <b>vectors</b>, if any, are required to compute the
+term.
+
+<li>
+Name all the OpenGL <b>material properties</b> needed to define a surface's
+material.  How many numbers total?
+
+
+</ol>
+
+</body></html>
+
+

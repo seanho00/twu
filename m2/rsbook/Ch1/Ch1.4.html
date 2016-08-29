@@ -1,0 +1,111 @@
+<HTML>
+<HEAD>
+<TITLE>1.4 Tools for Problem Solving</TITLE>
+<meta NAME=²keywords² CONTENT=²proble, solving, techniques, technique, example, steps, algorithm, atom, high, level, abstraction, single, detail">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+//-->
+</SCRIPT>
+<H2><B>1.4 Tools for Problem Solving</B></H2>
+<P>Problem solving techniques are best illustrated with an example.  In order not to confuse the general problem solving process with the specific methods of computer programming, this first illustration comes from the back yard.</P>
+
+<P>Problem : Cut 10 cubic metres of fire wood.</P>
+
+<PRE>Solution : (first pass)
+<I>Preliminaries</I>
+1.  Compute the number and select the trees to fell.
+2.  Obtain tools and safety gear.
+<I>Initialization</I>
+3.  Put on safety gear.
+4.  Prepare tools for use.
+<I>Execution</I>
+5.  Cut down the selected trees.
+6.  Remove branches.
+7.  Buck the logs into short pieces.
+8.  Split the wood.
+9.  Pile the wood for drying.
+<I>Termination</I>
+10. Clean up the site.
+11. Put away tools and safety gear.</PRE>
+
+<P>This first cut at writing out the steps required to solve the problem is produced with the help of past experience, assistance from others, how-to manuals, and a little common sense.  In this form, the solution is little more than an ordered list of steps toward the achievement of the goal.  The would-be logger may find that the execution of some of these steps is now obvious and that they can be undertaken without any further thought.  In such cases, one could say that parts of the solution are part of a personal library of previously used and familiar techniques.  Others of the steps in the solution may be less obvious (to some people) and require further elaboration as follows:</P>
+
+<PRE>2.1  From garage obtain tools:
+	gas, oil, chain saw, hex wrench, file, chain oil, maul
+2.2  From cupboard obtain safety equipment:
+	boots, gloves, safety glasses
+
+4.1  Sharpen chain saw:
+	select a tooth to sharpen
+	repeat
+		file the selected tooth
+		select next tooth
+	until all teeth are sharp
+4.2  Tighten chain saw bar with hex wrench
+4.3  If engine is two-cycle
+		then mix oil and gas in correct proportions
+	Fill fuel tank
+	Fill oil chamber with chain oil
+4.4  Inspect spark plug
+	If spark plug is dirty
+		then clean or replace spark plug
+4.5  Inspect maul
+	If maul is dull
+		then file a new edge in maul
+5.   Start a count at zero trees cut
+	While count is less than number of trees selected
+		determine direction of fall
+		cut main notch facing fall direction
+		overcut higher back notch on opposite side
+		yell <!--"-->&quot;timber<!--"-->&quot;
+		duck
+		add one to the count</PRE>
+
+<P>Some, (or all) of the other steps could be refined in much the same manner.  The degree of such refinement depends on</P>
+<UL><!--€--><LI> the complexity of the problem</LI>
+<!--€--><LI> the availability of tools</LI>
+<!--€--><LI> the number of techniques that need no further elaboration but can be taken as <!--"-->&quot;givens.<!--"-->&quot;  Here, some of the givens are described by the words: compute, select, obtain, put on, file, tighten mix, fill, inspect, clean, replace, file (second type), determine, cut, overcut, yell, duck, remove, buck, split, pile, clean up, put away, start, add. Some of the latter are built-in to the logger (anyone can yell; most can add one to a number.)  Others depend on experience<!--‹-->--the words describe sub-tasks that are part of a person's (possible) library of skills.</LI></UL>
+<P>As given here, each of these words is taken as an <!--"-->&quot;atom<!--"-->&quot; or indivisible action not requiring further elaboration.  Each represents or abstracts a complex series of more elementary and detailed steps.  If the instruction <!--"-->&quot;fill<!--"-->&quot; were not obvious enough for the person to know what to do next, it would have to be detailed in a further refinement.  On the other hand, many people could not be bothered doing all this for themselves.  They would lack both the tools and the expertise, so would simply call a professional to perform the whole job, obscuring all the detail written out above, and replacing it by the single abstraction: <!--"-->&quot;pay logger to cut enough fire wood.<!--"-->&quot;  This latter view of the task is very far removed from the details of the task and its sub-tasks and could be termed a <!--"-->&quot;high level abstraction.<!--"-->&quot;  The one who arranges for a task to be done in this way has no interest in or knowledge of the details.  Even the hired logger (an experienced professional) will pay little conscious attention to detailed planning, but will view the task as an organic whole (a single abstraction) and perform it as a comfortable routine that requires little thought.</P>
+<P>At the other extreme of this abstraction vs. detail spectrum, one could try to program a robot to do the task.  Some of the sub-tasks that seemed easy for a human being (inspect, yell, select) suddenly become very difficult.  Not only would audio-visual sensors have to be built and programmed, but the robot would also have to be provided with a means to determine such things as:</P>
+<UL><!--€--><LI> the natural and best falling directions</LI>
+<!--€--><LI> when and which way to duck</LI>
+<!--€--><LI> what to do when something goes horribly, terribly wrong</LI></UL>
+<P>The task at hand requires judgement and the ability to abstract and perform instinctively (qualities of human intelligence.)   For these reasons, the amount of detail involved in specifying the steps of the process for a robotic logging machine would increase by several orders of magnitude.</P>
+<P>A good problem solution must balance off the elaboration of steps, the development of new techniques, and the employment of old familiar methods whose details are given no thought because they are part of a personal or hired experience library.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

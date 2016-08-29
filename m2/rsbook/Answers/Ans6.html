@@ -1,0 +1,181 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 6 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+
+<BODY  BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 6</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	A module is a container to hold the entities that constitute all or part of an executable program.  More formally, it is an enclosing device to delimit the visibility and use of entities, whether these be internally defined or imported.</P>
+
+<P>2.	Modules can contain types, constants,  variables, procedures,  and other modules.</P>
+
+<P>3.	Some of the differences between procedures and modules include the ability to export and import, scope of variables, and permanence.  Modules use EXPORT and IMPORT to make any variable, procedure, type or constant visible outside the module in a surrounding one or visible inside the module if it is defined in the one around it.  All objects declared in a module remain active even when the module is not in use and are invisible to any other modules in the rest of the program.  The modules taken thus far do not use parameters.</P>
+<P>	Conversely, variables in a procedure exist only when the procedure is in use (and are therefore invisible outside of it) and all variables in a module or procedure are visible (changeable) inside every procedure contained in it.  A module exists as long as the surrounding module (or procedure) exists but a procedure is called into existence only when a reference is made to it and then vanishes after the procedure finishes.</P>
+
+<P>4.	When the form FROM SomeLibrary IMPORT is used, the imports are available unqualified in the importing environment. When the module is imported as a whole (i.e.. IMPORT Terminal) all identifiers are available to the importing environment.</P>
+
+<P>5.	The word "standard" could refer to the ISO standard that all vendors have to comply with if they want to have an "ISO compliant stamp" on their libraries.  Some vendors of older products might use it to mean "classic" Modula-2 complying with PIM-3.  It could also mean the "standard I/O channel".  In this definition, the standard I/O is normally the keyboard/screen devices.</P>
+
+<P>6.	Input and output vary from computer to computer.  A Macintosh may handle input and output differently from IBM compatible computers.  Thus, standardization can only be achieved at a relatively high level.</P>
+
+<P>7.	Answers may vary, but the ISO facilities are in the appendix.</P>
+
+<P>8.	Answers may vary.</P>
+
+<P>9.	Answers may vary.</P>
+
+<P>10.	The ISO modules operate on common channels that are defined and opened at the lower level.  If the standard channel is redirected, I/O using it is redirected regardless of what module employs the channel.  In classical Modula-2, RealInOut, though expressed as a separate module, is supposed to be thought of as a part of InOut.  Consequently, the redirection facilities of InOut apply to it also.</P>
+
+<P>11.	Module hierarchy refers to the fact that some library modules import other library modules.  These in turn may be imported by some other modules thus forming a "chain of dependence".  An example of this kind of chain starts with STextIO and the hierarchy of modules imported to it:</P>
+
+<P>		STextIO <= TextIO <= Terminal (non standard)</P>
+
+<P>	The lowest modules in such a chain are those which are connected most intimately to the specific operating system.  Routines that import from these, low-level Modules are less portable than those that import only form say, STextIO.</P>
+
+<P>12.	A compilation unit is a module that can be compiled.  In Modula-2, there are 3 kinds (implementation, definition, and program module) and all resulting code is brought together into one executable when the program is linked together.</P>
+
+<P>13.	Definition: does not contain a body‹ it only has syntax, such as procedure parameter lists.  It contains the interface for clients to import.  No code is produced.</P>
+<P>	Implementation: the parameter lists of their procedure should exactly repeat the ones in the corresponding definition modules.  It cannot contain an export list.  It must implement all procedures in the corresponding definition, and may have a body.</P>
+<P>	Program: similar to an  implementation module, but cannot be imported into another program.</P>
+
+<P>14.	Answers may vary.</P>
+
+<P>15.	Supplied Library:  The collection of modules provided to the programmer by the vendors.  These include the Standard Library Modules, Nonstandard Utility Modules‹modules or data types provided by the vendor as ready tools the programmer can use‹and System Specific Modules, which use facilities available only to a particular type or brand of computer/operating system.</P>
+<P>	User Library: This is a set of library modules that a programer has created as tools to use with other library or program modules.<BR>
+	Program Library:  The set of modules that are part of a program itself.  A programmer may use this to hide certain types and make them invisible to other  modules.</P>
+
+<P>16.	Using modules means there will be only one source for that imported module.  If an identifier, type, or variable is at fault, it is unnecessary to correct the mistake at every point it is declared but only at the source.  Moreover, names can be re-used across module boundaries without causing side-effects.</P>
+
+<P>17.	Module decoupling is the separation of the definition and implementation.  It allows the design of the program and its library support to be conducted in one phase of the job, and all the code implementation to be postponed until later.</P>
+
+<P>18.	The modules that need to be changed and compiled are the IMPLEMENTATION and program modules.  Changing the DEFINITION module most likely means new syntax has been created and the IMPLEMENTATION module needs to be updated to take advantage of the new changes.  The program module will then need to be updated because of the new key compilation of the DEFINITION module has generated.  If the program module is not compiled, the linker will refuse to link the object code because the IMPLEMENTATION code will incorporate the new key of the DEFINITION at compilation time.</P>
+
+<P>19.	Only the program needs to be re-linked.  Nothing need be recompiled other than the changed implementation.  The reason the DEFINITION module is not recompiled is that a key is not generated when the IMPLEMENTATION module is compiled.  The program module will need the new object code generated by the IMPLEMENTATION module in order for the changes to take effect.</P>
+
+<P>20.	Not using implementation details of a data type will actually prevent client programs from knowing any details about the representation, and force them to access items of the abstract type solely through the provided procedures.  This helps preserve the principle of information hiding.</P>
+
+<P>21.	Precondition checking:  this method relies on checking for potential error conditions before taking the action that might cause the error to arise.  It places the responsibility for doing the checking on the client program.<BR>
+	Postcondition checking:  In this method, the operation is attempted, and its success is checked afterward (perhaps for several tries) by examining the value of the appropriate error variable.<BR>
+	Automatic Error Handling:  This method invoke some procedure that automatically handles errors whenever they take place, without any boolean or enumerated type having to be set or checked.<BR>
+
+<P>22.	cotangent := 1 / RealMath.tan(x);<BR>
+	secant := 1 / RealMath.cos(x);<BR>
+	cosecant := 1 / RealMath.sin(x);</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note: Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*   Created
+    June 15 1999
+    Chapter 6 Question 25
+    NO ERROR TRAPPING  *)
+
+MODULE WriteTwo;
+FROM STextIO IMPORT
+  ReadString, ReadChar, WriteString, WriteLn, WriteChar, SkipLine;
+FROM StreamFile IMPORT
+  ChanId, Open, write, old, Close, OpenResults;
+IMPORT TextIO;
+
+TYPE
+  String = ARRAY [0..255] OF CHAR;  (* 256 characters at max *)
+
+VAR
+  StringIn : String;
+  sink : ChanId;		(* destination to the file to write *)
+  res : OpenResults;	(* give the results of file status *)
+  pos, count : CARDINAL;		(* position in string *)
+
+BEGIN
+  WriteString ("This program will read in a string and print the string ");
+  WriteLn;
+  WriteString ("on the screen and in a file with double lettering");
+  WriteLn;
+  WriteLn;
+  WriteLn;
+  WriteString ("Enter the string: ");
+  WriteLn;
+  ReadString (StringIn);
+  SkipLine;	(* don't need to check for error since all chars are valid *)
+  Open (sink, "test.txt", write+old, res);
+  IF res = opened THEN
+    pos := 0;
+    WHILE StringIn [pos] # CHR(0) DO
+      count := 0;
+
+      (* write the text out twice *)
+      WHILE count < 2 DO
+        WriteChar (StringIn[pos]);
+        TextIO.WriteChar (sink, StringIn[pos]);
+        INC (count);
+      END;
+
+      INC (pos);
+    END;  (* end WHILE *)
+
+    TextIO.WriteLn (sink);
+    Close(sink);
+  ELSE
+    WriteString ("Channel could not be opened. ")
+  END;
+
+  WriteLn;
+  WriteLn;
+  WriteString ("The file created is called 'test.txt'.  Press ENTER to quit");
+  SkipLine;
+END WriteTwo.
+</pre>
+
+<BODY>
+
+</HTML>

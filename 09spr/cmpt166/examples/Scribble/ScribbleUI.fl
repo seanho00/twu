@@ -1,0 +1,28 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <cstdlib>} {selected public global
+} 
+
+decl {\#include "ScribbleBox.h"} {public global
+} 
+
+Function {} {open return_type int
+} {
+  Fl_Window {} {
+    label {Scribble: drawing demo} open
+    xywh {539 230 400 400} type Double size_range {100 100 0 0} visible
+  } {
+    Fl_Button {} {
+      label Quit
+      callback {exit(0);}
+      tooltip {Quit Scribble} xywh {305 365 90 30} down_box DOWN_BOX labelsize 18
+    }
+    Fl_Box {} {
+      label Scribble
+      xywh {25 28 350 327} box EMBOSSED_FRAME align 1
+      class ScribbleBox
+    }
+  }
+} 

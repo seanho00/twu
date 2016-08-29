@@ -1,0 +1,157 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li {
+  margin-top: 1em;
+}
+.subparts li {
+  margin-top: 0.3em;
+} 
+ol.subparts {
+  list-style-type: lower-alpha;
+}
+.break {
+  page-break-before: always;
+}
+--></style>
+<title>CMPT/ISYS 140 Fall2005 FINAL ch1-7 Part2, Trinity Western University.
+27 Oct 2005.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>__________________</td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<ol>
+
+<li>
+Explain all the differences between <b>assignment</b>
+<br>compatibility and <b>expression</b> compatibility.
+<br>Give examples.
+<br><br><br><br><br>
+
+<li>
+Explain all the differences between the built-in <b>string concatenation</b>
+operator (<b>+</b>) and the standard library function <tt>Strings.Concat()</tt>.
+<br><br><br><br>
+
+<li>
+Explain the advantages and disadvantages of 
+<b><tt>FOR</tt></b> versus <b><tt>WHILE</tt></b>.
+<br>Be specific (not just "one is more flexible").
+<br><br><br><br><br><br>
+
+<li>
+The following module will not compile.  What is <b>wrong</b>?
+  How would you <b>fix</b> it?
+<pre>
+MODULE BuggyReadVector;
+	(* user inputs values to initialize a vector *)
+FROM SWholeIO IMPORT
+	ReadCard;
+VAR
+	myVector : ARRAY [1 .. 11] OF CARDINAL;
+	count, counter : CARDINAL;
+BEGIN
+	FOR count := 1 TO 10
+		DO
+			counter := count;
+			ReadCard (count);
+			SkipLine;
+			myVector [counter] := count;
+		END;
+	myVector [counter + 1] := 11;
+END BuggyReadVector.
+</pre>
+<br><br><br>
+
+<li>
+In the remainder of this exam, you will be writing up a library and test-suite
+for generating <b>pseudorandom</b> numbers:
+
+Your library should provide a <tt>Random()</tt> function, which returns 
+a new random real between 0 and 1 each time it is invoked.  There should 
+also be a way to <b>seed</b> the random number generator.  The default seed 
+(if the user does not manually set it) should be 0. 
+
+  <ol class="subparts">
+
+  <li> Write a complete Modula-2 <b>DEFINITION</b> file for your library
+  (call it <tt>PseudoRandom</tt>).  In comments after each procedure 
+  declaration, define brief <b>preconditions</b> and <b>postconditions</b>
+  for that procedure.
+
+  <li> Write a brief <b>user manual</b> for your <tt>PseudoRandom</tt> library.
+  Your target audience is a fellow Modula-2 programmer who doesn't know
+  how your library works, but wants to use it in his/her own program.
+  Include a short <b>abstract</b> at the beginning of the user manual:
+  one or two sentences summarizing the purpose of this library.
+  Include a couple <b>examples</b> of how to use your library.
+
+  <li> Write <b>pseudocode</b> for each procedure in your library.
+  You may wish to design additional helper functions for internal use 
+  within your library, as appropriate; if you do, then write pseudocode 
+  for them, too.
+
+  <li> List all <b>libraries</b> and library items you need to import.
+
+  <li> List any <b>variables</b> (and their types) you will declare in the
+  scope of the library implementation module.  Also, for each procedure in
+  your library (including helper functions), list any variables (and their
+  types) local to that procedure.
+
+  <li> Write a complete Modula-2 <b>IMPLEMENTATION</b> file for your library.
+
+  <li> Write a separate <b>test suite</b> (test harness, test framework)
+  for your library -- a complete Modula-2 program module that imports from
+  your library.  This program should produce 1,000 random <b>CARDINALS</b>
+  between 0 and 9,999 and save them into a file of the user's choosing.
+  The numbers should be formatted ten per row, in <b>columns</b>: e.g.,
+  <pre>
+	9472 3930 4876  239 1029   12 7349 1920    0 2382
+	3390 1528    3 5867 9999 8821 2002   77 1103  902
+	....</pre>
+
+  </ol>
+
+<b>Notes:</b><ul>
+<li>
+Although your pseudorandom number generator won't be "truly" random, 
+you should take reasonable efforts to make it not trivial.
+
+<li>
+You may use LONGREALs if you wish, but you are not required to.
+
+<li>
+Write your answers on a separate sheet of paper.
+You may wish to write rough drafts and/or sketch your design ideas on a 
+separate sheet of paper.  This is fine (and might even help with partial 
+credit), but just make sure you have a clean, neatly written final version
+of each part of the question, clearly indicating which part of the problem
+it answers.
+
+<li>
+Please try to indent and format your code properly so it can be read easily.
+Unless otherwise specified, comments within your code are not required on this
+exam, however if your code is incorrect, your comments may earn you partial
+credit if they show good design thinking.  Little partial credit will be
+given for uncommented incorrect code.
+
+<li>
+If you are short on time, prioritize getting the design and main ideas right
+and don't worry as much about the details of syntax.  Forgetting a semicolon
+or misspelling IMPELLEMANETATATION is not a big deal.
+</ul>
+
+</ol>
+
+</body></html>
+

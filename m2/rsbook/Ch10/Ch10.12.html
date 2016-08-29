@@ -1,0 +1,586 @@
+<HTML>
+<HEAD>
+<TITLE>10.12 Exceptions</TITLE>
+<meta NAME="keywords" CONTENT="exception, exceptions, violation, run-time, run, time, handler, handle, flag, raise, raising, transfer, control, exception, exceptional, termination, terminate, language, chanexception, chanexceptions, ischanexception, ischanexceptions, deviceerror, handling, except, device, channel, return, retry, user, define, defined, users, name, named, defined, condition, conditions, detect, detected, declare, declared, source, module, raised">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.12 Exceptions</B></H2>
+<P>The facilities mentioned in this section are present only in ISO compliant versions of Modula-2 although they are similar to ones that were used in a few early commercial flavours.  Some of the ideas were described in the first of the author's books on Modula-2, and then finally adopted by the ISO committee, though with many syntax changes and additions.  These methods constitute a considerable extension of the language itself<!--‹-->--they are not simply a collection of library based error handlers or variables.  Other languages also make use of exceptions for signalling and handling errors, though the details vary somewhat.</P>
+<P>There is a class of error that can not always be anticipated prior to program execution and that in many systems (hardware and software combined sense) cause the program to <!--"-->&quot;crash<!--"-->&quot; in a manner that results in an immediate and premature exit to the surrounding environment.</P>
+<BLOCKQUOTE><I>An <U><A NAME="Exception">exception</A></U> is a violation of the run-time meaning of a program that when detected automatically alters the normal flow of control in the procedure or module body where it occurs, immediately transferring control to an exception handler for that procedure or module body, if one exists.</I></BLOCKQUOTE>
+<P>As soon as an exception occurs, the procedure or module body in which it takes place loses control of the machine.  In some languages, the result is that the program terminates immediately in an error condition.  ISO Modula-2, however, makes provision for the detection and possible handling of exceptions within the context of the program itself.</P>
+<BLOCKQUOTE><I><A NAME="M2Exceptions">A</A> <U>Modula-2 exception</U> changes the state of the program from normal execution to exceptional execution.</BLOCKQUOTE>
+<BLOCKQUOTE>A <U>Modula-2 exception handler</U> is a code clause that  may be attached to any procedure.</BLOCKQUOTE>
+<BLOCKQUOTE>The change in state to exceptional execution is called <U>raising an exception</U> and it immediately transfers control to the nearest (nested) exception handler.</BLOCKQUOTE>
+<BLOCKQUOTE>If an exception is not trapped (handled) even by the program module then termination of the program commences with the program state still exceptional.  (<U>Exceptional termination</U>).</I></BLOCKQUOTE>
+<P>This kind of action is the most automatic of all types of error handling.  If the procedure or module body being executed at the time the exception is raised has an exception handler of its own, then this will be executed.  If it does not, or if its handler raises the same exception or a new one, control exits to the next outer procedure, and in fact will cascade up the chain of calls until it finds a handler.  As soon as it does, this handler is automatically invoked<!--‹-->--an action which places the burden on the program to ensure that errors causing exceptions are properly handled at the appropriate level.  If no handler can be found even in the program module body, the program terminates exceptionally.</P>
+<P>What happens <I>after</I> a program terminates in an exceptional state depends on the implementation, but most are likely to have an automatic handler at the outermost level, so that just as control returns to the surrounding environment there will at least be some report made to the user of the program.</P>
+<P>There are several stages to this kind of activity:</P>
+<P>1. The conditions under which exceptions are raised must be defined.</P>
+<P>2. All exceptions must be named.</P>
+<P>3. The source of the exception must be defined and registered.</P>
+<P>4. The conditions producing the exception must be detected.</P>
+<P>5. The exception must be raised, providing the source and a message.</P>
+<P>6. Exceptions raised by a program <I>should</I> be handled by the program.</P>
+<P>7. Those raised by the language or a library <I>may</I> be handled in the program.</P>
+<P>8. Handling exceptions <I>may</I> result in re-trying code that caused them. or</P>
+<P>9. It may result in re-raising the same exception for calling code to handle. <I>or</I></P>
+<P>10. It may result in the program terminating (normally or exceptionally).</P>
+<P>In order to achieve all this, the ISO committee made some additions to the syntax of Modula-2, for the language as defined by Wirth has no facility like the one just described.</P>
+<P>In the sections that follow, the points in the above list will be elaborated, though not entirely in the order given here, which in its entirety applies only to exceptions both defined and detected by user programs.</P>
+<H3><B><A NAME="10.12.1">10.12.1</A> Language Exceptions</B></H3>
+<P>Some exceptions are defined in the language itself, and all ISO Modula-2 implementations are required to be detect them at run time.  An example is division by zero.</P>
+<PRE>
+<B>MODULE</B> ForceException;
+<B>VAR</B>
+  a : <B>REAL</B>;
+<B>BEGIN</B>
+  a := 0.0;
+  a := 5.0 / a
+<B>END</B> ForceException.</PRE>
+<P>Whether or not the program does anything with these exceptions once they do occur depends on whether there has been a handler written into the program.  There is none in the code above, and in one ISO compliant system in which it was run, the display in figure 10.9 was produced by the run time system, in accordance with the post-exceptional-termination behaviour defined for that specific implementation :</P>
+<P><CENTER><IMG SRC="Figure/Figure_10.9.GIF" BORDER="1"></CENTER><!----></P>
+<P>The complete list of language defined exceptions is found in the System module M2EXCEPTION.  Recall that a system module is a segregated part of the compiler; it behaves, however, as <I>if</I> it had a definition module.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> M2EXCEPTION;
+
+ (* Provides facilities for identifying language exceptions *)
+<B>TYPE</B>
+  M2Exceptions = 
+    (indexException, rangeException, caseSelectException,
+    invalidLocation, functionException, wholeValueException,
+    wholeDivException, realValueException, realDivException,
+    complexValueException, complexDivException, protException,
+    sysException, coException, exException *)
+
+<B>PROCEDURE</B> M2Exception () : M2Exceptions;
+(* If the current coroutine is in the exceptional execution state because of a language exception, returns the corresponding enumeration value, and otherwise raises an exception *)
+
+<B>PROCEDURE</B> IsM2Exception () : <B>BOOLEAN</B>;
+(* If the current coroutine is in the exceptional execution state because of a language exception, returns TRUE, and otherwise returns FALSE *)
+
+<B>END</B> M2EXCEPTION.</PRE>
+<P>The particular exception raised by the sample code is <I>realDivException</I>, and as may be readily be seen, there are a variety of others, some with rather obvious meanings in the light of previous discussions in this text (for invalid ranges or array indicies, overflow values, and improper case selection).  Others have not yet been encountered, and can await further developments, as can the meaning of the term <I>coroutine</I> in the two procedure definitions.  The exception raised by this module itself when it is asked for the number of an exception it is not responsible for is <I>exException</I>.  Note that <I>exException</I> need never occur, if the request for the enumeration value is formulated:</P>
+<PRE>
+<B>IF</B> IsM2Exception ()
+  <B>THEN</B>
+    exVariable := M2Exception()
+  <B>END</B>;</PRE>
+<P>This system module also sheds light on what kind of entity an exception is from a language point of view<!--‹-->--it is simply a member of an appropriate enumeration.</P>
+<H3><B><A NAME="10.12.2">10.12.2</A> Library Exceptions</B></H3>
+<P>Similar facilities are incorporated into many standard libraries, and consist of three parts:</P>
+<P>1. an enumeration of the possible exceptions,</P>
+<P>2. an enquiry function to discover which of those was raised,</P>
+<P>3. an enquiry function to determine whether the module did raise one.</P>
+<P>For instance, the standard I/O library module IOChan contains the following items not previously mentioned:</P>
+<PRE>
+<B>TYPE</B>
+  ChanExceptions =
+    (wrongDevice,      (* device specific operation on wrong device *)
+     notAvailable,     (* operation attempted that is not available on that channel *)
+     skipAtEnd,        (* attempt to skip data from a stream that has ended *)
+     softDeviceError,  (* device specific recoverable error *)
+     hardDeviceError,  (* device specific non-recoverable error *)
+     textParseError,   (* input data does not correspond to a character or line mark - optional detection *)
+     notAChannel       (* given value does not identify a channel - optional detection *)
+    );
+ 
+<B>PROCEDURE</B> IsChanException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state because of the raising of an exception from ChanExceptions; otherwise returns <B>FALSE</B>. *)
+
+<B>PROCEDURE</B> ChanException (): ChanExceptions;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception from ChanExceptions, returns the corresponding enumeration value, and otherwise raises an exception. *)
+
+  (* When a device procedure detects a device error, it raises the exception softDeviceError or hardDeviceError.  If these exceptions are handled, the following facilities may be used to discover an implementation-defined error number for the channel. *)
+ 
+<B>TYPE</B>
+  DeviceErrNum = <B>INTEGER</B>;
+ 
+<B>PROCEDURE</B> DeviceError (cid: ChanId): DeviceErrNum;
+  (* If a device error exception has been raised for the channel cid, returns the error number stored by the device module. *)</PRE>
+<P>The items marked in the standard as optional may not be detected in some implementations.  Likewise, if <I>DeviceErrNum</I> is used, the number obtained after an error on enquiry by <I>DeviceError</I> depends on the implementation.  The exception raised by <I>ChanException</I> when asked for an exception that it has not raised is the language exception <I>exException</I>.  Once again, this exception need never occur if the user always inquires of <I>IsChanException</I> before calling <I>ChanException</I>.</P>
+<H3><B><A NAME="10.12.3">10.12.3</A> Handling Exceptions</B></H3>
+<P>The material thus far only illuminates the nature of exceptions.  This section deals with how to trap (handle) them, gives some suggestions about what can be done once they are detected by the user program, and some better advice about error handling code in final products.</P>
+<P>Any procedure or module body can have an EXCEPT clause attached to it.  This attachment is immediate; that is, it must come before a FINALLY part, and indeed a FINALLY part can have an EXCEPT clause of its own.  In the first example that follows, when the code shown is run in the absence of the file requested, either the optional <I>notAChannel</I> exception or the exception <I>wrongDevice</I> will be raised; the message in the EXCEPT clause will be printed; and the program will exit with the exception still raised.  Most systems will then provide a further diagnostic message of their own, as shown in the case of raising the <I>realDivException</I> in 10.11.1 above.</P>
+<PRE>
+<B>MODULE</B> ExceptionDemo;
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the trapping of exceptions *)
+(* using ISO standard Modula-2 *)
+(* last revision 1994 05 09 *)
+
+<B>FROM</B> StreamFile <B>IMPORT</B>
+  ChanId, Open, write, Close, OpenResults;
+<B>FROM</B> IOChan <B>IMPORT</B>
+  IsChanException, ChanException, ChanExceptions;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine;
+
+<B>VAR</B>
+  outfile : ChanId;
+  res : OpenResults;
+
+<B>BEGIN</B>
+  Open (outfile, <!--"-->&quot;numbers<!--"-->&quot;, write, res); 
+  (* some code *)
+  Close (outfile);
+<B>EXCEPT</B>
+  <B>IF</B> IsChanException () <B>AND</B> ((ChanException() = wrongDevice)
+                         <B>OR</B> (ChanException() = notAChannel))
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;Can't close; perhaps file was never opened<!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;Press return to continue<!--"-->&quot;);
+      SkipLine;
+    <B>END</B>;
+
+<B>END</B> ExceptionDemo.</PRE>
+<P>Two things need to be noticed about this demonstration code.  First, the error was preventable.  That is, the <I>Open</I> ought to have been followed by</P>
+<PRE>
+<B>IF</B> res = opened
+  <B>THEN</B></PRE>
+<P>and the exception can only take place because of sloppy logic in the program.  However, the presence of such an EXCEPT clause can assist the programmer in discovering such lapses and correcting them before the finished code passes into the hands of a user.</P>
+<P>Second, in this example, the exception was caught and described but nothing more.  There are three possible results of handling an exception:</P>
+<P>1. Control runs off the end of the handler (as here) with the exception still raised. In this case, control passes to the next outer handler, and if nothing more is done, the program will terminate, still in the exceptional state.</P>
+<P>2. There is a RETURN from the exception handler, in which case the exception is cleared; normal execution resumes; and control passes back out to the caller of the procedure in which the exception occurred. In the example above, that would have meant a normal termination.</P>
+<P>3. There is a RETRY in the exception handler, in which case the exception is cleared; normal execution resumes; and control passes back to the beginning of the procedure in which the exception occurred. In the example above, that would have meant attempting to run the entire module body again (but without re-initializing imported or local module bodies).</P>
+<P>In both the second and third cases, the conditions causing the exception are all taken care of, and the logic allows it to be regarded as completely handled.  Of course, in the third case, some care must be taken not to cause an infinite loop of exception raising and retrying to be entered<!--‹-->--and that is exactly what <I>would</I> have happened if this strategy had been used in the example above.</P>
+<P>One might follow the second strategy if the exception were the result of an error after a menu choice, and control could pass back to the menu reliably.  Here is an outline:</P>
+<PRE>
+<B>MODULE</B> ExceptionDemo2;
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the trapping of exceptions *)
+(* using ISO standard Modula-2 *)
+(* last revision 1994 05 09 *)
+
+<B>FROM</B> StreamFile <B>IMPORT</B>
+  ChanId, Open, write, Close, OpenResults;
+<B>FROM</B> IOChan <B>IMPORT</B>
+  IsChanException, ChanException, ChanExceptions;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar, ReadToken;
+
+<B>VAR</B>
+  choice : <B>CHAR</B>;
+  outfile : ChanId;
+  res : OpenResults;
+
+<B>PROCEDURE</B> OpenFile;
+<B>VAR</B>
+  name : <B>ARRAY</B> [0..30] <B>OF</B> <B>CHAR</B>;
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;What is the file name to open?<!--"-->&quot;);
+  ReadToken (name);
+  SkipLine;
+  Open (outfile, name, write, res);
+<B>END</B> OpenFile;
+
+<B>PROCEDURE</B> CloseFile;
+<B>BEGIN</B>
+  Close (outfile);
+<B>EXCEPT</B>
+  <B>IF</B> IsChanException () <B>AND</B> ((ChanException() = wrongDevice)
+                         <B>OR</B> (ChanException() = notAChannel))
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;Can't close; perhaps file was never opened<!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;Press return to continue<!--"-->&quot;);
+      SkipLine;
+      <B>RETURN</B>;
+    <B>END</B>;
+<B>END</B> CloseFile;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;     <B>MENU</B><!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;Do you want to:<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;O. Open a new file<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;C. Close the file<!--"-->&quot;);
+    WriteLn;
+    (* more choices *)
+    WriteLn;
+    WriteString (<!--"-->&quot;Q. Quit the program<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;Pick one ==<!-->&gt;<!--"-->&quot;);
+    ReadChar (choice);
+    SkipLine;
+    choice := <B>CAP</B> (choice);
+    <B>CASE</B> choice <B>OF</B>
+      <!--"-->&quot;O<!--"-->&quot; :
+        OpenFile; |
+      <!--"-->&quot;C<!--"-->&quot; : 
+        CloseFile
+      <B>ELSE</B>
+      (* default is fall off the end *)
+      <B>END</B>;
+    <B>UNTIL</B> choice = <!--"-->&quot;Q<!--"-->&quot;;
+ 
+<B>END</B> ExceptionDemo2.</PRE>
+<P>Once again, however, the exception detection code is only a stopgap; it would be far better to flag a successful open operation than to detect a failure to close properly.</P>
+<P>The third option, RETRY, is outlined in the following sketch<!--‹-->--another version of an earlier program for making computations based on Ohm's law.  Here, it is supposed that an exception might take place as a result of the operation of a function procedure that returns values directly to a division, resulting in the possibility of a divide-by-zero error.  Of course, this error too can be prevented from ever taking place if the code is written a little differently.</P>
+<PRE>
+<B>MODULE</B> OhmsLaw2;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate an exception retry *)
+(* using ISO Modula-2 *)
+(* last revision 1994 05 17 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> M2EXCEPTION <B>IMPORT</B>
+  M2Exception, IsM2Exception, M2Exceptions;
+<B>IMPORT</B> TermFile,Strings;    
+<B>TYPE</B>
+  String = <B>ARRAY</B> [0..80] <B>OF</B> <B>CHAR</B>;
+  
+<B>VAR</B>
+  retrys : <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> GetNum (prompt : String) : <B>REAL</B>;
+<B>VAR</B>
+  readOK : <B>BOOLEAN</B>;
+  theNum : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (prompt);
+  WriteLn;
+    WriteString (<!--"-->&quot;Type the number here ==<!-->&gt; <!--"-->&quot;);
+    ReadReal (theNum);
+    readOK := (ReadResult() = allRight);
+    WriteLn;
+    <B>IF</B> <B>NOT</B> readOK
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;error in input number; try again.<!--"-->&quot;);
+        WriteLn;
+      <B>END</B>;
+    SkipLine;
+  <B>UNTIL</B> readOK;
+  <B>RETURN</B> theNum
+<B>END</B> GetNum;
+
+<B>PROCEDURE</B> Ohms;
+(* No parameters;  modifies global variables only *)
+<B>VAR</B>
+  voltage : <B>REAL</B>;
+<B>BEGIN</B>
+  voltage := GetNum (<!--"-->&quot;What is the current in amperes?<!--"-->&quot;)
+         / GetNum (<!--"-->&quot;What is the resistance in ohms?<!--"-->&quot;);
+  WriteString (<!--"-->&quot;This current and resistance <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot; produce a voltage of <!--"-->&quot;);
+  WriteFixed (voltage, 2, 0);
+  WriteString (<!--"-->&quot; volts. <!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+<B>EXCEPT</B>
+  <B>IF</B> IsM2Exception () <B>AND</B> (M2Exception() = realDivException)
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;Can't have zero resistance<!--"-->&quot;);
+      WriteLn;
+      <B>IF</B> (retrys = 0)
+        <B>THEN</B>
+          WriteString (<!--"-->&quot;There seems to be a little problem.<!--"-->&quot;);
+          WriteLn;
+          WriteString (<!--"-->&quot;Do you want to begin again? (y/n) <!--"-->&quot;);
+          ReadChar (answer);
+          SkipLine;
+          <B>IF</B> <B>CAP</B>(answer) = <!--"-->&quot;Y<!--"-->&quot;
+            <B>THEN</B>
+              <B>RETURN</B>
+            <B>END</B> (* else kill program; persistant offender *)
+        <B>ELSE</B>
+          <B>DEC</B> (retrys);
+          WriteString (<!--"-->&quot;Please try again<!--"-->&quot;);
+          WriteLn;
+          <B>RETRY</B>;
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> Ohms;
+
+<B>VAR</B>
+  answer : <B>CHAR</B>;
+
+<B>BEGIN</B> 
+  <B>REPEAT</B>
+    retrys := 2;
+    Ohms;
+    WriteString ( <!--"-->&quot;Type 'Y' to do another <!--"-->&quot;);
+    ReadChar (answer);
+    SkipLine;
+    WriteLn;
+  <B>UNTIL</B> <B>CAP</B> (answer) # <!--"-->&quot;Y<!--"-->&quot;    
+  
+<B>END</B> OhmsLaw2.</PRE>
+<P>Observe the necessity of controlling the RETRY so as to avoid an infinite number of them.  (There are other ways to do this, besides keeping track of the number of times tried.)  Here is the output from this code, as produced by a logging utility that monitored the information going through the module <I>TermFile</I>.</P>
+<PRE>
+** Run log starts here **
+What is the current in amperes?
+Type the number here ==<!-->&gt; <B>4</B>
+
+What is the resistance in ohms?
+Type the number here ==<!-->&gt; <B>7</B>
+
+This current and resistance 
+ produce a voltage of 0.57 volts. 
+
+Type 'Y' to do another <B>y</B>
+
+What is the current in amperes?
+Type the number here ==<!-->&gt; <B>5</B>
+
+What is the resistance in ohms?
+Type the number here ==<!-->&gt; <B>0</B>
+
+Can't have zero resistance
+Please try again
+What is the current in amperes?
+Type the number here ==<!-->&gt; <B>5</B>
+
+What is the resistance in ohms?
+Type the number here ==<!-->&gt; <B>0</B>
+
+Can't have zero resistance
+Please try again
+What is the current in amperes?
+Type the number here ==<!-->&gt; <B>5</B>
+
+What is the resistance in ohms?
+Type the number here ==<!-->&gt; <B>0</B>
+
+Can't have zero resistance
+There seems to be a little problem.
+Do you want to begin again? (y/n) <B>y</B>
+Type 'Y' to do another <B>y</B>
+
+What is the current in amperes?
+Type the number here ==<!-->&gt; <B>5</B>
+
+What is the resistance in ohms?
+Type the number here ==<!-->&gt; <B>9</B>
+
+This current and resistance 
+ produce a voltage of 0.56 volts. 
+
+Type 'Y' to do another <B>n</B></PRE>
+<P>Clearly, this code could (and should!!) have been written so as to check the data before putting it into the formula.  The point is that <I>sometimes</I> it may not be possible to guarantee the validity of data by asking the user to repeat it, and an exception will be raised.  This code shows one possible way of handling the exception through a retry of the offending block.</P>
+<H3><B><A NAME="10.12.4">10.12.4</A> Exceptions and Termination</B></H3>
+<P>An exception handler can be attached to the body of a procedure or module, or to the FINALLY clause of a module, or to both.  Here is a sketch:</P>
+<PRE>
+<B>MODULE</B> ExceptionTermination1;
+
+(* imports *)
+
+(* declarations *)
+
+<B>BEGIN</B>
+  (* statement sequence *)
+<B>EXCEPT</B>
+  (* exception handling for main body *)
+
+<B>FINALLY</B>
+  (* termination/cleanup code goes here *)
+<B>EXCEPT</B>
+  (* exception handling for termination time *)
+
+<B>END</B> ExceptionTermination1.</PRE>
+<P>The sequence of events is:</P>
+<P>1. If an exception is encountered in the body, control is transferred to the exception handler for that body.</P>
+<P>2a. If the exception is handled and there is a RETRY, control reverts to the beginning of the body in which the exception took place.</P>
+<P>2b. If the body was that of a procedure, control transfers outward to the caller of the procedure until an exception handler is encountered. If none is, step (2c) applies.</P>
+<P>2c. If the body was that of a module, and the exception remains raised, or there is a RETURN, termination commences.</P>
+<P>3. Once termination has commenced, control transfers to the FINALLY clause, and this clause executes. </P>
+<P>4. If a new exception is raised, it is immediately handled by the exception handler for the FINALLY clause, but if the exception from the main body is still raised, it receives no further handling.</P>
+<P>Thus, the module:</P>
+<PRE>
+<B>MODULE</B> ExceptionTermination2;
+<B>IMPORT</B> STextIO;
+
+<B>VAR</B>
+  b: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  b := 0;
+  b:= 1/b; (* force an exception *)
+<B>EXCEPT</B>
+  STextIO.WriteString (<!--"-->&quot;Entered exception handling for main body<!--"-->&quot;);
+  STextIO.WriteLn;
+<B>FINALLY</B>
+  STextIO.WriteString (<!--"-->&quot;Program now terminating.<!--"-->&quot;);
+  STextIO.WriteLn;
+<B>EXCEPT</B>
+  STextIO.WriteString (<!--"-->&quot;Entered exception handling at termination time.<!--"-->&quot;);
+  STextIO.WriteLn;
+
+<B>END</B> ExceptionTermination2.</PRE>
+<P>which raises an exception in the main body but does not handle it and terminates in an exceptional state without executing the EXCEPT clause of the FINALLY part, producing the output:</P>
+<PRE>
+Entered exception handling for main body
+Program now terminating.</PRE>
+<P>On the other hand, the module:</P>
+<PRE>
+<B>MODULE</B> ExceptionTermination3;
+<B>IMPORT</B> STextIO;
+
+<B>VAR</B>
+  b: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  b := 0;
+  b:= 1/b; (* force an exception *)
+<B>EXCEPT</B>
+  STextIO.WriteString (<!--"-->&quot;Entered exception handling for main body<!--"-->&quot;);
+  STextIO.WriteLn;
+  <B>RETURN</B> (* kill the first exception and move along *)
+<B>FINALLY</B>
+  b:= 1/b; (* force another exception *)
+  STextIO.WriteString (<!--"-->&quot;Program now terminating.<!--"-->&quot;);
+  STextIO.WriteLn;
+<B>EXCEPT</B>
+  STextIO.WriteString (<!--"-->&quot;Entered exception handling at termination time.<!--"-->&quot;);
+  STextIO.WriteLn;
+
+<B>END</B> ExceptionTermination3.</PRE>
+<P>which raises a new exception at the beginning of the FINALLY clause (and so does not conclude it), and then produces the output:</P>
+<PRE>
+Entered exception handling for main body
+Entered exception handling at termination time.</PRE>
+<P>It would make no difference to the output in this case whether the RETURN were executed or not, as it is the raising of a  exception in the FINALLY part that triggers transfer of control to its EXCEPT clause.</P>
+<P>In the event that there is no finally clause to a module, but there is an except clause, then the except clause applies to exceptional events regardless of whether they took place during execution of the body of the module, or after termination had been initiated.  In such situations, it may be desirable to determine whether one has entered the exception handler prior to or subsequent to the commencement of termination. In order to do this, one could write code as in the following outline:</P>
+<PRE>
+<B>MODULE</B> ExceptionTermination4;
+<B>FROM</B> <B>TERMINATION</B> <B>IMPORT</B>
+  IsTerminating, HasHalted;
+
+<B>BEGIN</B>
+  (* statement sequence *)
+<B>EXCEPT</B>
+  <B>IF</B> IsTerminating ()
+    <B>THEN</B>
+      (* action to handle exception after termination started *)
+    <B>IF</B> HasHalted ()
+      <B>THEN</B>
+        (* specific action to handle exception after <B>HALT</B> *)
+    <B>END</B>;
+  <B>ELSE</B>
+    (* action to handle exception before termination commenced *)
+  <B>END</B>;
+<B>END</B> ExceptionTermination4.</PRE>
+<H3><B><A NAME="10.12.5">10.12.5</A> User-Defined Exceptions</B></H3>
+<P>This subsection addresses the first five points in the list at the beginning of section 10.11, and that apply only to code in which user defined exceptions are to be defined, detected, and raised, namely:</P>
+<P>1. The conditions under which exceptions are raised must be defined.</P>
+<P>2. All exceptions must be named.</P>
+<P>3. The source of the exception must be defined and registered.</P>
+<P>4. The conditions producing the exception must be detected.</P>
+<P>5. The exception must be raised, providing the source and a message.</P>
+<P><I>First</I>, the programmer must determine whether it is necessary to use exceptions at all.  As illustrated above, most exceptional circumstances can be avoided.  However, the code in a library cannot  itself guarantee that the user will always employ its routines correctly, despite the stated preconditions.  Thus, it may be necessary for code to be able to raise an exception if it is misused.  As in all aspects of planning, it is essential that the logic of this be carefully thought out before being committed to code.</P>
+<P><I>Second</I>, exceptions need to be declared.  As illustrated by the interface to the standard libraries, this is just an enumeration:</P>
+<PRE>
+<B>TYPE</B>
+  MyExceptions = (JohnGough, KeithHopper, AlbertMeier);</PRE>
+<P>If this is done as part of a library, enquiry functions should be provided as well, and these may be modeled on the ones found in <I>IOChan</I>.  The enumeration, and the second function are of course unnecessary if the library module only has one exception, and both procedures are unnecessary if the exceptions are defined, detected, and raised within the confines of the main program module.</P>
+<PRE>
+<B>PROCEDURE</B> IsMyException (): <B>BOOLEAN</B>;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of an exception from MyExceptions; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> MyException (): MyExceptions;
+  (* If the current coroutine is in the exceptional execution state because of the raising of an exception from MyExceptions, returns the corresponding enumeration value, and otherwise raises an exception. *)</PRE>
+<P><I>Third</I>, in order to protect the language itself and individual library modules from having their exceptions misused by some code other than that entity entitled to use them, every <I>source</I> of exceptions must register itself with the module EXCEPTIONS (another system module).  In so doing, the source will receive a unique value for an identifier of type <I>ExceptionSource</I> that must be supplied whenever actually raising an exception.  Since there is no way for another module to discover this value, only the code that registers itself as a source can raise the exceptions that belong to that source.  This is all done by</P>
+<PRE>
+<B>FROM</B> EXCEPTIONS <B>IMPORT</B>
+  ExceptionSource, AllocateSource;
+<B>VAR</B>
+  myExSource : ExceptionSource;
+<B>BEGIN</B>
+   AllocateSource (myExSource);</PRE>
+<P><I>Fourth</I>, the conditions determined in the planning stage are coded appropriately.</P>
+<P><I>Fifth</I>, the exception is actually raised as a result of the detected conditions.  When this is done, the <I>source</I> must be provided, along with a message.  Typically the message is a brief description of the problem that can be printed during the course of handling the exception.  These tasks are accomplished using:</P>
+<PRE>
+<B>FROM</B> EXCEPTIONS <B>IMPORT</B>
+  <B>RAISE</B>;  (* in addition to the stuff above *)</PRE>
+<P>and then in the actual code:</P>
+<PRE>
+(* statement sequence *)
+<B>IF</B> brokenAussie
+  <B>THEN</B>
+    <B>RAISE</B> (myExSource, <B>ORD</B> (JohnGough), <!--"-->&quot;Down under task bad.<!--"-->&quot;)
+  <B>ELSIF</B> badKiwiError <B>THEN</B>
+    <B>RAISE</B> (myExSource, <B>ORD</B> (KeithHopper), <!--"-->&quot;Hopper already Empty<!--"-->&quot;)
+  <B>ELSIF</B> AlpineSlide <B>THEN</B>
+    <B>RAISE</B> (myExSource, <B>ORD</B> (AlbertMeier), <!--"-->&quot;Matterhorn has fallen<!--"-->&quot;)
+  <B>END</B>;</PRE>
+<P>A FINALLY clause can determine whether the current exception state is exceptional or not, and if so (either it or possibly an exception handler for a module or procedure), can enquire of the module EXCEPTIONS whether or not it is the source of an exception, if so, which one it is, and what is the error message.  (The error message may be used by an automatic handler at the outermost level as well).  This is done as in the following illustration:</P>
+<PRE>
+<B>FROM</B> EXCEPTIONS <B>IMPORT</B>
+  CurrentNumber, GetMessage, IsCurrentSource, IsExceptionalExecution, ExceptionNumber;
+  (* in addition to all the stuff above *)
+<B>VAR</B>
+  theErrorNumber : ExceptionNumber;  (* just a cardinal *)
+  stringVar : <B>ARRAY</B> [0..50] <B>OF CHAR</B></PRE>
+<P>and in the code</P>
+<PRE>
+<B>FINALLY</B>
+  <B>IF</B> (IsExceptionalExecution() ) <B>AND</B> (IsCurrentSource (myExSource) )
+    <B>THEN</B>
+      theErrorNumber := CurrentNumber (myExSource);
+      GetMessage (stringVar);
+      (* take further action *)
+    <B>END</B>;</PRE>
+<P>As one might expect, an attempt to obtain a value from <I>CurrentNumber</I> when <I>myExSource</I> is <I>not</I> in fact the source of the exception will in itself cause an exception to be raised, for this is interpreted as an attempt to steal information that belongs to some other source of exceptions.  Note, however, that the message of the current exception is accessible to any caller without having to provide a source identity check.</P>
+<P>Observe that apart from the enquiry function <I>IsExceptionalExecution</I> (and possible <I>GetMessage</I>), that might be useful in any FINALLY clause, none of the other items in EXCEPTIONS need to be imported unless the code in question is to define, detect, and raise its own exceptions.  Indeed, exception <I>handling</I> need not use anything at all from this module.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

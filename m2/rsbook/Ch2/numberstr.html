@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD><TITLE>Index Frame</TITLE><STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF" onLoad="scroll(0,7)">
+
+<TABLE WIDTH="100%" CELLSPACING=0 CELLPADDING=0><TR><TD ALIGN="LEFT">
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+scroll(0,7)
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 16))
+parent.window.location = theString + "/index.html?" + parent.frames[1].document.URL
+}
+
+// if the parent document is the top document then the left frame must
+// be closed.  In that case, we create a link (with a graphic to click on)
+// to open the left frame back up.
+// We will set the location of the top (parent) window to the MAIN book's
+// index and tell it to set it's child frames up for this chapter and
+// section by giving it the URL of the main bottom right frame in a
+// search portion of the URL.
+// EXAMPLE http://some.server/path to book/index.html?http://same server and path to book/Ch1/Ch1.1.html
+// When contents.html (in the frameset defined by index.html) loads,
+// it will notice the search portion of the URL (the part after the "?")
+// and will load blank.html.  blank.html has a frameset with nothing.html
+// in the bottom right frame.  nothing.html will take the search portion
+// of the URL and will update its location to that URL.
+// If all of that worked, we now have the left index frame and this chapter
+// and section loaded again and the back and reload buttons should work
+// as expected.
+// Whew.
+
+if (top.name == parent.name)
+{
+document.write('<BASEFONT SIZE = 2>')
+document.write('<A HREF=\"javascript:framesGO()\" onMouseOver=\"window.status=\'Put back the left index frame (JavaScript)\'; return true\">')
+document.write('<IMG SRC="../images/leftarrow.gif" ALT="open index frame (javascript)" HEIGHT=12 WIDTH=7 BORDER=0 ALIGN=\"TOP\"></A>')
+}
+
+document.write('<BASEFONT SIZE = 2><b>')
+document.write(parent.frames[1].document.title.substring(0,50))
+document.write('</b>')// -->
+</SCRIPT>
+
+</TD><TD ALIGN="RIGHT">
+<BASEFONT SIZE = 2>
+
+<b>Section:<b> <B> <A class = navgrn HREF="Ch2.0.html" Target="big_bottom_right">0</A> 
+<A class = navgrn HREF="Ch2.1.html" Target="big_bottom_right">1</A> 
+<A class = navgrn HREF="Ch2.2.html" Target="big_bottom_right">2</A> 
+<A class = navgrn HREF="Ch2.3.html" Target="big_bottom_right">3</A> 
+<A class = navgrn HREF="Ch2.4.html" Target="big_bottom_right">4</A> 
+<A class = navgrn HREF="Ch2.5.html" Target="big_bottom_right">5</A> 
+<A class = navgrn HREF="Ch2.6.html" Target="big_bottom_right">6</A> 
+<A class = navgrn HREF="Ch2.7.html" Target="big_bottom_right">7</A> 
+<A class = navgrn HREF="Ch2.8.html" Target="big_bottom_right">8</A> 
+<A class = navgrn HREF="Ch2.9.html" Target="big_bottom_right">9</A> 
+<A class = navgrn HREF="Ch2.10.html" Target="big_bottom_right">10</A> 
+<A class = navgrn HREF="Ch2.11.html" Target="big_bottom_right">11</A> 
+<A class = navgrn HREF="Ch2.12.html" Target="big_bottom_right">12</A> 
+<A class = navgrn HREF="Ch2.13.html" Target="big_bottom_right">13</A> 
+<A class = navgrn HREF="Ch2.14.html" Target="big_bottom_right">14</A> 
+<A class = navgrn HREF="Ch2n.html" Target="big_bottom_right">N</A> </B>
+<A class = navgrn HREF="Ch2.html" Target="big_bottom_right">Outline</A> | 
+<A class = navgrn HREF="../numberstr.html">Chapters</A> |
+<A class = navgrn HREF="../Answers/Ans2.html" Target="big_bottom_right">Answers</A>
+
+</TD></TR></TABLE>
+</BODY>
+</HTML>

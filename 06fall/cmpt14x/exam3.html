@@ -1,0 +1,191 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.5em; } 
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+--></style>
+
+<title>CMPT145 Fall2006 Midterm 3, Trinity Western.  22 Nov 2006.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>__________________</td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<ol class="main">
+
+<li>
+An orchard grows five apple varieties:
+<br>Fuji, Gala, Spartan, Rome, and Melba.<br>
+The apples I like are Fuji, Gala, and Rome; let this <b>set</b> be denoted by
+<tt>myFav</tt>.  <br>Let <tt>yrFav</tt> be the set containing Fuji and Melba.
+
+<ol class="subparts">
+  <li> Consider the <b>union</b> of <tt>myFav</tt> and <tt>yrFav</tt>.
+  Express in words the <b>interpretation</b> of this union
+  in the context of apple preferences. <u>[2]</u> <br><br><br>
+  <li> Consider the <b>intersection</b> of <tt>myFav</tt> and <tt>yrFav</tt>.
+  Express in words the <b>interpretation</b> of this intersection
+  in the context of apple preferences. <u>[2]</u> <br><br><br><br> 
+<!--
+  <li> Consider the <b>set difference</b> <tt>yrFav - myFav</tt>.
+  Express in words the <b>interpretation</b> of this set difference
+  in the context of apple preferences. <u>[2]</u> <br><br><br><br>
+-->
+  
+  <li> We wish to implement some set operations using <b>bitsets</b> in Python.
+  Define five Python <b>variables</b> <tt>Fuji, Gala, Spartan, Rome, Melba</tt>
+  with appropriate integer values for use in a bitset.
+  <u>[3]</u> <br><br><br><br><br><br><br>
+  <li> Using the variables you just defined, define a Python <b>bitset</b>
+  for <tt>myFav</tt>. <u>[2]</u> <br><br><br><br>
+<!--
+  <li> Write a Python expression for the <b>intersection</b> of
+  <tt>myFav</tt> and <tt>yrFav</tt>. <u>[2]</u> <br><br><br>
+-->
+  <li> Define a Python function <tt>likesGala()</tt> that returns a
+  <b>boolean</b> value indicating whether a given bitset includes Gala.
+  Include a short docstring. <u>[3]</u>
+</ol>
+
+<li class="break">
+One of the nice things a Python list can do that a C array can't is
+<b>delete</b> elements from the middle of the list.  C arrays have fixed length:
+so in C array semantics, deleting element 1 from the array
+<tt>[0, 1, 2, 3, 4]</tt> results in <tt>[0, 2, 3, 4, 4]</tt> -- where
+the last element is just considered junk to be ignored.
+
+<ol class="subparts">
+  <li> Write a Python function that takes a list and an index, and deletes the
+  corresponding element from the list.  (This function can be nearly trivial in
+  Python.)  Include a short docstring. <u>[2]</u> <br><br><br><br><br><br>
+  <li> Write a Python function to do the same, but using <b>C array
+  semantics</b>:
+  don't use Python's ability to delete or take list slices.
+  Include a short docstring.
+  <u>[4]</u> <br><br><br><br><br><br><br><br><br><br><br>
+</ol>
+
+<li>
+In your own words, contrast the <b>procedural</b> vs.
+<b>object-oriented</b> programming paradigms.
+<u>[4]</u>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Define or describe each of the following <b>object-oriented</b> terms:
+<u>[8]</u>
+<ol class="subparts">
+  <li> Message<br><br><br><br>
+  <li> Interface<br><br><br><br>
+  <li> Class<br><br><br><br>
+  <li> Instance<br><br><br><br>
+  <li> Attribute<br><br><br><br>
+  <li> Method<br><br><br><br>
+  <li> Constructor<br><br><br><br>
+  <li> Overloading<br><br><br><br>
+</ol>
+
+<li>
+Given the following block of Python code, consider the names <b>visible</b>
+to the print statment at the end.  For each of the 9 expressions in the print
+statement, write what would be printed,
+or if the name is not visible, write 'NameError'. <u>[9]</u>
+<pre>
+w = 1
+class C:
+	w = 2
+	x = 3
+	def __init__(self):
+		from math import sqrt
+		w = 4
+		x = 5
+		y = 6
+		self.z = 7
+a = C()
+print w,		x,		y,		z,
+	
+	
+      a.w,		a.x,		a.y,		a.z,
+      
+      
+      sqrt(4.0)
+</pre>
+
+<li class="break">
+Using <b>exceptions</b>, modify the following block of Python code to print,
+"Can't divide by zero; goodbye!" and exit the loop when the user inputs 0.
+<u>[4]</u>
+<pre>
+
+	while True:
+	
+		in = input("Type a number and I'll invert it! ")
+
+		recip = 1.0/in
+
+		print "The reciprocal is:", recip
+	
+	
+	
+	
+</pre>
+
+<li>
+The Python text ch10 describes an example application using <b>dictionaries</b>
+to implement "<b>sparse matrices</b>" -- where only the non-zero entries of a 
+matrix are stored.  The keys are (row,col) tuples, and the values are the
+corresponding non-zero entries of the matrix.  For example, a 2x2 sparse matrix
+with the value 5 in entry (1,0) and the value 3 in entry (1,1) would be
+represented by the dictionary <tt>{(1,0): 5, (1,1): 3}</tt>.
+	
+<ol class="subparts">
+  <li> Write a Python function that returns the number of <b>non-zero</b> 
+  entries in a sparse matrix.  (Hint: it should be a very short function!)
+  Include a short docstring. <u>[2]</u> <br><br><br><br><br><br>
+<!--
+  <li> Write a Python function that returns the number of non-zero entries in a
+  given <b>row</b> of a sparse matrix. 
+  You may assume the caller will pass in two additional parameters, 
+  <tt>nrows</tt> and <tt>ncols</tt>, specifying the number of 
+  rows and columns in the matrix.
+  Include a short docstring.
+  <u>[3]</u> <br><br><br><br><br><br><br><br><br><br><br><br>
+-->
+  <li> Write a Python function that returns a nicely formatted <b>string</b>
+  representation of a sparse matrix.  The function should not print anything,
+  just return a string, akin to the <tt>__str__()</tt> method.
+  For example, the 2x2 matrix mentioned above might be formatted as,
+  " 0  0 \n 5  3" (but don't worry excessively about the spacing).
+  You may assume the caller will pass in two additional parameters, 
+  <tt>nrows</tt> and <tt>ncols</tt>, specifying the number of 
+  rows and columns in the matrix.
+  Include a short docstring. <u>[5]</u>
+</ol>
+
+</ol>
+
+</body></html>
+

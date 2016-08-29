@@ -1,0 +1,203 @@
+<HTML>
+<HEAD>
+<TITLE>12.11 Variations on the List Theme</TITLE>
+<meta NAME="keywords" CONTENT="variation, variations, list, theme, circular, list, lists, two, way, two-way, head, tail">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.11 Variations on the List Theme</B></H2>
+<P>One of the difficulties in working with the type of list used so far is that a search for one record in the list must begin with the head pointer and then proceed pointer by pointer, item by item, until the desired object is reached (a strict sequential search.)  Keeping a tail pointer around (and updated properly) may help, especially if one frequently appends, but there are other minor improvements that can sometimes gain efficiency.</P>
+<H3><B><A NAME="12.11.1">12.11.1</A> Circular Lists</B></H3>
+<P>A list can <!--"-->&quot;swallow its tail<!--"-->&quot; by having the pointer in the tail item contain the location of the first item, instead of NIL.  Now, the position of the head is rather arbitrary, for it is possible to get from any item to any other one.  If items were frequently added near each other, it might make sense to change the head pointer so that it always pointed to the most recent insertion.</P>
+<BLOCKQUOTE><I><A NAME="Circular">A</A> list in which the last item points to the first item is said to be <U>circular</U>.</I></BLOCKQUOTE>
+<P><CENTER><IMG SRC="Figure/Figure_12.12.GIF" BORDER="1"></CENTER><!----></P>
+<P>In a circular list, there is in a sense no such thing as a last item, but it is still useful to keep a tail pointer to find the last logical item<!--‹-->--after all, it can no longer be found by searching for a NIL pointer.  It might also be useful to maintain a variable that stores the number of active items in the list, so that a traverse with a high index number does not waste time by going around the circle and examining items more than once.  In such a list, inserting before the head changes the head pointer to point to the new item, and inserting after the tail changes the tail pointer to point to the new item, but both place a new item after the old tail and before the old head in the circle.</P>
+<H3><B><A NAME="12.11.2">12.11.2</A> Two-Way Lists</B></H3>
+<P>Still another scheme would have each data item contain two pointers<!--‹-->--one to the previous record in the list and a second to the subsequent one.  Naturally, this idea could be combined with the one above and the forward pointer of the tail item could point to the head item and vice-versa, although this additional variation to produce a circular two way list is not shown in figure 12.13.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.13.GIF" BORDER="1"></CENTER><!----></P>
+<P>The following example sketches the declarations and provides the procedure for inserting data items into a two way linked list.  The list is a collection of records, consisting of student names in alphabetical order by last name and also containing their grades.  The test harness does a few inserts and prints out only the first character of each last name so as to verify the inserting.</P>
+<PRE>
+<B>MODULE</B> <A NAME="TwoWayList">TwoWayList</A>;
+
+(* a very simple test harness
+  to demonstrate inserting in
+  a two-way linked list
+  by R. Sutcliffe  1995 05 23 *)
+
+<B>FROM</B> Strings <B>IMPORT</B>
+  Compare, CompareResults;
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  ReadString, WriteString, WriteChar, WriteLn, SkipLine;
+
+<B>TYPE</B>
+  Name = <B>ARRAY</B> [0..10] <B>OF</B> <B>CHAR</B>;
+  StudentRecPtr = <B>POINTER</B> <B>TO</B> StudentRec;
+  StudentRec =
+    <B>RECORD</B>
+      last, first : Name;
+      mark1, mark2 : <B>REAL</B>;
+      toPoint, fromPoint : StudentRecPtr;
+    <B>END</B>;
+<B>VAR</B>
+  head : StudentRecPtr;
+  student : StudentRec;
+
+<B>PROCEDURE</B> EnterData (<B>VAR</B> student: StudentRec);
+
+<B>BEGIN</B>
+  <B>WITH</B> student
+     <B>DO</B>
+       WriteString (<!--"-->&quot;Enter the last name <!--"-->&quot;);
+       ReadString (last);
+     SkipLine;
+       (* and continue in this vein *)
+      <B>END</B>;
+<B>END</B> EnterData;
+
+<B>PROCEDURE</B> WriteData (student: StudentRec);
+(* just writing one letter - this is only a test *)
+<B>BEGIN</B>
+  <B>WITH</B> student
+     <B>DO</B>
+       WriteChar (last[0]);
+       (* and continue in this vein *)
+      <B>END</B>;
+<B>END</B> WriteData;
+
+<B>PROCEDURE</B> WriteList (p : StudentRecPtr);
+<B>BEGIN</B>
+  <B>WHILE</B> p # <B>NIL</B>
+    <B>DO</B>
+      WriteData (p^);
+      p := p^.toPoint; (* traverse to next item *)
+    <B>END</B>;
+  WriteLn;
+<B>END</B> WriteList;
+
+<B>PROCEDURE</B> Insert (classMember : StudentRec);
+<B>VAR</B>
+  temp, point : StudentRecPtr;
+<B>BEGIN</B>
+  (* handle case of first one to do *)
+  <B>IF</B> head = <B>NIL</B>
+    <B>THEN</B>
+      <B>NEW</B> (head);
+      head^ := classMember;
+      head^.toPoint := <B>NIL</B>;
+      head^.fromPoint := <B>NIL</B>;
+      <B>RETURN</B>
+    <B>END</B>; (* if *)
+
+  (* all subsequent additions come here *)
+  point := head;
+  <B>WHILE</B> (point^.toPoint # <B>NIL</B>)
+      <B>AND</B> (Compare (classMember.last, point^.last) = greater) 
+    <B>DO</B>
+      point := point^.toPoint;
+    <B>END</B>;
+  (* found place at point^ *)
+  <B>NEW</B> (temp);    (* so get memory for it *)
+  temp^ := classMember;  (* put it there *)
+     (* and set up the pointers *)
+   
+  <B>IF</B> (point^.toPoint = <B>NIL</B>) (* at end so check last one *)
+      <B>AND</B> (Compare (classMember.last, point^.last) = greater)
+    <B>THEN</B>  (* must append *)
+      temp^.fromPoint := point;
+      point^.toPoint := temp;
+      temp^.toPoint := <B>NIL</B>;
+    <B>ELSE</B> (* goes before point ^ *)
+      <B>IF</B> point = head 
+        <B>THEN</B> (* reset head *)
+        head := temp
+      <B>ELSE</B>
+        point^.fromPoint^.toPoint := temp;
+      <B>END</B>;
+      temp^.fromPoint := point^.fromPoint;
+      point^.fromPoint := temp;
+      temp^.toPoint := point;
+   <B>END</B>;
+  
+<B>END</B> Insert;
+
+(* other procedures go here *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B> (* main program does a few inserts *)
+  head := <B>NIL</B>;
+  <B>FOR</B> count := 1 <B>TO</B> 7
+    <B>DO</B>
+      EnterData (student);
+      Insert (student);
+      WriteList (head);
+  <B>END</B>;
+  
+<B>END</B> TwoWayList.</PRE>
+<P>One run log for this test program looked like this:</P>
+<PRE>
+Enter the last name <B>f</B>
+f
+Enter the last name <B>l</B>
+fl
+Enter the last name <B>h</B>
+fhl
+Enter the last name <B>b</B>
+bfhl
+Enter the last name <B>b</B>
+bbfhl
+Enter the last name <B>a</B>
+abbfhl
+Enter the last name <B>m</B>
+abbfhlm</PRE>
+<P>Notice that the program did not actually <I>use</I> the two-way feature of the list in the one procedure presented.  One possible use, especially if the list became lengthy would be initiate searches for an item in the last half of the list by starting at the tail item (the pointer would have to be stored, and modifications made even to the one procedure presented here) and working backwards.  This would shorten the average search time.  A circular list with two index pointers, one for the head and one for the <!--"-->&quot;middle<!--"-->&quot; item (halfway along the list), would require even less search time, but one would have to design the code to search forward or backwards starting at the appropriate one of the three indicated points. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,108 @@
+<HTML><HEAD><TITLE>19.15 Assignments</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Assignments">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.15 Assignments</b></H2>
+
+<H3><B>Questions</B></H3>
+<P>1. What is the difference between a class and a module for implementing ADTs?</P>
+<P>2. What kinds of components may an object have?</P>
+<P>3. What do you call the generation of a specific object from a declared class?</P>
+<P>4. Describe two approaches to component visibility for clients of a class and say which one was taken in Modula-2.</P>
+<P>5. What does the concept of an immutable entity apply to in OOM-2?</P>
+<P>6. What parts of a Modula-2 class are visible to a subclass?</P>
+<P>7. What is the difference between objects with value semantics and those with reference semantics? Which approach does Modula-2 take?</P>
+<P>8. What is the difference between a reference and a pointer?</P>
+<P>9. What is the difference between an object definition and an object declaration?</P>
+<P>10. What is the difference between a traced class and an untraced class?</P>
+<P>11. What may a traced class not have in it?</P>
+<P>12. What is the difference between a safeguarded module and an unsafeguarded one?</P>
+<P>13. What may a safeguarded module not have in it?</P>
+<P>14. What is another name for an object component?</P>
+<P>15. Why is a method sometimes called a message?</P>
+<P>16. In what way are Modula-2 classes like modules, and in what ways are they like records?</P>
+<P>17. How is a Modula-2 object instantiated? How is it initialized?</P>
+<P>18. May a Modula-2 object be manually destroyed? If so, under what circumstances?</P>
+<P>19. What is meant by inheritance?</P>
+<P>20. What is the purpose of inheritance?</P>
+<P>21. What restrictions does OOM-2 place on what can be inherited and from where?</P>
+<P>22. What kinds of components does OOM-2 allow to be overridden, and how is this done?</P>
+<P>23. How does one access an overridden component?</P>
+<P>24. What is the difference between static type and dynamic type?</P>
+<P>25. If a chain of subclasses is declared, and an object is instantiated in the last child on the chain, is it assignment compatible to a variable of the eldest parent class? What about the other way around?</P>
+<P>26. What is the GUARD statement for? In what way is it like a CASE statement and in what way is it like a WITH statement? How is it an assertion?</P>
+<P>27. What is unusual about the semantics of ISMEMBER?</P>
+<P>28. What is the difference between the way OOM-2 treats constants and type components, on the one hand, and attribute variables and methods on the other?</P>
+<P>29. What imports are necessary when using untraced OOM-2 classes?</P>
+<P>30. How may two classes refer to each others' declarations (or definitions)?</P>
+<P>31. How does an object get access to itself?</P>
+<P>32. Why does OOM-2 use single inheritance rather than multiple inheritance?</P>
+<P>33. Propose a means (some syntax) that would, if included in OOM-2, avoid the problems of multiple inheritance.</P>
+<P>34. What is an abstract class?</P>
+<P>35. Some implementations do no implement traced objects, only untraced ones. What else will be missing from such implementations?</P>
+<P>36. Determine whether your implementation allows you to turn garbage collection off.</P>
+<P>37. In the example of <A HREF="Ch19.11.html">section 19.11</A>, there was no generic module for Vectors.  Consider the chapter on generics carefully, and explain why it is not a simple matter to interpose a generic module for vectors between the generic module for Tuples and the module for vectors of a specific length. What would have to be done to accomplish this?</P>
+<P>38. What change would have to be made to the base language in order to better accommodate classes in generic definition modules inheriting from classes in other generic definition modules?</P>
+<P>39. Some languages are designed without any pointers, just reference variables. Thus, they have no untraced memory allocation at all (not just none for objects) and all memory allocated dynamically is traced by the garbage collector. What are the pros and cons of such an approach?</P>
+<P>40. In some languages, class declaration is done by saying what class the new one is a subclass of. Show that this implies the existence of a standard identifier that names a particular built-in class. What would you call such a class?</P>
+<P>41. Give an example to illustrate that allowing user defined operator overloading for OOM-2 would make life easier for the users of classes.</P>
+
+<H3><B>Problems:</B></H3>
+<P>42. Create a series of derived classes to illustrate the constructor and destructor chain order.</P>
+<P>43. Devise a means to test whether there is a greater overhead (time) associated with sending a message to an object (invoking a procedure that is a method) or calling a procedure containing the same code directly.</P>
+<P>44. Consider the abstract class demonstration in <A HREF="Ch19.8.html">section 19.8</A>.  Add proper commenting, better verbiage in the output, and the classes Triangle, Parallelogram, Rhombus, Trapezoid, and regular n-gon to the family, each in an appropriate place in the class hierarchy.</P>
+<P>45. Complete and test the suite of objects in section 19.11.</P>
+<P>46. Use the class points to implement a class <i>line</i> (using two points.)</P>
+<P>47. Add a generic vector module to the example of <A HREF="Ch19.11.html">section 19.11</A>. See question 37.</P>
+<P>48. Complete and test the suite of objects in <A HREF="Ch19.12.html">section 19.12</A>.</P>
+<P>49. Implement a database for your Church, business, or hobby using an object oriented approach. Be sure to do a careful design of your chart of classes and their contents before writing any code.</P>
+<P>50. Implement and test the data type <i>fraction</i> as a class. Include standard operations, reduction to lowest terms, and retrieval of numerator and denominator, as well as a display procedure.</P>
+<P>51. Derive a complex number class from the suite of classes in <A HREF="Ch19.11.html">section 19.11</A>.</P>
+<P>52. Design, implement and test a class for a deck of standard playing cards, including a procedure to deal hands of Bridge.</P>
+<P>53. Use the same class <i>CardDeck</i> from the previous question to implement a game of solitaire.</P>
+<P>54. Solve the eight queens problem using objects.</P>
+<P>55. Solve the knight's tour problem using objects.</P>
+<P>56. Implement a linked list as a class.</P>
+<P>57. Derive a queue class from the above list class.</P>
+<P>58. Derive a priority queue class from the above queue class.</P>
+<P>59. Produce a concordance program that examines a text file and produces a sorted list of all the words in the file, their frequency, and a means to display the word in the contest of its original occurrences.</P>
+<P>60. Implement a binary tree as a class.</P>
+<P>61. Implement a quicksort as a class.</P>
+<P>62. Use <i>GraphPaper</i> or other graphics capabilities on your computer to implement a bouncing ball on the screen as an instance of a class <i>ball</i>. </P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

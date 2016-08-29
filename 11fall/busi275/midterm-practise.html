@@ -1,0 +1,154 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Midterm Exam Practise :: BUSI275 11FA :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/11fall/busi275/">
+    BUSI 275 Fall 2011</a> Midterm Exam Practise Questions</h1>
+
+<small><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></small>
+
+<div>
+As an aid for your study, here are a collection of questions similar to what
+might show up on the midterm exam.  The actual exam may be longer or shorter,
+there may be some material on the exam that is not covered here, and there may
+be some material here that doesn't show up on the exam.  The coverage for the
+exam is ch1-8 in our textbook.
+</div><div>
+The exam is in-class, 70min long, and you will enter your answers on the
+computer.  You may use Excel, the lecture notes, textbook, and any resource
+on the Internet that is <b>not</b> a live person.  You may not communicate in
+any way (including text message, email, chat, etc.) with classmates or anyone
+outside of class; if you have a question, raise your hand and I will help you
+as much as I can.
+</div>
+
+<ol class="main">
+
+<li> A quality control inspector has rated each batch produced today on a scale
+from A through E, where A represents the best quality and E is the worst.
+What is the level of measurement of this variable?
+<i><br>Ordinal</i>
+
+<li> Your customers’ average order size is $2601, with a standard deviation of
+$1275.  Suppose 45 typical customers independently placed orders tomorrow.
+What are the chances that tomorrow’s average order per customer will be between
+$2450 and $2750?
+<i><br>SE=190, z = -0.7945 and +0.7839, so area in between is 57%</i>
+
+<li> Using the information in the preceding problem, produce a 95% confidence 
+interval on average order per customer per day, assuming 20 customers per day.
+<i><br>SE=285.10, z = +/- 1.96, so conf. int. is between $2042.22 and $3159.78.</i>
+
+<li> The table below shows sales of some “light” foods:
+<br><table border="1" cellpadding="5">
+<tr><th> "Light" Food</th><th> Sales ($Millions)</th></tr>
+<tr><td>Entenmann's Fat Free baked goods </td><td> $125.5 </td></tr>
+<tr><td>Healthy Request soup </td><td> $123.0 </td></tr> 
+<tr><td>Kraft Free processed cheese </td><td> $83.4 </td></tr> 
+<tr><td>Aunt Jemima Lite and Butter Lite pancake syrup </td><td> $58.0 </td></tr> 
+<tr><td>Fat Free Fig Newtons </td><td> $44.4 </td></tr> 
+<tr><td>Hellmann's Light mayonnaise </td><td> $38.0 </td></tr> 
+<tr><td>Louis Rich turkey bacon </td><td> $32.1 </td></tr> 
+<tr><td>Kraft Miracle Whip free </td><td> $30.3 </td></tr> 
+<tr><td>Ben &amp; Jerry's frozen yogurt </td><td> $24.4 </td></tr> 
+<tr><td>Hostess Lights snack cakes </td><td> $19.3 </td></tr> 
+<tr><td>Perdue chicken/turkey franks </td><td> $3.8 </td></tr> 
+<tr><td>Milky Way II candy bar </td><td> $1.1 </td></tr>
+</table>
+
+My company is planning to launch a new brand of light food.  Our goal is to
+reach at least the 20th percentile of current brands.  What is our sales goal,
+in dollars?
+<i><br>rank=2.4, round up to 3: 3rd entry is $19.3.<br>
+Or, using PERCENTILE(): $20.32.
+<br>The difference is due to 
+<a href="http://en.wikipedia.org/wiki/Percentile#Alternative_methods">
+the different way Excel computes percentiles.</a></i>
+
+<li> Produce a relative frequency histogram for the variable "Airline" in the
+dataset <a href="groebner_xls/AirlinePassengers.XLS">AirlinePassengers.xls</a>
+(linked).
+
+<li> Using the same dataset from the preceding problem, produce a joint
+frequency distribution for the two variables, "Male/Fem." and "Business or
+Pleasure".  Are these two variables independent in this dataset?  Why or
+why not?
+<i><br>No: e.g., P(Business | Male) &ne; P(Business | Female)</i>
+
+<li> You have followed up on people who received your catalog mailing.  You
+found that 4% of these people ordered the hat, and 6% ordered the mittens.  Of
+the people who ordered the hat, 55% also ordered the mittens.  Of the people
+who did not order the hat, what percentage ordered the mittens?
+<i><br>Given: P(H)=4%, P(M)=6%, P(M|H)=55%,
+the question is looking for P(M|noH).
+<br>Then P(M and H) = (.04)(.55) = 2.2%.
+<br>Since P(M and H) and P(M and noH) must add up to P(M), so
+P(M and noH) must equal 6% - 2.2% = 3.8%.
+<br>We are looking for P(M|noH), which is P(M and noH) / P(noH).
+<br>P(noH) must be 100% - P(H) = 96%, so
+<br>P(M|noH) = 3.8% / 96% = 3.958333%.</i>
+
+<li> Here are the satisfaction scores given by 12 randomly selected customers:
+<br><table border="1" cellpadding="5"><tr>
+<td>89 </td><td> 98 </td><td> 96 </td><td> 65 </td><td> 99 </td><td> 81
+</td><td> 76 </td><td> 51 </td><td> 82 </td><td> 90 </td><td> 96 </td><td> 76
+</td></tr></table>
+
+Does the observed average differ significantly from the target score of 80?
+<i><br>mean = 83.25, SD = 14.63, SE = 4.223.
+<br>z = (80-83.25)/SE = -0.77, % area in left tail = 22.08%.
+<br>No, does not significantly differ (technically, this question is a ch9
+question if we consider an &alpha;, but the components are within ch7-8).</i>
+
+
+<li> In a nationwide poll for a political candidate, we found that 309 out of
+1105 registered voters claimed to be in favor of that candidate.  If we report
+our findings with 95% confidence, what is our margin of error?
+<i><br>SE = 1.3502%, z=1.96, so margin of error (the +/- in the confidence
+interval) is just (1.96)(1.3502%) = 2.65%</i>
+
+<li> In order to pay your firm’s debts this year, you will need to be awarded
+at least 2 contracts.  This is not usually a problem, since the yearly average
+is 5.1 contracts.  What is the probability that you will not earn enough to pay
+your firm’s debts this year? <em>(Hint: which distribution is appropriate?)</em>
+<i><br>POISSON(1, 5.1, 1) = 3.72%</i>
+
+<li> Your client has a particularly complex database procedure it needs to run
+quickly.  Your company can provide a new computer system to speed it up.
+You have run the procedure on your new system 14 times (independent runs) and
+obtained the following runtimes (in minutes):
+<br><table border="1" cellpadding="5"><tr><td>
+5 </td><td> 8 </td><td> 5 </td><td> 6 </td><td> 11 </td><td> 9 </td><td> 8 </td><td>
+10 </td><td> 5 </td><td> 11 </td><td> 6 </td><td> 5 </td><td> 5 </td><td> 10
+</td></tr></table>
+
+You would like to claim that your new system is very fast.  In your advertising,
+you will say, "average processing time is as low as ___".  Find the appropriate 
+bound of the two-sided 95% confidence interval.
+<i><br>t-score is TINV(.05,13) = 2.16.
+<br>mean = 7.43, sd = 2.41, SE = 0.6438.
+<br>Conf int is 6.038 to 8.819 (we want the lower bound).</i>
+
+<li> You would like to estimate the average price of a stock to a precision 
+of +/- 1%, with 95% confidence.  Assume the volatility (coefficient of
+variation) of the stock is 12%.  Assuming each day's price is independent
+and normally distributed, how many days should you track the stock in order
+to attain this precision in estimating its average price?
+<i><br>SD = 0.12&mu;, so SE = 0.12&mu;/sqrt(n).
+<br>Margin of error = 0.01&mu;.
+<br>95% confidence implies a z-score of NORMSINV(0.975) = 1.96, so
+<br>1.96 = 0.01&mu; / (0.12&mu; / sqrt(n)).
+<br>Solving for n: n = ( (1.96)(0.12)/(0.01) )<sup>2</sup> = 554
+</i>
+
+<li> (p.255 #41) The mean time between failures (MTBF) for a particular model
+of power supply unit (PSU) is 4,000 hours.  Some PSUs may fail earlier; some
+later.  What is the probability of a random PSU failing in less than 2,100
+hours?  <em>(Hint: which probability distribution is appropriate?)</em>
+
+</ol>
+
+</body></html>

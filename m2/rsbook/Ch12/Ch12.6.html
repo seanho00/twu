@@ -1,0 +1,272 @@
+<HTML>
+<HEAD>
+<TITLE>12.6 An Example--Dynamic Records and Files</TITLE><meta NAME="keywords" CONTENT="example, dynamic, record, records, file, files, collection, pointer, pointers, data, file, module, error, errors, checking, check, memory, allocation, allocate">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.6 An Example<!--</B>‹<B>-->--Dynamic Records and Files</B></H2>
+<P>Dynamic memory is useful when working with records initially stored in a file because the number of records in the file is not known by the program ahead of time.  Therefore, it may be worthwhile to allocate the memory for the items in the file as they are read, instead of declaring ahead of time an array of records large enough to hold all the data.  The example below is a simple illustration of this idea.  As in the sorting example of a previous section, the dynamic data is tracked by a collection of pointers to the data items held in an array and each item is sorted to its correct place in the list by manipulating the pointers in the array, not by reassigning any of the data elements themselves.  As in that example, this is more efficient than keeping an array of the entire records, because memory reshuffling is limited to pointers, which take far fewer storage locations and therefore less time to swap or otherwise reassign.</P>
+<P>Here, a small record consisting of people's names, initial, and age is kept in a file on the disk.  For simplicity, it is supposed that the maximum number of these records is 101.  The purpose this simple module serves is to read the items into memory, simultaneously sorting their pointers by the name in the record, and then printing out the entire list.  The module also illustrates some elementary interactions between files and dynamic records, though this is by far the last word on the subject.</P>
+<P>First a very simple module was written to create a data file.  It has no dynamic data or pointers of any kind.</P>
+<PRE>
+<B>MODULE</B> <A NAME="MakeRecords">MakeRecords</A>;
+
+(* very crude data entry
+to produce a file for the program GetPrintRecords 
+by R. Sutcliffe -- modified 1995 05 12 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadString, ReadChar, WriteLn, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> RndFile <B>IMPORT</B>
+  ChanId, OpenClean, OpenResults, Close, raw;
+<B>FROM</B> RawIO <B>IMPORT</B>
+  Write;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>CONST</B>
+  max = 100;
+
+<B>TYPE</B> 
+  ShortAry = <B>ARRAY</B> [0..15] <B>OF</B> <B>CHAR</B>;
+  RecordData =
+    <B>RECORD</B>
+      last, first: ShortAry;
+      initial: <B>CHAR</B>;
+      age: <B>CARDINAL</B>;
+    <B>END</B>;
+
+<B>VAR</B>
+  person: RecordData;
+  numActive : <B>CARDINAL</B>;
+  outfile: ChanId;
+  res : OpenResults;
+
+<B>BEGIN</B>   (* main program *)
+  OpenClean (outfile, <!--"-->&quot;data<!--"-->&quot;, raw, res);
+  <B>IF</B> res = opened
+    <B>THEN</B>
+      numActive := 0;
+      <B>LOOP</B>
+        WriteString (<!--"-->&quot;reading record number<!--"-->&quot;);
+        WriteCard (numActive +1, 5);
+        WriteLn;
+        WriteString (<!--"-->&quot;last name?<!--"-->&quot;);
+        ReadString (person.last);
+        <B>IF</B> ReadResult () # allRight
+          <B>THEN</B>
+            <B>EXIT</B>
+          <B>END</B>;   (* if *)
+        SkipLine; WriteLn;
+        WriteString (<!--"-->&quot;first name?<!--"-->&quot;);
+        ReadString (person.first);
+        <B>IF</B> ReadResult () # allRight
+          <B>THEN</B>
+            <B>EXIT</B>
+          <B>END</B>;   (* if *)
+        SkipLine; WriteLn;
+        WriteString (<!--"-->&quot;initial?<!--"-->&quot;);
+        ReadChar (person.initial);
+        <B>IF</B> ReadResult () # allRight
+          <B>THEN</B>
+            <B>EXIT</B>
+          <B>END</B>;   (* if *)
+        SkipLine; WriteLn;
+        WriteString (<!--"-->&quot;age?<!--"-->&quot;);
+        ReadCard (person.age);;
+        <B>IF</B> ReadResult () # allRight
+          <B>THEN</B>
+            <B>EXIT</B>
+          <B>END</B>;   (* if *)
+        SkipLine;
+        Write (outfile, person);
+        <B>INC</B> (numActive);
+      <B>END</B>; (* loop *)
+      Close (outfile);
+    <B>ELSE</B>
+      WriteString (<!--"-->&quot;could not open file<!--"-->&quot;);
+    <B>END</B> (* initial if res *)
+  <B>END</B> MakeRecords.</PRE>
+<P>Next, the main module was produced to read, sort and print this data.  To keep things simple so that the focus can be on the dynamic nature of the memory allocation error checking is primitive or non-existent.  The sorting routine should be considered carefully, however.  This particular one is called an insert sort, and will be discussed in detail in chapter 13, but something like it will be used in other places in the chapter.  It works by examining each item in a sorted list and then inserting the new one in its appropriate place.</P>
+<PRE>
+<B>MODULE</B> <A NAME="GetPrintRecords">GetPrintRecords</A>;
+
+(* By R. Sutcliffe
+to illustrate dynamic records
+modified 1995 05 12 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar, WriteString, WriteLn;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> RndFile <B>IMPORT</B>
+  ChanId, OpenOld, OpenResults, Close, raw;
+<B>FROM</B> RawIO <B>IMPORT</B>
+  Read;
+<B>FROM</B> IOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> Storage <B>IMPORT</B>
+  <B>ALLOCATE</B>;
+<B>FROM</B> Strings <B>IMPORT</B>
+  Compare, CompareResults;
+
+<B>CONST</B>
+  max = 100; (* maximum number of records *)
+
+<B>TYPE</B> 
+  ShortAry = <B>ARRAY</B> [0..15] <B>OF</B> <B>CHAR</B>;
+  RecordData =
+    <B>RECORD</B>
+      last, first: ShortAry;
+      initial: <B>CHAR</B>;
+      age: <B>CARDINAL</B>;
+    <B>END</B>;
+  DataPoint = <B>POINTER</B> <B>TO</B> RecordData;
+  ListType = <B>ARRAY</B> [1..max] <B>OF</B> DataPoint; (* pointers to records *)
+<B>VAR</B>
+  person: RecordData; (* one item for I/O *)
+  list: ListType;
+  count, numActive : <B>CARDINAL</B>;
+  infile: ChanId;
+  res : OpenResults;
+  dataArrayFull : <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> InitPointers;  (* Set all pointers in the list to <B>NIL</B> *)
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := 1 <B>TO</B> max
+    <B>DO</B>
+      list [count] := <B>NIL</B>
+    <B>END</B>
+<B>END</B> InitPointers;
+
+<B>PROCEDURE</B> SortOneIn (name: RecordData);
+<B>VAR</B>
+  moveCount, count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> numActive = 0   (* perhaps this is the first one *)
+    <B>THEN</B>
+      <B>INC</B> (numActive);  (* get it all started *)
+      <B>NEW</B> (list [1]); (* get memory *)
+      list [1]^ := name; (* and occupy it *)
+    <B>ELSIF</B> numActive = max <B>THEN</B> (* no room *)
+      dataArrayFull := <B>TRUE</B>;
+      <B>RETURN</B>;
+    <B>ELSE</B> (* add this one to the array *)
+      count := 0;
+      <B>REPEAT</B>
+        <B>INC</B> (count);
+      <B>UNTIL</B> (count <!-->&gt; numActive)
+          <B>OR</B> <B>NOT</B> (Compare (name.last, list [count]^.last) = greater);
+      (* Now move old ones forward in list to insert *)
+      <B>FOR</B> moveCount := numActive + 1 <B>TO</B> count + 1 <B>BY</B> - 1
+        <B>DO</B>
+          list [moveCount] := list [moveCount - 1]
+        <B>END</B>;
+      <B>NEW</B> (list [count]); (* new value at this spot *)
+      list [count]^ := name; (* occupy the memory *)
+      <B>INC</B> (numActive)
+    <B>END</B>;
+  <B>END</B> SortOneIn;
+
+<B>BEGIN</B>   (* main program *)
+  dataArrayFull := <B>FALSE</B>;
+  InitPointers;
+  OpenOld (infile, <!--"-->&quot;data<!--"-->&quot;, raw, res);
+  <B>IF</B> res = opened
+    <B>THEN</B>
+      numActive := 0;
+      <B>LOOP</B>
+        Read (infile, person);
+        <B>IF</B> ReadResult (infile) # allRight
+          <B>THEN</B>
+            <B>EXIT</B>
+          <B>END</B>;   (* if *)
+        SortOneIn (person);
+        <B>IF</B> dataArrayFull
+          <B>THEN</B>
+            WriteString (<!--"-->&quot;Could not read entire file<!--"-->&quot;);
+            WriteLn;
+            <B>EXIT</B>;
+          <B>END</B>;    (* if *)
+      <B>END</B>; (* loop *)
+    Close (infile); 
+  (* now ready to print it out *)
+    <B>FOR</B> count := 1 <B>TO</B> numActive
+      <B>DO</B>
+        <B>WITH</B> list [count]^
+          <B>DO</B>
+            WriteString (first);
+            WriteString (' ');
+            WriteChar (initial);
+            WriteString ('. ');
+            WriteString (last);
+            WriteString (' is ');
+            WriteCard (age, 3);
+            WriteString (' years old.');
+            WriteLn;
+          <B>END</B> (* with *)
+      <B>END</B>; (* for *)
+    <B>END</B> (* if res *)
+<B>END</B> GetPrintRecords.</PRE>
+<P>Examples of this general nature will be revisited and improved on substantially from time to time in later sections, but for now, the reader will be invited to incorporate at least some cosmetic improvements in the exercises.  One set of output from this latter module, after entering some data for a file with the first one, was:</P>
+<PRE>
+jim t. babchuk is  56 years old.
+ernest y. borgnine is  89 years old.
+catherine m. davis is  15 years old.
+dawn t. moore is  47 years old.
+garth r. moorehead is  34 years old.
+tom r. rowan is  26 years old.
+william r. shakespeare is 390 years old.
+joel r. sutcliffe is  15 years old.
+nathan p. sutcliffe is  15 years old.</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

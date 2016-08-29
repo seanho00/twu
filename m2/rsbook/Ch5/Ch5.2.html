@@ -1,0 +1,381 @@
+<HTML>
+<HEAD>
+<TITLE>5.2 Making One's Own Data Types</TITLE>
+<meta NAME="keywords" CONTENT="ordinal, enumerated, enumerations, representation, representations, ordinals, enumerate, type, types, data, value, conversion, convert, hidden, reserved, word, words, standard, pervasive, identifier, identifiers, range, ranges, subrange, subranges, host, sub-type, assignment, variable, variables, expression, compatible, derived, deriving, derive, run, time, error, summary, declare, declared, z-type, r-type, supertype, supertypes, finite, subset, scalar, real, cardinal, integer, longreal, string, strings, comparison, somparisons, equality, inequality, less, greater, than">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.2 Making One's Own Data Types</B></H2>
+<P>Although small in the sense that it employs only a limited number of pre-defined words, Modula-2 is very flexible and expressive notation.  When a feature one needs is lacking, it can usually be added by the programmer.  There are a variety of ways of doing this.  Some procedures and data types are available in library modules supplied with the implementation and can be imported from them.  As discussed in the next chapter, a programmer may even create custom libraries of such Modules if desired.</P>
+<P>However, many needs are specific to a particular problem and are defined and used only within the confines of a single program module.  As indicated above, a program can not only specify new functionality by defining procedures, (chapter 4) but if the built-in data types are insufficient for clear expression of a problem solution, one can invent new ones.  Consider, for instance, a payroll problem oriented by the days of the week.  It may be desirable to be able to write a loop like:</P>
+<PRE>
+  day := Monday;
+  <B>WHILE</B> day # Friday
+    <B>DO</B></PRE>
+
+<P>This could be accomplished readily enough with a long CONST declaration that equated numbers to the days of the week and by declaring <I>day</I> to be a variable of type CARDINAL.  To do this, one would have to write:</P>
+<PRE>
+  <B>CONST</B>
+    Monday = 1;
+    Tuesday = 2;
+    etc.
+  <B>VAR</B>
+    day : <B>CARDINAL</B>;</PRE>
+
+<P>Conceptually, at least, the variable <I>day</I> is of a type that uses the names of the days of the week.  Actually, it remains of type CARDINAL, and there is nothing to prevent some entirely inappropriate value from being assigned to <I>day</I>  Of course <i>day</i> could be restricted to [1..5] in the declaration, and this would improve things, but the declarations would still be rather clumsy.</P>
+<H3><B><A NAME="5.2.1">5.2.1</A> Ordinal and Enumerated Types</B></H3>
+<P>There is a much better way:  Create a new type of variable whose values can be the names of the days themselves, and specify <I>day</I>  to be of this new type.  Here are the appropriate declarations:</P>
+<PRE>
+  <B>TYPE</B>
+    DayName = (Monday, Tuesday, Wednesday, Thursday, Friday);
+
+  <B>VAR</B>
+    day : DayName;</PRE>
+
+<P>The syntax diagram for a TYPE declaration is in figure 5.1:</P>
+<P><CENTER><IMG SRC="Figure/Figure_5.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>Once a new type has been created in this way, variables can be declared to be of that type and manipulated very much as the built-in ones like INTEGER and CARDINAL.  There are several other possibilities for creating new types; the one in this section is defined as follows: </P>
+<BLOCKQUOTE><I><A NAME="Enumerated">An</A> <U>enumerated type</U> has its possible values specifically listed by name  in its declaration.  There is a finite (Cardinal) number n of these values, and  they can be thought of as being associated with the constants 0, 1, 2, 3, ... n-1. </I></BLOCKQUOTE>
+<P><b>NOTE:</b> Unlike Pascal and Modula-2, some computing languages do not permit the declaration of enumerated types.</P>
+<P>That is, Modula-2 has already built-in the template for creating and using enumerated types.  The representation is still hidden (abstract), though it is a sequential association of numbers with names.  The names themselves constitute the potential values for variables of the new type; these are transparent.  Once the new type has been declared and the variables created with that type, loops such as the one with which this discussion began are perfectly in order.  Note, however, that such a type is not numeric, so that within the loop, the next value of the enumeration cannot be obtained by employing the addition operator.  Instead, INC or DEC must be used:</P>
+<H3><B>Correct:</B></H3>
+<PRE>
+  day := Monday;
+  <B>WHILE</B> day <!--<-->&lt; Friday  (* INC(Friday) doesn't work *)
+    <B>DO</B>
+      statement sequence;
+      <B>INC</B> (day);
+    <B>END</B>;</PRE>
+
+<H3><B>Incorrect:</B></H3>
+<PRE>
+  day := day + 1;</PRE>
+
+<P><B>NOTES</B>: 1. As was the case in using INC and DEC with numeric variables, care must be taken not to increment or decrement past the end of the range of the variable type.  If either the value of <I>day</I> were <I>Monday</I> and one executed <I>DEC (day)</I>, or if the value of <I>day</I> were <I>Friday</I> and one executed <I>INC (day)</I>, the value of <I>day</I> would become undefined.</P>
+<P>	2. The alternate forms INC (day, n) and DEC (day, n) may also be used, subject to the stipulation in note (1) above.</P>
+<P>	3. One may <I>not</I>, however write INC (day, Tuesday) as if <I>Tuesday</I> were actually a cardinal value.</P>
+<P>Even though it is not possible to directly treat a value in an enumeration as a cardinal, it is possible to convert back and forth between the value of the item and the value of the cardinal associated with its position in the enumeration.  This is done in the following way.</P>
+<P>If one has:</P>
+<PRE>
+  <B>TYPE</B>
+    DayName = (Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday);
+
+  <B>VAR</B>
+    day : DayName;
+    cardNum : <B>CARDINAL</B>;
+    ch : <B>CHAR</B>;  (* this is a built-in enumerated type *)</PRE>
+
+<P>then the following assignments return the indicated values.</P>
+<PRE>
+cardNum := <B>ORD</B> (Sunday)		cardNum is now 0
+cardNum := <B>ORD</B> (Thursday)		cardNum is now 4
+day := <B>VAL</B> (DayName, 2)		day is now Tuesday
+day := <B>VAL</B> (DayName, 7)		Range error.  Last is #6.
+cardNum := <B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;)		cardNum is now 65
+ch := <B>VAL</B> (<B>CHAR</B>, 90)		ch is now <!--"-->&quot;Z<!--"-->&quot;</PRE>
+
+<BLOCKQUOTE><I><A NAME="OrdVal">The</A> built-in function ORD takes one of the names associated with the values of an enumerated type and returns the CARDINAL value corresponding to the position of the name in the enumeration.</BLOCKQUOTE>
+<BLOCKQUOTE>The built-in function VAL takes the name of an enumerated type and a CARDINAL value of a position number in the enumeration and returns the corresponding value in the specified type. </I></BLOCKQUOTE>
+<P>Since the position of an item in a list ranges from 0 through (n-1) where n is the number of items, one might think that it would be proper to use VAL and ORD to convert only to and from CARDINALs, not INTEGERs.  See the earlier discussion concerning the compatibility of these two.  However, VAL has an extended meaning, and in standard Modula-2 can also be used to convert a value of any numeric type to an appropriate value in any other numeric type.  Thus,</P>
+<PRE>
+real := <B>VAL</B> (<B>REAL</B>, int);</PRE>
+
+<P>is a way of writing</P>
+<PRE>
+real := <B>FLOAT</B> (int);</PRE>
+
+<P>and</P>
+<PRE>
+lreal := <B>VAL</B> (<B>LONGREAL</B>, real);</PRE>
+
+<P>converts from REAL to LONGREAL, and so on.</P>
+<P>As the last two examples illustrate, the CHAR type is also an enumeration of the underlying national characters (often ISO/ASCII,) whose values could be obtained by writing a program to output them on a printer.</P>
+<P>VAL and ORD are two more examples of built-in identifiers for standard functions.  As with all standard identifiers, they are not reserved words.  Rather, all such functions are automatically imported into every module (They are <I>pervasive identifiers</I>.) and should be regarded as unavailable for assignment by the programmer.  It is syntactically correct, but in very bad taste to write:</P>
+<PRE>
+  <B>VAR</B>
+    <B>VAL</B> : <B>CARDINAL</B>        (* bad bad bad *)</PRE>
+
+<P>VAL and ORD are also inverse functions, in the sense that if <I>name</I> is of type T, and <I>num</I> is a CARDINAL, then</P>
+<PRE>
+  <B>ORD</B> (<B>VAL</B> (T, num));		yields <I>num</I>, and
+  <B>VAL</B> (T, <B>ORD</B> (name));		yields <I>name</I>.</PRE>
+
+<P>The built-in type BOOLEAN is also enumerated.  It may be though of as having the definition:</P>
+<PRE>
+  <B>TYPE</B>
+    <B>BOOLEAN</B> = (<B>FALSE</B>, <B>TRUE</B>);</PRE>
+
+<P>Thus,</P>
+<PRE>
+  <B>VAL</B> (<B>BOOLEAN</B>, 0);	yields <B>FALSE</B>,
+  <B>ORD</B> (<B>TRUE</B>);		yields the value 1,
+  <B>INC</B> (boolVar);		produces <B>TRUE</B> if boolVar was false.</PRE>
+
+<P>Naturally, if <I>boolVar</I> were TRUE, incrementing it would render it undefined, as would decrementing it when it were FALSE.</P>
+<P>Here is a sample program illustrating some of these ideas.  It calculates a person's pay for a week, given the number of hours worked and the hourly wage.</P>
+<PRE>
+<B>MODULE</B> <A NAME="SimplePay">SimplePay</A>;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of enumerated types *)
+(* using ISO Standard Modula-2 *)
+(* last revision 1996 12 03 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+   WriteCard;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+
+<B>TYPE</B>
+  DayName = (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday);
+
+<B>VAR</B>
+  day : DayName;
+  num : <B>CARDINAL</B>;
+  wage, hours, totHours : <B>REAL</B>;
+  key : <B>CHAR</B>;
+
+<B>PROCEDURE</B> WriteDay (day : DayName);
+(* write out a string appropriate for the value of day
+pre: none
+post: a string is written but no line end is written; *)
+
+<B>BEGIN</B>
+  <B>IF</B> day = Monday
+    <B>THEN</B>
+      WriteString (<!--"-->&quot;Monday<!--"-->&quot;);
+    <B>ELSIF</B> day = Tuesday <B>THEN</B>
+      WriteString (<!--"-->&quot;Tuesday<!--"-->&quot;);
+    <B>ELSIF</B> day = Wednesday <B>THEN</B>
+      WriteString (<!--"-->&quot;Wednesday<!--"-->&quot;);
+    <B>ELSIF</B> day = Thursday <B>THEN</B>
+      WriteString (<!--"-->&quot;Thursday<!--"-->&quot;);
+    <B>ELSIF</B> day = Friday <B>THEN</B>
+      WriteString (<!--"-->&quot;Friday<!--"-->&quot;);
+    <B>END</B>;
+<B>END</B> WriteDay;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program computes total weekly wages from <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;a wage rate and daily hours worked<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;What is your hourly wage? <!--"-->&quot;);
+  ReadReal (wage);
+  SkipLine;
+  totHours := 0.0;     (* initialize total hours *)
+  WriteLn;
+  day := Monday;
+
+  <B>WHILE</B> day <!--<-->&lt;=Friday
+    <B>DO</B>
+      WriteString (<!--"-->&quot;How many hours did you work <!--"-->&quot;);
+      WriteString (<!--"-->&quot;on <!--"-->&quot;);
+      WriteDay (day);
+      WriteString (<!--"-->&quot;? ==<!-->&gt; <!--"-->&quot;);
+      ReadReal (hours);
+      SkipLine;
+      totHours := totHours + hours;
+      WriteLn;
+      <B>INC</B> (day);
+    <B>END</B>;      (* while *)
+
+  WriteString (<!--"-->&quot;Your total wages for the week are $ <!--"-->&quot;);
+  WriteFixed (wage * totHours, 2, 0);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to conclude ==<!-->&gt;<!--"-->&quot;);
+  ReadChar (key);
+<B>END</B> SimplePay.</PRE>
+
+<H3><B>Sample Output:</B></H3>
+<PRE>
+This program computes total weekly wages from
+a wage rate and daily hours worked
+
+What is your hourly wage? <B>15.75</B>
+How many hours did you work on Monday? ==<!-->&gt; <B>8.0</B>
+How many hours did you work on Tuesday? ==<!-->&gt; <B>7.5</B>
+How many hours did you work on Wednesday? ==<!-->&gt; <B>7.0</B>
+How many hours did you work on Thursday? ==<!-->&gt; <B>6.0</B>
+How many hours did you work on Friday? ==<!-->&gt; <B>8.0</B>
+Your total wages for the week are $ 574.88
+Press return to conclude ==<!-->&gt;</PRE>
+
+<P>As this example illustrates, the ordinal value <I>Monday</I> and the string, <!--"-->&quot;<I>Monday</I><!--"-->&quot; are not the same thing.  A common student error is to code <i>WriteString (day)</i> in an attempt to output the string.  The names <i>Monday</i>, <i>Tuesday</i>, <i>Wednesday</i>, <i>Thursday</i>, and <i>Friday</i> are for the use of the compiler only; the program sees them as abstract values, and not as strings.  That is, the transparency of the type DayName to the program only goes as far as the listing of the possible values it can take on.  The letters <I>M</I>,<I>o</I>,<I>n</I>,<I>d</I>,<I>a</I>, and <I>y</I> used to type the ordinal value <I>Monday</I> in the source code are not available as characters in a string "<i>Monday</i>" to the finished program; only the abstract value is.</P> The value <I>Saturday</I> is needed to prevent a run time error when the value <I>Friday</I> is incremented.
+<H3><B><A NAME="5.2.2">5.2.2</A> Subranges Of Existing Types</B></H3>
+<P>Still another way to create a new data type is to specify it as a range of consecutive values taken from some built-in or previously defined type (called the <i>host</i> type).  The range is indicated by enclosing it in brackets.</P>
+<BLOCKQUOTE><I><A NAME="Subrange">A</A> <U>subrange</U> of an ordinal or enumerated type is a sequence of consecutive values of the host type that is indicated by: [start of range .. end of range]  where (start of range) <!--¾-->&lt;= (end of range.)</I></BLOCKQUOTE>
+<P>Here are a few examples:</P>
+<PRE>
+  <B>TYPE</B>
+    Capitals = ['A' .. 'Z'];
+    Peg = ['A' .. 'C'];
+    Digit = [0 .. 9];
+    Smallnum = [-5 .. 5];
+    Mistake = [5 .. 1]; (* compiler error as start <!-->&gt; end *)
+
+  <B>VAR</B>
+    letter : Capitals;
+    origin, destination, temporary : Peg;
+        (* use in Tower of Hanoi program *)
+    num : Digit;
+    sNum : Smallnum;</PRE>
+
+<P>Or, suppose that the type <I>DayName</I> is declared as in the first line of the TYPE declaration below.  Then the second declaration of <I>Weekday</I> as a subrange of the user-defined enumeration is also valid.</P>
+<PRE>
+  <B>TYPE</B>
+    DayName = (Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday);
+    Weekday = [Monday .. Friday];
+
+  <B>VAR</B>
+    day : DayName;
+    wDay : Weekday;</PRE>
+
+<P>It should be noted that when VAL and ORD are used on a subrange of an enumeration type, the values they use or produce are relative to the host type, and not the subrange.  As the standard puts it: <!--"-->&quot;The ordinal number of a value of a subrange shall be the same as the ordinal number which the value has in the host type.<!--"-->&quot;  Thus:</P>
+<PRE>
+<B>VAL</B> (Weekday, 1)		produces <I>Monday</I>, and
+num := <B>ORD</B> (Tuesday)	produces 2</PRE>
+
+<P>It is also possible (and optional) to include the host type when declaring a range, in the following manner:</P>
+<PRE>
+  <B>TYPE</B>
+    SmallRange = <B>INTEGER</B> [0..99];</PRE>
+
+<P>This overrides the compiler's automatic assignment of this range as a sub-type of the host type CARDINAL.</P>
+<P>There are potentially three advantages to using a subranges.  The first is that the subrange is a different abstraction than the original type.  Use of the subrange may therefore make a program clearer.  Second, some systems <I>may</I> store the values of a subrange more efficiently than those of the original type.  This cannot be counted on, and makes a difference (if at all) only when the number of such variables is large, and memory is scarce.  Third, an error is generated if any attempt is made to assign something to a variable that is not in the subrange.  This occurs because the incorrect value is actually of a different type than the variable to which the assignment is being made.  For instance, with the above declarations, all of the following assignment attempts are incorrect:</P>
+<PRE>
+  day := 5;		(* because 5 is not a DayName *)
+  wDay := Sunday;	(* not in the subrange *)
+  letter := <!--"-->&quot;p<!--"-->&quot;;	(* lowercase not in this type *)
+  num := -5;		(* no negatives in this range *)
+  sNum := 10;		(* too large, out of range *)</PRE>
+
+<P>Notice that the details of the declaration will determine whether two variables are expression compatible (the type or at least the host type must <I>exactly</I> match) or assignment compatible (i.e. the base types are assignment compatible).  Consider the following declarations:</P>
+<PRE>
+<B>TYPE</B>
+  ARange = <B>CARDINAL</B> [1 .. 10];
+  BRange = <B>INTEGER</B> [1 .. 10];
+  CRange = ARange;
+<B>VAR</B>
+  aRangeVar : ARange;
+  bRangeVar : BRange;
+  cRangeVar : CRange;</PRE>
+
+<P>Now,</P>
+<PRE>
+  cRangeVar := aRangeVar;  is legal (types are actually equal)
+  aRangeVar := bRangeVar;  is legal (assignment compatible bases)
+  cRangeVar := aRangeVar + cRangeVar;  is legal (expression compatible)
+  aRangeVar := bRangeVar + aRangeVar;  is illegal (expression incompatible)</PRE>
+
+<P>A variable of type <I>CRange</I> can be assigned to or used in the same expression as one of type <I>ARange</I> and vice versa. A variable of type <I>CRange</I>  can be assigned to but cannot be used in the same expression as one of type <I>BRange</I> even though the same subrange of the same base type is employed to define both.  As far as the compiler is concerned, <I>CRange</I> and <I>ARange</I> are <I>expression compatible</I>, but <I>BRange</I> is only <I>assignment compatible</I> with either.  The program declaration says they are different types, does it not?  There must have been some reason for having two separate types, so once they are declared that way, the programmer must use them that way.</P>
+<P>It is also possible to directly assign a variable of type <I>ARange</I> to a variable of type CARDINAL or INTEGER, or to a variable in some range from which <I>ARange</I> is derived (a <I>super range</I>).</P>
+<P>Here is some code that is erroneous, but the error cannot be caught by the compiler:</P>
+<PRE>
+  <B>TYPE</B>
+    eighties = [1980..1989];
+    nineties = [1990..1999];
+ <B>VAR</B>
+    year1 : eighties;
+    year2 : nineties;
+ <B>BEGIN</B>
+    ...
+    year1 := year2;</PRE>
+
+<P>In this case, the two variables are of assignment compatible types because both are subranges of the same underlying type, so the compiler has nothing to complain about.  However, because their respective ranges share no values in common, an actual assignment will always yield an error at run time.</P>
+<P>The method described earlier of deriving a new type from a specified host type also applies when the host type is user-defined.  One may write:</P>
+<PRE>
+  <B>TYPE</B>
+    ARange = [1..10];
+    BRange = ARange [2..5];</PRE>
+
+<P>and the values of variables of type <I>BRange</I> would be compatible with those of type <I>ARange</I> because <I>BRange</I> is specifically declared to be a <I>subtype</I> of <I>ARange</I>.</P>
+<H3><B><A NAME="5.2.3">5.2.3</A> Summary of some Modula-2 compatibility issues:</B></H3>
+<P>1. Two variables are (expression) compatible if:<br>
+- they are of the same type<br>
+- the type of one was declared equal to the type of the other<br>
+- the type of one is a subrange of the other, or<br>
+- both types are subranges of the same type.</P>
+<P>2. Two variables are assignment compatible if:<br>
+- their types are compatible<br>
+- one is INTEGER and the other CARDINAL or a subrange thereof, or<br>
+- one is CARDINAL and the other INTEGER or a subrange thereof.</P>
+<P>3. Two variables are incompatible otherwise.</P>
+<P>In view of these complications, and the fact that more assignments are likely to fail, one might ask why use subranges at all?  The answer is that it is better to get a run time range error at the point at which an inappropriate assignment is <I>first</I> made, rather than much later in the program.  The use of a subrange pinpoints the error to the place where remedial action must be taken.  Without it, tracing the logic of faulty output back to the appropriate point might be very tedious indeed.</P>
+<P>With both enumerations and subranges defined, it is possible to give the following:</P>
+<H3><B><A NAME="5.2.4">5.2.4</A> Summary of some Modula-2 types:</B></H3>
+<P>1. <i>Whole number types</i>:</P>
+<P>These are INTEGER, CARDINAL, non-standard long versions of either, if provided, and the type of whole number literals (such as the "5" in thumb := 5.)  Items of the latter type may be assigned to either of the other two whole number types, provided they are in an appropriate range.</P>
+<i>The name of the underlying type of whole number literals (whether signed or unsigned) is the <u>Z-type</u>, a supertype thought of as including all such whole number literals.</i></P>
+<P>2. <i>Ordinal types</i>:</P>
+<P>These are the whole number types, enumerations (built-in or user-defined) and subranges.  An ordinal type is any type, all of whose values can be put into a one-to-one correspondence with a finite subset of the Z-type.  That is, they are the ones that can be counted off with whole numbers.</P>
+<P>3. <i>Scalar types</i>:</P>
+<P>These include all the ordinal types together with the real types (REAL and LONGREAL).  Because in practice there are only a finite number of different reals representable on a machine with finite precision, one could conceivably count the items of these two types with ordinal numbers.  However, what would be two consecutive reals on one machine would not necessarily be on another (perhaps neither could even be represented exactly).  Thus the counting of the real entities by a Modula-2 program would not be predictable.  Moreover, in theory, a real type models the real numbers of mathematics, of which there are an infinite number between any two given reals.  At the very least, there are almost certain to be more representable reals on a given machine than there are available cardinal numbers to count them.  Thus the real types are distinguished from the ordinal (countable) types.</P>
+<i><P>Real and long real literals and constants are said to be of the <u>R-type</u>, a supertype thought of as including all such real numbers.</i></P>
+<P>4. <i>Number types</i>:</P>
+<P>These include the whole number and real types, (and, as will be seen in a later section, complex number types) but not enumerations such as the type <i>DayName</i>used above.</P>
+<H3><B><A NAME="5.2.5">5.2.5</A> Making Comparisons</B></H3>
+<P>All scalar types, including user-defined ones can be compared for equality or inequality.  Using the less than and similar operators on them also makes sense because scalar types all have an ordering.  Thus the line</P>
+<PRE>
+  <B>WHILE</B> day <!--<-->&lt;= Friday</PRE>
+
+<P>in the module <I>SimplePay</I>  or </P>
+<PRE>
+  <B>IF</B> charVar <!--<-->&lt;= <!--"-->&quot;A<!--"-->&quot;</PRE>
+
+<P>both make sense.  One may even write something like</P>
+<PRE>
+  <B>IF</B> booleanExpression1 <!--<-->&lt;= booleanExpression2</PRE>
+
+<P>which is true unless the left side is TRUE and the right side is FALSE.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

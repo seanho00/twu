@@ -1,0 +1,57 @@
+<HTML><HEAD><TITLE>16.9 Summary and Comparison with Other Notations</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Summary and Comparison with Other Notations">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>16.9 Summary and Comparison With Other Notations</b></H2>
+<P>The mechanism for producing generic modules that is shown here is of less complexity than similar mechanisms used in Ada C++; it is of similar complexity to the mechanism used in Modula-3.  In Ada, Modula-3 and Modula-2 the generic entities coincide with the separate compilation entities. In C++ the generic entities are 'template classes' and 'template functions'. The allowed kinds of generic parameters are more diverse: Ada allows types, constants, subprograms and variables, whereas Modula-2 and C++ only allow types and constants (which includes procedure constants in Modula-2). Modula-3 allows only the names of interfaces to be parameters to generic modules.</P>
+<P>Standard Generic Modula-2 is a novel but very slight extension (by a single keyword and some syntax) of ISO Standard Modula-2.  For this modest investment one obtains all the functionality of the static generic facilities already present in such languages as Modula-3 and C++.  In addition, refinement of generic separate modules as local modules allows the module container to be a mechanism for the composition of one or more existing generic modules into a new module with more or less functionality than the original modules‹something not possible, for instance, in Modula-3.</P>
+<P>Much of this functionality (and some other things) can also be obtained with object oriented mechanisms in various languages, but static generic modules are simpler, easier to use, and easier to debug than complex object oriented programs.  In many cases (indeed in most) such modules are all that are needed to implement abstract data types even for large scale applications. The programmer who also has object oriented facilities available is engouraged to use both facilities, either separately, or in combination.  Object oriented Moduila-2 extensions are the subject of a separate international standard, and will be discussed in detail in a later chapter of this book.</P>
+<P>One should also note that with the mechanisms introduced in Generic Modula-2 for partial, composed, or extended refinement of generic separate modules as local modules, scalability is no longer confined to procedures and objects, for modules become scalable as well. That is, modules can also be easily composed into new modules with different functionality than the ones going into the mix.</P>
+<P>This additional functionality does come with a cautionary note, however.  It is not a good idea to build complex composed hierarchies, whether of procedures, modules, or objects.  When such things are done, greater abstraction may be achieved, but it is too easy to lose track altogether of the  details of implementation and thus to make it almost impossible to fix bugs.  Moreover, excessive composition can lead to the production of very slow code.  Composed hierarchies should therefore be no more than a few levels deep so as to promote code maintainability.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

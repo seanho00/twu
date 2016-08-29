@@ -1,0 +1,172 @@
+<HTML><HEAD><TITLE>16.3 Refining Separate Library Modules</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Refining Separate Library Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><b>16.3 Refining Separate Library Modules</b></H2>
+<P>Having seen how to define generic separate modules, it is time to turn attention to the production of specific instances of these library modules by providing the actual parameters that will determine a specific use. This is done by employing another new kind of module called a refining module.</P>
+
+	<BLOCKQUOTE><A NAME="RefiningSeparate"></A><i>A <u>refining separate module</u> consists of a refining definition module and a refining implementation module. The refining definition module provides to a generic definition module that it names the actual parameters to substitute for its formal parameters so that a definition module may be refined. The refining implementation module provides to a generic implementation module that it names the actual parameters to substitute for its formal parameters so that an implementation module may be refined.</i></BLOCKQUOTE>
+
+<P>The syntax of a refining separate module is very simple. It consists of the word <i>DEFINITION</i> or <i>IMPLEMENTATION</i> (as the case may be) followed by the word  <i>MODULE</i>  followed by the name to be given to the resulting (refined) module, then an equal sign, and then the formal parameter list. To be consistent with the rest of Modula-2, it concludes with an <i>END</i> and a repetition of the name of the module.</P>
+
+<H3><b><A NAME="16.3.1">16.3.1</A> Refining Definition Modules</b></H3>
+
+<P>Generic definition modules are refined separately from their implementation parts because the designer may wish to test the interface in a client program before writing any of the code, even in generic fashion.</P>
+<P>A refining definition module is similar to a definition module in the sense of the base language, and the rules for definition modules given in the base standard apply, with two additions or changes.</P>
+<P><i>First</i>, the imports of a refining definition module are the imports of the definition module of the generic separate module of which it is a refiner together with the results of evaluating the actual module parameters (i.e. these values may be treated as imports.) </P>
+<P><i>Second</i>, the exports of a refining definition module are the refinements of the items defined in the definition module of the generic separate module of which it is a refiner.</P>
+<P>A refining definition module cannot have additional imports or declarations of its own in addition to the ones in the generic separate module from which it refines. </P>
+<P>The effect of compiling a refining definition module is the same as constructing and then compiling a definition module (in the sense of the base language) obtained from the definition module of the generic separate module that it refines from but with the results of evaluating the actual parameters of the refining definition module substituted for the formal parameters of the definition module of the generic separate module that is being refined. The resulting refinement that is translated is a definition module in the sense of the base language, and the translation that is done following refinement employs only the rules of the base language.</P>
+<P>Because this refinement is performed by supplying actual parameters, the parameters of the refining definition module must match the parameters of the generic definition module of which it is a refiner. If the definition module of the generic separate module has no parameters, the refining definition module shall also have none, not even an empty parameter list.  The syntax of a refining definition module is shown in figure 16.3.</P>
+<P><CENTER><IMG SRC="Figure/Figure_16.3.GIF" WIDTH=482 HEIGHT=189 BORDER="1"></CENTER></P><!---->
+<P><b>Examples</b></P>
+
+<P><b>Example</b> <b>1:</b> What follows is a possible refiner of the <A HREF="Ch16.2.html#16.2.1Example1">first example</A> in section 16.2.1</P>
+
+<PRE><b><B>DEFINITION</B> <B>MODULE</B></b> CardStack = Stacks (<b>CARDINAL</b>);
+<b>END</b> CardStack.</PRE>
+
+<P><b>Example</b> <b>2:</b> In order to refine the module <i>Sorts</i> as a separate module, one must first supply the necessary Compare procedure in a separate module. For instance to refine an integer sort, first supply:</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> IntegerInfo;
+
+<b>FROM</b> Comparisons <b>IMPORT</b>
+  CompareResults;
+
+<b>PROCEDURE</b> Compare (a, b : INTEGER) : CompareResults;
+
+<b>END</b> IntegerInfo.</PRE>
+
+<P>When this is done, refining is by a module such as:</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> IntSorts = Sorts (<b>INTEGER</b>, IntegerInfo.Compare);
+<b>END</b> IntSorts.</PRE>
+
+<P><b>Example</B> <B>3</b>: Any number of specific instances of the generic counter may be refined, though this may not be a common use of the facility:</P>
+
+<P>One refiner that illustrates the syntax is:</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> ACount = Counter;
+<b>END</b> ACount.</PRE>
+
+<P><b>Example</B> <B>4</b>:  The generic matrix is refined with constants, as in the following:</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> RealMatrix45 = Matrix (4, 5, REAL);
+<b>END</b> RealMatrix45.</PRE>
+
+<H3><b><A NAME="16.3.2">16.3.2</A> Refining Implementation Modules</b></H3>
+
+<P>At some point before linking a final client program together, the implementation parts of any generic definition modules that have been refined for the project must also be refined from the corresponding generic implementation modules.  This is done using exactly the same syntax as for refining definition modules, except of course with the word <i>IMPLEMENTATION</i>.</P>
+<P>A refining implementation module is similar to an implementation module in the sense of the base standard, and the rules for implementation modules (and their relationships with the corresponding definition modules) given in the base standard apply, with the following addition.</P>
+<P>The imports of a refining implementation module are the imports of the implementation module of the generic separate module of which it is a refiner together with the actual parameters of the refining implementation module (i.e. the values may be treated as imports.) </P>
+<P>The effect of compiling a refining implementation module is the same as constructing and then translating an implementation module (in the sense of the base standard) obtained from the implementation module of the generic separate module that it refines from, but with the results of evaluating the actual parameters of the refining module substituted for the formal parameters of the generic separate module that is being refined. The resulting refinement that is translated is an implementation module in the sense of the base language, and the translation that is done following refinement employs only the rules of the base language.  The syntax of a refining implementation module is shown in figure 16.4.</P>
+<P><CENTER><IMG SRC="Figure/Figure_16.4.GIF" WIDTH=482 HEIGHT=189 BORDER="1"></CENTER></P><!---->
+
+<P><b>NOTE</b>: The parameters of the refining implementation module must be the same as the parameters of the corresponding refining definition module.</P>
+
+<P><b>Example</B> <B>1</b>: What follows is a possible refining module of the <A HREF="Ch16.2.html#16.2.1Example1">first example</A> in section 16.2.1</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> CardStack = Stacks (<b>CARDINAL</b>);
+<b>END</b> CardStack.</PRE>
+
+<P>Example</B> <b>2:</b> To complete the refiner of the <A HREF="Ch16.2.html#16.2.1Example4">generic sorting module</A> in 16.2.1, one still needs:</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> IntSorts = Sorts (<b>INTEGER</b>, IntegerInfo.Compare);
+<b>END</b> IntSorts.</PRE>
+
+<P>A client has:</P>
+
+<PRE><b>FROM</b> IntSorts <b>IMPORT</b> 
+  Quick;</PRE>
+
+<P>or, if more than one refinement to separate modules is done:</P>
+
+<PRE><b>IMPORT</b> IntSorts, RealSorts, RecSorts;</PRE>
+
+<P><b>Example</B> <B>3</b>: Here is a refining implementation part of the counter example:</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> ACount = Counter;
+<b>END</b> ACount.</PRE>
+
+<P><b>Example</B> <B>4</b>: To illustrate the necessity of the parameters for both parts of the module being the same, here is the refining implementation for the corresponding refining definition module of <A HREF="#16.3.1Example4">example 4</A> in section 16.3.1</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> RealMatrix45 = Matrix (4, 5, REAL);
+<b>END</b> RealMatrix45.</PRE>
+
+<H3><b><A NAME="16.3.3">16.3.3</A> Multiple Refinements</b></H3>
+
+<P>Any number of separate refinements of a generic separate module can be performed under a variety of names. Thus the generic module <i>Matrix</i> could be refined to hold reals, cardinals, integers, or any other numeric data type, and the module <i>ACounter</i> could be refined several times, each with a different name to produce different counters. However, two precautions have to be observed:</P>
+<P>1. Different refinements should be done by refiners with different names, so that if two are imported into a single client there will not be a name clash.</P>
+<P>2. In a module like <i>Matrix</i> there will be many operations on the matrices that use arithmetic operations on the individual elements.  For instance, two matrices of the same size are added by adding the elements on corresponding positions. Such operations require that the elements actually have addition defined on them.  Thus, while the compiler might allow </P>
+
+<PRE><b>DEFINITTION</B> <B>MODULE</b> BoolMatrix45 = Matrix (4, 5, BOOLEAN);
+<b>END</b> BoolMatrix45.</PRE>
+
+<P>because the parameters are correct, the attempt to use the refiner</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> BoolMatrix45 = Matrix (4, 5, BOOLEAN);
+<b>END</b> BoolMatrix45.</PRE>
+
+<P>would fail, not because of the parameters <i>per se</i> but because when it then attempted to compile the result after making the parameter substitutions, there would be type incompatibility errors in the arithmetic operations.  Similar problems could arise in other contexts as well, so the programmer must ensure that refinements are appropriate to the data types used and the operations employed on them. That is, not all refinements of a given module are logically correct, even if at the parameter substitution level, they may appear to be syntactically correct.</P>
+<P>These comments highlight the need to plan ahead of time to take such situations into account.  That is why the module Sorts was planned from the start to take a <i>Compare</i> procedure as a parameter.  Had this module simply relied on the <i>less than</i> operator for comparisons, only numeric data could have been sorted by it.</P>
+
+<H3><b><A NAME="16.3.4">16.3.4</A> Actual Parameters</b></H3>
+
+<P>If the generic separate module has formal parameters, any refiner of it must provide corresponding actual parameters. These are evaluated, and the resulting arguments are accessed in the refined module through the identifiers of the formal parameters.  As when using procedure parameters, it is important to ensure that actual module parameters are compatible with the formal ones in the generic modules from which refining is being done.</P>
+<P><i>First</i>, if the formal parameters are constant value parameters, the corresponding actual parameters must be constant expressions of a type compatible to the formal parameter type.</P>
+
+<P><b>NOTE</b>:  This means that actual parameters may not be variables.  This differs from the corresponding situation with procedure value parameters, which are allowed to be variables. The reason for this restriction is that the compiler must be able to evaluate the actual parameters and construct the refined module from them, and a compiler cannot evaluate variables because they do not get their values until run time.</P>
+
+<P><i>Second</i>, for a formal TYPE parameter the identifier of a visible type shall be provided. Any type that is visible at the point of the refining module is potentially usable  as an actual parameter, or as the type of an actual parameter. This includes pervasive types, user defined types, or types qualified by a module name.</P>
+
+<P><b>NOTE</b> : Since a module parameter list may include items of types named previously in the list, such lists shall be evaluated left to right‹a restriction not present in the base language for evaluating parameters of procedures.</P>
+
+<P>Other than the restrictions on refining module actual parameters (to constant expression parameters and type parameters), and the requirement of left-to-right evaluation, the rules for these parameters (matching, compatibility) are the same as those given in the base standard for actual procedure parameters of these kinds. This means, for instance, that the parameters must be visible at the point in the module where they are being used.  One may use a separate library module item by naming it as an identifier qualified by the module name in the manner of <i>StextIO.WriteLn</i> because the library module names are all visible to the compiler.  The effect is similar to an import.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,270 @@
+<HTML>
+<HEAD>
+<TITLE>5.8 Manipulating Multi-Dimensional Arrays</TITLE>
+<meta NAME="keywords" CONTENT="manipulating, multidimensional, manipulate, multi-dimensional,multi, dimensional, dimensions, dimension, dimensional, array, arrays, next, nested, for, loop, loops, row, rows, column, columns, open, pseudo, pseudocode, table, tables, variable, variables, import, imports, abstract, abstraction, fixed, maximum, possible, degree, loop, nesting">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Iterations, Enumerations, and Arrays">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>5.8 Manipulating Multi-Dimensional Arrays</B></H2>
+<P>This is done in much the same way as single-dimensional arrays, using FOR loops.  Here, one makes use of the fact that repetition structures such as FOR loops can be nested one inside the other in a Modula-2 program.  Suppose one had the declaration:</P>
+<PRE>
+<B>TYPE</B>
+  Matrix = <B>ARRAY</B> [0 .. rowmax], [0 .. colmax] <B>OF</B> <B>CARDINAL</B>;
+<B>VAR</B>
+  A : Matrix;</PRE>
+
+<P>and wished to initialize all the elements to some value, <I>initNum</I>.  Two FOR loops, one nested inside the other are written in the following manner:</P>
+<PRE>
+<B>FOR</B> rowCount := 0 <B>TO</B> rowmax
+  <B>DO</B>
+    <B>FOR</B> columnCount := 0 <B>TO</B> colmax
+      <B>DO</B>
+        A [rowCount, columnCount] := initNum;
+      <B>END</B>;      (* for column *)
+  <B>END</B>;    (* for row *)</PRE>
+
+<P>The outer of the two loops (<I>FOR rowCount</I>) steps through the rows, one at a time.  For each of the rows, the inner (<I>FOR columnCount</I>) loop steps through the columns one at a time.  In this fashion, each element is initialized in a systematic manner.  This routine can be made generic as a procedure by using a two-dimensional open array as follows:</P>
+<PRE>
+  <B>PROCEDURE</B> InitMatrix (<B>VAR</B> theMatrix : <B>ARRAY</B> <B>OF</B> <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; initNum : <B>CARDINAL</B>);
+
+  <B>BEGIN</B>
+    <B>FOR</B> rowCount := 0 <B>TO</B> <B>HIGH</B> (theMatrix)
+      <B>DO</B>
+        <B>FOR</B> columnCount := 0 <B>TO</B> <B>HIGH</B> (theMatrix [0])
+          <B>DO</B>
+            theMatrix [rowCount, columnCount] := initNum;
+          <B>END</B>;      (* for column *)
+      <B>END</B>;    (* for row *)
+  <B>END</B> InitMatrix;</PRE>
+
+<P>Multidimensional arrays, though not open ones, are used in the following</P>
+<H3><B>Problem:</B></H3>
+<P>Design a program that employs a data structure that will record the number of male and female freshmen, sophomores, juniors and seniors enrolled in each of the Sciences, Humanities, Social Sciences, Education, Physical Education, Business, and Aviation divisions at a typical small university.  Write the declarations, the code to fill the data structure, and the code to print it out in tabular form.  Print also the breakdown of the total number of students by sex, year, and division.</P>
+<H3><B>Restatement:</B></H3>
+<P>Given:  data in the 56 distinct categories</P>
+<P>Required to do:  prepare summaries by major categories</P>
+<P>Desired output:  a complete listing of the data with summaries</P>
+<H3><B>Discussion of Data Structure:</B></H3>
+<P>At some stage during the refinement of the problem (close to the beginning), the programmer must make a decision on the kind of data structure to be used.  Since this is a section on multi-dimensional arrays, it takes little imagination to arrive at a suitable way of doing it in this case.</P>
+<H3><B>Pseudocode:</B></H3>
+<PRE>
+<I>Obtaining Data from user:</I>
+For each class
+  for each division
+    ask the user for number of men and women
+    enter this into the data structure
+
+<I>Generating summaries:</I>
+For each class
+  sum the men and women in all divisions
+For each division
+  sum the number of men and women in all classes
+For each sex
+  sum the number from all classes and divisions
+
+<I>Data output:</I>
+For each class
+  print an informative heading
+  for each division
+    print an informative heading
+    print the number of men
+    print the number of women</PRE>
+
+<H3><B>Data Table:</B></H3>
+<P>Enumerated types:</P>
+<UL><!--€--><LI> names of classes, divisions and sexes</LI></UL>
+<P>Array Types:</P>
+<UL><!--€--><LI> an array of cardinals indexed by class, division, and sex names to hold the raw data</LI>
+<!--€--><LI> an array of cardinals indexed by class names to hold class totals</LI>
+<!--€--><LI> an array of cardinals indexed by division names to hold division totals</LI>
+<!--€--><LI> an array of cardinals indexed by sex names to hold sex totals</LI>
+<!--€--><LI> a string type to hold names of all the categories</LI></UL>
+<P>Main variables:</P>
+<UL><!--€--><LI> a main data array</LI>
+<!--€--><LI> an array for each of the sets of totals</LI>
+<!--€--><LI> a counter variable for loops on each of the three index types</LI>
+<!--€--><LI> an array indexed by class names to hold corresponding strings</LI>
+<!--€--><LI> an array indexed by division names to hold corresponding strings</LI>
+<!--€--><LI> an array indexed by sex names to hold corresponding strings</LI></UL>
+<P>Imports required:</P>
+<P>From STextIO:</P>
+<UL><!--€--><LI> WriteString, WriteLn, ReadString</LI></UL>
+<P>From SWholeIO:</P>
+<UL><!--€--><LI>  ReadCard, WriteCard</LI></UL>
+<P>From SIOResult:</P>
+<UL><!--€--><LI> ReadResults, ReadResult</LI></UL>
+<H3><B>Organization:</B></H3>
+<P>No attempt has been made to abstract separate tasks from the whole into procedures, as all the work is closely tied to a single array variable that holds all the program data.</P>
+<H3><B>Code:</B></H3>
+<PRE><B>MODULE</B> <A NAME="EnrollData">EnrollData</A>;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadString;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResults, ReadResult;
+
+<B>TYPE</B>
+  ClassName = (Freshman, Sophomore, Junior, Senior);
+  DivName  = (Science, Humanities, SocialScience, Education, 
+             PhysEd, Business, Aviation);
+  SexName  = (male, female);
+  ClassTot  = <B>ARRAY</B> ClassName <B>OF</B> <B>CARDINAL</B>;
+  DivTot   = <B>ARRAY</B> DivName <B>OF</B> <B>CARDINAL</B>;
+  SexTot   = <B>ARRAY</B> SexName <B>OF</B> <B>CARDINAL</B>;
+  MainData = <B>ARRAY</B> ClassName, DivName, SexName <B>OF</B> <B>CARDINAL</B>;
+  String   = <B>ARRAY</B> [0 .. 18] <B>OF</B> <B>CHAR</B>;
+
+<B>VAR</B>
+  (* arrays *)
+  classTotals : ClassTot;
+  divTotals : DivTot;
+  sexTotals : SexTot;
+  mainDataArray : MainData;
+  (* counters *)
+  classCount : ClassName;
+  divCount : DivName;
+  sexCount : SexName;
+  (* strings for program use *)
+  classNames : <B>ARRAY</B> ClassName <B>OF</B> String;
+  divNames : <B>ARRAY</B> DivName <B>OF</B> String;
+  sexNames : <B>ARRAY</B> SexName <B>OF</B> String;
+  (* could have done types for last three too *)
+
+<B>BEGIN</B>  (* main program *)
+  (* First initialize all strings. *)
+  classNames [Freshman] := <!--"-->&quot;freshman  <!--"-->&quot;;
+  classNames [Sophomore] := <!--"-->&quot;sophomore <!--"-->&quot;;
+  classNames [Junior] := <!--"-->&quot;junior    <!--"-->&quot;;
+  classNames [Senior] := <!--"-->&quot;senior    <!--"-->&quot;;
+  divNames [Science] := <!--"-->&quot;Science    <!--"-->&quot;;
+  divNames [Humanities] := <!--"-->&quot;Humanities <!--"-->&quot;;
+  divNames [SocialScience] := <!--"-->&quot;Soc Science<!--"-->&quot;;
+  divNames [Education] := <!--"-->&quot;Education  <!--"-->&quot;;
+  divNames [PhysEd] := <!--"-->&quot;PhysEd     <!--"-->&quot;;
+  divNames [Business] := <!--"-->&quot;Business    <!--"-->&quot;;
+  divNames [Aviation] := <!--"-->&quot;Aviation    <!--"-->&quot;;
+  sexNames [male] := <!--"-->&quot;males <!--"-->&quot;;
+  sexNames [female] := <!--"-->&quot;females <!--"-->&quot;;
+
+  (* Now initialize the main array *)
+
+  <B>FOR</B> classCount := Freshman <B>TO</B> Senior
+    <B>DO</B>
+      <B>FOR</B> divCount := Science <B>TO</B> Aviation
+        <B>DO</B>
+          <B>FOR</B> sexCount := male <B>TO</B> female
+            <B>DO</B>
+              mainDataArray [classCount, divCount, sexCount] := 0;
+            <B>END</B>;    (* for sexCount *)
+        <B>END</B>;    (* for divCount *)
+    <B>END</B>;    (* for classCount *)
+
+  (* Now write the main loop to gather this data. *)
+
+  <B>FOR</B> classCount := Freshman <B>TO</B> Senior
+    <B>DO</B>
+      <B>FOR</B> divCount := Science <B>TO</B> Aviation
+        <B>DO</B>
+          <B>FOR</B> sexCount := male <B>TO</B> female
+            <B>DO</B>
+              <B>REPEAT</B>
+                WriteLn;
+                WriteString (<!--"-->&quot;Please give the number of <!--"-->&quot;);
+                WriteString (classNames [classCount]);
+                WriteLn;
+                WriteString (sexNames [sexCount]);
+                WriteString (<!--"-->&quot; in the <!--"-->&quot;);
+                WriteString (divNames [divCount]);
+                WriteString (<!--"-->&quot; division ==<!-->&gt; <!--"-->&quot;);
+                ReadCard (mainDataArray [classCount, divCount, sexCount]);
+              <B>UNTIL</B> ReadResult () = allRight;
+               (* keep trying until correct entry *);
+            WriteLn;
+            <B>END</B>;    (* for sexCount *)
+        <B>END</B>;    (* for divCount *)
+    <B>END</B>;    (* for classCount *)
+
+  (* data is all here now, so do summaries *)
+
+  <B>FOR</B> classCount := Freshman <B>TO</B> Senior     (* by class *)
+    <B>DO</B>
+      classTotals [classCount] := 0;    (* initialize to 0 *)
+      <B>FOR</B> divCount := Science <B>TO</B> Aviation
+        <B>DO</B>
+          classTotals [classCount] := classTotals [classCount] 
+                   + mainDataArray [classCount, divCount, male] 
+                   + mainDataArray [classCount, divCount, female];
+        <B>END</B>;    (* for divCount *)
+    <B>END</B>;    (* for classCount *)
+
+(* include code here to total by division and by sex in the same way *)
+
+  WriteString (<!--"-->&quot;Summary  by class:<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;class      number<!--"-->&quot;);
+  WriteLn;
+  <B>FOR</B> classCount := Freshman <B>TO</B> Senior
+    <B>DO</B>
+      WriteString (classNames [classCount]);
+           (* write class name headings *)
+      WriteCard (classTotals [classCount], 10);
+      WriteLn;
+    <B>END</B>;    (* for classCount *)
+
+  (* include code here to print the appropriate headings and final data by faculty and by sex in the same way *)
+
+<B>END</B> EnrollData.</PRE>
+
+<P><B>NOTES</B>: 1. The completion of this example is left for the exercises at the end of this chapter, as sufficient detail has been presented for illustrative purposes.  What is present here is free from syntax errors, but since it has not been completed and run, it is not guaranteed to be free of logical errors, and the logic of the ReadCard statement needs work. Why?</P>
+<P>	 2. A Modula-2 implementation is likely to have a fixed maximum permissible degree of loop nesting.  This affects any combination of FOR, WHILE, REPEAT and any other similar programming structures.  This limitation is rarely a problem for the student, whatever the figure may be.</P>
+<P>	 3.  Notice the painstaking initialization of all those strings.  For the purpose to which they are put here, there is no alternative to this, as one cannot use strings (or any but ordinal types) in an enumeration.  However, there are other ways of initializing arrays (including strings) and these are covered in <A HREF="../Ch11/Ch11.6.html#11.6.1">section 11.6.1</A></P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

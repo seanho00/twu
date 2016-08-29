@@ -1,0 +1,297 @@
+<HTML>
+<HEAD>
+<TITLE>10.5 Local Modules--Scope and Visibility</TITLE>
+<meta NAME="keywords" CONTENT="local, module, modules, scope, visibility, visible, rule, rules, export, import, hierarchically, heirarchy, manual, manually, control, controlled, initialization, initialize, initialise, initialisation, section, entity, entities, identifier, clash, qualified, close, closure, standard, pervasive, reserved, word, dynamic, words">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.5 Local Modules<!--</B>‹<B>-->--Scope and Visibility Rules</B></H2>
+<P>As mentioned in passing in <A HREF="../Ch6/Ch6.8.html">section 6.8</A>, modules may themselves contain other (nested) modules and the collection consisting of these local modules together with the (global) program module is known as the program library.</P>
+<BLOCKQUOTE><I>A <U><A NAME="Local">local</A> module</U> is any module entirely contained within some compilation unit. </I></BLOCKQUOTE>
+<P>Local modules resemble procedures in that they define a scope of visibility for the entities they contain.  They do not, however have parameters, nor necessarily execute code.  Such constants, variables or procedures may in turn be made visible in the scope of the surrounding module by naming them in an EXPORT statement.  Conversely, they can be brought into a module from the surrounding scope by naming them in an IMPORT statement.  It is important to note that module entities are not automatically visible in scopes created inside the ones in which they are declared as is the case for entities declared in or viewed from a procedure.</P>
+<BLOCKQUOTE><I>Visibility of entities declared in procedures is inherited hierarchically and automatically inward with increasing levels, but visibility of entities declared in modules must be explicitly and manually controlled.</I></BLOCKQUOTE>
+<P>Figure 10.6 illustrates the use of EXPORT and IMPORT in a simple case and lists the resulting visibilities in the two scopes.</P>
+<P><CENTER><IMG SRC="Figure/Figure_10.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>As in the case of <I>Inner</I>, a module does not have to have a body with statements that actually execute (it need only be a collection of entities), but it does have to have an END even if it there is no BEGIN. If it has a body, then that statement sequence will be executed at the time the main module containing it is activated.  That is, at the same time that its entities come into existence, there is an opportunity to initialize them if the programmer so wishes.  This applies to local as well as to library modules.</P>
+<BLOCKQUOTE><I><A NAME="Initialization">The</A> body of a module may be referred to as its <U>initialization</U> section.</I></BLOCKQUOTE>
+<B>NOTE</B>:	Remember to initialize any module entities in its body if you are counting on them to have some value the first time they are called.  This applies mainly to variables, including procedure variables, as they will be the ones used most commonly in this fashion.</P>
+<P>It is important to realize that the wall erected around entities by a MODULE framework affects only the visibility of entities in the scopes on either side of the wall.  It does not affect their existence between calls to procedures inside the module wall.  Therefore, variables declared in a module (as opposed to one of its procedures) retain their values after the module is exited.  This is quite different from the effect of declaring a procedure, for in that case variables declared inside are neither visible nor do they exist outside it.  An entity is visible within procedure scopes created inside the one where it is defined, but not within module scopes created in this way, as the above example also illustrates.  These rules apply to any combination of procedures and modules and the ones in which they are contained. See the next section for an illustration.</P>
+<P>Observe that visibility is really only of concern at compile time, whereas existence is a run-time phenomenon.  Since all variables declared at the outermost blocks of modules exist at run-time, one could even say that at run-time modules, unlike procedures, do not exist at all.</P>
+<P>The net result of the module visibility rules is a further reduction in the number of global variables necessary, because the visibility of variables to any portion of the program can be strictly controlled with the IMPORT and EXPORT lists.  This limits side effects, increases flexibility and improves the readability of programs.  For instance, not only will a variable defined in a module keep its value until the next call to the module, it can be made visible outside the module without having to have (another) global name, whereas a procedure must pass a value to a global variable to communicate to the outer scope.</P>
+<P>This can even be seen in the use of variables imported from library modules.  One example is the boolean variable <I>Done</I> that is imported from the classical library <I>InOut</I>.  One does not need to set and/or fetch the value of this variable whenever one does a read operation because its value is set by <I>InOut</I> itself whenever that module is called upon for an input operation.  Consequently, the current value of <I>Done</I> is always available, once one has mentioned it in an import statement.  On the other hand, the global availability of <I>Done</I> implies that it could be changed by other operations in the client program unrelated to read attempts, thus corrupting its meaning.  That is why the ISO library makes available the enquiry function <I>ReadResult</I> to return a hidden error value instead.  The hidden value cannot be changed outside the separate library module that owns it.</P>
+<P>In any event, certain rules must be rigidly followed in the import and export of variables to and from modules.  First, these lists must immediately follow the MODULE heading.  There can be as many IMPORT statements as desired but only one EXPORT statement, and it must be the last of these lists.</P>
+<PRE>
+<B>MODULE</B> MyModule;
+<B>IMPORT</B> variable1, variable2;
+<B>IMPORT</B> variable3;
+<B>EXPORT</B> myVariable1, myVariable2;
+
+(* declaration section comes next *)</PRE>
+<P>Second, care must be taken to avoid an <I>identifier clash</I>.  If two modules both export the same identifier into a common scope of visibility, then that entity will have been erroneously re-defined, and the compiler will report an error.  For instance, module A and module B cannot both simply export a variable <I>number</I> into the surrounding module D, nor can module D import items named <I>number</I> into its own scope from two different sources.</P>
+<P>To avoid such clashes when exporting, one can write:</P>
+<PRE>
+<B>MODULE</B> Outer;
+
+<B>MODULE</B> Show;
+<B>EXPORT</B> <B>QUALIFIED</B> item, number, sum;
+   etc.</PRE>
+<P>When this is done, references in the surrounding scope must refer to the items by a <I>qualified identifier</I>.  As in previous instances, this is written in the scope of module <I>Outer</I> as <I>Show.Item</I>, <I>Show.A</I>, etc.  Now, a clash occurs only if one tries to give two modules the same name, and this problem should be easier to find and solve. </P>
+<P><B>NOTE</B>:	Even if the EXPORT is not qualified, the entity <I>may</I> be referred to in the new scope with a qualified identifier, though this is unnecessary.</P>
+<PRE>
+<B>MODULE</B> CheckModVisibility;
+
+<B>MODULE</B> Inner;
+<B>EXPORT</B> number;
+<B>VAR</B>
+  number : <B>REAL</B>;
+
+<B>END</B> Inner;
+
+<B>BEGIN</B>
+  number := 5.0;
+  Inner.number := 9.8;  (* both references legal *)
+<B>END</B> CheckModVisibility.
+
+<B>MODULE</B> CheckModVisibility2;
+
+<B>MODULE</B> Inside1;
+<B>EXPORT</B> number1;
+<B>VAR</B>
+  number1 : <B>REAL</B>;
+
+<B>BEGIN</B>  (* Only number1 is visible here *)
+  number1 := 5.4; (* number1 can be initialized here *)  
+<B>END</B> Inside1;
+
+<B>MODULE</B> Inside2;
+<B>IMPORT</B> Inside1;
+<B>VAR</B>
+  number2 : <B>REAL</B>;
+
+<B>BEGIN</B>   (* number2, number1 both visible here. *)
+  number1 := 3.4;
+  Inside1.number1 := 5.7;
+  number2 := 3.9
+<B>END</B> Inside2;
+
+<B>BEGIN</B> (* Test *)
+  (* only number1 visible here *)
+<B>END</B> CheckModVisibility2.</PRE>
+<P>If an item is imported or exported, then some of its component names may be implicitly imported or exported as well.  Implicit import was noted earlier in connection with the identifiers of an enumeration being made available in an importing scope.</P>
+<BLOCKQUOTE><I>The <U><A NAME="Closure">closure</A></U> of an identifier is the set consisting of that identifier, together with any all identifiers that are implicitly exported or imported whenever that item is.</I></BLOCKQUOTE>
+<P>The identifiers of an enumeration are part of the closure of that enumeration.  However, the exports of modules are <I>not</I> part of the closure of that module.  Thus if an entire module is imported or exported, any of its exports are <I>not</I> automatically exported or imported as well.  However, they can be referred to in the receiving scope of the exported or imported module in qualified fashion.</P>
+<P><B>NOTES</B>: 1. This is an ISO clarification, prior to which compilers (including those from ETH) followed a variety of rules in this regard.</P>
+<P>	2. The field names of a record are available when the record type is imported to another module scope but only qualified (unless unqualified by a WITH) so they are not, strictly speaking, part of the closure of the record type, though the net result is similar.</P>
+<P>On the other hand, exporting (importing) a procedure does not make the types of the entities in its parameter lists visible in the receiving scope; these must be done separately. So if a module contains:</P>
+<PRE>
+<B>PROCEDURE</B> Swap (<B>VAR</B> item1, item2 : ItemType);</PRE>
+<P>then importing this procedure does not make <I>ItemType</I> visible in the receiving scope.</P>
+<P>If the items of the exported module appeared in an EXPORT QUALIFIED list in a module being imported or exported as a whole, then they must be qualified in the receiving scope.</P>
+<P>If the module is exported qualified, then it must itself be referred to in qualified fashion.  In the following example, modules have been indented to better indicate their scope.  This is not strictly necessary for good prettyprinting.</P>
+<PRE>
+<B>MODULE</B> CheckModVisibility3;
+
+  <B>MODULE</B> Shell1;
+  <B>EXPORT</B>
+    Inner1;
+
+    <B>MODULE</B> Inner1;
+    <B>EXPORT</B> thing;
+    <B>VAR</B>
+      thing: <B>CARDINAL</B>;
+    <B>END</B> Inner1;
+
+  <B>END</B> Shell1;
+
+  <B>MODULE</B> Shell2;
+  <B>EXPORT</B> Inner2;
+
+    <B>MODULE</B> Inner2;
+    <B>EXPORT</B> <B>QUALIFIED</B> thing;
+    <B>VAR</B>
+      thing: <B>CARDINAL</B>;
+    <B>END</B> Inner2;
+
+  <B>END</B> Shell2;
+
+  <B>MODULE</B> Shell3;
+  <B>EXPORT</B> <B>QUALIFIED</B> Inner3;
+
+    <B>MODULE</B> Inner3;
+    <B>EXPORT</B> <B>QUALIFIED</B> thing;
+    <B>VAR</B>
+      thing: <B>CARDINAL</B>;
+    <B>END</B> Inner3;
+
+  <B>END</B> Shell3;
+
+(* here in this outer one, Inner1 is visible, so its exports may be qualified *)
+(* Inner2 is visible, so its qualified exports may be qualified *)
+(* however, Inner3 itself must be qualified *)
+<B>BEGIN</B>
+  Inner1.thing := 5;
+  Inner2.thing := 4;
+  Shell3.Inner3.thing := 8;
+<B>END</B> CheckModVisibility3.</PRE>
+<P>As this one illustrates, the export of the identifier <I>Inner1</I> from the scope determined by <I>Shell1</I> into the outermost scope also causes the exports of <I>Inner1</I> (namely <I>thing</I>) to become visible in the outermost module, but only qualified, not unqualified as some early compilers would have done.</P>
+<P>The astute reader will probably realize by comparing previous experience with library modules that if a module's exports are QUALIFIED, then those identifiers can in turn be imported from the receiving scope (where they are qualified) into another scope by using</P>
+<PRE>
+<B>FROM</B> modulename <B>IMPORT</B> item;
+</PRE><P>as in the following:</P></PRE>
+
+<B>MODULE</B> CheckModVisibility4;
+
+  <B>MODULE</B> Inner1;
+  <B>EXPORT</B> <B>QUALIFIED</B> thing;
+  <B>VAR</B>
+    thing: <B>CARDINAL</B>;
+  <B>END</B> Inner1;
+
+ <B>MODULE</B> Inner2;
+  <B>FROM</B> Inner1 <B>IMPORT</B>
+   thing;
+  <B>BEGIN</B>
+    thing:= 5; (* available here now *)
+  <B>END</B> Inner2;
+ 
+<B>END</B> CheckModVisibility4.</PRE>
+<P>Of course, one could not import (qualified or unqualified) the identifier <I>thing</I> into the outermost scope, because all imports to a scope are from the scope <I>outside</I> it.  The only scope outside a program module is the universal scope that contains all the system and separate libraries, so all import statements in the main scope refer to the external libraries, not to the program library.  An attempt to compile:</P>
+<PRE>
+<B>MODULE</B> IllegalVisibility;
+
+<B>FROM</B> Inner <B>IMPORT</B> (* illegal attempt to unqualify *)
+  thing; 
+  
+  <B>MODULE</B> Inner;
+  <B>EXPORT</B> <B>QUALIFIED</B> thing;
+  <B>VAR</B>
+    thing: <B>CARDINAL</B>;
+  <B>END</B> Inner;
+ 
+<B>END</B> IllegalVisibility.</PRE>
+<P>produced the compiler error message</P>
+<PRE>
+No symfile found for module: Inner
+  --- could not open
+ ---- symbolfiles missing
+#    4    thing; 
+#####         ^  71: identifier not exported from qualifying module
+ File <!--"-->&quot;RSFiles:Books:Modula book:M2.3rdEdition:TextPrograms:Cha10:IllegalVisibility.MOD<!--"-->&quot;; Line 4
+Modula2 - Execution terminated!</PRE>
+<P>because there was no library module called <I>Inner</I> found in the external environment.</P>
+<H3><B><A NAME="10.5.1">10.5.1</A> Standard Identifiers and Scope</B></H3>
+<P>Standard identifiers, such as REAL, CARDINAL, ABS, and so on, are also called <I>pervasive</I>.  They should be thought of as being visible one level outside every module when that module's body is thought of as a procedure. That is, they are automatically visible at level zero of all module scopes (and any procedures inside them) without having to be imported.  Another way of thinking about this is to regard pervasives as being automatically imported into every module scope.  However, these identifiers differ from user-defined ones in that they <I>may</I> be redefined even at the outermost level if desired.  Thus</P>
+<PRE>
+<B>MODULE</B> RedefineStdIdent;
+<B>VAR</B>
+  <B>CARDINAL</B>: <B>REAL</B>;
+
+<B>END</B> RedefineStdIdent.</PRE>
+<P>is legal, but probably not useful, as it cuts off access to the identifier CARDINAL in the module.  Thus if</P>
+<PRE>
+<B>PROCEDURE</B> try;
+<B>VAR</B> 
+  card : <B>CARDINAL</B>;
+<B>END</B> try;</PRE>
+<P>were defined in the module above, there would be an error <!--"-->&quot;wrong class of identifier<!--"-->&quot; generated when the second CARDINAL was examined by the compiler, for it no longer is a type but a variable.  However, since the rule is that standard identifiers are imported into every module scope, the following is legal, and the second use of CARDINAL inside the procedure <I>try</I> has its normal meaning.</P>
+<PRE>
+<B>MODULE</B> RedefineStdIdent2;
+<B>VAR</B>
+  <B>CARDINAL</B>: <B>REAL</B>;
+  
+  <B>MODULE</B> Inner;
+    <B>PROCEDURE</B> try;
+    <B>VAR</B> 
+      card : <B>CARDINAL</B>;
+    <B>END</B> try;
+  <B>END</B> Inner;
+
+<B>END</B> RedefineStdIdent2.</PRE>
+<P>These somewhat strange examples are presented not so much because they have many practical applications, but to emphasize the visibility rules, and that they are universally applicable, even when  rather odd things result.  Recall of course, that there is a fundamental difference between standard identifiers and reserved words.  As the latter are not identifiers at all, they can <I>never</I> be re-defined or re-used in any fashion.</P>
+<H3><B><A NAME="10.5.2">10.5.2</A> Dynamic Modules</B></H3>
+<P>As envisioned so far, modules and their entities are entirely compile-time phenomena, and one statement above went so far as to say that they do not even exist at run time.  However, there is an exception to this in any module that is declared inside a procedure.  Since the entities in a procedure scope are only realized in memory when the procedure is invoked, such a module will also come into existence only when the procedure is active.  The following is legal:</P>
+<PRE>
+<B>MODULE</B> RedefineStdIdent3;
+<B>VAR</B>
+  <B>CARDINAL</B>, card: <B>REAL</B>;
+  
+  <B>PROCEDURE</B> NewScope;
+    <B>MODULE</B> Inner;
+    <B>EXPORT</B> card;
+    <B>VAR</B> 
+      card : <B>CARDINAL</B>;
+    <B>END</B> Inner;
+  
+  <B>BEGIN</B>
+    card := 5;
+  <B>END</B> NewScope;
+  
+<B>END</B> RedefineStdIdent3.</PRE>
+<P>Observe that the export of the name <I>card</I> to the scope of <I>NewScope</I> is legal; it merely cuts off access to the <I>card</I> in the outer (procedure) scope, as one would expect.  Moreover, the assignment <I>card := 5</I> can be properly checked, even though the identifier CARDINAL with its built-in meaning is not visible to (and cannot be exported to) the procedure <I>NewScope</I>, because it does not belong to <I>Inner</I> and cannot be exported by it.  That limitation can be gotten around of course, if the dynamic module exports its own name for the type CARDINAL as follows:</P>
+<PRE>
+<B>MODULE</B> RedefineStdIdent4;
+<B>VAR</B>
+  <B>CARDINAL</B>, card: <B>REAL</B>;
+  
+  <B>PROCEDURE</B> NewScope;
+    <B>MODULE</B> Inner;
+    <B>EXPORT</B> Cardinal;
+    <B>TYPE</B>
+      Cardinal = <B>CARDINAL</B>;
+    <B>END</B> Inner;
+  
+  <B>VAR</B> 
+    card : Cardinal;
+  <B>BEGIN</B>
+    card := 5;
+  <B>END</B> NewScope;
+  
+<B>END</B> RedefineStdIdent4.</PRE>
+<P>The student should appreciate that these examples stretch the envelope of Modula-2 legalities nearly to the breaking point of common sense, but that they do so to illustrate the points being made about the scope rules rather than to inspire imitation.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

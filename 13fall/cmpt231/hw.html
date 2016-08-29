@@ -1,0 +1,95 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<title>HW Assignments :: CMPT231 13FA :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/13fall/cmpt231/">
+    CMPT 231 Fall 2013</a> HW Assignments</h1>
+
+<div>All homeworks should be turned in electronically to myCourses.
+  Homeworks are due by 10pm on the due date.
+Unless otherwise noted, all assignments are from the textbook, 
+<a href="http://mitpress.mit.edu/catalog/item/default.asp?ttype=2&tid=11866">CLRS3</a>.
+</div>
+
+<h2><a name="1">HW1 (due Thu 26 Sep) (40pts)</a>
+<a href="231solns/hw1.html">(solns)</a> </h2><ul>
+  <li> p.22: 2.1-1, 2.1-3
+  <li> p.29: 2.2-3
+  <li> p.37: 2.3-1, 2.3-4, Problem 2-2
+  <li> p.53: 3.1-7
+  <li> p.60: 3.2-8 (prove), Problem 3-3 (Prove or justify each step of your ranking!
+  You may use the properties mentioned in the chapter, including Stirling's equation.)
+</ul>
+
+<h2><a name="2">HW2 (due Thu 10 Oct) (40pts)</a>
+<a href="231solns/hw2.html">(solns)</a> </h2><ul>
+  <li> <em>(When solving recurrences, recursion diagrams are useful but <b>not</b> sufficient for proof.
+  Either induction ("substitution") or the master method are sufficient for proof.)</em>
+  <li> p.74: 4.1-2 <!-- code brute-force subarray -->
+  <li> p.87: 4.3-6 <!-- sub: 2T(n/2+17) -->
+  <li> p.93: 4.4-8 (verify your bound using induction) <!-- sub: T(n-a) + T(a) + cn -->
+  <li> p.97: 4.5-5 <!-- ex that fails reg cond in master method -->
+  <li> p.107: 4-1(cdeg) <!-- master -->
+  <li> p.154: 6.1-6 <!-- verify is max-heap -->
+  <li> p.160: 6.4-3 <!-- heapsort on sorted/rev -->
+  <li> <b>Supplemental #1</b>: Illustrate the operation of Heapsort on the array A=[3, 5, 9, 1, 8, 2, 4, 7, 10].  How many swaps are performed?
+</ul>
+
+<h2><a name="3">HW3 (due Thu 24 Oct) (40pts)</a>
+<a href="231solns/hw3.html">(solns)</a> </h2><ul>
+  <li> p.185: 7.4-5
+  <li> p.186: 7-2
+  <li> p.188: 7-4
+  <li> p.197: 8.2-4 (Preprocessing step is &Theta;(n+k) and takes the n integers as input.  Last step is O(1) and takes a,b as input.)
+  <li> p.204: 8.4-4
+  <li> p.261: 11.2-2
+  <li> p.282: 11-1 ("uniform hashing": see top of p.259)
+  (For discrete variables X, the expected value is
+  E[X] = &Sigma;<sub>k</sub> Pr{ X == k }, i.e., the probability
+  that X takes on a given value, summed over all possible values of X.)
+</ul>
+
+<h2><a name="4">HW4 (due Thu  7 Nov) (40pts)</a>
+<a href="231solns/hw4.html">(solns)</a> </h2><ul>
+  <li> p.241: 10.2-7 <!-- reverse a list -->
+  <li> p.248: 10.4-3 <!-- nonrecursive traversal w/ stack -->
+  <li> p.293: 12.2-4 <!-- counterex A le B le C -->
+  <li> p.299: 12.3-4 <!-- del not commutative -->
+  <li> p.303: 12-2 <!-- radix trees, publicly posted -->
+  <li> p.370: 15.1-2 <!-- counterex greedy fails cutrod -->
+  <li> p.378: 15.2-1 <!-- demo matrix-chain -->
+  <li> p.389: 15.3-2 <!-- memo fails on merge sort -->
+  <li> p.389: 15.3-5 <!-- cutrod w/limit fails opt substr -->
+  <li> p.404: 15.5-2 <!-- demo optimal BST -->
+</ul>
+
+<h2><a name="5">HW5 (due Fri 22 Nov) (40pts)</a>
+<a href="231solns/hw5.html">(solns)</a> </h2><ul>
+  <li> p.406-412: Choose one of the 12 problems (15-1 to 15-12).<br>
+  (Some of them, e.g., 15-2 and 15-5, may benefit from reading section 15.4.
+  Others, e.g., 15-1 and 15-7, may benefit from ch22.)<br>
+  Code your own implementation to solve the problem using bottom-up dynamic programming,
+  and demonstrate your code running on sample input.
+  User interface is your choice and can be rudimentary.
+  You may want to attach your code files separately from the rest of the assignment.
+  Be sure to answer any questions given in the problem statement.
+  <!-- 15-1/2 too short? -->
+  <li> p.427: 16.2-1 <!-- prove frac knap greedy -->
+  <li> p.436: 16.3-3 <!-- Huf on Fib -->,
+  16.3-8 <!-- Huf w/ freq(max) le 2freq(min) -->
+</ul>
+
+<h2><a name="6">HW6 (due Thu  5 Dec) (40pts)</a>
+<a href="231solns/hw6.html">(solns)</a> </h2><ul>
+  <li> p.593: 22.1-5 <!-- compute G^2 -->
+  <li> p.602: 22.2-8 <em>(hint: it's a tree, not a general graph)</em> <!-- diameter of tree -->
+  <li> p.610: 22.3-2 <!-- demo DFS -->
+  <li> p.620: 22.5-2 <!-- demo SCC on same graph -->
+  <li> p.637: 23.2-2, <!-- Prim on adj mat in V^2 -->
+  23.2-4 <!-- counting sort in Kruskal -->
+  <li> p.654: 24.1-1 <!-- demo Bellman-Ford -->
+</ul>
+
+</body></html>

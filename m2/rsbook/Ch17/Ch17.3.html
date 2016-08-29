@@ -1,0 +1,971 @@
+<HTML><HEAD><TITLE>17.3 ISO Complex Types and Support</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; ISO Complex Types and Support">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<h2><B>17.3 ISO Complex Types and Support</B></h2>
+<P>Because of the awkwardness that is inherent in dealing with opaque types, and because complex numbers are a basic numeric type, the ISO committee eventually decided to add support for an abstract type directly into the language.</P>
+<P><I>	The Modula-2 complex types are COMPLEX, LONGCOMPLEX, and the C-type.</I></P>
+
+<P>The parts of a COMPLEX number can be thought of as corresponding to the type REAL and the parts of a LONGCOMPLEX number as corresponding to the type LONGREAL. <i>C-type</i> is the type of complex literals, in the same way that <i>R-type</i> is the type of the real literals.</P>
+<P>There is a constructor and these are two component extractors for the complex types.</P>
+
+<P><I>	The Modula-2 complex constructor is CMPLX and the extractors are IM and RE.</I></P>
+
+<P>All of COMPLEX, LONGCOMPLEX, CMPLX, RE, and IM are standard identifiers.  CMPLX, RE, and IM work with all complex types, and the operations of addition, subtraction, multiplication and division are written in the same way as for all other numeric types and work on all complex types. (This is much more satisfying than in the last section.)  All of the following are correct:</P>
+
+<pre><B>VAR</B>
+  r1, r2 : <B>REAL</B>;
+  r3, r4 : <B>LONGREAL</B>;
+  z1, z2 : <B>COMPLEX</B>;
+  z3, z4 : <B>LONGCOMPLEX</B>;
+
+<B>CONST</B>
+  zero = <B>CMPLX</B> (0.0, 0.0);
+  i = <B>CMPLX</B> (0.0, 1.0);
+
+<B>BEGIN</B>
+  z1 := <B>CMPLX</B> (2.0, 4.5);
+  z2 := z1 + i;
+  z3 := zero;
+  z3 := z3 / <B>CMPLX</B> (1.0, 1.0);
+  r3 := 5.7;
+  r4 := 4.5;
+  z4 := <B>CMPLX</B> (r3, r4);
+  r1 := <B>RE</B> (z1);
+  r2 := <B>IM</B> (z1);</pre>
+
+<h3><B><a name="17.3.1">17.3.1</a> ISO COMPLEX Math Library Support</B></h3>
+<P>A number of items are defined in an ISO standard support library for complex mathematics. If using the type COMPLEX, the library is called <I>ComplexMath.</I> The corresponding library for LONGCOMPLEX (which has exactly the same contents except all are LONG) is <I>LongComplexMath</I>. Here is the definition of <I>ComplexMath</I>:</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> ComplexMath;
+
+(* =========================================
+            Definition Module from
+                 ISO Modula-2
+    ISO/IEC IS10515 by JTC1/SC22/WG13
+    Original COMPLEX specification and
+           design of ComplexMath 
+    Copyright © 1990-1991 by R. Sutcliffe
+    Assigned to the BSI for standards work
+    Last modification date 1994 08 31
+===========================================*)
+
+  (* Mathematical functions for the type <B>COMPLEX</B> *)
+ 
+<B>CONST</B>
+  i =    <B>CMPLX</B> (0.0, 1.0);
+  one =  <B>CMPLX</B> (1.0, 0.0);
+  zero = <B>CMPLX</B> (0.0, 0.0);
+
+<B>PROCEDURE</B> abs (z: <B>COMPLEX</B>): <B>REAL</B>;
+  (* Returns the length of z *)
+
+<B>PROCEDURE</B> arg (z: <B>COMPLEX</B>): <B>REAL</B>;
+  (* Returns the angle that z subtends to the positive real axis *)
+ 
+<B>PROCEDURE</B> conj (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the complex conjugate of z *)
+ 
+<B>PROCEDURE</B> power (base: <B>COMPLEX</B>; exponent: <B>REAL</B>): <B>COMPLEX</B>;
+  (* Returns the value of the number base raised to the power exponent *)
+
+<B>PROCEDURE</B> sqrt (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the principal square root of z *)
+
+<B>PROCEDURE</B> exp (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the complex exponential of z *)
+
+<B>PROCEDURE</B> ln (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the principal value of the natural logarithm of z *)
+
+<B>PROCEDURE</B> sin (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the sine of z *)
+
+<B>PROCEDURE</B> cos (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the cosine of z *)
+
+<B>PROCEDURE</B> tan (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the tangent of z *)
+
+<B>PROCEDURE</B> arcsin (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the arcsine of z *)
+
+<B>PROCEDURE</B> arccos (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the arccosine of z *)
+
+<B>PROCEDURE</B> arctan (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the arctangent of z *)
+
+<B>PROCEDURE</B> polarToComplex (abs, arg: <B>REAL</B>): <B>COMPLEX</B>;
+  (* Returns the complex number with the specified polar coordinates *)
+
+<B>PROCEDURE</B> scalarMult (scalar: <B>REAL</B>; z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the scalar product of scalar with z *)
+
+<B>PROCEDURE</B> IsCMathException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state  because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>. *)
+
+<B>END</B> ComplexMath.</pre>
+
+<P>Here are a few observations about these contents (and how to implement them) that of course apply to both versions of the library:</P>
+
+<P><I>The constants i, one, and zero</I></P>
+<P>These constants are provided for convenience and are the implementation defined approximations to the specified values.</P>
+
+<P><I>The procedure abs</I></P>
+<P>A call to abs produces the implementation defined approximation to the Modulus, (or length, or absolute value) of the complex number. As indicated earlier, this is the distance in the complex plane from the origin to the point that represents the complex number. If z = a + bi, then <IMG SRC="Figure/figure17.2a.GIF"><!---->.  Note that an overflow exception may occur in performing this computation, even when the complex number is itself well defined.  So, if one were implementing this function, a better approach to the calculation might be:</P>
+
+<P>modulus (z) =</P>
+<P>  let t =  max(RE(cmplx),IM(cmplx)) </P>
+<P>  let u = min(RE(cmplx),IM(cmplx))</P>
+<P>  return <IMG SRC="Figure/figure17.2b.GIF"><!---->a</P>
+<P>end modulus</P>
+<P>It can readily be seen with a little algebraic manipulation that the two expressions are equivalent, but the likelihood of an overflow is less in using the second.</P>
+
+<P><I>The procedure arg</I></P>
+<P>A call to <I>arg</I> produces the implementation defined approximation to the angle the complex number makes with the positive real axis in the complex plane:</P>
+<P>If RE(cmplx) <!-->&gt; 0 this yields arctan(IM(cmplx)/RE(cmplx)).</P>
+<P>If RE(cmplx) <!--<-->&lt; 0 it yields</P>
+<P>     pi-arctan(IM(cmplx)/RE(cmplx))  if IM(cmplx)<!-->&gt;=0 and</P>
+<P>    -pi-arctan(IM(cmplx)/RE(cmplx)) if IM(cmplx)<!--<-->&lt;0.</P>
+<P>If RE(complx) = 0 it yields</P>
+<P>     pi/2 when IM(cmplx) <!-->&gt; 0,</P>
+<P>    3pi/2 when IM(cmplx) <!--<-->&lt; 0 and</P>
+<P>     is undefined (an exception  occurs)  if IM(cmplx) = 0 also.</P>
+<P>That is, approximation values over the entire range of -pi <!--<-->&lt; arg <!--¾-->&lt;= pi are produced.</P>
+
+<P><I>The procedure conj</I></P>
+<P>A call to <I>conj</I> with base = a + bi as parameter produces the implementation defined approximation to the complex conjugate of the parameter, that is to  a - bi. This is useful in doing divisions by complex numbers.</P>
+
+<P><I>The procedure power</I></P>
+<P>A call to <I>power</I> with <I>base</I> = a + bi as complex parameter and <I>exponent</I> the real parameter produces the implementation defined approximation to the complex number <I>base</I> raised to the power <I>exponent</I>, that is, if z = a + bi, then <IMG SRC="Figure/figure17.2c.GIF"><!----></P>
+<P>Recall that it is also the case that such numbers can be expressed as z = r(cos<IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--> + isin<IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q-->), by Euler's formula:</P>
+<P>z<sup><i>n</i></sup> = ( <i>r</i> ( cos <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--> + <i>i</i> sin <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--> ) )<sup><i>n</i></sup> = ( <i>re<sup>i<IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--></sup></i> )<sup>n</sup> = <i>r<sup>n</sup> e<sup>in<IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--></sup></i> = <i>r<sup>n</sup></i> ( cos<i>n</i> <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--> + <i>i</i> sin <i>n</i> <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q-->)</P>
+<P>In other words, the result of such an exponentiation is a complex number with modulus r<SUP>n</SUP> and argument <i>n<IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q-->.</P></i>
+
+<P><I>The procedure sqrt</I></P>
+<P>There are, of course, two square roots to a complex number.  For instance, both i and <SUP>-</SUP>i are square roots of <SUP>-</SUP>1.  A call to <I>sqrt (cmplx)</I> produces the implementation defined approximation to the principal square root of the complex number.  That is, the result is the complex number whose argument has minimum absolute value and where <i>result * result</i> equals <i>cmplx</i>.</P>
+
+<P><I>The procedure exp</I></P>
+<P>A call to exp with z = a + bi as parameter produces the implementation defined approximation to the exponential of a + bi, that is, to <i>e<sup>a+bi</sup> = e<sup>a</sup>e<sup>bi</sup></i></P>
+
+<P><I>The procedure ln</I></P>
+<P>A call to ln with z = a + bi as parameter produces the implementation defined approximation to the principal value of the natural logarithm of a + bi. This can be found by observing that if ln(z) = a + bi and the natural logarithm is to be the inverse of exponentiation, then</P>
+<P><i>z = e</i><sup>ln<i>z</i></sup><i>= e<sup>a+bi</sup> = e<sup>a</sup>e<sup>bi</sup> = e<sup>a</sup></i> ( cos (<i>b</i>) + <i>i</i> sin (<i>b</i>) )</P>
+so that abs(z) = ea and arg(z) = b.  This means that b = ln(abs(z)) and d = arg(z). That is,
+ln(z) = CMPLX (ln(abs(z)), arg(z)).</P>
+
+<P>In order to handle the trigonometric functions, one assumes the series discussed in <A HREF="Ch17.1.html">section 17.1</A> apply and then expands both:</P>
+
+<P><i>e<sup>iz</sup></i> = cos (<i>z</i>) + <i>i</i> sin (<i>z</i>)<BR>
+<i>e<sup>-iz</sup></i> = cos (<i>z</i>) - <i>i</i> sin (<i>z</i>)</P>
+
+<P>Solving these as a system of equations for cos(z) and sin(z) produces the definitions used in the following:</P>
+<P>The procedure <I>sin</I></P>
+<P>A call to sin with z = a + bi as parameter produces the implementation defined approximation to the sine of the parameter, which is defined as:</P>
+<P><IMG SRC="Figure/figure17.2f.GIF"><!----></P>
+
+<P><I>The procedure cos</P>
+<P></I>A call to cos with z = a + bi as parameter produces the implementation defined approximation to the cosine of the parameter, which is defined as:</P>
+<P><IMG SRC="Figure/figure17.2g.GIF"><!----> </P>
+
+<P>It is not difficult to verify that, as is the case for trigonometric functions taking real valued arguments, sin<SUP>2</SUP>(z) + cos<SUP>2</SUP>(z) = 1. The tangent function can be defined on complex numbers in the same way as it is on real numbers.</P>
+
+<P><IMG SRC="Figure/figure17.2g1.GIF"><!----></P>
+
+<P><I>The procedure tan</P>
+<P></I>A call to tan with z = a + bi as parameter produces the implementation defined approximation to the tangent of the parameter, which is defined as:</P>
+<P><IMG SRC="Figure/figure17.2h.GIF"><!----> unless z lies on the imaginary axis (has arg ¼/2 or 3¼/2) in which case there shall be an exception raised.</P>
+
+<P>Turning attention to the inverse trigonometric functions, it is easy to require that on the domain for which they are defined, one must have</P>
+<P>sin (Arcsin(z) ) = z  and cos (Arccos(z)) = z.</P>
+<P>Taking these and letting y = Arc sin (z) and y = Arc cos (z) for the moment (respectively), one solves for y in z = sin (y)  and in z = cos(y) to obtain:</P>
+
+<P><IMG SRC="Figure/figure17.2h1.GIF"><!---->          <IMG SRC="Figure/figure17.2h2.GIF"><!----></P>
+<P>The negative values of the root in the quadratic formula are ignored at the third to last line in favour of using only the principal root in each case.  Thus one has:</P>
+<P><I>The procedure arcsin</P>
+<P></I>A call to arcsin with z = a + bi as parameter produces the implementation defined approximation to the arcsine of the parameter, which is defined as the complex number whose argument has minimum absolute value and where sin (result) produces c.  This may be expressed mathematically as:</P>
+<P><IMG SRC="Figure/figure17.2i.GIF"><!----></P>
+
+<P><I>The procedure arccos</P>
+<P></I>A call to arccos with z = a + bi as parameter produces the implementation defined approximation to the arccosine of the parameter. That is, the result is the complex number whose argument has minimum absolute value and where cos (result) produces z.  This may be expressed mathematically as:</P>
+<P><IMG SRC="Figure/figure17.2j.GIF"><!----></P>
+
+<P>In a similar manner, one assumes that tan(Arctan(z)) = z and works in a similar way to find a form for Arctan(z) as follows:</P>
+
+<P><IMG SRC="Figure/figure17.2j1.GIF"><!----></P>
+
+<P><I>The procedure arctan</P>
+<P></I>A call to arctan with z = a + bi as parameter produces the implementation defined approximation to the arctangent of the parameter. That is, the result is the complex number whose argument has minimum absolute value and where tan (result) produces z. This may be expressed mathematically as:</P>
+<P><IMG SRC="Figure/figure17.2k.GIF"><!----></P>
+
+<P><I>The procedure polarToComplex</P>
+<P></I>A call to polarToComplex with parameters abs and arg produces the implementation defined approximation to the complex number having modulus equal to <I>abs</I> and argument equal to <I>arg</I>.</P>
+
+<P><I>The procedure scalarMult</I></P>
+<P>A call to scalarMult with the parameters scalar and cmplx produces the implementation defined approximation to the scalar product of the scalar  and the complex number, that is <i>mz = m (a + bi) = ma + mbi</i>  This result will have modulus <i>mz</i> and the same argument as <i>z</i>.</P>
+
+
+<P>The actual code is now quite easy to produce.  Note how short the procedures have become. This makes them easy to write, easy to understand, and easy to debug.</P>
+
+<h3><a name="17.3.2">17.3.2</a> Implementing ComplexMath</h3>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> ComplexMath;
+
+(* =========================================
+      Initial Coding by Gordon Tisher
+          Implementation © 1994
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V2Y 1Y1
+         e-mail: rsutc@twu.ca
+    Last modification date 1996 12 13
+===========================================*)
+
+  (* Mathematical functions for the type COMPLEX *)
+(* original 1994 08 31 by GT
+ fixed a bug in arccos 1996 12 13 RS *)
+
+(**************************
+	Imports
+ **************************)
+
+<B>FROM</B> EXCEPTIONS <B>IMPORT</B>
+  ExceptionSource, RAISE, AllocateSource, IsCurrentSource, IsExceptionalExecution;
+
+<B>IMPORT</B> RealMath;
+
+(**************************
+  Constants
+ **************************)
+ 
+<B>CONST</B>
+  twoi = <B>CMPLX</B> (0.0, 2.0);
+
+(**************************
+  Global variables
+ **************************)
+ 
+<B>VAR</B>
+  mathExceptionSource : ExceptionSource;
+
+(**************************
+  Procedures
+ **************************)
+
+<B>PROCEDURE</B> abs (z: <B>COMPLEX</B>): <B>REAL</B>;
+  (* Returns the length of z *)
+<B>VAR</B>
+  re, im : <B>REAL</B>;
+<B>BEGIN</B>
+  re := <B>RE</B> (z);
+  im := <B>IM</B> (z);
+  <B>RETURN</B> RealMath.sqrt ( (re*re) + (im*im) );
+<B>END</B> abs;
+
+<B>PROCEDURE</B> arg (z: <B>COMPLEX</B>): <B>REAL</B>;
+  (* Returns the angle that z subtends to the positive real axis *)
+<B>VAR</B>
+  re, im : <B>REAL</B>;
+<B>BEGIN</B>
+  re := <B>RE</B> (z);
+  im := <B>IM</B> (z);
+  
+  <B>IF</B> im <!-->&gt; 0.0
+    <B>THEN</B>
+      <B>IF</B> re <!-->&gt; 0.0
+        <B>THEN</B>
+          <B>RETURN</B> RealMath.arctan ( im/re );
+        <B>ELSIF</B> re <!--<-->&lt; 0.0 <B>THEN</B>
+          <B>RETURN</B> RealMath.pi + RealMath.arctan ( im/re );
+        <B>ELSE</B>
+          <B>RETURN</B> RealMath.pi / 2.0;
+        <B>END</B>; (* if *)
+    <B>ELSIF</B> im <!--<-->&lt; 0.0 <B>THEN</B>
+      <B>IF</B> re <!-->&gt; 0.0
+        <B>THEN</B>
+          <B>RETURN</B> RealMath.arctan ( im/re );
+        <B>ELSIF</B> re <!--<-->&lt; 0.0 <B>THEN</B>
+          <B>RETURN</B> -RealMath.pi + RealMath.arctan ( im/re );
+        <B>ELSE</B>
+          <B>RETURN</B> -RealMath.pi / 2.0;
+        <B>END</B>; (* <B>IF</B> *)
+    <B>ELSE</B>
+      <B>IF</B> re <!-->&gt; 0.0
+        <B>THEN</B>
+          <B>RETURN</B> 0.0;
+        <B>ELSIF</B> re <!--<-->&lt; 0.0 <B>THEN</B>
+          <B>RETURN</B> RealMath.pi;
+        <B>ELSE</B>
+          <B>RAISE</B> (mathExceptionSource, 0, "ComplexMath.arg: zero value");
+        <B>END</B>; (* <B>IF</B> *)
+    <B>END</B> (* <B>IF</B> *)
+<B>END</B> arg;
+
+<B>PROCEDURE</B> conj (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the complex conjugate of z *)
+<B>BEGIN</B>
+  <B>RETURN</B> <B>CMPLX</B> ( <B>RE</B> (z), -<B>IM</B> (z) );
+<B>END</B> conj;
+
+<B>PROCEDURE</B> power (base: <B>COMPLEX</B>; exponent: <B>REAL</B>): <B>COMPLEX</B>;
+  (* Returns the value of the number base raised to the power exponent *)
+<B>VAR</B>
+  pow : <B>REAL</B>;
+  expTheta, temp : <B>COMPLEX</B>;
+  tempRe, tempIm : <B>REAL</B>;
+<B>BEGIN</B>
+  expTheta := <B>CMPLX</B> (exponent * arg (base), 0.0);
+  temp := cos (expTheta) + i * sin (expTheta);
+  pow := RealMath.power ( abs (base), exponent );
+  tempRe := pow * <B>RE</B> (temp);
+  tempIm := pow * <B>IM</B> (temp);
+  <B>RETURN</B> <B>CMPLX</B> (tempRe, tempIm);
+<B>END</B> power;
+
+<B>PROCEDURE</B> sqrt (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the principal square root of z *)
+<B>VAR</B>
+  temp : <B>COMPLEX</B>;
+  tempRe, tempIm : <B>REAL</B>;
+<B>BEGIN</B> 
+  tempRe := RealMath.cos ( arg (z) / 2.0 );
+  tempIm := RealMath.sin ( arg (z) / 2.0 ); 
+  tempRe := tempRe * RealMath.sqrt ( abs (z) );
+  tempIm := tempIm * RealMath.sqrt ( abs (z) );
+  <B>RETURN</B> <B>CMPLX</B> ( tempRe, tempIm );
+<B>END</B> sqrt;
+
+<B>PROCEDURE</B> exp (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the complex exponential of z *)
+<B>VAR</B>
+  temp, outZ : <B>COMPLEX</B>;
+  expR,
+  re, im : <B>REAL</B>;
+<B>BEGIN</B>
+  re := RealMath.cos ( <B>IM</B> (z) );
+  im := RealMath.sin ( <B>IM</B> (z) );
+  expR := RealMath.exp (<B>RE</B> (z));
+  re := re * expR;
+  im := im * expR;
+  outZ := <B>CMPLX</B> (re, im);
+  <B>RETURN</B> outZ;
+<B>END</B> exp;
+
+<B>PROCEDURE</B> ln (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the principal value of the natural logarithm of z *)
+<B>VAR</B>
+  tempRe, tempIm : <B>REAL</B>;
+<B>BEGIN</B>
+  tempRe := RealMath.ln ( abs (z) );
+  tempIm := arg (z);
+  <B>RETURN</B> <B>CMPLX</B> ( tempRe, tempIm );
+<B>END</B> ln;
+
+<B>PROCEDURE</B> sin (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the sine of z *)
+<B>BEGIN</B>
+  <B>RETURN</B> ( exp (i * z) - exp (-i * z) ) / <B>CMPLX</B> (0.0, 2.0);
+<B>END</B> sin;
+
+<B>PROCEDURE</B> cos (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the cosine of z *)
+<B>BEGIN</B>
+  <B>RETURN</B> ( exp (i * z) + exp (-i * z) ) / <B>CMPLX</B> (2.0, 0.0);
+<B>END</B> cos;
+
+<B>PROCEDURE</B> tan (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the tangent of z *)
+<B>BEGIN</B>
+  <B>IF</B> (<B>RE</B> (z) = (RealMath.pi / 2.0) + RealMath.pi) <B>AND</B> (<B>IM</B> (z) = 0.0)
+    <B>THEN</B>
+      RAISE (mathExceptionSource, 0, "ComplexMath.tan: overflow");
+    <B>END</B>; (* if *)
+  <B>RETURN</B> sin (z) / cos (z);
+<B>END</B> tan;
+
+<B>PROCEDURE</B> arcsin (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the arcsine of z *)
+<B>BEGIN</B>
+  <B>RETURN</B> ( one / i ) * ln (i * z + sqrt (one - z * z));
+<B>END</B> arcsin;
+
+<B>PROCEDURE</B> arccos (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the arccosine of z *)
+<B>BEGIN</B>
+  <B>RETURN</B> (one / i) * ln (z + sqrt (z * z - one));
+<B>END</B> arccos;
+
+<B>PROCEDURE</B> arctan (z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the arctangent of z *)
+<B>BEGIN</B>
+  <B>RETURN</B> (one / (twoi)) * ln ((one + i*z) / (one - i*z));
+<B>END</B> arctan;
+
+<B>PROCEDURE</B> polarToComplex (abs, arg: <B>REAL</B>): <B>COMPLEX</B>;
+  (* Returns the complex number with the specified polar coordinates *)
+<B>VAR</B>
+  tempRe, tempIm : <B>REAL</B>;
+<B>BEGIN</B>
+  tempRe := abs * RealMath.cos (arg);
+  tempIm := abs * RealMath.sin (arg);
+  <B>RETURN</B> <B>CMPLX</B> (tempRe, tempIm);
+<B>END</B> polarToComplex;
+
+<B>PROCEDURE</B> scalarMult (scalar: <B>REAL</B>; z: <B>COMPLEX</B>): <B>COMPLEX</B>;
+  (* Returns the scalar product of scalar with z *)
+<B>VAR</B>
+  tempRe, tempIm : <B>REAL</B>;
+<B>BEGIN</B>
+  tempRe := <B>RE</B> (z) * scalar;
+  tempIm := <B>IM</B> (z) * scalar;
+  <B>RETURN</B> <B>CMPLX</B> (tempRe, tempIm);
+<B>END</B> scalarMult;
+
+<B>PROCEDURE</B> IsCMathException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state  because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>. *)
+<B>BEGIN</B>
+  <B>RETURN</B> IsExceptionalExecution () <B>AND</B> IsCurrentSource (mathExceptionSource);
+<B>END</B> IsCMathException;
+
+<B>BEGIN</B> (* main *)
+  AllocateSource (mathExceptionSource);
+<B>END</B> ComplexMath.</pre>
+
+<P>The nearly identical <I>LongComplexMath</I> need not be reproduced here.</P>
+
+<h3><a name="17.3.3">17.3.3</a> Input and Output</h3>
+<P>The ISO standard does not define a standard library module for I/O.  However, it is easy to write one, based on the procedures in RealIO and LongIO and the simple procedure employed in the examples of the last section. As for the standard I/O suite, define libraries for both specified channels and for standard channels.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> ComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 10 30
+===========================================*)
+
+  (* Input and output of complex numbers in decimal text form over specified channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a complex number is
+       realNumber, [space], ["+" | "-"], [space,] [realnumber, i] |
+       [realNumber, [space],] ["+" | "-"], [space,] realnumber, i
+     where the real numbers in each case are in the 
+     format specified for fixed or floating reals.
+  *)
+   
+<B>PROCEDURE</B> ReadComplex (cid: IOChan.ChanId; <B>VAR</B> complex: <B>COMPLEX</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a complex number.  The value of this number is assigned to complex. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+ 
+(* following procedure affects all the Write procs below *)
+<B>PROCEDURE</B> SetVerbose (verbose : <B>BOOLEAN</B>);
+  (* if true prints both components even if one is zero; else prints only one if the other is zero. The default is false. *)
+
+<B>PROCEDURE</B> WriteFloat (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in floating-point real text form, with sigFigs significant figures, in a field of the given minimum width. The width for the real parts is 0 if the supplied width is 3 or less, and it is (width - 4) <B>DIV</B> 2 otherwise.  *)
+ 
+<B>PROCEDURE</B> WriteEng (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in fixed-point text form, with real parts rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteComplex (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> ComplexIO.
+</pre>
+<P>The procedure <I>SetVerbose</I> changes an internal setting to allow client modules to specify whether complex numbers in which one component is zero should have both components written out or only one. To keep things simple, the default is that <I>verbose</I> is <I>FALSE</I>, and the option of changing it has been eliminated from the <I>SComplexIO</I> module, so that if verbose output is required, the user must import from the <I>ComplexIO</I> module.  Here, the corresponding module for standard channels is abbreviated.</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> SComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 10 30
+===========================================*)
+
+  (* Input and output of complex numbers in decimal text form over the default channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+<B>PROCEDURE</B> ReadComplex (<B>VAR</B> complex: <B>COMPLEX</B>);
+<B>PROCEDURE</B> WriteFloat (complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteEng (complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteFixed (complex: <B>COMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteComplex (complex: <B>COMPLEX</B>; width: <B>CARDINAL</B>);
+<B>END</B> SComplexIO.
+</pre>
+<P>The only tricky part of the implementation is the procedure <I>ReadComplex</I>. This was done in such a way that complex numbers such as 2-i, 3 + 5i, -7i, and 56.7 would all be read correctly. That is, reading will work whether there are spaces or not between the parts and whether both parts are present or not. Observe that this means one cannot rely on <I>ReadReal</I> to read the sign of the part; that has to be done before handing off control to <I>ReadReal</I>.  Likewise, the presence of a bare <I>i</I> has to be checked for before looking for a real number.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> ComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 10 30
+===========================================*)
+
+  (* Input and output of complex numbers in decimal text form over specified channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan, RealIO, IOResult;
+<B>FROM</B> TextIO <B>IMPORT</B>
+  WriteString, WriteChar, ReadChar;
+<B>FROM</B> IOResult <B>IMPORT</B>
+  ReadResults;
+
+<B>VAR</B>
+  gverbose : <B>BOOLEAN</B>; (* affects all writing procs *)
+  
+<B>PROCEDURE</B> ReadComplex (cid: IOChan.ChanId; <B>VAR</B> complex: <B>COMPLEX</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a complex number.  The value of this number is assigned to complex. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+  
+<B>VAR</B>
+  re, im : <B>REAL</B>;
+  ch: <B>CHAR</B>;
+  neg : <B>BOOLEAN</B>;
+  res : IOResult.ReadResults;
+  
+<B>BEGIN</B>
+  IOChan.Look (cid, ch, res);
+  <B>IF</B> res = allRight
+    <B>THEN</B> 
+      neg := (ch = "-");
+      <B>IF</B> (ch = "+") <B>OR</B> (ch = "-")
+        <B>THEN</B> (* go around leading sign *)
+          IOChan.SkipLook (cid, ch, res);
+        <B>END</B>;
+      <B>IF</B> (ch = "i") <B>OR</B> (ch = "I") (* case of bare i *)
+        <B>THEN</B> 
+          re := 1.0
+        <B>ELSE</B> (* not a bare i so get number *)
+          RealIO.ReadReal (cid, re); (* also kills any leading spaces *)
+          <B>IF</B> IOResult.ReadResult (cid) = allRight
+            <B>THEN</B>
+              (* skip any more space there may be before next token *)
+              IOChan.Look (cid, ch, res);
+              <B>WHILE</B> (ch = " ") <B>AND</B> (res = allRight)
+                <B>DO</B>
+                  IOChan.SkipLook (cid, ch, res);
+                <B>END</B>; (* while *)
+            <B>END</B> (* if IOResult *) 
+        <B>END</B>; (* if ch *)    
+      <B>IF</B> neg
+        <B>THEN</B>
+          re := - re;
+        <B>END</B>; (* if neg *)
+      (* now, we could be holding an i here *)
+      <B>IF</B> (ch = "i") <B>OR</B> (ch = "I")
+        <B>THEN</B> (* yes, so pure imaginary *)
+          IOChan.Skip (cid); (* skip that char *)
+          complex := <B>CMPLX</B> (0.0, re);
+          <B>RETURN</B>;  (* and done *)
+        <B>ELSIF</B> (ch # "+") <B>AND</B> (ch # "-") <B>THEN</B>
+          (* this means pure real, no imaginary part; so leave that char for next guy *)
+          (* set it up as pure real *)
+          complex := <B>CMPLX</B> (re, 0.0);
+          <B>RETURN</B>;  (* and done *)
+        <B>END</B>; (* if ch *)
+
+      (* ok, we get here only if we got the first real ok and a + or a - afterwards *)
+      neg := (ch = "-");
+      IOChan.SkipLook (cid, ch, res); (* skip that sign char *)
+    <B>WHILE</B> (ch = " ") <B>AND</B> (res = allRight) (* skip and spaces here *)
+      <B>DO</B>
+        IOChan.SkipLook (cid, ch, res);
+      <B>END</B>; (* while *)
+
+      (* now, they might have a + in the middle and then a sign on the real.
+      This is a bit dumb, but logical in a way. *)
+      IOChan.Look (cid, ch, res); (* there had better be something there *)
+      <B>IF</B> res = allRight
+        <B>THEN</B> (* adjust neg if needed *)
+          neg := (neg <B>OR</B> (ch = "-")) <B>AND</B> <B>NOT</B> (neg <B>AND</B> (ch = "-"));
+          <B>IF</B> (ch = "+") <B>OR</B> (ch = "-")
+            <B>THEN</B> (* go around thisleading sign too *)
+              IOChan.SkipLook (cid, ch, res);
+            <B>END</B>;
+          <B>IF</B> (ch = "i") <B>OR</B> (ch = "I") (* check case of bare i *)
+            <B>THEN</B> 
+              im := 1.0
+            <B>ELSE</B> (* not a bare i so get number *)
+              RealIO.ReadReal (cid, im);
+              <B>IF</B> IOResult.ReadResult (cid)  = allRight (* got second real *)
+                <B>THEN</B>
+                  (* must be followed by an i or bad format *)
+                  ReadChar (cid, ch);
+                  <B>IF</B> (ch # "i") <B>AND</B> (ch # "I")
+                    <B>THEN</B>
+                      IOChan.SetReadResult (cid, wrongFormat);
+                      <B>RETURN</B>;
+                    <B>END</B>; (* if ch *)
+                <B>END</B>; (* if IOResult *)
+             <B>END</B>; (* if ch *)
+         <B>IF</B> neg
+           <B>THEN</B>
+             im := - im;
+           <B>END</B>; (* if neg *)
+         (* we only get here if all went <B>OK</B> for two numbers read *)
+         complex := <B>CMPLX</B> (re, im);
+       <B>ELSE</B> (* nothing there at all *)
+         IOChan.SetReadResult (cid, wrongFormat);
+       <B>END</B>; (* if res *)
+   <B>ELSE</B> (* bad second number *)
+     IOChan.SetReadResult (cid, wrongFormat);
+   <B>END</B>; (* first if res  *)
+
+<B>END</B> ReadComplex;
+
+(* following procedure affects all the Write procs below *)
+<B>PROCEDURE</B> SetVerbose (verbose : <B>BOOLEAN</B>);
+  (* if true prints both components even if one is zero; else prints only one if the other is zero. The default is false. *)
+<B>BEGIN</B>
+  gverbose := verbose;
+<B>END</B> SetVerbose;
+
+<B>PROCEDURE</B> WriteFloat (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in floating-point real text form, with sigFigs significant figures, in a field of the given minimum width. The width for the real parts is 0 if the supplied width is 3 or less, and it is (width - 4) <B>DIV</B> 2 otherwise.  *)
+ 
+<B>VAR</B>
+  realFlen : <B>CARDINAL</B>;
+  re, im : <B>REAL</B>;
+  
+<B>BEGIN</B>
+  re := <B>RE</B> (complex);
+  im := <B>IM</B> (complex);
+  <B>IF</B> width <!--<-->&lt; 4
+    <B>THEN</B>
+      realFlen := 0;
+    <B>ELSE</B>
+      realFlen := (width - 4) <B>DIV</B> 2;
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (re # 0.0) <B>OR</B> (im = 0.0)
+    <B>THEN</B>
+    RealIO.WriteFloat (cid, re, sigFigs, realFlen);
+  <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (im # 0.0) (* decide if to print more *)
+    <B>THEN</B> (* yes, see if space needed *)
+      <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+        <B>THEN</B>
+          WriteChar (cid, " ");
+        <B>END</B>;
+    <B>IF</B> im <!--<-->&lt; 0.0 
+      <B>THEN</B> (* always print negative sign *)
+        WriteChar (cid, "-");
+      <B>ELSIF</B> gverbose <B>OR</B> (re # 0.0) <B>THEN</B>
+        WriteChar (cid, '+'); (* space only *)
+      <B>END</B>;
+    <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+      <B>THEN</B>
+        WriteChar (cid, " ");
+      <B>END</B>;
+    RealIO.WriteFloat (cid, <B>ABS</B> (im), sigFigs, realFlen);
+    WriteChar (cid, 'i');
+  <B>END </B>(* first if gverbose *)
+<B>END</B> WriteFloat;
+
+<B>PROCEDURE</B> WriteEng (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+<B>VAR</B>
+  realFlen : <B>CARDINAL</B>;
+  re, im : <B>REAL</B>;
+  
+<B>BEGIN</B>
+  re := <B>RE</B> (complex);
+  im := <B>IM</B> (complex);
+  <B>IF</B> width <!--<-->&lt; 4
+    <B>THEN</B>
+      realFlen := 0;
+    <B>ELSE</B>
+      realFlen := (width - 4) <B>DIV</B> 2;
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (re # 0.0) <B>OR</B> (im = 0.0)
+    <B>THEN</B>
+      RealIO.WriteEng (cid, re, sigFigs, realFlen);
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (im # 0.0) (* decide if to print more *)
+    <B>THEN</B> (* yes, see if space needed *)
+      <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+        <B>THEN</B>
+          WriteChar (cid, " ");
+        <B>END</B>;
+    <B>IF</B> im <!--<-->&lt; 0.0 
+      <B>THEN</B> (* always print negative sign *)
+        WriteChar (cid, "-");
+      <B>ELSIF</B> gverbose <B>OR</B> (re # 0.0) <B>THEN</B>
+        WriteChar (cid, '+'); (* space only *)
+      <B>END</B>;
+    <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+      <B>THEN</B>
+        WriteChar (cid, " ");
+      <B>END</B>;
+    RealIO.WriteEng (cid, <B>ABS</B> (im), sigFigs, realFlen);
+    WriteChar (cid, 'i');
+  <B>END </B>(* first if gverbose *)
+ 
+<B>END</B> WriteEng;
+
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in fixed-point text form, with real parts rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+
+<B>VAR</B>
+  realFlen : <B>CARDINAL</B>;
+  re, im : <B>REAL</B>;
+  
+<B>BEGIN</B>
+  re := <B>RE</B> (complex);
+  im := <B>IM</B> (complex);
+  <B>IF</B> width <!--<-->&lt; 4
+    <B>THEN</B>
+      realFlen := 0;
+    <B>ELSE</B>
+      realFlen := (width - 4) <B>DIV</B> 2;
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (re # 0.0) <B>OR</B> (im = 0.0)
+    <B>THEN</B>
+      RealIO.WriteFixed (cid, re, place, realFlen);
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (im # 0.0) (* decide if to print more *)
+    <B>THEN</B> (* yes, see if space needed *)
+      <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+        <B>THEN</B>
+          WriteChar (cid, " ");
+        <B>END</B>;
+    <B>IF</B> im <!--<-->&lt; 0.0 
+      <B>THEN</B> (* always print negative sign *)
+        WriteChar (cid, "-");
+      <B>ELSIF</B> gverbose <B>OR</B> (re # 0.0) <B>THEN</B>
+        WriteChar (cid, '+'); (* space only *)
+      <B>END</B>;
+    <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+      <B>THEN</B>
+        WriteChar (cid, " ");
+      <B>END</B>;
+    RealIO.WriteFixed (cid, <B>ABS</B> (im), place, realFlen);
+    WriteChar (cid, 'i');
+  <B>END </B>(* first if gverbose *)
+<B>END</B> WriteFixed;
+ 
+<B>PROCEDURE</B> WriteComplex (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+  (* Of the space provided in width, four places are needed to write the + between the two reals, and one to write the letter i.  The rest is divided equally between the two reals. *)
+
+<B>VAR</B>
+  realFlen : <B>CARDINAL</B>;
+  re, im : <B>REAL</B>;
+  
+<B>BEGIN</B>
+  re := <B>RE</B> (complex);
+  im := <B>IM</B> (complex);
+  <B>IF</B> width <!--<-->&lt; 4
+    <B>THEN</B>
+      realFlen := 0;
+    <B>ELSE</B>
+      realFlen := (width - 4) <B>DIV</B> 2;
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (re # 0.0) <B>OR</B> (im = 0.0)
+    <B>THEN</B>
+      RealIO.WriteReal (cid, re, realFlen);
+    <B>END</B>;
+  <B>IF</B> gverbose <B>OR</B> (im # 0.0) (* decide if to print more *)
+    <B>THEN</B> (* yes, see if space needed *)
+      <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+        <B>THEN</B>
+          WriteChar (cid, " ");
+        <B>END</B>;
+    <B>IF</B> im <!--<-->&lt; 0.0 
+      <B>THEN</B> (* always print negative sign *)
+        WriteChar (cid, "-");
+      <B>ELSIF</B> gverbose <B>OR</B> (re # 0.0) <B>THEN</B>
+        WriteChar (cid, '+'); (* space only *)
+      <B>END</B>;
+    <B>IF</B> gverbose <B>OR</B> (re # 0.0)
+      <B>THEN</B>
+        WriteChar (cid, " ");
+      <B>END</B>;
+    RealIO.WriteReal (cid, <B>ABS</B> (im), realFlen);
+    WriteChar (cid, 'i');
+  <B>END </B>(* first if gverbose *)
+<B>END</B> WriteComplex;
+
+<B>BEGIN</B> (* main body *)
+  gverbose := <B>FALSE</B>;
+<B>END</B> ComplexIO.
+</pre>
+<P>Once this is done, the implementation of the <I>SComplexIO</I> module is quite straightforward.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> SComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 10 30
+===========================================*)
+
+<B>IMPORT</B> StdChans, ComplexIO;
+
+<B>PROCEDURE</B> ReadComplex (<B>VAR</B> complex: <B>COMPLEX</B>);
+<B>BEGIN</B>
+  ComplexIO.ReadComplex (StdChans.InChan(), complex);
+<B>END</B> ReadComplex;
+
+<B>PROCEDURE</B> WriteFloat (complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>BEGIN</B>
+  ComplexIO.WriteFloat (StdChans.OutChan(), complex, sigFigs, width); 
+<B>END</B> WriteFloat;
+
+<B>PROCEDURE</B> WriteEng (complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>BEGIN</B>
+  ComplexIO.WriteEng (StdChans.OutChan(), complex, sigFigs, width); 
+<B>END</B> WriteEng;
+
+<B>PROCEDURE</B> WriteFixed (complex: <B>COMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+<B>BEGIN</B>
+  ComplexIO.WriteFixed (StdChans.OutChan(), complex, place, width); 
+<B>END</B> WriteFixed;
+ 
+<B>PROCEDURE</B> WriteComplex (complex: <B>COMPLEX</B>; width: <B>CARDINAL</B>);
+<B>BEGIN</B>
+  ComplexIO.WriteComplex (StdChans.OutChan(), complex, width); 
+<B>END</B> WriteComplex;
+
+<B>END</B> SComplexIO.
+</pre>
+<P>From these, it is also rather a simple matter to produce modules called <I>LongComplexIO</I> and <I>SLongComplexIO</I>. These will not be reproduced here. A small test harness illustrates some of the combinations.  For the first group of numbers, <I>verbose</I> is turned on; for the second group, only one form of output is used, and <I>verbose</I> is off.</P>
+
+<pre><B>MODULE</B> TestComplexIO;
+
+(* by R. Sutcliffe
+  to test ComplexIO modified 1996 11 01 *)
+
+<B>FROM</B> SComplexIO <B>IMPORT</B>
+  ReadComplex, WriteComplex, WriteFixed, WriteFloat, WriteEng;
+<B>FROM</B> ComplexIO <B>IMPORT</B>
+  SetVerbose;
+<B>FROM</B> ComplexMath <B>IMPORT</B>
+  zero;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine;
+<B>VAR</B>
+  z : <B>COMPLEX</B>;
+  
+<B>BEGIN</B>  
+  SetVerbose (<B>TRUE</B>);
+  <B>REPEAT</B>
+    WriteString ("Type complex; zero to go on  ");
+    ReadComplex (z);
+    SkipLine;
+    WriteString ("complex z is: ");
+    WriteLn;
+    WriteFixed (z, 6, 26);
+    WriteLn;
+    WriteFloat (z, 10, 26);
+    WriteLn;
+    WriteEng (z, 10, 26);
+    WriteLn;
+    WriteComplex (z, 26);
+    WriteLn;
+    WriteLn;
+  <B>UNTIL</B> z = zero;
+
+  SetVerbose (<B>FALSE</B>);
+  <B>REPEAT</B>
+    WriteString ("Type complex  ");
+    ReadComplex (z);
+    SkipLine;
+    WriteComplex (z, 26);
+    WriteLn;
+  <B>UNTIL</B> z = zero;
+
+<B>END</B> TestComplexIO.
+</pre>
+<P>Observe the variety of inputs and outputs used to test the library.  As usual;, inputs are highlighted in bold to distinguish them.</P>
+
+<pre>Type complex; zero to go on  <B>1</B>
+complex z is: 
+   1.000000 +     0.00000i
+1.000000000E+00 + 0.000000000E+00i
+1.000000000E+00 + 0.000000000E+00i
+1.000000000 + 0.00000E+00i
+
+Type complex; zero to go on  <B>3i</B>
+complex z is: 
+    0.00000 +    3.000000i
+0.000000000E+00 + 3.000000000E+00i
+0.000000000E+00 + 3.000000000E+00i
+0.00000E+00 + 3.000000000i
+
+Type complex; zero to go on  <B>2-5i</B>
+complex z is: 
+   2.000000 -    5.000000i
+2.000000000E+00 - 5.000000000E+00i
+2.000000000E+00 - 5.000000000E+00i
+2.000000000 - 5.000000000i
+
+Type complex; zero to go on <B> 0</B>
+complex z is: 
+    0.00000 +     0.00000i
+0.000000000E+00 + 0.000000000E+00i
+0.000000000E+00 + 0.000000000E+00i
+0.00000E+00 + 0.00000E+00i
+
+Type complex  <B>1</B>
+1.000000000
+Type complex  <B>2i</B>
+2.000000000i
+Type complex  <B>3-i</B>
+3.000000000 - 1.000000000i
+Type complex  <B>7 +5i</B>
+7.000000000 + 5.000000000i
+Type complex  <B>-i</B>
+-1.000000000i
+Type complex  <B>0</B>
+0.00000E+00</pre>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

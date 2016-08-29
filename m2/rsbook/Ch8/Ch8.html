@@ -1,0 +1,101 @@
+<HTML><HEAD><TITLE>Chapter 8: Data Storage Issues</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter 8<BR>
+Data Storage Issues</B></H1></CENTER>
+
+
+<BR><A class = navgrn HREF="Ch8.0.html">8.0 Chapter Goals</A><!--	342-->
+<BR><A class = navgrn HREF="Ch8.1.html">8.1 Storage<!--‹-->--An Introduction</A><!--	342-->
+<P><b>Part A<!--‹-->--Machine and System Level Storage Issues</b></P><!--342-->
+<A class = navgrn HREF="Ch8.2.html">8.2 An Introduction to the Lower Level</A><!--	342-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.2.html#8.2.1">  8.2.1 General Considerations</A><!--	342-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.2.html#8.2.2">  8.2.2 Low Level Numeric Notations</A><!-- 	343-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.2.html#8.2.3">  8.2.3 Machine Level Data Storage</A><!--	344-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.2.html#8.2.4">  8.2.4 Hexadecimal and Octal Notation</A><!--	346-->
+<BR><A class = navgrn HREF="Ch8.3.html">8.3 High Level Access to Low Level Facilities in Modula-2</A><!--	347-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.3.html#8.3.1">  8.3.1 The Module SYSTEM</A><!--	348-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.3.html#8.3.2">  8.3.2 Variables at Fixed Addresses</A><!--	350-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.3.html#8.3.3">  8.3.3 Hexadecimal and Octal Notation in Modula-2</A><!--	350-->
+<BR><A class = navgrn HREF="Ch8.4.html">8.4 Extended Low Level Examples</A><!--	352-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.4.html#8.4.1">  8.4.1 Keyboard Reading<!--‹-->--Operating System Level</A><!--	352-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.4.html#8.4.2">  8.4.2 Generic Swap</A><!--	353-->
+<P><b>Part B<!--‹-->--Input, Output, and Files</b></P><!--354-->
+<A class = navgrn HREF="Ch8.5.html">8.5 Files<!--‹-->--Introduction and Terminology</A><!--	354-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.5.html#8.5.1">  8.5.1 Sequences, Streams, and Channels</A><!--	356-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.5.html#8.5.2">  8.5.2 Sequential and Random Access Files</A><!--	357-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.5.html#8.5.3">  8.5.3 Planning to Use Streams with Files</A><!--	358-->
+<BR><A class = navgrn HREF="Ch8.6.html">8.6 Text I/O in ISO Standard Modula-2</A><!--	359-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.6.html#8.6.1">  8.6.1 The Restricted Stream Model</A><!--	359-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.6.html#8.6.2">  8.6.2 The Rewindable Sequential Stream Model</A><!--	362-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.6.html#8.6.3">  8.6.3 File Text I/O in non-Standard Modula-2</A><!--	364-->
+<BR><A class = navgrn HREF="Ch8.7.html">8.7 Binary I/O</A><!--	366-->
+<BR><A class = navgrn HREF="Ch8.8.html">8.8 Notes on File I/O</A><!--	369-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch8.8.html#8.8.1">  8.8.1 Special Notes on the Macintosh Operating System</A><!--	369-->
+<BR><A class = navgrn HREF="Ch8.9.html">8.9 Standard Channel I/O in ISO Modula-2</A><!--	371-->
+<BR><A class = navgrn HREF="Ch8.10.html">8.10 Lower Level I/O in ISO Modula-2</A><!--	377-->
+<BR><A class = navgrn HREF="Ch8.11.html">8.11 An Extended Low Level I/O Example<!--‹-->--TermFile</A><!--	380-->
+<BR><A class = navgrn HREF="Ch8.12.html">8.12 Chapter Summary</A><!--	383-->
+<BR><A class = navgrn HREF="Ch8.13.html">8.13 Assignments</A><!--	384-->
+
+<!--Version History:
+Version 3.0 Character graphics done 1994 02 03
+Version 3.0.1 All sections complete 1994 02 23
+Version 3.0.2 with table of contents 1994 09 19
+Version 3.0.2b with minor corrections to table of contents 1994 09 19
+Version 4.0 with HTML markup by G Tisher 1995 05 15
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 07 04 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch8.0.html»
+«INCLUDE Ch8.1.html»
+«INCLUDE Ch8.2.html»
+«INCLUDE Ch8.3.html»
+«INCLUDE Ch8.4.html»
+«INCLUDE Ch8.5.html»
+«INCLUDE Ch8.6.html»
+«INCLUDE Ch8.7.html»
+«INCLUDE Ch8.8.html»
+«INCLUDE Ch8.9.html»
+«INCLUDE Ch8.10.html»
+«INCLUDE Ch8.11.html»
+«INCLUDE Ch8.12.html»
+«INCLUDE Ch8.13.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

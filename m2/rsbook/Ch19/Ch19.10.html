@@ -1,0 +1,109 @@
+<HTML><HEAD><TITLE>19.10 Additions to the Libraries</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Additions to the Libraries">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.10 Additions to the Libraries</b></H2>
+
+<P>Unlike the Generic extensions, those for OOM-2 require some library support. That for exceptions parallels the one in the base language; coroutines requires one additional procedure, and garbage collection also has a library.</P>
+
+<H3><b><A NAME="19.10.1"></A>19.10.1 Exceptions</b></H3>
+<P>OOM-2 extensions to the base language define four new exceptions. Detection of the first three is mandatory, but detection of the last one is optional. They are:</P>
+<P>1. emptyException<BR>
+raised whenever an attempt is made to access an object via an empty reference</P>
+<P>2. abstractException<BR>
+raised whenever an attempt is made to call an abstract method</P>
+<P>3. guardException<BR>
+raised if there is no match on the list of selections (possibly due to an empty reference) and no ELSE</P>
+<P>4. immutableException<BR>
+an implementation may choose to raise this if  there is an attempt to change an immutable entity.</P>
+
+<P>In addition, there is a new system module, which behaves as if it had the following definition:</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> M2OOEXCEPTION;
+
+(* Provides facilities for identifying exceptions of the extended language *)
+
+<b>TYPE</b>
+  M2OOExceptions =
+    (emptyException, abstractException, immutableException, guardException);
+
+<b>PROCEDURE</b> M2OOException (): M2OOExceptions;
+  (* If the current coroutine is in the exceptional execution state because
+     of the raising of an exception of the language extensions, returns the
+     corresponding enumeration value, and otherwise raises an exception. *)
+
+<b>PROCEDURE</b> IsM2OOException (): <b>BOOLEAN</b>;
+  (* If the current coroutine is in the exceptional execution state because
+     of the raising of an exception of the language extensions, returns
+     TRUE, and otherwise returns FALSE. *)
+
+<b>END</b> M2OOEXCEPTION.</PRE>
+
+<P>The entities of this system module behave in exactly the same way as do those of the module M2EXCEPTION described in <A HREF="../Ch10/Ch10.2.html#10.2.1">section 10.2.1</A> except that they act on the OOM-2 exception enumeration instead of that of the base language.</P>
+
+<H3><b><A NAME="19.10.2"></A>19.10.2 Coroutines</b></H3>
+
+<P>The module COROUTINES (see the chapter on that subject) in the base standard has one procedure added to provide support for OOM-2. It is</P>
+
+<PRE><b>PROCEDURE</b> DISPOSECOROUTINE (VAR cr: COROUTINE);
+  (* Declare that the coroutine identified by cr has reached the end of its lifetime. *)</PRE>
+
+<P>The procedure DISPOSECOROUTINE is used to inform the garbage collector that the coroutine of the actual parameter has reached the end of its lifetime. The garbage collector takes this to mean that all the traced variables in that coroutine have become defunct and may be collected.</P>
+
+
+<H3><b><A NAME="19.10.3"></A>19.10.3 The Module Garbage Collection</b></H3>
+
+<P>In some implementations it may be possible to turn garbage collection off and on, or to force it to take place at specified points in a program when it is convenient, rather than leave it up to automatic routines. Thus, the procedures of the following module <i>may</i> do something, but only if the implementation allows this. Their semantics are described in the comments and need no further explanation.</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> GARBAGECOLLECTION;
+
+(* Provides facilities for controlling the garbage collector. *)
+
+<b>PROCEDURE</b> IsCollectionEnabled (): <b>BOOLEAN</b>;
+  (* If garbage collection is enabled then returns TRUE and otherwise returns FALSE. *)
+
+<b>PROCEDURE</b> CollectionEnable (on: <b>BOOLEAN</b>);
+  (* If on is TRUE then enable garbage collection; otherwise if on is FALSE and garbage 
+     collection can be disabled then disable garbage collection. *)
+
+<b>PROCEDURE</b> ForceCollection;
+  (* If garbage collection can be forced then force it else do nothing. *)
+
+<b>END</b> GARBAGECOLLECTION.</PRE>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

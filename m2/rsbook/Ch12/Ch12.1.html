@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+<TITLE>12.1 Pointers</TITLE>
+<meta NAME="keywords" CONTENT="pointer, pointers, reference, references, referencing, variable, variables, address, addresses, addressing, to, cast, system, syste.address, dereference, dereferences, dereferencing, caret, hat, point^, point, hat, point-hat, loc, operator, operators, nil, nul, nill, null, type, nil-type, nill-type, nul-type, null-type, zero, portability, portable, guard, guarded, short, circuit, circuited, pascal, system.adr">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.1 Pointers</B></H2>
+<P>Pointers were briefly mentioned in <A HREF="../Ch8/Ch8.3.html#8.3.1">section 8.3.1</A> in the discussion of the contents of the pseudo-module SYSTEM, which uses the definition:</P>
+<PRE>
+<B>TYPE</B>
+  ADDRESS = <B>POINTER</B> <B>TO</B> LOC; </PRE>
+<P>Because this definition is phrased as a specific instance of the pointer type, it should be apparent that a pointer may be something more general than the address of a LOC (smallest storage location).  In fact a pointer may hold the location of any data.  This is only a slight conceptual generalization, however, as the pointer will still hold the address of a LOC<!--‹-->--the first unit of storage belonging to the data in question.</P>
+<BLOCKQUOTE><I><A NAME="Pointer">A</A> <U>pointer</U> or <U>reference variable</U>  identifies a memory location that holds the address of some other entity.  It <U>points to</U> that other entity.</I></BLOCKQUOTE>
+<P>Although an addressible location might not be called a LOC in other programming notations, this definition is a general one, and is not specific to Modula-2.</P>
+<H3><B><A NAME="12.1.1">12.1.1</A> Pointer Variables</B></H3>
+<P>Of course in Modula-2, identifiers for pointer variables have to be declared using the usual syntax, for instance, for a type whose entities will point to integers:</P>
+<PRE>
+<B>TYPE</B>
+  IntPoint = <B>POINTER</B> <B>TO</B> <B>INTEGER</B>;
+<B>VAR</B>
+  iPoint : IntPoint;
+  int : <B>INTEGER</B>;</PRE>
+<P>Following these declarations, assignments could be made such as:</P>
+<PRE>
+  iPoint := SYSTEM.ADR (int);</PRE>
+<P>Conceptually, items of the type <I>IntPoint</I> point to an entire integer, whatever number of memory locations an integer occupies. On the other hand, there is a sense in which all pointers are the same type (ADDRESS) even though conceptually each pointer type is different, depending on the type of data they point to.  Thus the Modula-2 compatibility rule is:</P>
+<BLOCKQUOTE><I>Items of any pointer type are assignment compatible to the type SYSTEM.ADDRESS. Two different pointer types are not assignment compatible with each other, but can be CAST to another if required.</I></BLOCKQUOTE>
+<P>To illustrate, if one also had</P>
+<PRE>
+<B>TYPE</B>
+  RealPoint = <B>POINTER</B> <B>TO</B> <B>REAL</B>;
+<B>VAR</B>
+  rPoint, rPoint2 : RealPoint;
+  re : <B>REAL</B>;
+  adr: SYSTEM.ADDRESS;</PRE>
+<P>then the following are all legal:</P>
+<PRE>
+  adr := iPoint;
+  adr := rPoint;
+  rPoint := SYSTEM.CAST (RealPoint, iPoint); (* most have a good reason for this *)</PRE>
+<P>but the following are all illegal because the types pointed to are incompatible, and therefore so are the pointer types:</P>
+<PRE>
+  iPoint := rPoint;
+  rPoint := iPoint;</PRE>
+<P>Pointer types <I>may</I>, as in the examples, point to numeric entities, but are not themselves numeric, and therefore <i>none</i> of the usual numeric operations (+ - * /) can be performed on variables of these types.  Two pointers of the same type can be compared to one another using either <!--"-->&quot;=<!--"-->&quot; or <!--"-->&quot;#<!--"-->&quot; but not with <!--"-->&quot;<!--<-->&lt;<!--"-->&quot; or any other comparison operators.  Thus,</P>
+<PRE>
+  <B>IF</B> rPoint = rPoint1</PRE>
+<P>is legal, but</P>
+<PRE>
+  <B>IF</B> rPoint <!--<-->&lt; iPoint</PRE>
+<P>is not allowed.</P>
+<H3><B><A NAME="12.1.2">12.1.2</A> Pointer References</B></H3>
+<P>It is worth observing that the memory pointed to by a pointer type has a type of its own, but not a name of its own; its name may be regarded as anonymous.  Actual references to the memory pointed to are made by using the pointer name, followed by the symbol <!--"-->&quot;^.<!--"-->&quot;</P>
+<BLOCKQUOTE><I><A NAME="Dereferencing">Using</A> a pointer to access the memory to which it points is called <U>dereferencing</U> the pointer.</I></BLOCKQUOTE>
+<P>In the cases shown, one could initialize the contents of a memory location pointed to in any of the following ways (among others):</P>
+<PRE>
+  iPoint^ := int;
+  iPoint^ := -5;
+  rPoint^ := 3.24E-7;
+  TextIO.ReadReal (rPoint2^);</PRE>
+<P><B>NOTES</B>: 1. On some older systems, the ^ or <I>caret</I> character was written as the <I>up-arrow</I> character <!--‚--><IMG SRC="Figure/uparrow.GIF">, but on most, these are two distinct characters.  Where both exist, the one desired here is the <I>caret</I>.</P>
+<P>	2. The name <I>caret</I> is often shortened to <I>hat</I> and one then pronounces <I>point^</I> as <I>point-hat</I>.</P>
+<P>	3. Recall that an ADDRESS is a POINTER TO LOC.  Thus, if <I>Ad</I> is of type ADDRESS, then <I>Ad^</I> is of type LOC.</P>
+<P>It is easiest to remember the meaning of <I>point^</I> if one thinks of it as <!--"-->&quot;the thing pointed to by <I>point</I><!--"-->&quot;.  It must be kept very clear that <I>point</I> and <I>point^</I> are two entirely different entities<!--‹-->--the first is the name of the pointer variable whose contents are the number or address of a memory location, and the second is the name of the entity situated at that location.  So, when the <I>point</I> is declared, only enough memory for the pointer is set aside.  The space for <I>point^</I> must be obtained separately, either by declaring an entity of the type that can be pointed to, or by executing code that allocates memory at run time (see <A HREF="Ch12.5.html">section 12.5</A>).</P>
+<BLOCKQUOTE><I><A NAME="Operator">The</A> Modula-2 symbol <!--"-->&quot;^<!--"-->&quot; when affixed to an identifier is called the <U>dereferencing operator</U>.</I></BLOCKQUOTE>
+<P>To further illustrate by a map or picture of memory, suppose a program contains the declarations and code fragment:</P>
+<PRE>
+<B>TYPE</B>
+  sPoint = <B>POINTER</B> <B>TO</B> Student;
+  Student =
+    <B>RECORD</B>
+      name : <B>ARRAY</B> [0..80] <B>OF</B> <B>CHAR</B>;
+      number : <B>CARDINAL</B>;
+    <B>END</B>;
+
+<B>VAR</B>
+  st : sPoint;
+  sylvia : Student;
+
+<B>BEGIN</B>
+  st := <B>SYSTEM</B>.<B>ADR</B> (sylvia);
+  st^.name := <!--"-->&quot;Sylvia Stockforth<!--"-->&quot;;
+  st^.number := 830924;</PRE>
+<P>Note, by the way, that <I>st^</I> is a record, so its field names are referred to in the usual way; one could also use</P>
+<PRE>
+<B>WITH</B> st^
+  <B>DO</B>
+    name := <!--"-->&quot;Sylvia Stockforth<!--"-->&quot;;
+    number := 830924;
+  <B>END</B>;</PRE>
+<P>At this juncture, one could envision the memory contents looking  as in figure 12.1 (the address A05B has been chosen arbitrarily).</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>At this point, one might legitimately ask why a programmer should go to this trouble when the variable <I>sylvia</I> can be more easily referred to directly than via a pointer whose value consists of its address.  The answer is that not all situations are as simple as the one used here to illustrate the basic ideas; there are others in which pointers are quite useful, or even necessary.</P>
+<H3><B><A NAME="12.1.3">12.1.3</A> The value NIL</B></H3>
+<P>Sometimes it is useful to initialize pointer variables to a <!--"-->&quot;safe<!--"-->&quot; value, that is, to a value that does not actually point anywhere.  This special value has the standard identifier <i>NIL</i>.  Just as declaring a Modula-2 numeric variable does not set its value (say, to 0) without an explicit initialization statement in the code, declaring a pointer variable does not set its value to <i>NIL</i><!--‹-->--a specific value<!--‹-->--but to an indeterminate value.  A not-intentionally-initialized variable has whatever value found in memory when that memory is allocated, and that could be anything.</P>
+<BLOCKQUOTE><I><A NAME="Nil">The</A> Modula-2 standard identifier NIL has an anonymous type called the <U>nil-type</U>, and all pointer types are compatible with the nil-type.</I></BLOCKQUOTE>
+<P>This rule means that a variable of any pointer type, including the type ADDRESS, can be given the value <i>NIL</i>.</P>
+<P><B>NOTES</B>: 1. It causes a run time error (raises an exception) to make a reference to <I>NIL^</I>.  Thus, a reference to <I>point^</I> when <I>point</I> happens to equal <I>NIL</I>, will always cause an error.</P>
+<P>	 2. Some implementations have a compiler option (command line and/or pragma) to force automatic initialization of numeric variables to <i>zero</i> and pointers to <i>NIL</i>.  This should not be relied upon, as such code would not be portable.</P>
+<P>The short-circuited Boolean expression evaluation feature of Modula-2 can come in handy to prevent such erroneous references as this.  Rather than writing</P>
+<PRE>
+<B>IF</B> p^ = theInterestingValue</PRE>
+<P>and taking the chance that the pointer might be <i>NIL</i>, one should always write:</P>
+<PRE>
+<B>IF</B> (p # <B>NIL</B>) <B>AND</B> (p^ = theInterestingValue)</PRE>
+<P>so that if in fact <i>point</i> does equal NIL, the right side of the expression will not be evaluated at all, neatly avoiding the potential error.  The potentially dangerous evaluation has been <I>guarded</I> by the prior boolean condition that prevents the problematic evaluation from taking place if it would be erroneous.  This correction from the Pascal rule for Modula-2 of the logical rules for evaluating Boolean expressions was designed primarily with this very situation in view.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

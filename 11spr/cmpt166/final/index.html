@@ -1,0 +1,212 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Final Exam :: CMPT166 11SP :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers online ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+
+<ol class="main">
+
+<li> What do you think of the <b>Java</b> programming language overall?
+Compare it to another language you know. <u>[4]</u>
+<div class="answerbox" style="height:6em"></div>
+
+<li> What is <b>object-oriented</b> programming?  How does it differ
+from procedural programming? <u>[4]</u>
+<div class="answerbox" style="height:5em"></div>
+<i><br>
+  Procedural programming is action-oriented: the code is a sequence of
+  procedures, and the data structures are passed as parameters to the
+  procedures. The focus is on the 'verbs'. In contrast, object-oriented
+  programming is data-oriented: code is organized into classes, centred
+  around objects, and the procedures are treated as methods within each
+  class. The focus is on the 'nouns'.
+</i>
+
+<li> Describe and contrast the four options we have in Java for 
+<b>access modifiers</b> on attributes/methods. <u>[4]</u>
+<div class="answerbox" style="height:5em"></div>
+<i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> (no modifier) <dd> methods in this class and this package can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i>
+
+<li> What is the effect of the <b><tt>final</tt></b> keyword on
+  <ul class="subparts">
+  <li> instance variables? <u>[2]</u>
+  <i><br>Constant: cannot change the value of the variable</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> methods? <u>[2]</u>
+  <i><br>Subclasses cannot override (redefine) the method</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> classes? <u>[2]</u>
+  <i><br>Cannot be subclassed</i>
+  <div class="answerbox" style="height:1em"></div>
+</ul>
+
+<li> What is an <b>interface</b> in Java?  What is an <b>abstract class</b>?
+What's the difference?  Describe an example of each (you may come up with your
+own).  <u>[6]</u>
+<i><br>
+  An abstract class is not meant to be instantiated directly. An abstract
+  superclass can be used as a way of organizing its subclasses under one
+  category. For example, Dog, Cat, and Cow all are within the Mammal category.
+  It makes sense to have specific instances of Dog, Cat, and Cow, but not of
+  Mammal. Mammal is the abstract superclass.<br>
+  An interface is a named set of methods, for instance the ActionListener
+  interface specifies the actionPerformed() method and advertises that a class
+  knows how to respond to action events.  Interfaces specify functionality,
+  i.e., what a class knows how to do.  Abstract superclasses specify identity,
+  i.e., what a class is.  Multiple classes that inherit from different
+  superclasses may implement the same interface, but in Java multiple
+  inheritance is not permitted.
+</i>
+
+<div class="break"></div>
+
+<li> Name and briefly describe the features of at least 4
+<b>Swing widgets</b> (i.e., subclasses of JComponent).
+If you can't remember the exact name of the class, describe the
+widget in as much detail as you can.  <u>[8]</u>
+<br><i>Many to choose from: JPanel, JFrame, JButton,
+  JCheckBox, JComboBox, JRadioButton, JLabel, JTextField, JPasswordField,
+  JTextArea, JMenu, JMenuItem, JSlider, JProgressBar, ...
+</i>
+<div class="answerbox" style="height:10em"></div>
+
+<li> What is object <b>serialization</b> in Java?  Describe
+a situation where serialization might be useful. <u>[4]</u>
+<i><br>
+  Serialization converts Java objects into byte streams that can be sent across
+  any I/O channel. Objects can be serialized if their classes implement the
+  Serializable interface and if all its non-transient instance variables are
+  serializable. Primitive types (int, char, etc.) and arrays of primitive types
+  are serializable. Any kind of inter-process communication may benefit from
+  object serialization: e.g., a client-server restaurant ordering system may
+  wish to send objects that represent customer orders over a network I/O
+  channel.
+</i>
+<div class="answerbox" style="height:8em"></div>
+
+<li> What is a <b>component framework</b>?  Why are they cool?  Describe one
+such framework in detail (it need not even be computer-related). Describe
+a couple example components and what you could do with them. <u>[5]</u>
+<div class="answerbox" style="height:8em"></div>
+
+<li>What is an Android <b>Activity</b>?  Is it a complete application?
+Describe an example.  <u>[4]</u>
+<i><br>
+  An Activity is the UI for one focused user endeavour, e.g., one screen
+  or dialogue window.
+  Android applications may be composed of multiple Activities, background
+  Services, BroadcastReceivers, and ContentProvider databases.
+</i>
+<div class="answerbox" style="height:8em"></div>
+
+<li> Why do Android applications not have a <b>main()</b> method? <u>[3]</u>
+<i><br>
+  Modular component architecture: applications are not monolithic but
+  may have several entry points.  This is so other apps can directly call
+  individual Activities within the application, rather than having to go
+  through main().
+</i>
+
+<div class="break"></div>
+
+<li> What are Android <b>string resources</b>?  Why are they cool? <u>[4]</u>
+<i><br>
+  Name-value pairs, stored in res/values/strings.xml.  In the code or
+  UI layout, refer to strings via their resource IDs, rather than hard-coding
+  them in.  This facilitates localization/translation into other languages.
+</i>
+<div class="answerbox" style="height:6em"></div>
+
+<li> Design a <b>class hierarchy</b> of your own choosing, with
+an abstract superclass and at least two concrete subclasses.
+  <ol class="subparts">
+    <li> Design attributes and methods appropriate for each class and
+    draw a UML <b>class diagram</b>. <u>[5]</u>
+    <div class="answerbox" style="height:16em"></div>
+
+    <li> Design a method that takes advantage of the <b>polymorphism</b>
+    in this class hierarchy, and explain how it does so.
+    The polymorphic method need not live inside any of the classes. <u>[4]</u>
+    <div class="answerbox" style="height:5em"></div>
+  </ol>
+
+<li> For each of the three categories of <b>design patterns</b> in the
+"Gang of Four" book, name at least three example patterns (for a total
+of nine patterns).  For each pattern you choose, describe it in words and give
+an example or analogy illustrating it.
+  <ol class="subparts">
+    <li> <b>Creational</b>: <u>[5]</u>
+    <i><br>factory method, abstract factory, prototype, singleton </i>
+
+<div class="break"></div>
+
+    <li> <b>Structural</b>: <u>[5]</u>
+    <i><br> facade, adapter, bridge, proxy, decorator, flyweight</i>
+    <div class="answerbox" style="height:10em"></div>
+
+    <li> <b>Behavioural</b>: <u>[5]</u>
+    <i><br>observer, mediator, chain of responsibility, iterator, 
+      memento, command </i>
+    <div class="answerbox" style="height:10em"></div>
+  </ol>
+
+<li> Write a complete Java program that reads in a file "input.txt",
+removes all <b>digits</b>, and outputs the result in the file "output.txt".
+Include full <b>doc-comments</b> with pre-/post-conditions.  <u>[8]</u>
+<i><br>
+  (See <a href="StripDigits.java">StripDigits.java</a>.)
+</i>
+
+<li> A <b><tt>BankTransaction</tt></b> consists of an account number, date,
+dollar amount, and a flag that indicates whether it was a withdrawal or deposit.
+  <ol class="subparts">
+    <li> Write a complete Java <b>class</b> defining a BankTransaction,
+    including attributes and two constructors (one with a full set of
+    parameters, and one with no parameters at all).  Be sure to do
+    error-checking of all input parameters.  To keep things simple, no set/get
+    functions are required.
+    <br>The <tt>java.util.Date</tt> class stores a date/time object; the
+    default constructor returns the current date/time.  <u>[6]</u>
+    <i><br>
+      (See <a href="BankTransaction.java">BankTransaction.java</a>.)
+    </i>
+
+    <li> Add a <b>copy constructor</b> to the implementation.
+    Check for null references and other errors.  <u>[4]</u>
+  </ol>
+
+<li> Design a console-based networked <b>chatroom</b> in Java.
+Users may be able to join and leave the chatroom, and any line of text entered
+by any user is broadcast to all other users.
+What <b>classes</b> will you need?  What <b>methods</b> might those classes
+have?  Describe how you would handle having <b>multiple users</b> connected
+at the same time.  Describe in detail what should happen when a new user
+tries to connect to the chatroom.  <u>[8]</u>
+
+<li> We wish to design a system that tracks the location of 
+<b>public buses</b> in real-time and updates displays at bus stops
+informing riders of how long they'll need to wait for the next bus.
+Draw a UML <b>use-case</b> diagram for this system. <u>[8]</u>
+
+</ol>
+
+</body></html>
+
+

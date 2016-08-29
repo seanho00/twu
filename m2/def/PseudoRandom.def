@@ -1,0 +1,9 @@
+DEFINITION MODULE PseudoRandom;
+
+PROCEDURE Random () : LONGREAL;
+(* returns a random number between 0 and 1 *)
+
+PROCEDURE InitSeed (x : LONGREAL);
+(* initialize the number generator seed *)
+
+END PseudoRandom.

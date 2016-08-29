@@ -1,0 +1,127 @@
+<HTML>
+<HEAD>
+<TITLE>8.8 Notes on File I/O</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="file, i/o, input, output, limit, file, system, truncate, open, prefix, device, number, macintosh, operating, system, systems, os, creator, creators, type, types, seqfile, streamfile, rndfile, macmisc, ????²?<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.8 Notes on File I/O</B></H2>
+<P>There are a number of observations that should be made in connection with the module(s) that handle I/O at this particular level (stream and/or file) in Modula-2.</P>
+<P>1) As already noted, apart from ISO standard Modula-2, these I/O module names may vary from one implementation to another.  Naturally, the names of the individual objects in them will vary also, but the ones given here should be fairly typical.</P>
+<P>2) In creating and using names for the physical files situated on the disk, there is almost always a strict limitation on the number of characters that may appear in a name.  Exclusive of a three of four letter suffix such as .TXT or .OBJ, a typical limit may be as low as eight to ten characters in some primitive operating systems.  If more than this number of characters are specified, the system may generate an error, or it may truncate the identifier down to the limit and then try to open the file, perhaps without telling the user that it has done so.  In most cases, this will probably be satisfactory, but care must be taken not to end up with the same first characters for what were supposed to be two different file names.  In that case, when the second file is written to, all the data from the first one will be lost.  This system limitation, whatever it is, will probably apply to the names of all separately compiled modules, whether they are collected into a library or not.</P>
+<P>3) There may well be several disk devices on line at the same time. These are usually distinguished by either a <!--"-->&quot;device number<!--"-->&quot; or by having a <!--"-->&quot;volume name<!--"-->&quot; of their own.  In these cases, the file name could also have a <!--"-->&quot;prefix<!--"-->&quot; to identify the device.  Here are a few examples from various systems:</P>
+<P><!--"-->&quot;MYDISK:MYFILES.TEXT<!--"-->&quot; denotes the text file named <!--"-->&quot;MYFILES<!--"-->&quot; on the disk whose name is <!--"-->&quot;MYDISK<!--"-->&quot;.</P>
+<P><!--"-->&quot;#5:NEWFILES<!--"-->&quot; denotes the file <!--"-->&quot;NEWFILES<!--"-->&quot; on the device numbered 5. </P>
+<P><!--"-->&quot;C:DATAFILE.TXT<!--"-->&quot; denotes the device name <!--"-->&quot;C:<!--"-->&quot; (usually the hard disk) and the text file <!--"-->&quot;DATAFILE<!--"-->&quot;.  This particular designation assumes that any directory and subdirectory names that might be required have previously been set so that they are not needed in the file name.</P>
+<P><!--"-->&quot;MYDISK/MYFILES/STUFF<!--"-->&quot; (or with backslashes in some systems) denotes the main directory <!--"-->&quot;MYDISK<!--"-->&quot;, the subdirectory <!--"-->&quot;MYFILES<!--"-->&quot; and the file <!--"-->&quot;STUFF<!--"-->&quot; within that subdirectory.  In operating systems employing such designations, these are called <!--"-->&quot;Pathnames<!--"-->&quot;</P>
+<P>Although these are from different operating systems, and no one of them would allow all these ways of locating a file, one can make a few general comments.  Where volume names are employed, the system should be able to find the file regardless of which physical device contains the disk.  If a number or letter to designate a device is employed, that device will be used, regardless of the volume name found there.  If no prefix is supplied by the program, the system itself will look for the volume name or path name set as the prefix either by the system filer or when the disks were first started up.</P>
+<P>Several other approaches to the use of volumes may be used, and in some systems there will be a module containing a collection of procedures for mounting, dismounting, and otherwise manipulating volumes as distinct from files.</P>
+<P>4) Notice that in using the version's higher level procedures <I>OpenInput</I> and <I>OpenOutput</I> from the classical procedure <I>InOut</I>, one has to provide the default suffix <!--"-->&quot;.TEXT<!--"-->&quot; as the parameter.  In that case, if the file could not be found, the system would add the suffix provided and try again.  In using the lower level modules in this section one must specify the exact filename, including any necessary suffix.  This is also the case in those systems that vary the use of <I>OpenInput</I> and <I>OpenOutput</I> to take filenames instead of default extensions to filenames.</P>
+<P>5) Note too that on many systems physical file names are case-insensitive.  That is, <!--"-->&quot;MyProgram<!--"-->&quot; (as a file name) would be equivalent to <!--"-->&quot;MYPROGRAM<!--"-->&quot; as far as the operating system is concerned.</P>
+<P>6) When reading a <!--"-->&quot;stream<!--"-->&quot; or <!--"-->&quot;text<!--"-->&quot; in those systems that have this type, the fact of EOS (or EOT) becoming true does not necessarily imply that the end of the connected physical file was reached.  This function can also return TRUE if the EOF <I>character</I> (where one is defined) was read (usually Control-C or Control-Z).  Hopefully, this also corresponds to the physical end of the file, and it will in most cases, but a stray control character could prematurely terminate a file and cut off access to part of it.</P>
+<H3><B><A NAME="8.8.1">8.8.1</A> Special Notes on the Macintosh Operating System</B></H3>
+<P>In addition to some of the other considerations, the Macintosh operating system has as an integral part of its operation the concept of a <I>Creator</I> and a <I>Type</I> as explicit file information.  Applications store creator information with their files, so that when these files are opened from the finder, the creating application will be opened as well.  In addition, each application may be capable of creating and opening one or more types of files, including ones normally used by other applications.</P>
+<P><I>Creator</I> and <I>Type</I> are both defined as ARRAY [0..3] OF CHAR, and must be provided whenever a file is created.  Thus, the ISO modules <i>SeqFile</i>, <i>StreamFile</i>, and <i>RndFile</i> must pass this information to the operating system whenever they create a file.  Since this facility is not included in the ISO modules themselves, some default type and creator must be maintained at a lower level.  There should also be a means of changing this information.  In the p1 compiler this is handled by importing from MacMisc using:</P>
+<PRE>
+<B>PROCEDURE</B> SetTypeAndCreator (cid: ChanId; type, creator: OSType);
+(* if <!--"-->&quot;cid<!--"-->&quot; identifies an open channel to a disk file, type and creator are set according to the parameters. Otherwise the exception <!--"-->&quot;notAChannel<!--"-->&quot;or <!--"-->&quot;notAvailable<!--"-->&quot; is raised.
+*)</PRE>
+<P>Note that here, the type and creator have to be set on a channel once it is opened.  In the author's own implementation, this is done a little differently, using:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B>  MacFileTypes;
+
+(* =========================================
+  Definition and Implementation © 1993
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1993 10 20
+=========================================== *)
+
+(* The purpose of this module is to allow for standard creators and file types to be communicated from one module to another -- usually from a client program to some library module.  In this implementation, the intention is that the ISO device drivers will call the procedures here to determine what type and creator to use when connecting channels to files. *)
+
+<B>FROM</B> Filer <B>IMPORT</B>
+  NameType; (* an ARRAY 0..3 OF CHAR *)
+
+(* Set and get file types *)
+
+<B>PROCEDURE</B> SetSeqType (t : NameType);
+<B>PROCEDURE</B> SeqType (): NameType;
+  (* the default is <!--"-->&quot;TEXT<!--"-->&quot; *)
+
+<B>PROCEDURE</B> SetStreamType (t : NameType);
+<B>PROCEDURE</B> StreamType (): NameType;
+  (* the default is <!--"-->&quot;TEXT<!--"-->&quot; *)
+
+<B>PROCEDURE</B> SetRndType (t : NameType);
+<B>PROCEDURE</B> RndType (): NameType;
+  (* the default is <!--"-->&quot;????<!--"-->&quot; *)
+
+<B>PROCEDURE</B> SetGenType (t : NameType);
+<B>PROCEDURE</B> GenType (): NameType;
+  (* the default is <!--"-->&quot;????<!--"-->&quot;  This one is for user programs or device drivers *)
+
+(* Set and get creator types *)
+
+<B>PROCEDURE</B> SetSeqCreator (t : NameType);
+<B>PROCEDURE</B> SeqCreator (): NameType;
+  (* the default is <!--"-->&quot;????<!--"-->&quot; *)
+
+<B>PROCEDURE</B> SetStreamCreator (t : NameType);
+<B>PROCEDURE</B> StreamCreator (): NameType;
+  (* the default is <!--"-->&quot;????<!--"-->&quot; *)
+
+<B>PROCEDURE</B> SetRndCreator (t : NameType);
+<B>PROCEDURE</B> RndCreator (): NameType;
+  (* the default is <!--"-->&quot;????<!--"-->&quot; *)
+
+<B>PROCEDURE</B> SetGenCreator (t : NameType);
+<B>PROCEDURE</B> GenCreator (): NameType;
+  (* the default is <!--"-->&quot;????<!--"-->&quot;  This one is for user programs or device drivers *)
+
+<B>END</B> MacFileTypes.</PRE>
+<P>Here, there is a default type that is used all the time by each of the standard modules, but this default may be changed by the user for subsequently created files.  However, to change the type or creator of an existing file requires lower level procedures.</P>
+<P>Needless to say, this information is useless unless the programmer knows what strings to use. <!--"-->&quot;MPS <!--"-->&quot;  (note the space after the 'S') is the creator of Macintosh Programming Workshop files, and <!--"-->&quot;NISI<!--"-->&quot; is the creator of Nisus word processing files.  <!--"-->&quot;TEXT<!--"-->&quot; is the type of text files, and is already the default for both stream models. <!--"-->&quot;????<!--"-->&quot; is a generic creator/type marker.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

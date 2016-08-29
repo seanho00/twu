@@ -1,0 +1,367 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT167 Spr2009 Final, Trinity Western University</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers on web ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 120
+<br>
+<br>Questions marked <b>(SEP)</b> may require extra space,
+so please write your answers neatly on a separate sheet of paper, 
+clearly marked with the problem number.  Feel free to use separate sheets
+of paper for any other problems for which you need more space.
+
+<ol class="main">
+
+<li> Compare and contrast C++ with some other language you know (e.g.,
+Python).  Describe pros/cons of each -- at least two things that you
+feel C++ does better, and at least two things that you feel C++ doesn't
+do as well as the other language.<u>[5]</u>
+<br><i>
+  Static typing vs. dynamic typing: ease of fast prototyping in Python
+  vs. more structure in C++.  OO purity -- OO in C++ is mostly just an
+  add-on.  Inconsistency of libraries, e.g., sockets, threads -- too many
+  choices, little standardization.  Multiple inheritance -- good or bad?
+  Overloading operators -- good or bad?  Java has interfaces; C++ doesn't
+  explicitly.
+</i><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe and contrast: <b>source code</b> (*.cpp), <b>headers</b> (*.h),
+<b>object files</b> (*.o), and <b>executable</b> (*.exe (on Windows)).
+<u>[3]</u>
+<br><i><dl>
+    <dt>*.cpp:</dt><dd> C++ source code, what you as the programmer write.</dd>
+    <dt>*.h:</dt><dd> C++ headers/includes, put class declarations in here.
+    #include'd into other C++ files via the preprocessor.</dd>
+    <dt>*.o:</dt><dd> Compiled object file: produced by the compiler for each
+    compilation unit.  Generally each *.cpp file produces one *.o file.</dd>
+    <dt>*.exe:</dt><dd> Executable: produced by linker, combines all *.o files
+    and any needed libraries into one program that you can run.</dd>
+</dl></i><br><br><br><br><br>
+
+<li> What do <b>public</b>, <b>private</b>, and <b>protected</b> mean as
+C++ access modifiers? <u>[3]</u>
+<br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i><br><br><br><br><br>
+
+<li> <b>(SEP)</b> Write a simple but complete <b>C++ program</b> that outputs
+different responses to the console depending on typed user input, using a
+<b>switch</b> statement.  (This is a warm-up programming question; it's not 
+supposed to be too complex.) <u>[5]</u>
+<br><i>
+  Many possible solutions; here's a simple one:<pre>
+  	#include &lt;iostream&gt;
+	using namespace std;
+	int main() {
+		int choice;
+		cout &lt;&lt; "Do you like pie? [1 for yes, 0 for no] ";
+		cin &gt;&gt; choice;
+		switch (choice) {
+			case 1: cout &lt;&lt; "Me too!" &lt;&lt; endl; break;
+			case 0: cout &lt;&lt; "Sorry!" &lt;&lt; endl; break;
+			default: cout &lt;&lt; "Please enter 0 or 1" &lt;&lt; endl;
+		}
+	}
+</pre></i>
+
+<li> There are at least three meanings of the keyword <b><tt>static</tt></b>
+in C++.  Describe two of them. <u>[4]</u>
+<br><i><dl>
+    <dt>persistent storage:</dt><dd> a local variable inside a function that
+    is declared static preserves its value across calls to that function.
+    If an initial value is given, that initialization is done only once.</dd>
+    <dt>file scope:</dt><dd> global variables marked static are limited in
+    scope to only that file; otherwise, they are accessible everywhere in the
+    program.</dd>
+    <dt>class member:</dt><dd> attributes/methods of a class which are marked
+    static belong to the class as a whole, rather than to individual instances
+    of that class.  Class methods may only reference other class methods or
+    class attributes.</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br>
+
+<li> Tell me everything you know about <b>namespaces</b> in C++. <u>[4]</u>
+<br><i>
+  Namespaces are containers for names like classes, variables, and functions.
+  You can create a namespace just like you would a class: 
+  <tt>namespace MyNameSpace { }</tt> creates a namespace called MyNameSpace,
+  and everything declared inside the block belongs to that namespace.  Items
+  inside a namespace may be accessed by prepending the namespace and '::'.
+  Items may also be brought into the current scope by <tt>using</tt> the
+  item.  The whole namespace may be brought into the current scope by
+  <tt>using namespace</tt>.
+  Every file has a default, anonymous/unnamed namespace.  Items declared in
+  this namespace are accessible only within that file.
+</i><br><br><br><br><br><br><br><br><br>
+
+<li> A typical overloaded <b>plus</b> operator for a class MyClass might
+look like:<pre>
+	const MyClass&amp; operator+( const MyClass&amp; o );
+</pre>
+What is a <b>const reference</b> and why would we use it here? <u>[4]</u>
+<br><i>
+  A reference is like an alias -- another variable name that refers to the 
+  same location in memory.  A const ref cannot be changed to point to another
+  location in memory, and also indicates that the memory pointed to may not
+  be changed.  We declare the parameter to operator+ to be const ref to indicate
+  to our callers that the plus operator will not change its operand: e.g.,
+  evaluating the expression 'x + y' won't change the value of y.
+</i><br><br><br><br><br><br>
+
+<li> <b>(SEP)</b> Design and draw a UML diagram for a <b>class hierarchy</b>
+at least two deep (i.e., there should be at least a "grand-parent" class) and 
+with at least two sibling classes (i.e., classes that inherit from the same 
+parent).  Here's the important part: the class hierarchy ought to be 
+<em>meaningful</em>!  Include some virtual methods and inherited attributes.  
+C++ code is <em>not</em> required!  But: the classes, their relationships, 
+and their methods/attributes ought to make sense and be meaningful!
+<u>[8]</u>
+<br><i>
+  Many good examples; e.g., Student inherits from Person; Faculty inherits 
+  from Employee, which inherits from Person.  Inherited attributes could
+  include name, phone, address (for Person); GPA (for Student).  Virtual
+  methods could include call() (for Person), or gradAudit() (for Student).
+</i>
+
+<li> <b>(SEP)</b> Say we are writing a class, and we wish to print debugging messages 
+whenever an instance of our class gets <b>created</b> or <b>destroyed</b>.
+How would we do that?  Write complete C++ code declaring such a class, as
+well as a testbed (in <tt>main()</tt>) that demonstrates the debugging
+messages. <u>[6]</u>
+<br><i><pre>
+	#include <iostream>
+	class Gadget {
+	private:
+		int secret;
+	public:
+		Gadget(int s=0) : secret(s) {
+			std::cout &lt;&lt; "Creating a Gadget with secret=" 
+				&lt;&lt; secret &lt;&lt; std::endl;
+		}
+		~Gadget() {
+			std::cout &lt;&lt; "Destroying a Gadget (secret=" 
+				&lt;&lt; secret &lt;&lt; ")" &lt;&lt; std::endl;
+		}
+	}
+</pre>
+(It's better not to put 'using namespace std' in a header file because other
+files may #include it and be affected by the 'using' command.)
+</i>
+
+<li> What is an <b>abstract superclass</b>?  Describe a situation where it
+might make sense to use one.  Also describe at least two concrete subclasses.
+<u>[5]</u>
+<br><i>
+  An abstract superclass is a class that may not be instantiated; it is used
+  to categorize other concrete subclasses and hold common attributes+methods.
+  A simple example might be an abstract superclass 'Person', with two concrete
+  subclasses 'Man' and 'Woman' -- every Person is either a Man or a Woman, so
+  it wouldn't make sense to have an instance of the superclass Person.
+  The Person superclass could contain common attributes like Head, Heart,
+  Arms, etc. that both Men and Women have -- but the "gender-specific" organs
+  would be attributes of the subclasses!
+</i><br><br><br><br><br><br><br><br><br>
+
+<li> <b>(SEP)</b> Now, write complete C++ definitions for the three classes you 
+described in the previous question (they need not be terribly complex).
+As a reminder, you do need to have at least one abstract (pure virtual) method.
+<u>[6]</u>
+<br><i><pre>
+	class Person {
+		void dealWithStress() = 0;
+	}
+	class Woman : Person {
+		void dealWithStress() { talkWithGirlfriends(); }
+	}
+	class Man : Person {
+		void dealWithStress() { playGames(); }
+	}
+</pre></i>
+
+<li class="break"> <b>(SEP)</b> Show the steps to solve the 3-disk 
+<b>Towers of Hanoi</b> problem in the fewest
+number of steps. <u>[3]</u>
+
+<li> In general, what is the minimum <b>number of steps</b> required
+to solve an n-disk Towers of Hanoi problem? <u>[2]</u>
+<br><i>
+  For 1 disk: 1 move.  For 2 disks: 3 moves.  For 3 disks: 7 moves.
+  For n disks: 2^n - 1 moves.
+</i>
+
+<li> Label three corners 'R', 'G', and 'B', and run the
+<b>chaos game</b> with the following sequence.
+(The sequence may not be long enough to see the Sierpinski pattern.)
+Initialization is up to you.
+You may use the edge of a paper as a ruler.
+<br>Sequence: <tt><b>R G R B B G R B</b></tt>
+<u>[4]</u>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> <b>(SEP)</b> OK, you knew this problem was coming!
+Describe the seven layers of the <b>OSI model of networks</b>.
+For each layer, give (1) the name of the layer,
+(2) a short description of what it does, and (3) an example of a protocol
+that fits at that layer. <u>[10]</u>
+<br><i><dl>
+    <dt>Application:</dt><dd> top-most layer, interfaces with the program.
+    HTTP, SMTP (email), etc.</dd>
+    <dt>Presentation:</dt><dd> complex data representation, encryption. SSL.</dd>
+    <dt>Session:</dt><dd> authentication, suspend/resume session
+    (save/restore state). SSH, sockets.</dd>
+    <dt>Transport:</dt><dd> setup of connection, guarantees of reliability.
+    TCP, UDP.</dd>
+    <dt>Network:</dt><dd> addressing and routing on the Internet.  IP.</dd>
+    <dt>Data link:</dt><dd> addressing the network interface, MAC addresses.
+    Ethernet.</dd>
+    <dt>Physical:</dt><dd> physical medium of sending signals: photos, 
+    electrons.  Cat5 cables, Fiber optics, wireless radio.</dd>
+</dl></i>
+
+<li> The world is running out of <b>IP addresses</b>!  Why?
+Describe in detail two solutions we covered in class. <u>[6]</u>
+<br><i>
+  IPv4 has only 32-bit addresses, large chunks of which have already been given
+  out to corporations.<br><dl>
+    <dt>NAT:</dt><dd> network address translation.  Local network sends all
+    traffic through a gateway.  Only the gateway gets a real public IPv4 address.
+    All local interfaces get private IPv4 addresses (e.g., within the block
+    192.168.* or 10.*).  Connections get mapped to ports on the gateway machine.</dd>
+    <dt>IPv6:</dt><dd> new revision of IP uses 128-bit addresses: not likely
+    to run out!  Last 64 bits use the hardware MAC address of the network
+    interface and so should be globally unique, no matter which network the
+    machine is plugged into.</dd>
+  </dl>
+</i><br><br><br><br><br><br><br><br><br><br>
+
+<li> Describe the socket commands needed to setup and run a <b>TCP server</b>.
+Also, do the same for a <b>TCP client</b>.  Don't just name the commands,
+describe what they do.  <u>[6]</u>
+<br><i><dl>
+    <dt><b>Server</b>: <tt>socket()</tt>:</dt><dd>
+    Creates a new socket object; akin to buying a phone.</dd>
+    <dt><tt>bind()</tt>:</dt><dd> 
+    Connects socket to a port for it to listen on;
+    akin to getting a phone number.</dd>
+    <dt><tt>listen()</tt>:</dt><dd> 
+    Enables socket for listening and sets incoming connection queue length;
+    akin to setting call-waiting.</dd>
+    <dt><tt>accept()</tt>:</dt><dd> 
+    Blocks (waits) for a client to connect, and returns "Caller ID" info
+    on connecting client.  Akin to waiting for someone to call.</dd>
+    <dt><tt>send/recv()</tt>:</dt><dd>  Communicate with client. </dd>
+    <dt><tt>shutdown()</tt>:</dt><dd> 
+    disable sending and/or receiving; akin to mute.</dd>
+    <dt><tt>close()</tt>:</dt><dd>  Hangs up and closes socket. </dd>
+    <dt><b>Client</b>: <tt>socket()</tt>:</dt><dd>
+    Creates a new socket object; akin to buying a phone.</dd>
+    <dt><tt>connect()</tt>:</dt><dd> 
+    Tries to connect to specified server on specified port;
+    akin to dialing the phone.</dd>
+    <dt><tt>send/recv()</tt>:</dt><dd>  Communicate with server. </dd>
+    <dt><tt>shutdown()</tt>:</dt><dd> 
+    disable sending and/or receiving; akin to mute.</dd>
+    <dt><tt>close()</tt>:</dt><dd>  Hangs up and closes socket. </dd>
+</dl></i><br><br><br><br><br><br><br><br><br>
+
+<li class="break"> What is a program <b>thread</b>?  Why are they cool? What are some
+limitations or difficulties in working with threads?  <u>[6]</u>
+<br><i>
+  A thread is a "mini-process", another execution context within the same program.
+  A single processor may execute several threads by switching between them
+  (e.g., when one thread is waiting for user input, the processor can give time
+  to another thread), or parallel systems may execute multiple threads on
+  multiple processors in parallel.  Threads share memory and communicate with
+  each other via this shared memory.  This is fast on systems that reflect
+  this architecture, but synchronization is required to ensure multiple threads
+  do not simultaneously try to write to the same location in memory.
+  The shared memory model also does not scale well to large parallel systems
+  where the memory is actually distributed across a network.
+</i><br><br><br><br><br><br><br><br>
+
+<li> One of the advantages of FLTK's 'complex' drawing shapes over its 
+'fast' drawing shapes is the use of <b>transform matrices</b> via
+<tt>fl_push_matrix()</tt> and <tt>fl_pop_matrix()</tt>.  What are 
+transform matrices, and what do these two functions do?  Describe how
+you would use transform matrices. <u>[4]</u>
+<br><i>
+  Transform matrices take geometric entities like points, lines, and other
+  drawing primitives and apply transforms like translation, rotation, and
+  scaling.  The transform commands like fl_rotate(), fl_translate(), etc.
+  append to the current transform matrix.  When a complex drawing command is 
+  encountered, FLTK applies the current transform matrix to the object.
+  The matrix stack stores several transform matrices; only the topmost matrix
+  is active.  fl_push_matrix() saves the current matrix on the stack and
+  creates a new matrix on the top of the stack.  You may then modify the
+  current transform matrix freely, and restore the old matrix by calling
+  fl_pop_matrix().
+</i><br><br><br><br><br><br><br>
+
+<li> <b>(SEP)</b> Say you want to design a system for a church to store
+<b>lyrics</b> for their Sunday morning worship songs -- storage, editing,
+displaying on the projector, etc.  Sketch a UML <b>use case</b> diagram
+for this system.  Who are the <b>actors</b> in this system?  How do they
+<b>interact</b>? <u>[6]</u>
+<br><i>
+  Many possible solutions.  Actors may include: worship leader, song editor,
+  PowerPoint jockey, accompanist, database.  Worship leader needs to 
+  choose songs and assemble song list; song editor needs to add/edit songs,
+  PowerPoint jockey needs to integrate lyrics with background images and
+  switch slides in realtime on Sunday morning; accompanist needs not just
+  lyrics but chords and/or sheet music.
+</i>
+
+<li> <b>(SEP)</b> Choose one use case from the previous question and
+describe it in detail: name, actors involved, goals for each actor, 
+pre/post-conditions, basic flow, and at least one alternate flow.  Try to
+think of as many alternate flows as you can. <u>[8]</u>
+<br><i>
+  Many possible solutions.  For the 'edit songs' use case: actors involved
+  are just the song editor person and the database.  Goal is to have a song
+  with updated content (lyrics, perhaps chords+sheet music).  Pre-conditions:
+  song exists in the database; person has permissions to edit songs.
+  Post condition: song has correct info.
+  Basic flow: person logs in, chooses song from list of all songs, song info
+  is displayed read-only, with an "Edit" button.  User selects "Edit" button;
+  all song info becomes an editable text box.  "Edit" button turns into a
+  "Save Changes" button; when user selects it, the changes get sent to the
+  database, and the fields return to read-only; the button reverts to "Edit".
+  Alternate flows: If desired song does not exist in database, user needs to
+  use "Add Song" function instead.  If user does not have permissions to edit
+  songs, the "Edit" button will not be displayed, and the song info will be
+  read-only.  If user makes changes and wishes to discard them, a "Discard
+  Changes" button should be provided.  If user makes no changes and still
+  selects "Save Changes", we may want to detect this and not send any update
+  to the server.
+</i>
+
+<li> <b>(SEP)</b> The "Gang of Four" book describes three categories of
+<b>design patterns</b>: creational, structural, and behavioural.
+Describe at least three patterns from each category (we covered 5 creational,
+7 structural, and 5 behavioural patterns).  For each pattern, give its name and
+describe how it works.  Analogies are fine, but describe clearly how the analogy
+applies. <u>[12]</u>
+<br><i>
+  <a href="http://www.vincehuston.org/dp/gof_mnemonics.html">
+    Vince Huston's site has a nice table of mnemonics.</a>
+</i>
+
+</ol>
+
+</body></html>
+
+

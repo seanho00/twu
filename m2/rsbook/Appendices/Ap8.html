@@ -1,0 +1,465 @@
+<HTML><HEAD><TITLE>Appendix 8--ISO Utility and Information Modules</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 8<!--</B>‹<B>-->--ISO Utility and Information Modules</B></H2>
+
+<P><!--revised 1999 07 20--></P>
+<H3><B><A NAME="A8.1">A8.1</A> Characters and Strings</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> CharClass;
+
+  (* Classification of values of the type <B>CHAR</B> *)
+
+<B>PROCEDURE</B> IsNumeric (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a numeric character *)
+
+<B>PROCEDURE</B> IsLetter (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a letter *)
+
+<B>PROCEDURE</B> IsUpper (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as an upper case letter *)
+
+<B>PROCEDURE</B> IsLower (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch is classified as a lower case letter *)
+
+<B>PROCEDURE</B> IsControl (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch represents a control function *)
+
+<B>PROCEDURE</B> IsWhiteSpace (ch: <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if and only if ch represents a space character or a format effector *)
+
+<B>END</B> CharClass.
+
+<B>DEFINITION</B> <B>MODULE</B> Strings;
+
+(* Facilities for manipulating strings *)
+
+<B>TYPE</B>
+  String1 = <B>ARRAY</B> [0..0] <B>OF</B> <B>CHAR</B>;
+    (* String1 is provided for constructing a value of a single-character string type from a single character value in order to pass <B>CHAR</B> values to <B>ARRAY</B> <B>OF</B> <B>CHAR</B> parameters.
+    *)
+
+<B>PROCEDURE</B> Length (stringVal: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* Returns the length of stringVal (the same value as would be returned by the  pervasive function LENGTH).
+  *)
+
+(* The following seven procedures construct a string value, and attempt to assign it to a variable parameter.  They all have the property that if the length of the constructed string value exceeds the capacity of the variable parameter, a truncated value is assigned, while if the length of the constructed string value is less than the capacity of the variable parameter, a string terminator is appended before assignment is performed. *)
+
+<B>PROCEDURE</B> Assign (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies source to destination *)
+
+<B>PROCEDURE</B> Extract (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startIndex, numberToExtract: <B>CARDINAL</B>;  <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies at most numberToExtract characters from source to destination, starting at position startIndex in source. *)
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> stringVar: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startIndex, numberToDelete: <B>CARDINAL</B>);
+  (* Deletes at most numberToDelete characters from stringVar, starting at position startIndex. *)
+
+<B>PROCEDURE</B> Insert (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startIndex: <B>CARDINAL</B>;
+                  <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Inserts source into destination at position startIndex *)
+
+<B>PROCEDURE</B> Replace (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startIndex: <B>CARDINAL</B>;
+                     <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Copies source into destination, starting at position startIndex. Copying stops when all of source has been copied, or when the last character of the string value in destination has been replaced.  *)
+
+<B>PROCEDURE</B> Append (source: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Appends source to destination. *)
+
+<B>PROCEDURE</B> Concat (source1, source2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Concatenates source2 onto source1 and copies the result into destination. *)
+
+(* The following predicates provide for pre-testing of the operation-completion conditions for the procedures above. *)
+
+<B>PROCEDURE</B> CanAssignAll (sourceLength: <B>CARDINAL</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if a number of characters, indicated by sourceLength, will fit into destination; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> CanExtractAll (sourceLength, startIndex, numberToExtract: <B>CARDINAL</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if there are numberToExtract characters starting at startIndex and within the sourceLength of some string, and if the capacity of destination is sufficient to hold numberToExtract characters; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> CanDeleteAll (stringLength, startIndex, numberToDelete: <B>CARDINAL</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if there are numberToDelete characters starting at startIndex and within the stringLength of some string; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> CanInsertAll (sourceLength, startIndex: <B>CARDINAL</B>;
+                        <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if there is room for the insertion of sourceLength characters from some string into destination starting at startIndex; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> CanReplaceAll (sourceLength, startIndex: <B>CARDINAL</B>;
+                         <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if there is room for the replacement of sourceLength characters in destination starting at startIndex; otherwise returns FALSE.
+  *)
+
+<B>PROCEDURE</B> CanAppendAll (sourceLength: <B>CARDINAL</B>; <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if there is sufficient room in destination to append a string of length sourceLength to the string in destination; otherwise returns FALSE. *)
+
+<B>PROCEDURE</B> CanConcatAll (source1Length, source2Length: <B>CARDINAL</B>;
+                        <B>VAR</B> destination: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns TRUE if there is sufficient room in destination for a two strings of lengths source1Length and source2Length; otherwise returns FALSE. *)
+
+(* The following type and procedures provide for the comparison of string values, and for the location of substrings within strings. *)
+
+<B>TYPE</B>
+  CompareResults = (less, equal, greater);
+
+<B>PROCEDURE</B> Compare (stringVal1, stringVal2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): CompareResults;
+  (* Returns less, equal, or greater, according as stringVal1 is lexically less than, equal to, or greater than stringVal2. *)
+
+<B>PROCEDURE</B> Equal (stringVal1, stringVal2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>BOOLEAN</B>;
+  (* Returns Strings.Compare(stringVal1, stringVal2) = Strings.equal *)
+
+<B>PROCEDURE</B> FindNext (pattern, stringToSearch: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startIndex: <B>CARDINAL</B>; <B>VAR</B> patternFound: <B>BOOLEAN</B>; <B>VAR</B> posOfPattern: <B>CARDINAL</B>);
+  (* Looks forward for next occurrence of pattern in stringToSearch, starting the search at position startIndex. If startIndex < LENGTH(stringToSearch) and pattern is found, patternFound is returned as TRUE, and posOfPattern contains the start position in stringToSearch of pattern. Otherwise patternFound is returned as FALSE, and posOfPattern is unchanged. *)
+
+<B>PROCEDURE</B> FindPrev (pattern, stringToSearch: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; startIndex: <B>CARDINAL</B>; <B>VAR</B> patternFound: <B>BOOLEAN</B>; <B>VAR</B> posOfPattern: <B>CARDINAL</B>);
+  (* Looks backward for the previous occurrence of pattern in stringToSearch and returns the position of the first character of the pattern if found. The search for the pattern begins at startIndex. If pattern is found, patternFound is returned as TRUE, and posOfPattern contains the start position in stringToSearch of pattern in the range [0..startIndex]. Otherwise patternFound is returned as FALSE, and posOfPattern is unchanged. *)
+
+<B>PROCEDURE</B> FindDiff (stringVal1, stringVal2: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+                    <B>VAR</B> differenceFound: <B>BOOLEAN</B>; <B>VAR</B> posOfDifference: <B>CARDINAL</B>);
+  (* Compares the string values in stringVal1 and stringVal2 for differences. If they are equal, differenceFound is returned as FALSE, and TRUE otherwise. If differenceFound is TRUE, posOfDifference is set to the position of the first difference; otherwise posOfDifference is unchanged. *)
+
+<B>PROCEDURE</B> Capitalize (<B>VAR</B> stringVar: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Applies the function CAP to each character of the string value in stringVar. *)
+
+<B>END</B> Strings.</PRE>
+<H3><B><A NAME="A8.2">A8.2</A> High Level String Conversion Modules</B></H3>
+<P>The modules in this section can be employed to convert strings into the corresponding numeric values.  They may (but are not necessarily) be called by routines in WholeIO, RealIO and LongIO to return their values, after (presumed) calls to TextIO.ReadToken.</P>
+<H3><B>A8.2.1 WholeStr</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> WholeStr;
+
+  (* Whole-number/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange, strWrongFormat, strEmpty *)
+
+(* the string form of a signed whole number is
+     [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+*)
+
+<B>PROCEDURE</B> StrToInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> int: <B>INTEGER</B>; <B>VAR</B> res: ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of a signed whole number, assigns a corresponding value to int. Assigns a value indicating the format of str to res.  *)
+
+<B>PROCEDURE</B> IntToStr (int: <B>INTEGER</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of int to string form and copies the possibly truncated result to str. *)
+
+(* the string form of an unsigned whole number is
+     decimal digit, {decimal digit} *)
+
+<B>PROCEDURE</B> StrToCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> card: <B>CARDINAL</B>; <B>VAR</B> res:
+ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of an unsigned whole number, assigns a corresponding value to card. Assigns a value indicating the format of str to res.  *)
+
+<B>PROCEDURE</B> CardToStr (card: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of card to string form and copies the possibly truncated result to str. *)
+
+<B>END</B> WholeStr.</PRE>
+<H3><B>A8.2.2 RealStr</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RealStr;
+
+  (* <B>REAL</B>/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange, strWrongFormat, strEmpty *)
+
+(* the string form of a signed fixed-point real number is
+     [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}, [<!--"-->&quot;.<!--"-->&quot;, {decimal digit}] *)
+
+(* the string form of a signed floating-point real number is
+     signed fixed-point real number, <!--"-->&quot;E<!--"-->&quot;, [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit} *)
+
+<B>PROCEDURE</B> StrToReal (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> real: <B>REAL</B>; <B>VAR</B> res: ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of a signed real number, assigns a corresponding value to real. Assigns a value indicating the format of str to res.  *)
+
+<B>PROCEDURE</B> RealToFloat (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real to floating-point string form, with sigFigs significant figures, and copies the possibly truncated result to str.  *)
+
+<B>PROCEDURE</B> RealToEng (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real to floating-point string form, with sigFigs significant figures, and copies the possibly truncated result to str. The number is scaled with one to three digits in the whole number part and with an exponent that is a multiple of three.  *)
+
+<B>PROCEDURE</B> RealToFixed (real: <B>REAL</B>; place: <B>INTEGER</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real to fixed-point string form, rounded to the given place relative to the decimal point, and copies the possibly truncated result to str. *)
+
+<B>PROCEDURE</B> RealToStr (real: <B>REAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real as RealToFixed if the sign and magnitude can be shown within the capacity of str, or otherwise as RealToFloat, and copies the possibly truncated result to str. The number of places or significant digits are implementation-defined. *)
+
+<B>END</B> RealStr.</PRE>
+<H3><B>A8.2.3 LongStr</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> LongStr;
+
+  (* <B>LONGREAL</B>/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange,
+strWrongFormat, strEmpty *)
+
+(* the string form of a signed fixed-point real number is
+     [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}, [<!--"-->&quot;.<!--"-->&quot;, {decimal digit}]
+*)
+
+(* the string form of a signed floating-point real number is
+     signed fixed-point real number, <!--"-->&quot;E<!--"-->&quot;, [<!--"-->&quot;+<!--"-->&quot; | <!--"-->&quot;-<!--"-->&quot;], decimal digit, {decimal digit}
+*)
+
+<B>PROCEDURE</B> StrToReal (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> real: <B>LONGREAL</B>; <B>VAR</B> res:
+ConvResults);
+  (* Ignores any leading spaces in str. If the subsequent characters in str are in the format of a signed real number, assigns a corresponding value to real. Assigns a value indicating the format of str to res.  *)
+
+<B>PROCEDURE</B> RealToFloat (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B>
+<B>CHAR</B>);
+  (* Converts the value of real to floating-point string form, with sigFigs significant figures, and copies the possibly truncated result to str.  *)
+
+<B>PROCEDURE</B> RealToEng (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real to floating-point string form, with sigFigs significant figures, and copies the possibly truncated result to str. The number is scaled with one to three digits in the whole number part and with an exponent that is a multiple of three. *)
+
+<B>PROCEDURE</B> RealToFixed (real: <B>LONGREAL</B>; place: <B>INTEGER</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real to fixed-point string form, rounded to the given place relative to the decimal point, and copies the possibly truncated result to str. *)
+
+<B>PROCEDURE</B> RealToStr (real: <B>LONGREAL</B>; <B>VAR</B> str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Converts the value of real as RealToFixed if the sign and magnitude can be shown within the capacity of str, or otherwise as RealToFloat, and copies the possibly truncated result to str. The number of places or significant digits depend on the capacity of str. *)
+
+<B>END</B> LongStr.</PRE>
+<H3><B><A NAME="A8.3">A8.3</A> Low Level String Conversion Modules</B></H3>
+<P>There is no requirement in the standard that the high level conversion modules above depend on the low level ones presented below.  However, they are available for those who wish to write their own string conversion routines.</P>
+<H3><B>A8.3.1 ConvTypes</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ConvTypes;
+
+  (* Common types used in the string conversion modules *)
+
+<B>TYPE</B>
+  ConvResults =     (* Values of this type are used to express the format of a string *)
+  (strAllRight,    (* the string format is correct for the corresponding conversion *)
+    strOutOfRange,  (* the string is well-formed but the value cannot be represented *)
+    strWrongFormat, (* the string is in the wrong format for the conversion *)
+    strEmpty        (* the given string is empty *) );
+
+  ScanClass =  (* Values of this type are used to classify input to finite state scanners *)
+  (padding,   (* a leading or padding character at this point in the scan - ignore it *)
+    valid,     (* a valid character at this point in the scan - accept it *)
+    invalid,   (* an invalid character at this point in the scan - reject it *)
+    terminator (* a terminating character at this point in the scan (not part of token) *) );
+	
+  ScanState =  (* The type of lexical scanning control procedures *)
+  <B>PROCEDURE</B> (<B>CHAR</B>, <B>VAR</B> ScanClass, <B>VAR</B> ScanState); 
+
+<B>END</B> ConvTypes.</PRE>
+<H3><B>A8.3.2 WholeConv</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> WholeConv;
+
+  (* Low-level whole-number/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange,
+strWrongFormat, strEmpty *)
+
+<B>PROCEDURE</B> ScanInt (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                   <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for signed whole numbers -assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>PROCEDURE</B> FormatInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>INTEGER</B>. *)
+
+<B>PROCEDURE</B> ValueInt (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>INTEGER</B>;
+(* Returns the value corresponding to the signed whole number string value str if str is well-formed; otherwise raises the WholeConv exception. *)
+
+<B>PROCEDURE</B> LengthInt (int: <B>INTEGER</B>): <B>CARDINAL</B>;
+ (* Returns the number of characters in the string representation of int. *)
+
+<B>PROCEDURE</B> ScanCard (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                    <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for unsigned whole numbers -  assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>PROCEDURE</B> FormatCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>CARDINAL</B>. *)
+
+<B>PROCEDURE</B> ValueCard (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>CARDINAL</B>;
+  (* Returns the value corresponding to the unsigned whole number string value str if str is well-formed; otherwise raises the WholeConv exception *)
+
+<B>PROCEDURE</B> LengthCard (card: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the string representation of card. *)
+
+<B>PROCEDURE</B> IsWholeConvException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>. *)
+
+<B>END</B> WholeConv.</PRE>
+<H3><B>A8.3.3 RealConv</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RealConv;
+
+  (* Low-level <B>REAL</B>/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange,
+strWrongFormat, strEmpty *)
+
+<B>PROCEDURE</B> ScanReal (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                    <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for real numbers -
+assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>PROCEDURE</B> FormatReal (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>REAL</B>. *)
+
+<B>PROCEDURE</B> ValueReal (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>REAL</B>;
+  (* Returns the value corresponding to the real number string value str if str is well-formed; otherwise raises the RealConv exception.  *)
+
+<B>PROCEDURE</B> LengthFloatReal (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the floating-point string
+representation of real with sigFigs significant figures.  *)
+
+<B>PROCEDURE</B> LengthEngReal (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the floating-point engineering string representation of real with sigFigs significant figures.  *)
+
+<B>PROCEDURE</B> LengthFixedReal (real: <B>REAL</B>; place: <B>INTEGER</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the fixed-point string representation of real rounded to the given place relative to the decimal point.  *)
+
+<B>PROCEDURE</B> IsRConvException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>.  *)
+
+<B>END</B> RealConv.</PRE>
+<H3><B>A8.3.4 LongConv</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> LongConv;
+
+  (* Low-level <B>LONGREAL</B>/string conversions *)
+
+<B>IMPORT</B>
+  ConvTypes;
+
+<B>TYPE</B>
+  ConvResults = ConvTypes.ConvResults; (* strAllRight, strOutOfRange,
+strWrongFormat, strEmpty *)
+
+<B>PROCEDURE</B> ScanReal (inputCh: <B>CHAR</B>; <B>VAR</B> chClass: ConvTypes.ScanClass;
+                    <B>VAR</B> nextState: ConvTypes.ScanState);
+  (* Represents the start state of a finite state scanner for real numbers -
+assigns class of inputCh to chClass and a procedure representing the next state to nextState. *)
+
+<B>PROCEDURE</B> FormatReal (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): ConvResults;
+  (* Returns the format of the string value for conversion to <B>LONGREAL</B>. *)
+
+<B>PROCEDURE</B> ValueReal (str: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>): <B>LONGREAL</B>;
+  (* Returns the value corresponding to the real number string value str if str is well-formed; otherwise raises the LongConv exception.  *)
+
+<B>PROCEDURE</B> LengthFloatReal (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the floating-point string
+representation of real with sigFigs significant figures.  *)
+
+<B>PROCEDURE</B> LengthEngReal (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the floating-point engineering string representation of real with sigFigs significant figures.  *)
+
+<B>PROCEDURE</B> LengthFixedReal (real: <B>LONGREAL</B>; place: <B>INTEGER</B>): <B>CARDINAL</B>;
+  (* Returns the number of characters in the fixed-point string representation of real rounded to the given place relative to the decimal point.  *)
+
+<B>PROCEDURE</B> IsRConvException (): <B>BOOLEAN</B>;
+  (* Returns <B>TRUE</B> if the current coroutine is in the exceptional execution state because of the raising of an exception in a routine from this module; otherwise returns <B>FALSE</B>. *)
+
+<B>END</B> LongConv.</PRE>
+<H3><B><A NAME="A8.4">A8.4</A> SysClock<!--</B>‹<B>-->--The Date and Time</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SysClock;
+
+(* =========================================
+  Original specification and design of SysClock 
+    Copyright © 1990-1991 by R. Sutcliffe
+    Assigned to the BSI for standards work
+=========================================== *)
+
+(* Facilities for accessing a system clock that records the date and time of day *)
+
+<B>CONST</B>
+  maxSecondParts = <!--<-->&lt;implementation-defined integral value<!-->&gt;;
+
+<B>TYPE</B>
+  Month    = [1 .. 12];
+  Day      = [1 .. 31];
+  Hour     = [0 .. 23];
+  Min      = [0 .. 59];
+  Sec      = [0 .. 59];
+  Fraction = [0 .. maxSecondParts];
+  UTCDiff  = [-780 .. 720];
+  DateTime =
+    <B>RECORD</B>
+      year:      <B>CARDINAL</B>;
+      month:     Month;
+      day:       Day;
+      hour:      Hour;
+      minute:    Min;
+      second:    Sec;
+      fractions: Fraction;      (* parts of a second *)
+      zone:      UTCDiff;       (* Time zone differential factor which is the number of minutes to add to local time to obtain UTC. *)
+      summerTimeFlag: <B>BOOLEAN</B>;  (* Interpretation of flag depends on local usage. *)
+    <B>END</B>;
+
+<B>PROCEDURE</B> CanGetClock (): <B>BOOLEAN</B>;
+  (* Returns TRUE if a system clock can be read; FALSE otherwise *)
+
+<B>PROCEDURE</B> CanSetClock (): <B>BOOLEAN</B>;
+  (* Returns TRUE if a system clock can be set; FALSE otherwise *)
+
+<B>PROCEDURE</B> IsValidDateTime (userData: DateTime): <B>BOOLEAN</B>;
+  (* Returns TRUE if the value of userData represents a valid date and time; FALSE otherwise *)
+
+<B>PROCEDURE</B> GetClock (<B>VAR</B> userData: DateTime);
+  (* If possible, assigns system date and time of day to userData *)
+
+<B>PROCEDURE</B> SetClock (userData: DateTime);
+  (* If possible, sets the system clock to the values of userData *)
+
+<B>END</B> SysClock.</PRE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

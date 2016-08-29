@@ -1,0 +1,41 @@
+MODULE InchToCm;
+
+FROM STextIO IMPORT
+	WriteString, WriteLn, SkipLine, ReadChar;
+FROM SRealIO IMPORT
+	ReadReal, WriteFixed;
+
+CONST
+	cmInAnInch = 2.54;
+VAR
+	inputLength : REAL;
+	inputIsCm : CHAR;
+
+BEGIN
+	WriteString ("This program converts between inches ");
+	WriteString ("and centimetres.");
+	WriteLn;
+	WriteString ("Please enter a length (without the units): ");
+	ReadReal (inputLength);
+	SkipLine;
+
+	WriteString ("By default, inches are assumed.");
+	WriteLn;
+	WriteString ("Type 'c' if this length is in centimetres instead: ");
+	ReadChar (inputIsCm);
+	SkipLine;
+
+	WriteFixed (inputLength, 2, 0);
+	IF inputIsCm = 'c'
+		THEN
+			WriteString ("cm =");
+			WriteFixed (inputLength / cmInAnInch, 2, 0);
+			WriteString ("in");
+		ELSE
+			WriteString ("in =");
+			WriteFixed (inputLength * cmInAnInch, 2, 0);
+			WriteString ("cm");
+		END;
+	WriteString (".  Have a nice day!");
+	WriteLn;
+END InchToCm.

@@ -1,0 +1,162 @@
+<HTML><HEAD><TITLE>17.7 A Suggested Project - Polynomials</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Polynomials">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>17.7 A Suggested Project<!--‹-->--Polynomials</B></H2>
+<P>An abstraction commonly used in algebra, calculus, and their applications is the polynomial.  This is a sum of terms, each of which is the product of a real number, and a cardinal power of some variable.  Thus,</P>
+
+<P>3, 4x<sup>2</sup>, 15y<sup>7</sup>, and 23.45t<sup>9</sup> are all terms and also are all one-term polynomials or monomials</P>
+<P>4m - 7, 3x<sup>3</sup>+5x, 7t<sup>2</sup> - 2t are all two term polynomials or binomials</P>
+<P>2x<sup>4</sup> - 5x + 7 and 3d<sup>6</sup> + 4d<sup>5</sup> - 2d<sup>4</sup>  are three term polynomials or trinomials.</P>
+
+	<P><A NAME="Polynomial"></A><I>In the polynomial term 4,7x<sup>2</sup>, the number 4.7 is called the <U>coefficient</U>, the letter x is called the (independent) <U>variable</U>, and the exponent 2 is called the <U>degree</U> of the term. The highest exponent in a polynomial is called the <U>degree</U> of the polynomial. Two terms that have the same variable and the same exponent are called <U>like</U>.</I></P>
+
+<P>A polynomial can be  multiplied by a scalar simply by multiplying each of its coefficients by the scalar.  Thus</P>
+
+<P>4 (7x - 2) = 28x - 8</P>
+<P>6 (x<sup>2 </sup>+ 3x) = 12x<sup>2</sup> + 18x</P>
+
+<P>Two terms can be combined into one by addition only if they are like.  Thus:</P>
+
+<P>3x<sup>2</sup> + 7x<sup>2</sup> = 10x<sup>2</sup></P>
+<P>2x - 6x + 5x = x</P>
+<P>x<sup>2</sup> + 6x - 5 cannot be further combined.</P>
+
+<P>The sum of two polynomials are added (subtracted) by adding (subtracting) the coefficients of their mutual like terms:</P>
+
+<P>(4x - 7) + (7x - 2) = 11x - 9</P>
+<P>(3x<sup>2</sup> + 4x) + (2x<sup>2</sup> - 5) = 5x<sup>2</sup> + 4x - 5</P>
+<P>(5t - 8) - (2t - 7) = 3t - 1</P>
+
+<P>Two monomials (terms) are multiplied by multiplying their coefficient factors and their variable factors.  For instance,</P>
+
+<P>(3x) ( 5x<sup>2</sup>) = 15x<sup>3</sup></P>
+<P>(3.2y<sup>7</sup>) ( 5y<sup>4</sup>) = 16y<sup>11</sup></P>
+
+<P>If one wishes to multiply two longer polynomials, each term of the multiplier must be multiplied by each term of the multiplicand and the result added.</P>
+
+<P>(7x - 5) (2x<sup>2</sup> + 4) = (7x)(2x<sup>2</sup>) + (7x)(4) + (-5)(2x<sup>2</sup>) + (-5)(4) = 14x<sup>3</sup> + 28x - 10x<sup>2</sup> -20</P>
+<P>(3x - 2) (4x + 5) = 12x<sup>2</sup> + 15x -8x - 10 = 12x<sup>2</sup> - 7x -10</P>
+
+<P>For practical reasons (such as graphing the polynomial) one often wishes to evaluate a polynomial at a particular value of the variable.  In such cases, the polynomial function is usually denoted P(x) and the evaluation using a particular number, say, c, by P(c). This is done by substituting.  Thus if</P>
+
+<P>P(x)  = 3x<sup>2</sup> + 2x - 7</P>
+<P>P(2) = 3(2<sup>2</sup>) + 2(2) - 7 = 9</P>
+<P>P(5) = 3(5<sup>2</sup>) + 2(5) - 7 = 78</P>
+
+<P>With this little review of elementary algebra, it is not difficult to define a Polynomial ADT in Modula-2.  One possibility would be:</P>
+
+<Pre><B>DEFINITION</B> <B>MODULE</B> Polynomials;
+(* specification by R. Sutcliffe
+  1996 11 07 *)
+  
+<B>TYPE</B>
+  Polynomial;
+  
+<B>PROCEDURE</B> Init (<B>VAR</B> p : Polynomial);
+  (* creates a polynomial and sets it to equal to zero *)
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> p : Polynomial);
+  (* gives back any dynamic memory: the result is an invalid polynomial*)
+  
+<B>PROCEDURE</B> UpdateTerm (p : Polynomial; exp : <B>CARDINAL</B>; coef : <B>REAL</B>);
+  (* sets the coeficient of the term of degree exp in a valid polynomial to coef *)
+
+<B>PROCEDURE</B> Degree (p: Polynomial) : <B>CARDINAL</B>;
+  (* returns the degree of the specified polynomial *)
+  
+<B>PROCEDURE</B> NumTerms (p: Polynomial) : <B>CARDINAL</B>;
+  (* returns the number of terms of the specified polynomial *)
+
+<B>PROCEDURE</B> Coefficient (p: Polynomial; degree : <B>CARDINAL</B>) : <B>REAL</B>;
+  (* returns the coefficient of the term of specified degree in the given polynomial *)
+
+(* The valid form of a string representation of a polynomial is
+[+|-term]
+and the valid string representation of a term is
+realnumbercoefficient, "charactervariablename", ["^" cardinalnumberexponent] *)
+
+<B>PROCEDURE</B> PolyToString (source : Polynomial; <B>VAR</B> dest : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+
+<B>PROCEDURE</B> StringToPoly (source : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; <B>VAR</B> dest : Polynomial);
+
+<B>PROCEDURE</B> Value (p : Polynomial; at : <B>REAL</B>) : <B>REAL</B>;
+  (* evaluate the given polynomial at the specified value of the variable *)
+
+<B>PROCEDURE</B> Add (p, q : Polynomial; <B>VAR</B> res : Polynomial);
+
+<B>PROCEDURE</B> Sub (p, q : Polynomial; <B>VAR</B> res : Polynomial);
+
+<B>PROCEDURE</B> Mul (p, q : Polynomial; <B>VAR</B> res : Polynomial);
+
+<B>PROCEDURE</B> ScalarMul (<B>VAR</B> p : Polynomial; scalar : <B>REAL</B>);
+  (* 5(4x^2) for example *)
+  
+<B>END</B> Polynomials.
+</Pre>
+<P>A few observations are in order.  The actual representation could be done in a number of ways. One would be to define a term, then define the <I>Polynomial</I> ADT as a linked list of terms.  The latter could be done using an earlier and relatively generic linked list module, or the necessary apparatus could be customized within this module.  For instance, the types could be:</P>
+
+<Pre><B>TYPE</B>
+  TermPoint = <B>POINTER</B> <B>TO</B> Term;
+  Term = 
+    <B>RECORD</B>
+      coefficient : <B>REAL</B>;
+      exponent : <B>CARDINAL</B>;
+      nextTerm, lastTerm  : TermPoint;
+    <B>END</B>;
+ Polynomial = <B>POINTER</B> <B>TO</B> PolyDataNode;
+  PolyDataNode =
+    <B>RECORD</B>
+      firstTerm : Term;
+      numTerms, degree : <B>CARDINAL</B>;
+    <B>END</B>;</Pre>
+
+<P>The string representation for a polynomial uses a fairly common notation that employs the caret symbol ^ to denote that the number following is an exponent. Thus 7x<sup>3</sup> - 3x<sup>2</sup> + 4 is represented by the string "7x^3 - 3.4x^2 + 4".  The spaces are not relevant and can be ignored on input strings, but should be present for legibility on output strings. A full implementation will not be done here, and is left as a challenge to the reader.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

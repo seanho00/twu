@@ -1,0 +1,425 @@
+<HTML>
+<HEAD>
+<TITLE>6.4 The Standard Library (2)--Mathematical Functions</TITLE>
+<meta NAME="keywords" CONTENT="standard, mathematical, function, functions, library, module, realmath, modules, libraries,square, root, sqrt, exp, exponent, log, logrithmic, ln, natural, power, tentox, ipower, magnitude, exponential, function, functions, trig, trigonometric, sin, cos, tan, sine, cosine, tangent, arcsin, arcsine, arccos, arccosine, arctan, arctangent, degtorad, degree, degrees, radian, radians, conversion, round, conversions, real, reals, entier">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.4 The Standard Library (2)<!--</B>‹<B>-->--Mathematical Functions</B></H2>
+<P>Every implementation of Modula-2, and of every computer language that is to be used in a scientific or academic environment, must also provide a number of standard mathematical functions. A name and contents of the module that contains these were suggested by Wirth<!--‹-->--he called it <I>MathLib0</I>. However, in some versions, vendors called it either <I>MathLib</I> or <I>MathLib1</I>, and in a few the procedure names started with an uppercase letter. The ISO standard version is called <I>RealMath</I>. It makes available the two real constants:</P>
+<PRE>
+<B>CONST</B>
+  pi   = 3.1415926535897932384626433832795028841972;
+  exp1 = 2.7182818284590452353602874713526624977572;</PRE>
+
+<P>to as many decimal places as the implementation allows. In addition, the following sections detail the basic functions that are exported by <I>RealMath</I>, with their parameter lists, some comments and examples. (A few have been used before .)</P>
+<H3><B><A NAME="6.4.1">6.4.1</A>  Square Root</B></H3>
+<PRE>
+<B>PROCEDURE</B> sqrt (x : <B>REAL</B>) : <B>REAL</B>;</PRE>
+<P>This function procedure returns the square root of a positive real number. Naturally, there will be an error generated if one attempts to take the square root of a negative number.</P>
+<H3><B>Problem:</B></H3>
+<P>Given two sides of a right triangle, compute the hypotenuse.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.7.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B>Refinement:</B></H3>
+<PRE>
+Ask the user for two numbers, the sides' lengths
+  Read each into a real variable
+Compute the hypotenuse using Pythagoras' Theorem
+  hyp = sqrt (a * a + b * b)
+Print out the result</PRE>
+<H3><B>Data Table:</B></H3>
+<P><I>Variables:</I></P>
+<P>Two reals to hold the side lengths, one for the hypotenuse</P>
+<P><I>Imports</I></P>
+<P>WriteString, WriteLn, ReadReal, WriteReal, sqrt</P>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> Pythagoras;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* to illustrate RealMath.sqrt *)
+(* last revision 1993 03 01 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> RealMath <B>IMPORT</B>
+  sqrt;
+
+<B>VAR</B>
+  side1, side2, side3 : <B>REAL</B>;
+  key : <B>CHAR</B>;
+
+<B>PROCEDURE</B> GetReal (<B>VAR</B> numToGet : <B>REAL</B>);
+<B>VAR</B>
+  tempResult : ReadResults;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please type in a real number ===<!-->&gt; <!--"-->&quot;);
+    ReadReal (numToGet);
+    tempResult := ReadResult ();
+    SkipLine; (* swallow line marker *)
+    WriteLn;
+  <B>UNTIL</B> tempResult = allRight;
+<B>END</B> GetReal;
+
+<B>BEGIN</B>   (* main *)
+  WriteString (<!--"-->&quot;What is the first side length? <!--"-->&quot;);
+  WriteLn;
+  GetReal (side1);
+  WriteString (<!--"-->&quot;What is the second side length? <!--"-->&quot;);
+  WriteLn;
+  GetReal (side2);
+  side3 := sqrt (side1 * side1 + side2 * side2);
+  WriteString (<!--"-->&quot;The hypotenuse is <!--"-->&quot;);
+  WriteFixed (side3, 2, 0);
+  WriteString (<!--"-->&quot; units long.<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press any key to continue<!--"-->&quot;);
+  ReadChar (key);
+<B>END</B> Pythagoras.</PRE>
+<H3><B>Results of a run:</B></H3>
+<PRE>
+What is the first side length? 
+Please type in a real number ===<!-->&gt; 20.0
+What is the second side length? 
+Please type in a real number ===<!-->&gt; 21.0
+The hypotenuse is 29.00 units long.</PRE>
+<H3><B><A NAME="6.4.2">6.4.2</A>  Exponential and Logarithmic Functions</B></H3>
+<P>It was observed in <A HREF="../Ch4/Ch4.9.html">section 4.9</A> that an amount <I>A</I> placed at compound interest <I>rate</I> for <I>time</I> years would grow to A(1 + rate)<sup>time</sup>. Notice that if the interest is compounded <I>n</I> times a year, the amount will be higher than if it is compounded annually, even though the interest rate at each compounding period must be divided by <I>n</I>. For instance, the first example in that section found that $1000 at 6% compounded for 10 years would grow to 1790.85. If the interest is computed monthly, the rate at each application of interest is .06/12, or .005, and the number of applications becomes 10*12 or 120. Modifying the formula above yields A(1 + rate/n)<sup>n*time</sup> and in this case the $1000 grows to $1819.40. If the compounding is done daily, the result is 1822.20, not much of a difference from monthly compounding. One might ask whether continuing to increase the number of compounding periods indefinitely would yield an indefinitely large (infinite) amount, or if there is some limit beyond which the amount will not grow.</P>
+<P>The latter turns out to be the case. To see that this is so, consider a principal amount of $1.00 placed at 100% for a year, and increase the number of compounding periods indefinitely. In mathematical terms, this computes:</P>
+<P><IMG SRC="Figure/Eq6.4.1.GIF"><!----></P>
+<P><!----></P>
+<P>As the number of periods grows and the interest rate per period shrinks, this converges to a definite limit at about 2.7182818. (It has a non-repeating, non-terminating decimal representation.)  This number, denoted <I>e</I> arises naturally in a variety of situations in mathematics, and mathematical libraries provide the exponential function to compute y = e<sup>x</sup>. The inverse function, to compute the exponent, or logarithm of x given the number <I>y</I> is the logarithm function x = ln(y). These were mentioned in <A HREF="../Ch4/Ch4.5.html">section 4.5</A> in connection with writing the function procedure <I>APowerB</I> and are found in <I>RealMath</I> as:</P>
+<PRE>
+<B>PROCEDURE</B> exp (numb : <B>REAL</B>) : <B>REAL</B>;</PRE>
+<P>and</P>
+<PRE>
+<B>PROCEDURE</B> ln (numb : <B>REAL</B>) : <B>REAL</B>;</PRE>
+<P>In addition, <I>RealMath</I> exports the related function procedure:</P>
+<PRE>
+<B>PROCEDURE</B> power (base, exponent: <B>REAL</B>): <B>REAL</B>;</PRE>
+<P><B>NOTE</B>:	Some non-standard mathematical library modules also export some or all of the following related function procedures:</P>
+<P>For Base 10 Logarithms:</P>
+<PRE>
+    <B>PROCEDURE</B> log (numb : <B>REAL</B>) : <B>REAL</B>;
+    <B>PROCEDURE</B> TenToX (numb : <B>REAL</B>) : <B>REAL</B>;</PRE>
+<P>For other power and magnitude operations:</P>
+<PRE>
+    <B>PROCEDURE</B> ipower (numb1 : <B>REAL</B>; numb2 : <B>INTEGER</B>) : <B>REAL</B>;
+        (* Both return numb1 to the numb2 power *)
+    <B>PROCEDURE</B> Magnitude (numb : <B>REAL</B>) : <B>INTEGER</B>;
+        (* returns the order of magnitude of numb, namely the largest integer less than or equal to the scale factor or log10 of numb *)</PRE>
+<P>One application of the logarithmic and exponential functions is to compute radioactive (and other) decay processes. Under normal conditions, a quantity of radioactive material decays over time according to the formula</P>
+<P>A = A<sub>0</sub> e<sup>kt</sup></P>
+<P>where A<sub>0</sub> is the amount of the substance present at time zero, <I>A</I> is the amount at the time being examined, <I>t</I> is the elapsed time in appropriate units, and <I>k</I> is a constant that is a property of the substance.</P>
+<P>In the standard literature, one often finds the constant <I>k</I> expressed indirectly as the half-life, that is, the time it would take for half of any given quantity of the substance to decay.</P>
+<H3><B>Problem:</B></H3>
+<P>A lab is gathering data from experiments done on radioactive samples and determines experimentally the amount of a radioactive substance present at time zero and also at some subsequent time. Write a program to calculate the half-life of the substance from this data. (This is often one way of identifying an unknown radioactive material.)</P>
+<H3><B>Discussion:</B></H3>
+<P>The formula A = A<sub>0</sub> e<sup>kt</sup> may be rewritten as</P>
+<P><IMG SRC="Figure/Eq6.4.3.GIF"><!----></P><P><!----></P>
+<P>and, upon taking natural logarithms on both sides and solving for k, one obtains</P>
+<P><IMG SRC="Figure/Eq6.4.4.GIF"><!----></P><P><!----></P>
+<P>In the case where half of the material is supposed to have decayed, the right hand side of the latter formula becomes</P>
+<P><IMG SRC="Figure/Eq6.4.5.GIF"><!----></P><P><!----></P>
+<P>or, solving for t,</P>
+<P><IMG SRC="Figure/Eq6.4.6.GIF"><!----></P><P><!----></P>
+<P>With these variations on the initial formula, all the tools are at hand to write the code to do the computation.</P>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> HalfLife;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* to illustrate RealMath.ln *)
+(* last revision 1994 08 30 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> RealMath <B>IMPORT</B>
+  ln;
+
+<B>PROCEDURE</B> GetReal (<B>VAR</B> numToGet : <B>REAL</B>);
+<B>VAR</B>
+  tempResult : ReadResults;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please type in a real number ===<!-->&gt; <!--"-->&quot;);
+    ReadReal (numToGet);
+    tempResult := ReadResult ();
+    SkipLine; (* swallow line marker *)
+    WriteLn;
+  <B>UNTIL</B> tempResult = allRight;
+<B>END</B> GetReal;
+
+<B>VAR</B>
+  initialAmount, laterAmount, timePassed,
+  constant, halfLife : <B>REAL</B>;
+  key: <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;What was the initial amount? <!--"-->&quot;);
+  GetReal (initialAmount);
+  WriteString (<!--"-->&quot;How much time elapsed til the second reading? <!--"-->&quot;);
+  GetReal (timePassed);
+  WriteString (<!--"-->&quot;And, how much material was left then? <!--"-->&quot;);
+  GetReal (laterAmount);
+  constant := ln (laterAmount / initialAmount) / timePassed;
+  halfLife := ln ( 0.5) / constant;
+  WriteString (<!--"-->&quot;The half life of this material is <!--"-->&quot;);
+  WriteFixed (halfLife, 6, 10);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->&gt;<!--"-->&quot;);
+  ReadChar (key);
+<B>END</B> HalfLife.</PRE>
+<H3><B>Trial Run:</B></H3>
+<PRE>
+What was the initial amount? Please type in a real number ===<!-->&gt; <B>100.0</B>
+How much time elapsed til the second reading? Please type in a real number ===<!-->&gt; <B>10.0</B>
+And, how much material was left then? Please type in a real number ===<!-->&gt; <B>25.0</B>
+The half life of this material is   5.000000
+Press a key to continue ==<!-->&gt;</PRE>
+<P>Naturally, the units for the half life will be the same as those of the elapsed time given by the user.</P>
+<P>Exponential growth works in much the same way, except that the constant k is positive instead of negative.</P>
+<H3><B><A NAME="6.4.3">6.4.3</A>  Trigonometric Functions</B></H3>
+<P>It is discovered in elementary geometry that in two similar triangles, the sides are in proportion.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.8.GIF" BORDER="1"></CENTER><!----></P>
+<P>In particular, for right triangles, one may relate these fixed ratios to a particular acute angle, such as angle <I>B</I> in figure 6.8. When this is done, and the right triangle labelled as in figure 6.9, the trigonometric ratios are defined as follows:</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.9.GIF" BORDER="1"></CENTER><!----></P>
+<P>The symbols <I>sin</I>, <I>cos</I>, and <I>tan</I> are themselves abbreviations for <I>sine</I>, <I>cosine</I>, and <I>tangent</I>, respectively. Auxiliary to these three are their inverse functions <I>arcsin</I>, <I>arccos</I>, and <I>arctan</I> for producing an angle given one of the fixed ratios. Wirth suggested that <I>MathLib0</I> provide only three of these functions; the minimum necessary for work in trigonometry, but the ISO library <I>RealMath</I> supplies all six. They are:</P>
+<PRE>
+<B>PROCEDURE</B> sin (x : <B>REAL</B>) : <B>REAL</B>;
+<B>PROCEDURE</B> cos (x : <B>REAL</B>) : <B>REAL</B>;
+<B>PROCEDURE</B> tan (x : <B>REAL</B>) : <B>REAL</B>;
+<B>PROCEDURE</B> arcsin (x : <B>REAL</B>) : <B>REAL</B>;
+<B>PROCEDURE</B> arccos (x : <B>REAL</B>) : <B>REAL</B>;
+<B>PROCEDURE</B> arctan (x : <B>REAL</B>) : <B>REAL</B>;</PRE>
+<P><B>NOTES</B>: 1. The first three require the angle to be in radians, and return the sine, cosine, and tangent, respectively, of the angle supplied. The last three takes the sine, cosine, and tangent of an angle and returns the principal value of the angle measure (in radians). For arcsine and arctangent, the values returned are in the range -<!--¼--><IMG SRC="Figure/pi.gif" WIDTH=7 HEIGHT=6>/2 <!--<-->&lt; <!--ø-->&#248; <!--<-->&lt; <!--¼--><IMG SRC="Figure/pi.gif" WIDTH=7 HEIGHT=6>/2. For arccosine, the values returned are in the range 0 <!--<-->&lt; <!--ø-->&#248; <!--<-->&lt; <!--¼--><IMG SRC="Figure/pi.gif" WIDTH=7 HEIGHT=6>. (Recall that one radian is 180/<!--¼--><IMG SRC="Figure/pi.gif" WIDTH=7 HEIGHT=6> degrees.)</P>
+<P>	2. Many non-standard implementations are much less generous in their supply of trigonometric functions than this, and may omit as many as three of these.</P>
+<P>	3. While angles larger than 2<!--¼--><IMG SRC="Figure/pi.gif" WIDTH=7 HEIGHT=6> (about 6.28) will work correctly, specific implementations may have a maximum argument for trigonometric functions that is much smaller than MAX (REAL).</P>
+<P>Here is another useful procedure:</P>
+<PRE>
+  <B>PROCEDURE</B> degToRad (x : <B>REAL</B>) : <B>REAL</B>;
+    (* converts degrees to radians *)  
+  <B>BEGIN</B>
+    <B>RETURN</B> (x * pi / 180.0); 
+  <B>END</B> degToRad;  </PRE>
+<P>Basic trigonometric identities and formulas can be employed to extend the scope of the available mathematical functions.</P>
+<H3><B>Example:</B></H3>
+<P>Write a module that computes the area of any triangle given two adjacent sides and an included angle.</P>
+<H3><B>Discussion:</B></H3>
+<P>Consider the triangle ABC in figure 6.10 below. If the base <I>b</I> (here AC) and the altitude <I>h</I> (here BD) is known, the area of the triangle is given by</P>
+<P>S = .5bh</P>
+<P>However, since BD is the side opposite angle C, in the right triangle BCD, and sin (C) = BD/BC,</P>
+<P>h = BC sin (C) = a sin (C).</P>
+<P>That is, provided the given data consists of two sides <I>a</I> and <I>b</I> of the triangle and an included angle C, its area can be computed by using the formula</P>
+<P>s = .5ab sin (C)</P>
+<P>which reduces to the original formula when C is a right angle, because the sine of 90<!--°-->&#176; is one.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.10.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> TriArea;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2 *)
+(* to illustrate RealMath.sin *)
+(* last revision 1993 03 01 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> RealMath <B>IMPORT</B>
+  sin, pi;
+
+<B>PROCEDURE</B> GetReal (<B>VAR</B> numToGet : <B>REAL</B>);
+(* prompts for a real number, reads it, loops until a correct one is typed, swallows the end-of-line state and returns the number read *)
+
+<B>VAR</B>
+  tempResult : ReadResults;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Please type in a real number ===<!-->&gt; <!--"-->&quot;);
+    ReadReal (numToGet);
+    tempResult := ReadResult ();
+    SkipLine; (* swallow line marker *)
+    WriteLn;
+  <B>UNTIL</B> tempResult = allRight;
+<B>END</B> GetReal;
+
+<B>PROCEDURE</B> degToRad (x : <B>REAL</B>) : <B>REAL</B>;
+  (* converts degrees to radians *)  
+<B>BEGIN</B>
+  <B>RETURN</B> (x * pi / 180.0); 
+<B>END</B> degToRad; 
+
+<B>VAR</B>
+  angleC, sideA, sideB, area: <B>REAL</B>;
+  key : <B>CHAR</B>;
+
+<B>BEGIN</B>  (* main *)
+  (* obtain triangle data *)
+  WriteString (<!--"-->&quot;What is the first side length? <!--"-->&quot;);
+  GetReal (sideA);
+  WriteString (<!--"-->&quot;What is the second side length? <!--"-->&quot;);
+  GetReal (sideB);
+  WriteString (<!--"-->&quot;Now, what is the included angle <!--"-->&quot;);
+  WriteString (<!--"-->&quot;in degrees? <!--"-->&quot;);
+  GetReal (angleC);
+  (* do calculation *)
+  angleC := degToRad (angleC);
+  area := 0.5 * sideA * sideB * sin (angleC);
+  (* inform user of result *)
+  WriteString (<!--"-->&quot;The area is <!--"-->&quot;);
+  WriteFixed (area, 5, 0);
+  WriteString (<!--"-->&quot; square units <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->&gt;<!--"-->&quot;);
+  ReadChar (key);
+<B>END</B> TriArea.</PRE>
+<H3><B>First run:</B></H3>
+<PRE>What is the first side length? Please type in a real number ===<!-->&gt; <B>10.0</B>
+What is the second side length? Please type in a real number ===<!-->&gt; <B>8.0</B>
+Now, what is the included angle in degrees? Please type in a real number ===<!-->&gt; <B>30.0</B>
+The area is 20.00000 square units </PRE>
+<H3><B>Second run:</B></H3>
+<PRE>What is the first side length? Please type in a real number ===<!-->&gt; <B>10.0</B>
+What is the second side length? Please type in a real number ===<!-->&gt; <B>20.0</B>
+Now, what is the included angle in degrees? Please type in a real number ===<!-->&gt; <B>90.0</B>
+The area is 100.0000 square units </PRE>
+<P><B>NOTE</B>:   Some nonstandard versions of the math library module use <I>atan</I> instead of <I>arctan</I> and may not export <I>asin</I>, or <I>acos</I>. Others provide the hyperbolic functions <I>sinh</I>, <I>cosh</I> and <I>tanh</I>.</P>
+<H3><B><A NAME="6.4.4">6.4.4</A>  Conversions</B></H3>
+<P><I>RealMath</I> also offers the useful conversion function:</P>
+<PRE>
+<B>PROCEDURE</B> round (x: <B>REAL</B>): <B>INTEGER</B>;</PRE>
+<P>which rounds off a real to the nearest integer.</P>
+<P>Two function procedures that <I>may</I> be in the traditionally named <I>MathLib0</I> that are of more specialized interest are the following integer/real conversions.</P>
+<PRE>
+<B>PROCEDURE</B> real (m : <B>INTEGER</B>) : <B>REAL</B>;
+<B>PROCEDURE</B> entier (x : <B>REAL</B>) : <B>INTEGER</B>;</PRE>
+<P>The first of these is essentially the same as FLOAT except that it only operates on the type INTEGER (and assignment compatible cardinals.)  This is important in older versions of Modula-2 where FLOAT works only on CARDINAL (not on either one as in the ISO standard.)</P>
+<P>The second one is sometimes called the greatest integer function. It takes a real argument, and returns the greatest integer less than or equal to the real. Note that this is not the same as TRUNC even in those versions where both can return integers. Compare the following:</P>
+<P>entier (5.7) produces 5 and <B>TRUNC</B> (5.7) also produces 5, but</P>
+<P>entier (-4.3) produces -5 while <B>TRUNC</B> (-4.3) yields -4</P>
+<P>That is, for positive numbers, the result is the same, but for negative ones, it will be different, because in those cases entier gives the nearest integer less than the argument and TRUNC simply "hacks off" the decimal fractional portion. Notice that an order of magnitude function would be written using entier rather than TRUNC.</P>
+<PRE>
+  <B>PROCEDURE</B> Magnitude (num : <B>REAL</B>) : <B>INTEGER</B>;
+(* uses non-ISO functions *)
+
+  <B>BEGIN</B>
+    <B>RETURN</B> (entier (ln (num) / ln (10.0) ))
+  <B>END</B> Magnitude;</PRE>
+<P>This procedure returns -6 when given 4.5E-6 and 2 when given 3.8E2, having computed the base ten logarithms as approximately -5.346 and 2.579 respectively. Notice that a base ten logarithm of a number (or one in any other base) is computed by dividing the natural logarithm of the number by the natural logarithm of the base, for if</P>
+<P>x = log<sub>10</sub>y then 10<sup>y</sup> = x,</P>
+<P>so that, taking natural logarithms on both sides yields </P>
+<P>y ln(10) = ln (x)</P>
+<P>and therefore </P>
+<P>y = ln(10)/ln(x)</P>
+<P>as used in the procedure.</P>
+<H3><B><A NAME="6.4.5">6.4.5</A> Summary of RealMath</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RealMath;
+
+<B>CONST</B>
+  pi   = 3.1415926535897932384626433832795028841972;
+  exp1 = 2.7182818284590452353602874713526624977572;
+
+<B>PROCEDURE</B> sqrt (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> exp (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> ln (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> sin (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> cos (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> tan (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> arcsin (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> arccos (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> arctan (x: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> power (base, exponent: <B>REAL</B>): <B>REAL</B>;
+<B>PROCEDURE</B> round (x: <B>REAL</B>): <B>INTEGER</B>;
+<B>END</B> RealMath.</PRE>
+<H3><B><A NAME="6.4.6">6.4.6</A>  Other Mathematical functions</B></H3>
+<P>A wide variety of other function procedures and error handling may be provided in some auxiliary modules associated with <I>RealMath</I>, or, in non-standard versions, added to <I>MathLib0</I>.</P>
+<P>The ISO standard libraries, and some non-standard versions as well, include a second module that is identical to <I>RealMath</I> but that acts on and returns long types.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> LongMath;
+
+<B>CONST</B>
+  pi   = 3.1415926535897932384626433832795028841972;
+  exp1 = 2.7182818284590452353602874713526624977572;
+
+<B>PROCEDURE</B> sqrt (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> exp (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> ln (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> sin (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> cos (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> tan (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> arcsin (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> arccos (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> arctan (x: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> power (base, exponent: <B>LONGREAL</B>): <B>LONGREAL</B>;
+<B>PROCEDURE</B> round (x: <B>LONGREAL</B>): <B>INTEGER</B>;
+
+<B>END</B> LongMath.</PRE>
+<P>This second module (along with the built-in type LONGREAL itself) are provided because many systems have two or more real types of different precisions. ISO Modula-2 defines the precision of LONGREAL to be equal to or greater than that of REAL. Thus, if there is only one underlying type in the actual system being used, the programmer may use either or both of the Modula-2 logical types to refer to this actual type. Both <I>RealMath</I> and <I>LongMath</I> also include an error enquiry function not listed here but the use of this will be postponed to a later chapter.</P>
+<P>It should be noted that the name and the contents of both modules in non-standard versions, can vary widely from one implementation to another. For further information, see the <A HREF="../Appendices/Ap5.html">Appendix</A> on standard module definitions or consult the manuals that are available with the system. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

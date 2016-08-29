@@ -1,0 +1,662 @@
+<HTML><HEAD><TITLE>Appendix 2: Syntax Diagrams</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><B>Appendix 2 Syntax Diagrams</B></H2>
+
+<P><!--revised 1995 06 06--></P>
+<P>The syntax diagrams in this section are more complete and expand upon those given in the body of the text.  They are intended as visual aids to understanding the correct structure of Modula-2 programming constructions, but they do not constitute an official or complete definition of the language.  For that, see the Modula-2 Draft Standard.</P>
+<H3><B><A NAME="A2.1">A2.1</A> Lexis</B></H3>
+
+<P>identifier</P>
+<IMG SRC="Figure/identifier.GIF" HEIGHT=180 WIDTH=385><!---->
+
+<P>identifier list</P>
+<IMG SRC="Figure/identifier_list.GIF" HEIGHT="59" WIDTH="176"><!---->
+
+<P>constant literal</P>
+<IMG SRC="Figure/constant_literal.GIF" HEIGHT=138 WIDTH=264><!---->
+
+<P>numeric literal                                          whole number literal</P>
+<IMG SRC="Figure/numeric_literal.GIF" HEIGHT=117 WIDTH=504><!---->
+
+<P>decimal number                                      digit</P>
+<IMG SRC="Figure/decimal_number.GIF" HEIGHT=355 WIDTH=358><!---->
+
+
+<P>octal digit                                     octal number</P>
+<IMG SRC="Figure/octal_digit.GIF" HEIGHT=673 WIDTH=436><!---->
+
+<P>real literal</P>
+<IMG SRC="Figure/real_literal.GIF" HEIGHT=53 WIDTH=472><!---->
+<P>scale factor</P>
+<IMG SRC="Figure/scale_factor.GIF" HEIGHT=75 WIDTH=435><!---->
+
+<H3><B><A NAME="A2.2">A2.2</A> Syntax</B></H3>
+<P>The numbering in this section (after the A2.2) corresponds to that of the Modula-2 ISO Standard Annex C.</P>
+<H3><B>A2.2.1 Programs, Program Modules, and Separate Modules</B></H3>
+<H3><B><A NAME="A2.2.1.1"></A>A2.2.1.1 Programs and Compilation Modules</B></H3>
+
+<P>compilation module</P>
+<IMG SRC="Figure/compilation_module.GIF" HEIGHT=92 WIDTH=280><!---->
+<H3><B><a name="A2.2.1.2">A2.2.1.2</a> Program Modules</B></H3>
+
+<P>program module</P>
+<IMG SRC="Figure/program_module.GIF" HEIGHT=185 WIDTH=513><!---->
+<P>module identifier                     protection</P>
+<IMG SRC="Figure/module_identifier.GIF" HEIGHT=27 WIDTH=466><!---->
+<P>protection expression</P>
+<IMG SRC="Figure/protection_expression.GIF" HEIGHT=40 WIDTH=211><!---->
+<H3><B><a name="A2.2.1.3">A2.2.1.3</a> Definition Module</B></H3>
+
+<P>definition module</P>
+<IMG SRC="Figure/definition_module.GIF" HEIGHT=162 WIDTH=466><!---->
+<H3><B><a name="A2.2.1.4">A2.2.1.4</a> Implementation Modules</B></H3>
+<H3><B>A2.2.1.4.1 Sourced Implementation Modules</B></H3>
+
+<P>implementation module</P>
+<IMG SRC="Figure/implementation_module.GIF" HEIGHT=178 WIDTH=489><!---->
+<H3><B>A2.2.1.5 Import Lists</B></H3>
+
+<P>import lists</P>
+<IMG SRC="Figure/import_lists.GIF" HEIGHT=68 WIDTH=176><!---->
+<H3><B>A2.2.1.5.1 Import List</B></H3>
+
+<P>import list</P>
+<IMG SRC="Figure/import_list.GIF" HEIGHT=58 WIDTH=280><!---->
+<H3><B>A2.2.1.5.2 Simple Import</B></H3>
+
+<P>simple import</P>
+<IMG SRC="Figure/simple_import.GIF" HEIGHT=49 WIDTH=314><!---->
+<H3><B>A2.2.1.5.3 Unqualified Import</B></H3>
+
+<P>unqualified import</P>
+<IMG SRC="Figure/unqualified_import.GIF" HEIGHT=124 WIDTH=365><!---->
+<H3><B>A2.2.1.6 Export Lists</B></H3>
+
+<P>export list</P>
+<IMG SRC="Figure/export_list.GIF" HEIGHT=58 WIDTH=280><!---->
+<H3><B>A2.2.1.6.1 Unqualified Exports</B></H3>
+
+<P>unqualified export</P>
+<IMG SRC="Figure/unqualified_export.GIF" HEIGHT=49 WIDTH=314><!---->
+
+<H3><B>A2.2.1.6.2 Qualified Exports</B></H3>
+
+<P>qualified export</P>
+<IMG SRC="Figure/qualified_export.GIF" HEIGHT=49 WIDTH=440><!---->
+
+<H3><B>A2.2.2 Definitions and Declarations</B></H3>
+<H3><B><a name="A2.2.2.1">A2.2.2.1</a> Qualified Identifiers</B></H3>
+
+<P>qualified identifier</P>
+<IMG SRC="Figure/qualified_identifier.GIF" HEIGHT=68 WIDTH=364><!---->
+
+<H3><B><a name="A2.2.2.2">A2.2.2.2</a> Definitions</B></H3>
+
+<P>definitions</P>
+<IMG SRC="Figure/definitions.GIF" HEIGHT=68 WIDTH=169><!---->
+
+<P>definition</P>
+<IMG SRC="Figure/definition.GIF" HEIGHT=246 WIDTH=451><!---->
+
+<P>procedure heading</P>
+<IMG SRC="Figure/procedure_heading.GIF" HEIGHT=57 WIDTH=312><!---->
+
+<H3><B>A2.2.2.2.1 Type Definitions</B></H3>
+
+<P>type definition                                                  opaque type definition</P>
+<IMG SRC="Figure/type_definition.GIF" HEIGHT=58 WIDTH=456><!---->
+
+<H3><B>A2.2.2.2.2 Proper Procedure Headings</B></H3>
+
+<P>proper procedure heading</P>
+<IMG SRC="Figure/proper_procedure_heading.GIF" HEIGHT=134 WIDTH=546><!---->
+
+<P>formal parameters</P>
+<IMG SRC="Figure/formal_parameters.GIF" HEIGHT=100 WIDTH=360><!---->
+
+<P>formal parameter list</P>
+<IMG SRC="Figure/formal_parameter_list.GIF" HEIGHT=70 WIDTH=409><!---->
+
+<H3><B>A2.2.2.2.3 Function Procedure Headings</B></H3>
+
+<P>function procedure heading</P>
+<IMG SRC="Figure/function_proc_heading.GIF" HEIGHT=94 WIDTH=454><!---->
+
+<P>function result type</P>
+<IMG SRC="Figure/function_result_type.GIF" HEIGHT=40 WIDTH=176><!---->
+
+<H3><B>A2.2.2.2.4 Formal Parameters</B></H3>
+
+<P>formal parameter</P>
+<IMG SRC="Figure/formal_parameter.GIF" HEIGHT=57 WIDTH=352><!---->
+<H3><B>A2.2.2.2.4.1 Value Parameters</B></H3>
+
+<P>value parameter specification</P>
+<IMG SRC="Figure/value_param_spec.GIF" HEIGHT=40 WIDTH=376><!---->
+
+<H3><B>A2.2.2.2.4.2 Variable Parameters</B></H3>
+
+<P>variable parameter specification</P>
+<IMG SRC="Figure/variable_param_spec.GIF" HEIGHT=33 WIDTH=441><!---->
+
+<H3><B><a name="A2.2.2.3">A2.2.2.3</a> Declarations</B></H3>
+
+<P>declarations</P>
+<IMG SRC="Figure/declarations.GIF" HEIGHT=68 WIDTH=176><!---->
+
+<P>declaration</P>
+<IMG SRC="Figure/declaration.GIF" HEIGHT=287 WIDTH=456><!---->
+
+<H3><B>A2.2.2.4 Constant Declarations</B></H3>
+
+<P>constant declaration</P>
+<IMG SRC="Figure/constant_declaration.GIF" HEIGHT=31 WIDTH=381><!---->
+
+<H3><B>A2.2.2.5 Type Declarations</B></H3>
+
+<P>type declaration</P>
+<IMG SRC="Figure/type_declaration.GIF" HEIGHT=31 WIDTH=375><!---->
+
+<H3><B>A2.2.2.6 Variable Declarations</B></H3>
+
+<P>variable declaration</P>
+<IMG SRC="Figure/variable_declaration.GIF" HEIGHT=32 WIDTH=478><!---->
+<P>variable identifier list</P>
+<IMG SRC="Figure/variable_identifier_list.GIF" HEIGHT=352 WIDTH=600><!---->
+
+<P>machine address                                               value of address type</P>
+<IMG SRC="Figure/machine_address.GIF" HEIGHT=27 WIDTH=512><!---->
+
+<H3><B>A2.2.2.7 Procedure Declarations</B></H3>
+
+<P>procedure declaration</P>
+<IMG SRC="Figure/procedure_declaration.GIF" HEIGHT=57 WIDTH=352><!---->
+
+<H3><B>A2.2.2.8 Proper Procedure Declarations</B></H3>
+
+<P>proper procedure declarations</P>
+<IMG SRC="Figure/proper_proc_decls.GIF" HEIGHT=124 WIDTH=488><!---->
+<P>procedure identifier</P>
+<IMG SRC="Figure/procedure_identifier.GIF" HEIGHT=40 WIDTH=144><!---->
+
+<H3><B>A2.2.2.8.1 Function Procedure Declarations</B></H3>
+
+<P>function procedure declaration</P>
+<IMG SRC="Figure/function_proc_decl.GIF" HEIGHT=124 WIDTH=488><!---->
+<H3><B><A NAME="A2.2.2.9"></A>A2.2.2.9 Local Module Declarations</B></H3>
+
+<P>local module declaration</P>
+<IMG SRC="Figure/local_module_decl.GIF" HEIGHT=214 WIDTH=544><!---->
+
+<H3><B>A2.2.3 Types</B></H3>
+
+<P>type denoter                                        ordinal type denoter</P>
+<IMG SRC="Figure/type_denoter.GIF" HEIGHT=58 WIDTH=480><!---->
+<H3><B>A2.2.3.1 Type Identifiers</B></H3>
+
+<P>type identifier                                     ordinal type identifier</P>
+<IMG SRC="Figure/type_identifier.GIF" HEIGHT=26 WIDTH=448><!---->
+<H3><B>A2.2.3.2 New Types</B></H3>
+
+<P>new type                                                 new ordinal type</P>
+<IMG SRC="Figure/new_type.GIF" HEIGHT=244 WIDTH=480><!---->
+<H3><B>A2.2.3.2.1 Enumeration Types</B></H3>
+
+<P>enumeration type                                                   identifier list</P>
+<IMG SRC="Figure/enumeration_type.GIF" HEIGHT=60 WIDTH=472><!---->
+
+<H3><B>A2.2.3.2.2 Subrange Types</B></H3>
+
+<P>subrange type</P>
+<IMG SRC="Figure/subrange_type.GIF" HEIGHT=129 WIDTH=504><!---->
+<P>range type</P>
+<IMG SRC="Figure/range_type.GIF" HEIGHT=40 WIDTH=232><!---->
+
+<H3><B>A2.2.3.2.3 Set Types</B></H3>
+
+<P>set type</P>
+<IMG SRC="Figure/set_type.GIF" HEIGHT=82 WIDTH=360><!---->
+
+<P>base type</P>
+<IMG SRC="Figure/base_type.GIF" HEIGHT=40 WIDTH=232><!---->
+
+<H3><B>A2.2.3.2.4 Packedset Types</B></H3>
+
+<P>packedset type</P>
+<IMG SRC="Figure/packedset_type.GIF" HEIGHT=82 WIDTH=384><!---->
+
+<H3><B>A2.2.3.2.5 Pointer Types</B></H3>
+
+<P>pointer type</P>
+<IMG SRC="Figure/pointer_type.GIF" HEIGHT=82 WIDTH=384><!---->
+
+<P>bound type</P>
+<IMG SRC="Figure/bound_type.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<H3><B>A2.2.3.2.6 Procedure Types</B></H3>
+
+<P>procedure type</P>
+<IMG SRC="Figure/procedure_type.GIF" HEIGHT=125 WIDTH=320><!---->
+
+<P>proper procedure type</P>
+<IMG SRC="Figure/proper_procedure_type.GIF" HEIGHT=196 WIDTH=488><!---->
+<P>function procedure type</P>
+<IMG SRC="Figure/function_procedure_type.GIF" HEIGHT=163 WIDTH=528><!---->
+<P>formal parameter type list                        formal parameter type</P>
+<IMG SRC="Figure/formal_param_type_list.GIF" HEIGHT=61 WIDTH=504><!---->
+<P>variable formal type                           value formal type</P>
+<IMG SRC="Figure/variable_formal_type.GIF" HEIGHT=26 WIDTH=432><!---->
+
+<H3><B>A2.2.3.2.7 Formal Types</B></H3>
+
+<P>formal type</P>
+<IMG SRC="Figure/formal_type.GIF" HEIGHT=62 WIDTH=288><!---->
+
+<P>open array formal type</P>
+<IMG SRC="Figure/open_array_formal_type.GIF" HEIGHT=59 WIDTH=416><!---->
+
+<H3><B>A2.2.3.2.8 Array Types</B></H3>
+
+<P>array type</P>
+<IMG SRC="Figure/array_type.GIF" HEIGHT=125 WIDTH=416><!---->
+
+<P>index type                                        component type</P>
+<IMG SRC="Figure/index_type.GIF" HEIGHT=26 WIDTH=432><!---->
+
+<H3><B>A2.2.3.2.9 Record Types</B></H3>
+
+<P>record type</P>
+<IMG SRC="Figure/record_type.GIF" HEIGHT=26 WIDTH=360><!---->
+
+<P>field list                                fields</P>
+<IMG SRC="Figure/field_list.GIF" HEIGHT=94 WIDTH=376><!---->
+
+<P>fixed fields</P>
+<IMG SRC="Figure/fixed_fields.GIF" HEIGHT=26 WIDTH=360><!---->
+
+<P>field type</P>
+<IMG SRC="Figure/field_type.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<P>variant fields</P>
+<IMG SRC="Figure/variant_fields.GIF" HEIGHT=124 WIDTH=432><!---->
+
+<P>tag identifier                         tag type</P>
+<IMG SRC="Figure/tag_identifier.GIF" HEIGHT=26 WIDTH=384><!---->
+
+<P>variant list</P>
+<IMG SRC="Figure/variant_list.GIF" HEIGHT=60 WIDTH=384><!---->
+
+<P>variant else part</P>
+<IMG SRC="Figure/variant_else_part.GIF" HEIGHT=26 WIDTH=256><!---->
+
+<P>variant</P>
+<IMG SRC="Figure/variant.GIF" HEIGHT=61 WIDTH=384><!---->
+
+<P>variant label list</P>
+<IMG SRC="Figure/variant_label_list.GIF" HEIGHT=60 WIDTH=200><!---->
+
+<P>variant label</P>
+<IMG SRC="Figure/variant_label.GIF" HEIGHT=60 WIDTH=392><!---->
+
+<H3><B>A2.2.4 Blocks</B></H3>
+<H3><B>A2.2.4.1 Proper Procedure Blocks</B></H3>
+
+<P>proper procedure block</P>
+<IMG SRC="Figure/proper_procedure_block.GIF" HEIGHT=60 WIDTH=408><!---->
+
+<P>procedure body</P>
+<IMG SRC="Figure/procedure_body.GIF" HEIGHT=26 WIDTH=256><!---->
+
+<H3><B>A2.2.4.2 Function Procedure Blocks</B></H3>
+
+<P>function procedure block</P>
+<IMG SRC="Figure/function_procedure_block.GIF" HEIGHT=26 WIDTH=408><!---->
+
+<P>function body</P>
+<IMG SRC="Figure/function_body.GIF" HEIGHT=26 WIDTH=256><!---->
+
+<H3><B>A2.2.4.3 Module Blocks</B></H3>
+
+<P>module block</P>
+<IMG SRC="Figure/module_block.GIF" HEIGHT=60 WIDTH=408><!---->
+
+<P>module body</P>
+<IMG SRC="Figure/module_body.GIF" HEIGHT=60 WIDTH=408><!---->
+
+<P>initialization body</P>
+<IMG SRC="Figure/initialization_body.GIF" HEIGHT=26 WIDTH=256><!---->
+
+<P>finalization body</P>
+<IMG SRC="Figure/finalization_body.GIF" HEIGHT=26 WIDTH=264><!---->
+
+<H3><B>A2.2.4.4 Block Bodies and Exception Handling</B></H3>
+
+<P>block body</P>
+<IMG SRC="Figure/block_body.GIF" HEIGHT=60 WIDTH=456><!---->
+
+<P>normal part                                         exceptional part</P>
+<IMG SRC="Figure/normal_part.GIF" HEIGHT=26 WIDTH=440><!---->
+
+<H3><B><a name="A2.2.5">A2.2.5</a> Statements</B></H3>
+
+<P>statement</P>
+<IMG SRC="Figure/statement.GIF" HEIGHT=408 WIDTH=296><!---->
+
+<H3><B>A2.2.5.1 Statement Sequences</B></H3>
+
+<P>statement sequence</P>
+<IMG SRC="Figure/statement_sequence.GIF" HEIGHT=73 WIDTH=280><!---->
+<H3><B>A2.2.5.2 Empty Statements</B></H3>
+
+<P>empty statement</P>
+<BR><BR>
+<H3><B>A2.2.5.3 Assignment Statements</B></H3>
+
+<P>assignment statement</P>
+<IMG SRC="Figure/assignment_statement.GIF" HEIGHT=26 WIDTH=336><!---->
+
+<H3><B>A2.2.5.4 Procedure Calls</B></H3>
+
+<P>procedure call</P>
+<IMG SRC="Figure/procedure_call.GIF" HEIGHT=60 WIDTH=456><!---->
+
+<P>procedure designator</P>
+<IMG SRC="Figure/procedure_designator.GIF" HEIGHT=26 WIDTH=208><!---->
+
+<H3><B>A2.2.5.5 Return Statements</B></H3>
+
+<P>return statement</P>
+<IMG SRC="Figure/return_statement.GIF" HEIGHT=58 WIDTH=312><!---->
+
+<H3><B>A2.2.5.5.1 Simple Return Statements</B></H3>
+
+<P>simple return statement</P>
+<IMG SRC="Figure/simple_return.GIF" HEIGHT=26 WIDTH=176><!---->
+
+<H3><B>A2.2.5.5.2 Function Return Statements</B></H3>
+
+<P>function return statement</P>
+<IMG SRC="Figure/function_return.GIF" HEIGHT=26 WIDTH=176><!---->
+
+<H3><B>A2.2.5.6 Retry Statements</B></H3>
+
+<P>retry statement</P>
+<IMG SRC="Figure/retry_statement.GIF" HEIGHT=26 WIDTH=176><!---->
+
+<H3><B>A2.2.5.7 With Statements</B></H3>
+
+<P>with statement</P>
+<IMG SRC="Figure/with_statement.GIF" HEIGHT=92 WIDTH=360><!---->
+
+<P>record designator</P>
+<IMG SRC="Figure/record_designator.GIF" HEIGHT=58 WIDTH=312><!---->
+
+<H3><B>A2.2.5.8 If Statements</B></H3>
+
+<P>if statement</P>
+<IMG SRC="Figure/if_statement.GIF" HEIGHT=59 WIDTH=496><!---->
+<P>guarded statements</P>
+<IMG SRC="Figure/guarded_statements.GIF" HEIGHT=133 WIDTH=568><!---->
+<P>if else part                                                        boolean expression</P>
+<IMG SRC="Figure/if_else_part.GIF" HEIGHT=26 WIDTH=448><!---->
+
+<H3><B>A2.2.5.9 Case Statements</B></H3>
+
+<P>case statement</P>
+<IMG SRC="Figure/case_statement.GIF" HEIGHT=92 WIDTH=360><!---->
+
+<P>case selector</P>
+<IMG SRC="Figure/case_selector.GIF" HEIGHT=26 WIDTH=200><!---->
+
+<P>case list</P>
+<IMG SRC="Figure/case_list.GIF" HEIGHT=152 WIDTH=416><!---->
+
+<P>case else part</P>
+<IMG SRC="Figure/case_else_part.GIF" HEIGHT=26 WIDTH=272><!---->
+
+<H3><B>A2.2.5.9.1 Case Alternatives</B></H3>
+
+<P>case alternative</P>
+<IMG SRC="Figure/case_alternative.GIF" HEIGHT=50 WIDTH=464><!---->
+
+<P>case label list</P>
+<IMG SRC="Figure/case_label_list.GIF" HEIGHT=60 WIDTH=184><!---->
+
+<P>case label</P>
+<IMG SRC="Figure/case_label.GIF" HEIGHT=60 WIDTH=520><!---->
+<H3><B>A2.2.5.10 While Statements</B></H3>
+
+<P>while statment</P>
+<IMG SRC="Figure/while_statement.GIF" HEIGHT=92 WIDTH=360><!---->
+
+<H3><B>A2.2.5.11 Repeat Statements</B></H3>
+
+<P>repeat statment</P>
+<IMG SRC="Figure/repeat_statement.GIF" HEIGHT=92 WIDTH=320><!---->
+
+<H3><B>A2.2.5.12 Loop Statements</B></H3>
+
+<P>loop statement</P>
+<IMG SRC="Figure/loop_statement.GIF" HEIGHT=26 WIDTH=368><!---->
+
+<H3><B>A2.2.5.13 Exit Statements</B></H3>
+
+<P>exit statement</P>
+<IMG SRC="Figure/exit_statement.GIF" HEIGHT=26 WIDTH=176><!---->
+
+
+<P>control variable identifier       initial value</P>
+<IMG SRC="Figure/control_variable_identifier.GIF" HEIGHT=26 WIDTH=376><!---->
+
+<P>final value                                           step size</P>
+<IMG SRC="Figure/final_value.GIF" HEIGHT=26 WIDTH=440><!---->
+
+<H3><B><a name="A2.2.6">A2.2.6</a> Variable Designator</B></H3>
+
+<P>variable designator</P>
+<IMG SRC="Figure/variable_designator.GIF" HEIGHT=138 WIDTH=264><!---->
+
+<H3><B>A2.2.6.1 Entire Designators</B></H3>
+
+<P>entire designator</P>
+<IMG SRC="Figure/entire_designator.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<H3><B>A2.2.6.2 Indexed Designators</B></H3>
+
+<P>indexed designator</P>
+<IMG SRC="Figure/indexed_designator.GIF" HEIGHT=60 WIDTH=496><!---->
+<P>array variable designator                   index expression</P>
+<IMG SRC="Figure/array_variable_designator.GIF" HEIGHT=26 WIDTH=432><!---->
+
+<H3><B>A2.2.6.3 Selected Designators</B></H3>
+
+<P>selected designator</P>
+<IMG SRC="Figure/selected_designator.GIF" HEIGHT=26 WIDTH=432><!---->
+
+<P>record variable designator                      field identifier</P>
+<IMG SRC="Figure/record_variable_designator.GIF" HEIGHT=26 WIDTH=384><!---->
+
+<H3><B>A2.2.6.4 Dereferenced Designators</B></H3>
+
+<P>dereferenced designator                               pointer variable designator</P>
+<IMG SRC="Figure/dereferenced_designator.GIF" HEIGHT=26 WIDTH=488><!---->
+
+<H3><B>A2.2.7 Expressions</B></H3>
+
+<P>expression</P>
+<IMG SRC="Figure/expression.GIF" HEIGHT=58 WIDTH=544><!---->
+<P>simple expression</P>
+<IMG SRC="Figure/simple_expression.GIF" HEIGHT=122 WIDTH=376><!---->
+
+<P>term</P>
+<IMG SRC="Figure/term.GIF" HEIGHT=59 WIDTH=216><!---->
+
+<P>factor</P>
+<IMG SRC="Figure/factor.GIF" HEIGHT=209 WIDTH=304><!---->
+
+<P>ordinal expression</P>
+<IMG SRC="Figure/ordinal_expression.GIF" HEIGHT=26 WIDTH=160><!---->
+
+<H3><B>A2.2.7.1 Infix Expressions</B></H3>
+
+<P>relational operator              term operator</P>
+<IMG SRC="Figure/relational_operator.GIF" HEIGHT=217 WIDTH=288><!---->
+
+<P>factor operator</P>
+<IMG SRC="Figure/factor_operator.GIF" HEIGHT=186 WIDTH=128><!---->
+
+<H3><B><a name="A2.2.7.2">A2.2.7.2</a> Value Designators</B></H3>
+
+<P>value designator</P>
+<IMG SRC="Figure/value_designator.GIF" HEIGHT=138 WIDTH=264><!---->
+
+<H3><B>A2.2.7.2.1 Entire Value</B></H3>
+
+<P>entire value</P>
+<IMG SRC="Figure/entire_value.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<H3><B>A2.2.7.2.2 Indexed Values</B></H3>
+
+<P>indexed value</P>
+<IMG SRC="Figure/indexed_value.GIF" HEIGHT=60 WIDTH=416><!---->
+
+<P>array value</P>
+<IMG SRC="Figure/array_value.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<H3><B>A2.2.7.2.3 Selected Values</B></H3>
+
+<P>selected value</P>
+<IMG SRC="Figure/selected_value.GIF" HEIGHT=26 WIDTH=344><!---->
+
+<P>record value</P>
+<IMG SRC="Figure/record_value.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<H3><B>A2.2.7.2.4 Dereferenced Values</B></H3>
+
+<P>dereferenced value                              pointer value</P>
+<IMG SRC="Figure/dereferenced_value.GIF" HEIGHT=26 WIDTH=432><!---->
+
+<H3><B>A2.2.7.3 Function Calls</B></H3>
+
+<P>function call</P>
+<IMG SRC="Figure/function_call.GIF" HEIGHT=26 WIDTH=344><!---->
+
+<P>function designator</P>
+<IMG SRC="Figure/function_designator.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<H3><B>A2.2.7.4 Value Constructors</B></H3>
+
+<P>value constructor</P>
+<IMG SRC="Figure/value_constructor.GIF" HEIGHT=103 WIDTH=264><!---->
+
+<H3><B>A2.2.7.4.1 Array Constructors</B></H3>
+
+<P>array constructor</P>
+<IMG SRC="Figure/array_constructor.GIF" HEIGHT=26 WIDTH=400><!---->
+
+<P>array type identifier</P>
+<IMG SRC="Figure/array_type_identifier.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<P>array constructed value</P>
+<IMG SRC="Figure/array_constructed_value.GIF" HEIGHT=59 WIDTH=416><!---->
+
+<P>repeated structure component</P>
+<IMG SRC="Figure/repeated_structure_comp.GIF" HEIGHT=58 WIDTH=496><!---->
+<P>repetition factor</P>
+<IMG SRC="Figure/repetition_factor.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<P>structure component</P>
+<IMG SRC="Figure/structure_component.GIF" HEIGHT=138 WIDTH=264><!---->
+
+<H3><B>A2.2.7.4.2 Record Constructors</B></H3>
+
+<P>record constructor</P>
+<IMG SRC="Figure/record_constructor.GIF" HEIGHT=26 WIDTH=400><!---->
+
+<P>record type identifier</P>
+<IMG SRC="Figure/record_type_identifier.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<P>record constructed value</P>
+<IMG SRC="Figure/record_constructed_value.GIF" HEIGHT=59 WIDTH=360><!---->
+
+<H3><B>A2.2.7.4.3 Set Constructors</B></H3>
+
+<P>set constructor</P>
+<IMG SRC="Figure/set_constructor.GIF" HEIGHT=26 WIDTH=400><!---->
+
+<P>set type identifier</P>
+<IMG SRC="Figure/set_type_identifier.GIF" HEIGHT=40 WIDTH=216><!---->
+
+<P>set constructed value                                                  member</P>
+<IMG SRC="Figure/set_constructed_value.GIF" HEIGHT=59 WIDTH=536><!---->
+<P>interval</P>
+<IMG SRC="Figure/interval.GIF" HEIGHT=26 WIDTH=416><!---->
+
+<P>singleton</P>
+<IMG SRC="Figure/singleton.GIF" HEIGHT=26 WIDTH=208><!---->
+
+<H3><B>A2.2.7.5 Constant Literals</B></H3>
+
+<P>constant literal</P>
+<IMG SRC="Figure/constant_literal.GIF" HEIGHT=138 WIDTH=264><!---->
+
+<H3><B>A2.2.7.6 Constant Expressions</B></H3>
+
+<P>constant expression</P>
+<IMG SRC="Figure/constant_expression.GIF" HEIGHT=26 WIDTH=160><!---->
+
+<H3><B>A2.2.8 Parameters and Arguments Binding</B></H3>
+<H3><B>A2.2.8.1 Actual Parameters</B></H3>
+
+<P>actual parameters</P>
+<IMG SRC="Figure/actual_parameters.GIF" HEIGHT=59 WIDTH=392><!---->
+
+<P>actual parameter list                               actual parameter</P>
+<IMG SRC="Figure/actual_parameter_list.GIF" HEIGHT=103 WIDTH=512><!---->
+
+<H3><B>A2.2.8.2 Special Parameters</B></H3>
+<H3><B>A2.2.8.2.1 Type Parameters</B></H3>
+
+<P>type parameter</P>
+<IMG SRC="Figure/type_parameter.GIF" HEIGHT=26 WIDTH=208><!---->
+<HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>
+

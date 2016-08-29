@@ -1,0 +1,85 @@
+<HTML>
+<HEAD>
+<TITLE>6.2 Libraries--How To Borrow A Module And Sign It Out</TITLE>
+<meta NAME="keywords" CONTENT="library, libraries, borrow, module, moidules, operation, operations, entities, operating, operation, operations, operators, operator, environment, implementation, implementations, implement, import, imports, qualified, user, designed, design, user-designed">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.2 Libraries<!--</B>‹<B>-->--How to Borrow a Module and Sign it Out</B></H2>
+<P>Certain tools (input/output, for example) are needed in any programming environment in order to create useful code. From the very first program module presented in chapter two, this text has made use of some of the many modules that are available as part of a typical Modula-2 system. These contain a variety of entities that can be imported into a program without having to be re-written every time they are needed.</P>
+<P>When Niklaus Wirth defined the Modula-2 notation, he was, for the most part, quite clear and specific about the way its various elements were to be used, and how they would behave. However, when it came to the libraries, he suggested rather than legislated. Thus, for instance, the input/output modules that appear in his book are described as <!--"-->&quot;typical.<!--"-->&quot;  Wirth says:</P>
+<BLOCKQUOTE><!--"-->&quot;We postulate some operations that are to be available in every implementation of Modula, although we wish to specify rigidly neither the names of the modules containing them nor the set of remaining operations included in these modules.<!--"-->&quot; <I>Programming in Modula-2, third edition p.105</I></BLOCKQUOTE>
+<P>He went on to describe the module <I>InOut</I> as one of these typical modules, and to make suggestions for several others as well. Because these were only suggestions, they were not always followed by implementors. For instance, although the <I>functionality</I> of a <I>WriteInt</I> was always needed, it was not always supplied by vendors in the same way. Likewise, there is always a <I>ReadString</I>, but the name of the module from which it was imported may vary. In the case of <I>WriteReal</I>, even the syntax often varies, as has been seen already in this text. In the absence of any other guidance, however, and because the first compilers were produced by Wirth himself and then licensed to commercial vendors, most early implementations of Modula-2 had a very similar core library. </P>
+<BLOCKQUOTE><I>The (classical standard) Modula-2 library is a collection of previously defined modules whose entities form a part of the operating environment of Modula-2. These are not a part of the language proper (i.e. neither reserved words nor standard identifiers), but are available for import by other modules. </I></BLOCKQUOTE>
+<P>The many variations in interpretation even of details of the language, and the limitations and inconsistencies in the various implementations of these suggested I/O libraries were part of the motivation that led to the formation of the ISO standards committee in 1987. It was charged with the production of an international standard for the language, and also with the definition of a standard set of library modules. The latter had reached what appeared to be a final form by 1992, and most implementations provided the new libraries by 1996 when the standard became official. </P>
+<BLOCKQUOTE><I>The (ISO standard) Modula-2 library is a collection of previously defined modules whose entities form a part of the operating environment of Modula-2. These are not a part of the language proper (i.e. neither reserved words nor standard identifiers), but are available for import by other modules.  All versions of Modula-2 claiming compliance with the ISO standard and requiring the functionality of one of these libraries (input and output, for instance) must provide that library exactly as specified in the standard, with no additions, deletions, or changes in meaning.</I></BLOCKQUOTE>
+<P>Even though the ISO library has been widely adopted, the older classical core library is still supplied by some vendors, for compatibility with older code.</P>
+<P>The case of input and output is a particularly difficult one to deal with, because every computer system in which a programmer works may handle these things differently. That is the reason why standard input and output are not handled as built-ins, but are found in the library. This is done in order to keep the language itself both small and more portable across many systems.</P>
+<P><I>STextIO</I>, <I>SRealIO</I>, and <I>SWholeIO</I> (or <I>InOut</I> and <I>RealInOut</I>) form a suite of high level modules, in the sense that their facilities can be used by a program without regard to very many system details. At some point, however, they must in turn call on lower level code (to access data streams, for instance) in order to translate standard procedure invocations into something the particular system can use. That is, there is a hierarchical ordering of the modules involved in I/O, with the higher ones the most general and furthest abstracted from the actual system, and the lowest ones the most detailed and system specific. Naturally, a programmer who desires to do the extra work required can tap into this hierarchy at a lower level lower to define different styles of or destinations for input and output than those used by the highest level modules.</P>
+<P>The lower one goes in this hierarchy, the more power that is gained, but the modules also become progressively harder to use. Again, here is a flexibility not available in other languages; one could implement entirely different <I>WriteCard</I> or <I>WriteString</I> procedures than the ones provided if this were thought desirable. The details of this organization are not essential to a beginning programmer and a good Modula-2 implementation will hide most of this detail away from beginning programmers so only those who have become more skilled can take advantage of some of the lower-level library modules. More detail will be provided on these lower level modules in later chapters; in section three of this one high level I/O will be more fully described.</P>
+<P>Besides those for I/O, there are a number of other modules available in the standard library. All one has to know in order to use any of them is:</P>
+<P>1. the name of the module containing the entity<BR>
+2. the name of the entity<BR>
+3. the correct syntax for using the entity, that is<BR>
+      - if a procedure, what are the types of the parameters?<BR>
+      - if a data type, what is its structure?<BR>
+      - if a variable, what are its allowed values?</P>
+<P>In other words, one can treat standard library entities almost as if they were extensions of the language. Any library entities known to be available can be treated as extensions of a program. Once one knows they are there, one may just write:</P>
+<PRE>
+  <B>FROM</B> FantasticModule <B>IMPORT</B>
+    GreatRoutine, SuperVariable, MagicType;</PRE>
+
+<P>  or,</P>
+<PRE>
+  <B>IMPORT</B> FantasticModule</PRE>
+
+<P>and then use them in ones own program module. In the latter case, the entity names must be <I>qualified</I> by the module name whenever they are referred to, and this may be necessary to avoid name conflicts, or to conform to local style rules. These methods apply both to existing library modules supplied by the vendor of the Modula-2 implementation, and to any that the programmer might write for private use.</P>
+<P>User-designed modules are covered in section five of this chapter. The next two sections contain an examination of most of the higher level modules in the standard library, first considering I/O routines, and then some of the others.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,325 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li {
+  margin-top: 2em;
+}
+.subparts li {
+  margin-top: 0.2em;
+} 
+ol.subparts {
+  list-style-type: lower-alpha;
+}
+.break {
+  page-break-before: always;
+}
+.knight td {
+width: 3em;
+height: 2em; 
+       text-align: center;
+}
+i, .knight td {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+--></style>
+<title>CMPT145 Fall2005 Final Exam KEY, Trinity Western.
+</title>
+</head><body>
+
+<center><b>
+Total of 110 points; maximum is 100 points.
+</b></center>
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+<br>problem solving as described in the text.<u>[5]</u><br>
+
+<center><i>Write, Apprehend, Design, Execute, Scrutinize</i></center>
+
+<li>
+Describe the five <b>program structure/flow</b> 
+abstractions mentioned in the text. <u>[5]</u><br><br>
+
+<center>
+<i>Sequence, Selection, Repetition, Composition, Parallelism</i>
+</center>
+
+<li> Fill in the blank: <ol class="subparts">
+  <li> "Computers are <i>tools</i>, and computing scientists are <i>toolsmiths</i>."
+  <u>[2]</u>
+  <li> The <i>SIZE</i> function is used to determine 
+    how many LOCs are used to store an item in memory. <u>[1]</u>
+  <li> A procedure that returns a value is called a <i>recursive</i> procedure.
+  <u>[1]</u>
+  <li> Express 4AH in decimal: <i>74</i>, octal: <i>112B</i>, and 
+  binary: <i>1001010</i> <u>[3]</u>
+  <li> Before using the value of a variable for the first time in a program,
+  we need to <i>declare</i> and   <i>initialize</i> it. <u>[2]</u>
+  <li> The four loop structures in Modula-2 are 
+  <i>WHILE, REPEAT/UNTIL, FOR, LOOP</i> <u>[4]</u>
+  <li> A new type made from a sequence of consecutive values of an 
+  existing type is called a <i>subrange</i> of the host type. <u>[1]</u>
+  <li> A procedure that invokes itself is called a <i>recursive</i> procedure.
+  <u>[1]</u>
+  <li> The function that evaluates natural logarithms on real numbers is found
+  in the <i>RealMath</i> standard library. <u>[1]</u>
+  <li> <i>True</i>: The word FUNCTION is a legal identifier. <u>[1]</u>
+  <li> 4GB = <i> 2^25</i> kilobit. (You may express it as a power of 2.)
+  <u>[3]</u>
+</ol>
+
+<li>
+In the space provided, <b>evaluate</b> each of the following four Boolean
+expressions, or if they give an error, indicate <b>why</b>.
+  <ol class="subparts">
+  <li> 'X' &gt;= 'A' AND 'X' &lt;= 'Z' <i>expr incompat: 'A' AND 'X'</i>
+  <u>[2]</u>
+  <li> (5 / 12 = 2) OR NOT FALSE AND FALSE <i>FALSE</i>
+  <u>[2]</u>
+  <li> (1#1)&amp;~(1/1&lt;1) <i>FALSE</i>
+  <u>[2]</u>
+  <li> (6 REM 4 &gt; 2) AND (2 REM 0 = 2) <i>FALSE</i>
+  <u>[2]</u>
+  </ol>
+
+<li class="break">
+<li>
+<b>Name</b> <u>[3]</u> the 3 standard I/O libraries used to 
+open/close files, and the <b>differences</b><u>[3]</u>  among them.  
+Name at least <b>two</b> procedures <u>[3]</u> from each library.
+
+<p>
+<center><i>
+<ul>
+<li>StreamFile (Open, Close): normal restricted sequential stream
+<li>SeqFile (OpenRead, OpenWrite, OpenAppend, Close, Reread, Rewrite):
+rewindable sequential stream
+<li>RndFile (OpenOld, OpenClean, SetPos, NewPos, CurrentPos, StartPos, EndPos):
+random-access file
+</ul>
+</i></center>
+
+<li>
+What is <b>wrong</b> with this loop, intended to count down from 100 by threes?
+<u>[4]</u>
+
+<br>
+<center><i>
+The loop will skip past the termination condition, resulting in an
+error when the CARDINAL counter tries to go below zero.  
+Change the termination condition to check for something like
+<tt> counter &lt; 3</tt>.
+</i></center>
+
+<pre>
+MODULE CountDown;
+VAR
+	counter : CARDINAL;
+BEGIN
+	counter := 100;
+	REPEAT
+		<em>statement sequence;</em>
+		DEC (counter, 3);
+	UNTIL counter <i>&lt;</i> 3;
+END CountDown.
+</pre>
+<br>
+
+<br>
+<center><i>
+(I really meant to have counter be an INTEGER; but oh well.)
+</i></center>
+
+<li>
+Rewrite the following FOR loop code snippet as a general <b>LOOP</b>.
+Don't worry about the rest of the module (IMPORT, VAR, etc.).
+<u>[5]</u>
+<pre>
+FOR idx := 0 TO LENGTH (name) DO
+	WriteCard (ORD (name [idx]));
+END;
+</pre>
+
+<i><pre>
+idx := 0
+LOOP
+        IF idx &gt;= LENGTH (name) THEN
+                EXIT
+        END;
+        WriteCard (ORD (name [idx]));
+        INC (idx);
+END;
+</pre></i>
+
+<li>
+Tell me everything you know about Modula-2 <b>records</b>.
+<u>[5]</u>
+
+<center><i>
+Records are aggregate data types that can store multiple fields of different
+type.  For example, a record declaration might look like this:
+</center>
+<pre>
+TYPE
+	Student = RECORD
+		name : ARRAY [0..20] OF CHAR;
+		ID : CARDINAL;
+	END;
+VAR
+	myStudent : Student;
+</pre>
+<center>
+To access fields within a record, the dot (.) operator is used: e.g.,
+<tt>myStudent.name = "Jane Doe";</tt>.  A WITH block can be used as a 
+shorthand for accessing multiple fields from the same record.
+(You can optionally also go into variant records.)
+</i>
+</center>
+
+<li class="break">
+In your own words, describe what <b>inheritance</b> means in object-oriented
+programming. <u>[5]</u>
+
+<p>
+<center><i>
+Inheritance is a means of constructing new classes from old classes.
+The new child class inherits, or derives, properties (e.g. methods, 
+attributes) from the parent, or super-class.  The child class may also
+add properties of its own, or (in some cases) override properties 
+inherited from the parent class.
+</i></center>
+
+<li>
+Write a complete <b>declaration</b> for each of the following data types:
+  <ol class="subparts">
+  <li> A string type: <u>[2]</u> <br>
+    <i> <tt> TYPE String = ARRAY [0..10] OF CHAR; </tt> </i>
+  <li> A type defining three exceptions, 
+    <tt>goodEx</tt>, <tt>badEx</tt>, and <tt>uglyEx</tt> <u>[2]</u>: <br>
+    <i> <tt> TYPE ClintEx = (goodEx, badEx, uglyEx);</tt> </i>
+  <li> A type for only the lowercase letters <u>[2]</u>:  <br>
+    <i> <tt> TYPE LowerCase = ['a' .. 'z']; </tt></i>
+  <li> A type for an <i>m</i> by <i>n</i> matrix of booleans <u>[2]</u>: <br>
+    <i><tt>TYPE BoolMatrix = ARRAY [1..m] OF ARRAY [1..n] OF BOOLEAN; </tt></i>
+  <li> A doubly-linked (bidirectional) list of reals <u>[3]</u>:<br>
+    <i><pre>
+TYPE
+	DoubList = POINTER TO DoubListNode;
+	DoubListNode = RECORD
+		data : REAL;
+		prev, next : DoubList;
+	END;
+</pre></i>
+
+</ol>
+
+<li>
+Draw a diagram illustrating a <b>doubly-linked</b> (bidirectional) list 
+with three nodes.  Include <b>all</b> relevant pointers and indicate
+if any are NIL. <u>[4]</u>
+
+<br><center><img src="exam4-dblist.gif" height=300></center>
+
+<li>
+On a separate paper,
+write a Modula-2 procedure to <b>delete</b> a node from a doubly-linked
+list.  A complete module is not necessary.  You may assume any necessary
+IMPORTs have been done.  You may assume type declarations given above.
+Pseudocode/design is not necessary to show, but is good for partial credit.
+<u>[10]</u>
+
+<b>You may assume the user won't ask to delete the first or last node
+	(you can ignore the tricky special cases at the end-conditions)</b>
+<i>The following code handles those cases anyway.</i>
+
+<pre><i>
+(* Delete the (delidx)-th node from a doubly-linked list.
+ * The list starts from the 0-th node.
+ * The ends of the list should be NIL-terminated. *)
+PROCEDURE Delete (VAR head : DoubList; delidx : CARDINAL);
+VAR
+	cur : DoubList;
+	idx : CARDINAL;
+BEGIN
+	cur := head;
+	idx := 0;
+	WHILE (idx &lt; delidx) AND (cur # NIL) DO
+		cur := cur^.next;
+		INC (idx);
+	END;
+
+	IF cur = NIL THEN
+		WriteString ("node doesn't exist!");
+		RETURN;
+	END;
+
+	IF delidx = 0 THEN	(* special case: delete head *)
+		head := head^.next;
+	END;
+
+	IF cur^.prev # NIL THEN
+		cur^.prev^.next := cur^.next;
+	END;
+	IF cur^.next # NIL THEN
+		cur^.next^.prev := cur^.prev;
+	END;
+	DISPOSE (cur);
+END Delete;
+</i></pre>
+
+<li class="break">
+Fill in the following grid with moves for a <b>knight's tour</b>.
+The first two positions are filled in for you.
+You may want to do your scratch work separately
+and copy just your final solution here.
+Partial credit for showing backtracking work.
+<u>[6]</u>
+<br><br>
+<center><table border=1 class="knight">
+<tr><td> 1</td><td> 4</td><td> 7</td><td>10</td></tr>
+<tr><td>12</td><td> 9</td><td> 2</td><td> 5</td></tr>
+<tr><td> 3</td><td> 6</td><td>11</td><td> 8</td></tr>
+</table></center>
+
+<li>
+<img src="exam4-bst.gif" height=250 align=right>
+Consider the following <b>binary search tree</b>:
+  <ol class="subparts">
+  <li> Which node is the <b>root</b>? <u>[1]</u>  <br><i>Cameo</i>
+  <li> What is the <b>depth</b> of the tree? <u>[1]</u>  <br> <i>3</i>
+  <li> Name all the <b>leaves</b> in this tree <u>[2]</u>:<br>
+  <i>Braeburn, Fuji, McIntosh</i>
+  <li> Do a <b>post-order</b> traversal of this binary tree <u>[3]</u>.<br>
+  <i>Braeburn, Ambrosia, Fuji, McIntosh, Red Del, Gala, Cameo</i>
+  <li> Using the algorithm discussed in class, insert a node, 
+  "Cortland", into this BST and <b>diagram</b> the result.
+    <u>[3]</u>
+  <br><img src="exam4-bst-ins.gif" height=250>
+  <li> From the original BST, delete the node, "Gala", using the
+  algorithm discussed in class, and <b>diagram</b> the result.
+  <u>[3]</u>
+  <br><img src="exam4-bst-del.gif" height=250>
+  </ol>
+
+</ol>
+
+</body></html>
+

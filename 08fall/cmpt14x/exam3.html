@@ -1,0 +1,267 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT145 Fall 2008 Midterm, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 62 (revised)
+
+<ol class="main">
+
+<li> Define: <u>[3]</u>
+  <ol class="subparts">
+  <li> Bit: <i>smallest unit of information, either a 1 or a 0, true/false, high/low, etc.</i>
+  <li> Nibble: <i>4 bits, one hexadecimal digit</i>
+  <li> Byte: <i>8 bits, can represent an ASCII character</i>
+  <li> Word: <i>unit of data the CPU works on, often 32bits or 64bits</i>
+  <li> Kilobit: <i>either 2<sup>10</sup> bits (binary units) 
+    or 10<sup>3</sup> bits (SI units)</i>
+  </ol>
+
+<li> Convert 473 (decimal) to binary, octal, and hexadecimal. <u>[4]</u>
+<br><br><i>
+111011001, 0731, 0x1d9
+</i><br><br><br><br><br>
+
+<li><ol class="subparts">
+  <li> Come up with a creative application for Python <b>dictionaries</b>.
+What would the keys represent?  What would the values represent? <u>[2]</u>
+<br><br><br>
+
+  <li> Create a sample dictionary to illustrate your application. <u>[1]</u>
+  <br>
+  <i><pre>
+	appleInv = { 'Fuji':3, 'Gala':5, 'Pacific Rose':12 }
+  </pre></i><br><br><br>
+
+<li> Write a Python code snippet to print the contents (keys and values) of your 
+dictionary in a nicely formatted way. <u>[3]</u>
+  <br>
+  <i><pre>
+	foreach key in appleInv.keys():
+		print "You have", appleInv[key], key, "apples!"
+  </pre></i><br><br><br><br><br><br><br>
+</ol>
+
+<li>
+In your own words, contrast the <b>procedural</b> vs.
+<b>object-oriented</b> programming paradigms.  <u>[4]</u>
+<br><i>Procedural programming is action-oriented: the code is a sequence of
+procedures, and the data structures are passed as parameters to the procedures.
+The focus is on the 'verbs'.  In contrast, object-oriented programming is
+data-oriented: code is organized into classes, centred around objects, and the
+procedures are treated as methods within each class.  The focus is on the
+'nouns'.
+</i><br><br><br><br><br><br><br>
+
+<li class="break">
+Describe the cylinder/head/sector geometry of hard drives. <u>[3]</u>
+<br><br><i>
+Hard drives have one or more flat annular platters.
+The cylinder number refers to radius away from the centre of the platter.
+The position of the arm on which the read/write head is mounted determines
+the cylinder.
+The head number refers to which platter and which side of the platter (each
+    platter has two heads, one for each side).
+The sector number refers to an angular rotation of the platters.  As the platters
+spin, different sectors pass under the heads.
+</i><br><br><br><br><br><br><br><br>
+
+<li>
+An orchard grows five apple varieties:
+<br>Fuji, Gala, Spartan, Rome, and Melba.<br>
+The apples I like are Fuji, Gala, and Rome; let this <b>set</b> be denoted by
+<tt>myFav</tt>.  <br>Let <tt>yrFav</tt> be the set containing Fuji and Melba.
+
+<ol class="subparts">
+
+  <li> Find the set <b>union</b> of <tt>myFav</tt> and <tt>yrFav</tt>.
+  Express in words the <b>interpretation</b> of this 
+  in the context of apple preferences. <u>[2]</u>
+  <br><i>{ Fuji, Gala, Rome, Melba }.
+  These are the varieties that <b>either</b> you <b>or</b> I like.</i><br><br><br>
+
+  <li> Find the <b>symmetric set difference</b> <tt>yrFav ^ myFav</tt>.
+  Express in words the <b>interpretation</b> of this 
+  in the context of apple preferences. <u>[2]</u>
+  <br><i>{ Gala, Rome, Melba }.
+  Those varieties that exactly one of us (but not both) likes</i><br><br><br>
+
+  <li> We wish to implement some set operations using <b>bitsets</b> in Python.
+  Initialize five Python <b>variables</b> <tt>Fuji, Gala, Spartan, Rome, Melba</tt>
+  with appropriate integer values for use in a bitset.
+  <u>[2]</u> <br>
+  <i><pre>
+fuji = 1 &lt;&lt; 0	# or fuji = 1
+gala = 1 &lt;&lt; 1	# or gala = 2
+spartan = 1 &lt;&lt; 2	# or spartan = 4
+rome = 1 &lt;&lt; 3	# etc.... you could also use a different ordering
+melba = 1 &lt;&lt; 4
+</pre></i>
+  <br><br><br><br><br>
+
+  <li> Using the variables you just defined, define a Python <b>bitset</b>
+  for <tt>myFav</tt>. <u>[1]</u> <br>
+  <i><pre>
+  myFav = fuji | Gala | Rome
+  </pre></i>
+  <br><br>
+
+  <li> Using the values you assigned for each entry in the bitset, evaluate
+  your preceding expression to get a <b>number</b> for <tt>myFav</tt>. <u>[1]</u> <br>
+  <i><pre>
+  myFav = 11	# using the values given above
+  </pre></i>
+  <br><br>
+
+  <li> Write a Python expression for the <b>intersection</b> of
+  <tt>myFav</tt> and <tt>yrFav</tt>. <u>[1]</u> <br>
+  <i><tt>myFav &amp; yrFav</tt></i><br><br>
+
+</ol>
+
+<li class="break">
+In the following block of Python code, list all the <b>namespaces</b>
+present anywhere in the code.  Draw boxes (where applicable) to indicate
+the <b>scope</b> of each namespace.  In each box, list all the non-builtin
+<b>names</b> that are visible in that scope.  <em>(Hint: variables aren't
+	the only entities that have names!)</em> <u>[6]</u>
+<pre>
+a = 1
+
+def fun(b):
+	from math import sqrt
+	c = sqrt(b)
+
+class Glass:
+	d = 2
+
+	def __init__(self, e=3):
+		f = 4
+		self.g = 5
+</pre>
+<i>
+	Namespaces: <br>
+	(1) Default (everywhere): <tt>a, fun, Glass</tt><br>
+	(2) Global (everywhere in this file): <tt>a, fun, Glass</tt><br>
+	(3) Local to fun(): <tt>a, fun, Glass, b, sqrt, c</tt><br>
+	(4) Local to Glass: <tt>a, fun, Glass, d, __init__</tt><br>
+	(5) Local to __init__(): <tt>a, fun, Glass, d, self, e, f, self.g</tt>
+</i>
+<br><br><br>
+
+<li>
+Tell me everything you know about the <tt>global</tt> keyword in Python.
+What is it used for?  What will happen if we don't use it when we ought to?
+<u>[3]</u>
+<br><i>
+	<tt>global</tt> indicates which variables from an enclosing scope we'd
+	like <b>write</b> access to in this scope.  If we don't use it, by
+	by default Python protects us from modifying global variables
+	(unintended side-effects).  Without <tt>global</tt>, any assignment to
+	an identifier not in the local scope results in modifying a copy that
+	"masks" the original.  The variable in the enclosing scope is not modified.
+	Using a <tt>global</tt> declaration tells Python that we do want to modify
+	the variable in the enclosing scope.
+</i><br><br><br><br><br><br>
+
+<li>
+Define or describe each of the following <b>object-oriented</b> terms:
+<u>[8]</u>
+<ol class="subparts">
+  <li> Class: <i>a user-defined container type</i><br><br>
+  <li> Instance: <i>an object; instances are to classes as variables are to
+	  types</i><br><br>
+  <li> Attribute: <i>a variable or method belonging to an object</i><br><br>
+  <li> Method: <i>a function/procedure belonging to an object</i><br><br>
+  <li> Constructor/Initializer: <i>the special method which is called when an object is
+	  instantiated</i><br><br>
+  <li> Message: <i>communication between objects; how methods are called</i><br><br>
+  <li> Interface: <i>a set of messages that an object can receive</i><br><br>
+  <li> Overloading: <i>giving multiple definitions to a
+	  function/method/operator depending on the type of its parameters/operands</i><br><br>
+</ol>
+
+<li class="break">
+Assume the file <tt>input.txt</tt> contains a list of integers, one per line.
+Write a Python program to read in the integers, and write their average at the 
+end of the file.  Docstring and comments are not required.  Use a separate sheet
+of paper if necessary.
+<u>[6]</u>
+<i><pre>
+	sum = 0
+	numEntries = 0
+	myFile = open('input.txt')
+	while (line = myFile.readline()):
+		sum += int(line)
+		numEntries += 1
+	myFile.close()
+	myFile = open('input.txt', 'a')
+	myFile.write("" + 1.0 * sum / numEntries)
+	myFile.close()
+</pre></i>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Recall that <tt>input()</tt> evaluates what the user types as a Python
+expression and returns the result.  Hence, if a user doesn't type anything
+and simply presses "Enter", <tt>input()</tt> fails to evaluate the expression
+and throws a <tt>SyntaxError</tt>: "unexpected EOF while parsing".
+<br> <br>
+
+Write a block of Python code that uses 
+<tt>input()</tt> to get input from the
+user, but doesn't crash if the user only presses "Enter".  <u>[3]</u>
+<br> <br>
+
+Additionally, print a thank-you message to the user afterward, 
+but <em>only</em> if no error was raised, and only if the user didn't only
+press "Enter". <u>[2]</u>
+<br> <br>
+
+<tt>input()</tt> may still raise other errors.  Ensure that a graceful
+farewell is always printed no matter what happens. <u>[2]</u>
+<br><i><pre>
+try:
+    x = input("Please type a message: ")
+except SyntaxError:
+    print "Please make sure you type something."
+else:
+    print "Thank you!"
+finally:
+    print "OK, we're done; thanks for coming!"
+</pre></i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li> 
+<li> <b>(revised)</b> Explain the differences among <b>alias</b>,
+<b>shallow copy</b>, and <b>deep copy</b>; use diagrams as appropriate.
+<u>[3]</u>
+
+<!--
+Come up with your own situation using <b>records</b> that might illustrate
+this.  On a separate sheet of paper, write a complete Python program to define
+the record types, create a sample record, then create an alias, a shallow copy,
+and a deep copy, and demonstrate the differences.
+Remember that to define a record type in
+Python, you need to define a whole OO class!<u>[6]</u>
+<br><i><a href="exam3-alias.py">See separate file <tt>exam3-alias.py</tt></a></i>
+<br><br>
+-->
+
+</ol>
+
+</body></html>
+

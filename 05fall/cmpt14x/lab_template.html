@@ -1,0 +1,244 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT/ISYS 14x Fall2005 Homepage, Trinity Western University</title>
+</head><body>
+
+<h1>CMPT14x Lab 00: Template Lab Solution</h1>
+
+<h2>Problem:</h2>
+Compute the amount there will be in my bank account after one year if
+the interest is compounded quarterly and any withdrawals I make are entered
+immediately after the interest is paid.
+
+<h2>Problem Suitability:</h2>
+The bank account example given above is well within the reach of a simple
+calculator, and is therefore of somewhat marginal suitability for computer
+solution.  However, the solution does illustrate how a number of the
+programming ideas discussed in chapter one are actually implemented in Modula-2.
+
+<h2>Problem Restatement:</h2><ul>
+<li> <b>Given:</b> A bank account, possibly containing money.
+<li> <b>To Do:</b> Compute interest, make withdrawals every 3 months.
+<li> <b>Desired Result:</b> Final balance.
+<li> <b>Formula:</b> <tt>interest = principal * rate * time</tt>
+</ul>
+
+<h2>Libraries:</h2>
+This problem has both input and output requirements.  It will, therefore
+make use of the standard I/O Modula-2 libraries STextIO, SWholeIO, and
+SRealIO.  Because of the withdrawals, four separate simple interest
+calculations will be made, rather than one compound interest calculation.  No
+mathematical or financial libraries are required.
+
+<h2>Problem Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input Section:</b> <ul>
+  <li> obtain bank balance
+  <li> obtain interest rate
+  <li> obtain quarterly withdrawal amounts
+  </ul>
+<li> <b>Computation:</b> <ul>
+  <li> calculate interest each quarter
+  <li> subtract withdrawal each quarter
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> print out final balance
+  </ul>
+</ol>
+		
+<h2>Second Refinement (natural language pseudocode):</h2> <ol>
+<li> <b>Input Section:</b> <ul>
+  <li> Ask the user for the initial balance
+  <li> Read the balance and assign the value to a real variable
+  <li> Ask the user for the interest rate
+  <li> Read the rate and assign the value to another real variable
+  </ul>
+<li> <b>Computation:</b> <ul>
+  <li> Set quarter to one
+  <li> Repeat: For the current quarter: <ul>
+    <li> Compute the interest using <tt>interest = principal * rate * time</tt>
+    <li> Add this to the original balance: <tt>balance = balance + interest</tt>
+    <li> Ask user for widthdrawl amount
+    <li> Read the amount and assign the value to a real variable
+    <li> Subtract the withdrawal from last balance:
+         <tt>balance = balance - withdrawal</tt>
+    <li> add one to the quarter until quarter is greater than four
+    </ul>
+  </ul>
+<li> <b>Output:</b> <ul>
+  <li> Print out the final balance
+  </ul>
+</ol>
+
+<h2>Pseudocode (third refinement; a fourth may also be necessary):</h2>
+In this refinement, only portions of the code that involve several steps,
+formulas, or computations (i.e. an algorithm) are detailed.  In this example,
+the last natural language refinement is followed very closely, so this 
+section might have been left out in this case, but it is included to make the 
+model for students to follow as complete as possible.
+
+<ul>
+<li> quarter := 1
+<li> Repeat: <ul>
+  <li> interest := principal * rate * time
+  <li> balance := balance + interest
+  <li> write message "what is widthdrawl amount?"
+  <li> read amount
+  <li> balance := balance - widthdrawl
+  <li> quarter := quarter + 1
+  </ul>
+<li> Until quarter &gt; four
+</ul>
+
+<h2>Data Table:</h2>
+<h3>Variables:</h3> <ul>
+  <li> principal, rate, interest, withdrawal: all reals
+  <li> quarter: cardinal
+  </ul>
+<h3>Constants:</h3> <ul>
+  <li> time = 0.25
+  </ul>
+<h3>Imports:</h3> <ul>
+  <li> From STextIO: WriteString, WriteLn, SkipLine;
+  <li> From SWholeIO: WriteCard;
+  <li> From SRealIO: ReadReal, WriteFixed;
+  </ul>
+
+<h2>Sample I/O:</h2>
+<h3>Input:</h3> <ul>
+  <li> What is the opening balance? <b>1000.00</b>
+  <li> What is the annual interest rate?
+  Enter as a decimal; Example: 6.5% is 0.065.  <b>0.08</b>
+  <li> How much do you wish to withdraw in quarter number 1? <b>10.00</b>
+  <li> How much do you wish to withdraw in quarter number 2? <b>30.00</b>
+  <li> How much do you wish to withdraw in quarter number 3? <b>12.10</b>
+  <li> How much do you wish to withdraw in quarter number 4? <b>6.00</b>
+  </ul>
+<h3>Output:</h3> <ul>
+  <li> The final balance in your account is 1044.57
+</ul>
+
+<h2>User Manual:</h2>
+
+<h3>Description:</h3>
+Bank Interest is a small application designed to maintain a
+simple bank account record.  It allows the user to specify the opening balance,
+and annual interest rate at the beginning of the program, and then to make
+quarterly withdrawals.  Interest is calculated on the balance before the
+withdrawal.
+
+<h3>Operation:</h3>
+If in an MS-DOS or UNIX environment, type the name of the program from the 
+operating system prompt.  If in a Graphics User Interface (GUI) environment,
+click twice in close succession on the icon representing the program.
+A banner will appear giving the name of the program and some
+information about the author.  Following this the prompt
+  <pre>What is the opening balance?</pre>
+will appear on the screen.  Type in the amount that the bank account had at
+the start of the year.  Following this, the prompt
+  <pre>What is the annual interest rate?
+  Enter as a decimal; Example: 6.5% is 0.065.</pre>
+will appear on the screen.  Type in the interest rate in the form shown.
+Now, for each quarter, a message like
+  <pre>How much do you wish to withdraw in quarter number 1?</pre>
+will appear on the screen.  Respond with the amount being withdrawn for that
+quarter in the form 10.23.  That is, give the number in decimal form and
+without a dollar sign.  The program will finally respond with a message like:
+  <pre>The final balance in your account is 103.47</pre>
+
+<h2>Code:</h2>
+
+<pre>
+MODULE BankInterest;
+
+(* Name: Nellie Hacker
+ * Student Number: 922001
+ * CMPT 140 Fall 2005
+ * Lab 00
+ * Bank Interest Computation
+ *)
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, SkipLine;
+
+FROM SWholeIO IMPORT
+  WriteCard;
+
+FROM SRealIO IMPORT
+  ReadReal, WriteFixed;
+
+CONST
+  time = 0.25; (* i.e., one quarter *)
+
+VAR
+  principal, rate, interest, withdrawl: REAL;
+  quarter: CARDINAL;
+
+BEGIN
+  WriteString ("This program computes interest on an account");
+  WriteLn;
+  WriteString ("quarterly, and then allows for withdrawals.");
+  WriteLn;
+  WriteLn;
+  WriteString ("It was written by");
+  WriteLn;
+  WriteString ("Nellie Hacker");
+  WriteLn;
+  WriteString ("for CMPT 140");
+  WriteLn;
+  WriteString ("Lab 00 Due 14 Sep 2005");
+  WriteLn;
+  WriteLn;
+  WriteString ("What is the opening balance? ");
+  ReadReal (principal);
+  SkipLine;
+  WriteLn;
+  WriteString ("What is the annual interest rate? ");
+  WriteLn;
+  WriteString ("Enter as a decimal; E.g.: 6.5% is 0.065. == ");
+  ReadReal (rate);
+  SkipLine;
+  WriteLn;
+
+  quarter := 1;
+  WHILE quarter &lt;= 4
+    DO
+      interest := principal * rate * time;
+      principal := principal + interest;	(* compute new principal *)
+      WriteString ("What is the withdrawal in quarter number ");
+      WriteCard (quarter, 0);
+      WriteString ("? == ");			(* complete a readable prompt *)
+      ReadReal (withdrawal);
+      SkipLine;
+      WriteLn;
+      principal := principal - withdrawal;	(* recompute principal *)
+      quarter := quarter + 1;
+    END;
+
+  WriteString ("The final balance in your account is $ ");
+  WriteFixed (principal, 2, 0);
+  WriteLn;
+END BankInterest.
+</pre>
+
+<h2>Actual Output</h2> <pre>
+This program computes interest on an account
+quarterly, and then allows for withdrawals.
+
+It was written by
+Nellie Hacker
+for CMPT 140
+Lab 00 Due 14 Sep 2005
+
+What is the opening balance? 1000.00
+What is the annual interest rate?
+Enter as a decimal; E.g.: 6.5% is 0.065. == 0.08
+What is the withdrawal in quarter number 1? == 11.00
+What is the withdrawal in quarter number 2? == 9.00
+What is the withdrawal in quarter number 3? == 5.00
+What is the withdrawal in quarter number 4? == 6.00
+The final balance in your account is $1050.30
+</pre>
+<b>NOTE:</b> An actual lab assignment submission should include several
+sample runs with different input.
+
+</body></html>

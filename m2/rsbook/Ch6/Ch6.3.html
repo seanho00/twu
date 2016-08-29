@@ -1,0 +1,625 @@
+<HTML>
+<HEAD>
+<TITLE>6.3 The Standard Library (1)</TITLE>
+<meta NAME="keywords" CONTENT="standard, library, i/o, modules, stextio, srealio, swholeio, readchar, readrestline, readstring, readtoken, skipline, writechar, writeln, writestring, read, write, allright, all, right, endofline, endofinput, end, of, line, input, outofrange, out, range, readint, writeint, readcard, writecard, readreal, writereal, writefloat, writeeng, writefixed, slongio, wrongformat, wrong, format, terminal, screen, inout, openinput, openoutput, closeinput, closeoutput, read, readstring, readint, readcard, write, writeln, writestring, writeint, writecard, writeoct, writehex, defext, realinout, readreal, writereal, writerealoct, read, readln, busyread, readagain, write, writestring, writeln, null, standard, console, origin, input, output, source, destination, output, sink, stream, channel, channels, close, closed, open, opened, inuse, mode, modes, read, write, redirection, openoutput, closeoutput, openinput, closeinput, control, character, characters">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Modules">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>6.3 The Standard Library (1)<!--</B>‹<B>-->--I/O</B></H2>
+<H3><B><A NAME="6.3.1">6.3.1</A> ISO Standard I/O Modules</B></H3>
+<P>The prefix <I>S</I> in the module names <I>STextIO</I>, <I>SRealIO</I>, and <I>SWholeIO</I> stands for <I>simple</I>. All I/O controlled by these modules is directed to/from a standard I/O channel (normally the keyboard/screen.)  A call to <I>SWholeIO.WriteCard</I> probably results in a call to <I>WholeStr.CardToStr</I> to convert the cardinal to a string, followed by a call to <I>STextIO.WriteString</I>. However, vendors are free to implement the ISO standard without this relationship among the various modules, as long as they provide the standard items themselves. The module <I>SIOResults</I>, for determining the outcome of a <I>Readxx</I> operation from one of these modules must also be present. Here are the full listings of some of these modules (see <A HREF="../Appendices/Ap5.html">Appendix 5</A> for syntax):</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> STextIO;
+ 
+<B>PROCEDURE</B> ReadChar (<B>VAR</B> ch: <B>CHAR</B>);
+<B>PROCEDURE</B> ReadRestLine (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> ReadString (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> ReadToken (<B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> SkipLine;
+<B>PROCEDURE</B> WriteChar (ch: <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn;
+<B>PROCEDURE</B> WriteString (s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+
+<B>END</B> STextIO.</PRE>
+
+<P><b>NOTE: </b>The exact meaning of the reserved word DEFINITION will be made clear later in the chapter. It is enough to know that these are just lists of the entities that are importable from these modules. </P>
+<P>The <I>Readxx</I> procedures produce the ReadResult <I>allRight</I> if everything goes well. Other possible results are <I>endOfLine</I> or <I>endOfInput</I>. In the case of those procedures taking an ARRAY OF CHAR parameter, another possible outcome is <I>outOfRange</I> if the supplied parameter is not big enough to hold the input.</P>
+<P><I>ReadRestLine</I> removes the characters from the input until the next <I>endOfLine</I> state is reached, copying as many as possible to the string parameter. <I>ReadString</I>, on the other hand, copies as many characters as possible to the string parameter until it either runs out of room or gets to the end of the line. Thus, it might return with the value <I>allRight</I>, but with some characters still remaining as available input before the next <I>endOfLine</I> state. <I>ReadToken</I> will skip spaces before reading other characters and then read as far as a space or an <I>endOfLine</I> state, whichever comes first.</P>
+<P><B>NOTE</B>:   What is here called <I>ReadToken</I> is in non-standard versions usually called <I>ReadString</I>, and the other two are not usually provided in such versions.</P>
+<P><I>SkipLine</I> removes characters from the input to the next endOfLine state and discards them. It also clears the end of line state.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SWholeIO;
+<B>PROCEDURE</B> ReadInt (<B>VAR</B> int: <B>INTEGER</B>);
+<B>PROCEDURE</B> WriteInt (int: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> ReadCard (<B>VAR</B> card: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteCard (card: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+
+<B>END</B> SWholeIO.
+
+<B>DEFINITION</B> <B>MODULE</B> SRealIO;
+
+<B>PROCEDURE</B> ReadReal (<B>VAR</B> real: <B>REAL</B>);
+<B>PROCEDURE</B> WriteFloat (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteEng (real: <B>REAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteFixed (real: <B>REAL</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteReal (real: <B>REAL</B>; width: <B>CARDINAL</B>);
+<B>END</B> SRealIO.
+
+<B>DEFINITION</B> <B>MODULE</B> SLongIO;
+
+<B>PROCEDURE</B> ReadReal (<B>VAR</B> real: <B>LONGREAL</B>);
+<B>PROCEDURE</B> WriteFloat (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteEng (real: <B>LONGREAL</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteFixed (real: <B>LONGREAL</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteReal (real: <B>LONGREAL</B>; width: <B>CARDINAL</B>);
+ 
+<B>END</B> SLongIO.</PRE>
+
+<P>If the procedures <I>ReadInt</I>, <I>ReadCard</I>, <I>SRealIO.ReadReal</I> or <I>SLongIO.ReadReal</I> are given input that cannot be integer, cardinal, real, or longreal  respectively, the <I>ReadResult</I> returned is <I>wrongFormat</I>. This might happen, for instance, if a ReadCard were executed and then a negative whole number or a real were found on the actual input.</P>
+<P>Except for the <I>SLongIO</I> procedures, (which all compare to those in <I>SRealIO</I>) all the rest have been well used thus far in the text. Notice that in the ISO standard, there is no lower level module called <I>Terminal</I> or <I>Screen</I>. Rather, it is assumed that the normal origin and destination of I/O from these <I>S</I>-modules is the standard terminal for the system.</P>
+<H3><B><A NAME="6.3.2">6.3.2</A> Classical I/O<!--</B>‹<B>-->--The InOut Family</B></H3>
+<P>The reader who has the ISO standard I/O modules only may skip most of this section unless interested in the historical development of Modula-2. The high level modules <I>InOut</I> and <I>RealInOut</I> (or <I>RealIO</I>) have been referred to a few times in this text, but without a complete list of all the things available for import from them. Here they are<!--‹-->--with parameters where applicable:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> InOut;
+<B>CONST</B>
+  <B>EOL</B> =  <B>CHR</B> (13) (* may be system dependent *)
+
+<B>VAR</B>
+  Done : <B>BOOLEAN</B>;
+  termCh : <B>CHAR</B>;
+
+<B>PROCEDURE</B> OpenInput (defext : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> OpenOutput (defext : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> CloseInput;
+<B>PROCEDURE</B> CloseOutput;
+<B>PROCEDURE</B> Read (<B>VAR</B> ch : <B>CHAR</B>);
+<B>PROCEDURE</B> ReadString (<B>VAR</B> s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> ReadInt (<B>VAR</B> x : <B>INTEGER</B>);
+<B>PROCEDURE</B> ReadCard (<B>VAR</B> x : <B>CARDINAL</B>);
+<B>PROCEDURE</B> Write (ch : <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn;
+<B>PROCEDURE</B> WriteString (s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> WriteInt (x : <B>INTEGER</B>; n : <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteCard (x, n : <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteOct (x, n : <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteHex (x, n : <B>CARDINAL</B>);
+
+<B>END</B> InOut.</PRE>
+
+<P><B>NOTE</B>:	1. These contents are only typical, and may vary considerably from vendor to vendor.</P>
+<P>	2. Some implementations also include the less typical procedure <I>ClearScreen</I> in this module. It may even be necessary to call this procedure before attempting any other screen output.</P>
+<P>	3. Others include  the procedure <I>HoldScreen</I> to pause and wait for a key  This avoids the necessity of writing two lines of code for this purpose.</P>
+<P>	4. <i>OpenOutput</i> and <i>OpenInput</i> are procedures designed to allow the output to go to other than the screen and the input to come from other than the keyboard. An example will be given in the next chapter.</P>
+<P>	5. <I>defext</I> is short for <!--"-->&quot;default extension<!--"-->&quot; and is usually <!--"-->&quot;TEXT,<!--"-->&quot; if it is anything at all. If the user of a program containing one of these redirecting procedures answers the prompt asking for a file name by typing, say, by <!--"-->&quot;Mydisk:Superfile.<!--"-->&quot; that is, ending the name with a period, then the default extension <!--"-->&quot;TEXT<!--"-->&quot; is added, and the file that is actually looked for will be <!--"-->&quot;Mydisk:Superfile.TEXT<!--"-->&quot;.</P>
+<P>	6. In (less typical) versions that take file names directly as parameters for <!--"-->&quot;OpenOutput<!--"-->&quot;, no prompts are given, but it is then the responsibility of the programmer to ensure the correct file name syntax. As this may differ from one system to another, such programs are probably not portable.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> RealInOut;
+
+<B>VAR</B>
+  Done : <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> ReadReal (<B>VAR</B> x : <B>REAL</B>);
+<B>PROCEDURE</B> WriteReal (x : <B>REAL</B>; n : <B>CARDINAL</B>);
+<B>PROCEDURE</B> WriteRealOct (x : <B>REAL</B>);
+<B>END</B> RealInOut.</PRE>
+
+<P><B>NOTES</B>:	1. In some implementations the contents of <I>RealInOut</I> are contained inside the module <I>InOut</I>. In such cases, there is only one variable <I>Done</I>.</P>
+<P>	2. As previously observed, the meaning of <I>WriteReal</I> varies widely.</P>
+<P>Which of these have not already been used in this text?  There are <I>WriteOct</I> and <I>WriteHex</I> that output the CARDINAL type in a different format than as conventional decimal numerals, and <I>WriteRealOct</I> that similarly outputs a REAL. These abbreviations refer to the octal and hexadecimal formats for numbers that many programmers find useful when working with the computer at a very low level. (That's base eight and base sixteen notation for those who have already taken the Mathematics.)  For now, experiment with these. They will be also discussed in a later Chapter.</P>
+<P><B>NOTE</B>:   Not all systems bother with octal notation, as it is seldom used. The relevant procedures might be omitted in some implementations.</P>
+<P><I>ReadString</I>  has not been seen before, though its purpose may seem obvious, especially given its parameter. It skips leading spaces and then reads characters from the input and constructs a string in the parameter, stopping when it comes to either a space or a line marker. The variable <I>termCH</I> is used to hold the character that caused <I>ReadString</I> to stop reading.</P>
+<P><B>NOTES</B>: 1. This behaviour is typical, but some versions supply a <I>ReadString</I> that does not stop until the string parameter is full or the end of line marker is reached, whatever comes first. Such versions (and this includes the ISO standard) supply a separate <I>ReadToken</I> with the meaning of the <I>ReadString</I> described here.</P>
+<P>	2. Different implementations vary as to whether a leading end of line marker is consumed by <I>ReadString</I>. Some do, and some do not. The latter require a specific <I>Read(cr)</I> or a call to a procedure <I>ReadLn</I> to consume the end of line marker before the next string can be read.</P>
+<P>As mentioned earlier, there is a hierarchy of modules involved in I/O. There may also be a hierarchy of the  procedures within a module. Thus it is typical, for example, for an invocation of ReadReal to involve several other procedures in the manner of the following pseudocode:</P>
+<PRE>
+ReadReal:
+  Perform an InOut.ReadString (ReadToken) to get the input
+    Use InOut.Read to obtain the first character and put it in the string
+    while character read is neither a space or end-of-line
+      read another character and put it in the string
+  invoke a conversion procedure to convert the characters to a real </PRE>
+
+<P>The conversion procedure employed to change the string representation of the real that was read into the appropriate internal representation for the system being used will normally be in yet another module. It is variously termed <I>Reals.Convert</I>, <I>Conversions.StringToReal</I>, or some similar name. The programmer must check the implementation in order to use these conversion routines directly; they are regarded as lower level, and vary considerably in non-standard implementations.</P>
+<P>Another aspect of this hierarchy is that input and output can either be connected to the terminal (screen and keyboard) or redirected somewhere else. When either is attached to the terminal, the procedures in <I>InOut</I> may act by calling those of a module by that name. Here is a typical definition:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Terminal;
+
+<B>PROCEDURE</B> Read (<B>VAR</B> ch : <B>CHAR</B>);
+<B>PROCEDURE</B> ReadLn (<B>VAR</B> s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> BusyRead (<B>VAR</B> ch : <B>CHAR</B>);
+<B>PROCEDURE</B> ReadAgain;
+<B>PROCEDURE</B> Write (ch : <B>CHAR</B>);
+<B>PROCEDURE</B> WriteString (s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn;
+
+<B>END</B> Terminal.</PRE>
+
+<P><B>NOTE</B>:	Some implementations also include the (even less standard) procedure <I>ClearScreen</I> in this module.</P>
+<P>When it is provided, the programmer can if desired use this module directly instead of <I>InOut</I> if that output is to go to the terminal and not elsewhere. Since some of these procedures have the same names as the ones in <I>InOut</I>, one must avoid importing any duplicates. As previously indicated, one imports either <I>Terminal</I> or <I>InOut</I> as a whole by using a statement like:</P>
+<PRE>
+  <B>IMPORT</B> Terminal;</PRE>
+
+<P>and then using qualified identifiers such as:</P>
+<PRE>
+  Terminal.Read (ch);
+  InOut.Write (ch);</PRE>
+
+<P>and so on. In this manner, one may redirect the output of <I>InOut</I> (and therefore of <I>RealInOut</I> which uses it) by employing <I>OpenOutput</I> and sending it to a file, while continuing to write prompts to the screen using <I>Terminal.WriteString</I>. See 6.3.4 for an example.</P>
+<P>There are a few new ones in this collection, though. <i>BusyRead</i> (where supplied) returns character zero (also called NULL) if something has not already been typed at the keyboard when it is invoked. If some character is waiting in the input from the keyboard, it returns that character.</P>
+<P><B>NOTE</B>:   In most implementations providing this module, <I>BusyRead</I> (and sometimes <I>Read</I> also) will not echo what they fetch to the screen as do the read procedures in <I>InOut</I>. This could be useful if one wanted a program to ask the user to type in a password before carrying on with business, and didn't want some one reading that secret access code from the screen as it was typed.</P>
+<P>An even simpler use for <I>BusyRead</I> is to check on whether <I>any</I> key has been pressed. In many programs, after writing out a message to the user, and just before filling the screen with new information, the programmer may wish to print the message <!--"-->&quot;Press any key to continue =<!-->&gt; <!--"-->&quot; and then wait for the user to read and digest the information on the screen before carrying on. Examples so far have used:</P>
+<PRE>
+  WriteString (<!--"-->&quot;Press any key to continue =<!-->-->&gt; <!--"-->&quot;);
+  Read (ch);
+  Read (cr);</PRE>
+
+<P>which has the advantage of simplicity, but the disadvantage that if the user presses the <!--<-->&lt;RETURN<!-->-->&gt; key, the program is thrown off by one character in its interpretation of the input stream. A better way is:</P>
+<PRE>
+  <B>PROCEDURE</B> HoldScreen ();
+
+  <B>VAR</B>
+    Ch : <B>CHAR</B>;
+
+  <B>BEGIN</B>
+    WriteString (<!--"-->&quot;Press any key to continue =<!-->&gt; <!--"-->&quot;);
+    <B>REPEAT</B>
+      BusyRead (Ch);
+    <B>UNTIL</B> (Ch # <B>CHR</B> (0));
+
+  <B>END</B> HoldScreen;</PRE>
+
+<P>where the character read will not be examined, and can be anything that can be typed.</P>
+<P>A few implementations have a procedure already present in <I>InOut</I> to achieve this same goal. It may be called <I>HoldScreen</I>, <I>WaitForKeypress</I>, or some similar name.</P>
+<P><I>ReadAgain</I> (where supplied) takes the last character read and places it back into the part of the computer's memory from which input characters are read (called a <I>buffer</I>). The next invocation of <I>Read</I> will obtain the same character that was read the last time. This may seem a little obscure, and simple programs would not use it, but one application for this could be if the item being read necessitated a transfer of control to another module that did not have access to the variable used for the read. It could find out what character was read by looking for itself.</P>
+<P><I>ReadLn</I> (often written <I>ReadLine</I> to distinguish it from a <I>ReadLn</I> discussed above) reads a line of characters into a string variable. It (usually) echoes characters to the screen as they are read, and stops when it gets to a carriage return<!--‹-->--which is not a part of the line read. In most cases, editing of the input is allowed before the <!--<-->&lt;RETURN<!-->&gt; key is pressed to end the line. Typically, a backspace typed by the user deletes the last character typed, a <!--<-->&lt;DEL<!-->&gt; may delete them all and <!--<-->&lt;ESC<!-->&gt; may be treated as <!--<-->&lt;ESC RET<!-->&gt; terminating the <I>ReadLn</I>, and leaving the variable holding the value of <!--<-->&lt;ESC<!-->&gt;.</P>
+<P><B>NOTE</B>:  These rules are typical, but may vary on some terminals.</P>
+<P>As a final note (for now) on I/O modules, some versions includes the module Screen whose definition is given below, and whose position in the hierarchy is below that of Terminal.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Screen;
+<B>PROCEDURE</B> HomeCursor;   (* move cursor to upper left *)
+<B>PROCEDURE</B> ClearScreen;  (* erase screen, home cursor *)
+<B>PROCEDURE</B> EraseLine;    (* erase from cursor to end of line *)
+<B>PROCEDURE</B> GotoXY (X, Y : <B>CARDINAL</B>);
+  (* move cursor to row X column Y on screen *)
+<B>END</B> Screen.</PRE>
+
+<P><B>NOTE</B>:   In certain implementations, some or all of these procedures may be located in the module <I>Terminal</I> or even in <I>InOut</I> rather than in a separate one as described here. When that is the case, if output is connected to a non-screen device such as a printer or a file, calls to these routines are simply ignored.</P>
+<P>These procedures can be very useful in producing nicely formatted output to the screen from program control and most implementations of Modula-2 should have something similar, though the names and syntax may vary.</P>
+<H3><B><A NAME="6.3.3">6.3.3</A> Alternate Origins and Destinations</B></H3>
+<P>Up to this point, all the library tools imported for the examples have been Read and Write statements from <I>STextIO</I>, <I>SWholeIO</I>, and <I>SRealIO</I>, or from <I>InOut</I> and <I>RealInOut</I>. Furthermore, these programs have all obtained their data input from the standard input device (usually a keyboard) and sent their output to the standard output device (usually a screen.)</P>
+<BLOCKQUOTE><I><A NAME="Console">The</A> combination of screen and keyboard are referred to together as the <U>standard console</U>.</I></BLOCKQUOTE>
+<P>The purpose of this section is to use some other library tools to obtain input from, and to send output to, other places than the console. This section can also serve as a preview of some concepts important to the development of chapter 7. Certain typical terminology is used:</P>
+<BLOCKQUOTE><I><A NAME="Channels">The</A> origin of input is called a <U>source</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>The destination of output is called a <U>sink</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>A data collection in transit from a source or to a sink is a <U>stream</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>The (physical or abstract)  means by which data gets from a source to the processor, or from the processor to the sink is called a <U>channel</U>.</I></BLOCKQUOTE>
+<P><CENTER><IMG SRC="Figure/Figure_6.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>In figure 6.1, the solid lines represent channels that are presently in use, and the dashed lines channels that are potentially available. There may be many of these channels. Each may represent access to a device, such as a printer, screen, keyboard, or mouse. Or, a channel may be an access to a file stored on a device such as a tape or disk drive.</P>
+<BLOCKQUOTE><I><A NAME="Conditions">A</A> channel has one of three conditions. It may be:<BR><U>closed</U>: only potentially available to a program,<BR><U>open</U>: attached to a program and immediately available for its use,<BR><U>in use</U>: open and with a data stream actually flowing in it.</I></BLOCKQUOTE>
+<BLOCKQUOTE><I><A NAME="Modes">A</A> channel has one of three <U>modes</U>. It may be:<BR><U>read</U>: a channel from a source,<BR><U>write</U>: a channel to a sink,<BR><U>read/write</U>: a channel connection with something that is both a source and a sink.</I></BLOCKQUOTE>
+<P>Thus, the connection between the program and the source or sink can be thought of as a <I>channel</I> in which runs a <I>stream</I> of characters. Individual characters are inserted into (output) or plucked from (input) these streams by the I/O procedures. Modules like <I>STextIO</I>, <I>SWholeIO</I>, and <I>SRealIO</I> employ <I>Writexx</I> procedures to send data streams to a sink, and <I>Readxx</I> procedures to obtain data from a source. Typically, a procedure like <I>WriteCard</I> calls on a conversions module to convert the Cardinal data to a string, and then employs <I>WriteString</I> to do the output. The input/output modules will always mark a single special input channel and a single special output channel as open. These are called the standard I/O channels.</P>
+<P>When these modules first start up, the default console channels are automatically opened for standard I/O. Data can be redirected elsewhere by attaching the open mode to some other channel(s), but these simple modules can only have one input and one output channel open at a time. More sophisticated modules that will be studied later can have several of each open simultaneously. Furthermore, since a single processor can only do one thing at a time, only one of the <I>open</I> channels can actually be <I>in use</I> at a time.</P>
+<P>Without going into further detail at this time, there are more modules that can also control the flow of such information at a lower level, adding the power to open, close, and manipulate such streams from a program in more detail than can the <I>S</I>-modules (or <I>InOut</I>). The typical module hierarchy these considerations produced may be represented in part as in figure 6.2. The module names are positioned beside the diagram in their approximate place in the hierarchy. Additional details, including how to use the middle and lower levels of these modules, will be discussed in Chapter 7.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.2.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B><A NAME="6.3.4">6.3.4</A> Redirection (optional)</B></H3>
+<P><B>WARNING</B>: All information in this section is non-standard implementation specific and may not be available in the form given on the reader's own system.</P>
+<P>In order to accomplish the re-direction of standard output to some other device (such as a printer or a file) one needs the following entities:</P>
+<P>OpenOutput	     redirects the output away from the screen.</P>
+<P>CloseOutput	     redirects output back to the console.</P>
+<P>Here is a brief sample to illustrate the use of these:</P>
+<PRE>
+  OpenOutput;   (* system will ask user where to send output *)
+  WriteString (<!--"-->&quot;The answer is <!--"-->&quot;);   (* output will go there *)
+  WriteReal (ans, 15);
+  WriteLn;
+  CloseOutput;   (* now output to console *)</PRE>
+
+<P>If using classical Modula-2, <I>OpenOutput</I> and <I>CloseOutput</I> are both imported from <I>InOut</I>. In this event, the syntax for <I>OpenOutput</I> is usually something like:</P>
+<PRE>
+  OpenOutput (<!--"-->&quot;TEXT<!--"-->&quot;)</PRE>
+
+<P>or, just</P>
+<PRE>
+  OpenOutput (<!--"-->&quot;<!--"-->&quot;)</PRE>
+
+<P>When a program containing an InOut.OpenOutput statement is executed, the system is supposed to place a message like</P>
+<PRE>
+	Output file?</PRE>
+
+<P>or, perhaps</P>
+<PRE>
+	out<!-->&gt;</PRE>
+
+<P>on the screen when this statement is encountered. At that point the user just types the name of the place where the output is to go in response.</P>
+<P><B>NOTES</B>: 1. Some systems may allow <I>InOut.OpenOutput</I> to take a device name as its program object. Here, to redirect to the printer, use OpenOutput (<!--"-->&quot;PRN:<!--"-->&quot;).</P>
+<P>	2. If the user response is <!--"-->&quot;ThisProg.<!--"-->&quot; (i.e. it ends with a period), the output will be sent to <!--"-->&quot;ThisProg.TEXT<!--"-->&quot; in the current disk directory (or folder.)  The suffix <!--"-->&quot;TEXT<!--"-->&quot; is called the default extension and is obtained from the <I>InOut.OpenOutput</I> statement as it was used in the program. This could as easily have been <!--"-->&quot;TXT<!--"-->&quot; or <!--"-->&quot;CODE,<!--"-->&quot; or whatever is appropriate. It is added only if the file name ends in a period.</P>
+<P>	3. Other systems will search for the given file name first, then append the default extension and try again.</P>
+<P>	4. A few versions of <I>InOut.OpenOutput</I> use a radically different approach. In these, OpenOutput(<!--"-->&quot;MyFile<!--"-->&quot;) is an instruction to find a particular file, and no prompts are given to the user at all.</P>
+<P>	5. Pressing just the <!--<-->&lt;ENTER<!-->&gt; or <!--<-->&lt;RETURN<!-->&gt; key (or, in some cases <!--<-->&lt;ESC<!-->&gt;<!--<-->&lt;RETURN<!-->&gt;) in response to such a prompt from OpenOutput may cause the program to carry on without redirecting the Output. If this is the case, InOut.Done is FALSE at this point, however, and this can be checked and appropriate action taken. On the other hand, such a response may simply not be allowed in some systems.</P>
+<P>	6. If the file named exists on the disk already, its contents are overwritten. <I>Some</I> versions of <I>OpenOutput</I> give a prompt to confirm that this is the intention of the user.</P>
+<P>	7. The use of <I>OpenOutput</I> in <I>InOut</I> also redirects the output from <I>RealInOut</I>, because the latter uses the former.</P>
+<P>If it is input that is to be redirected so as to come from a file, use:</P>
+<P>OpenInput	     redirects input to come from other than the keyboard</P>
+<P>CloseInput	     redirects input back from the console.</P>
+<P>There are complex and varying rules for redirection (The author has counted at least nine different models in various implementations.) providing yet another motivation for having a standard. In ISO standard Modula-2, there is also a means to redirect the standard I/O channels, but the actual procedures to do so are unfortunately <I>not</I> included among the standard library modules. They are easy to write, however and details will be given later in this book. Perhaps they are already available on the student's system.  Here, it will be assumed that the user of an otherwise ISO-standard system also has access to:</P>
+<PRE>
+<b>DEFINITION</b> <b>MODULE</b> RedirStdIO;
+
+(* =========================================
+  Definition and Implementation © 1993-1997
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1997 07 02
+=========================================== *)
+
+<b>IMPORT</b> ChanConsts;
+
+<b>TYPE</b>
+  OpenResults = ChanConsts.OpenResults;
+	
+<b>PROCEDURE</b> OpenResult () : OpenResults;
+(* returns the result of the last attempt to open a file for redirection *)
+
+<b>PROCEDURE</b> OpenOutput;
+(* engages the user in a dialog to obtain a file for redirection of standard Output and attempts to open the file so obtained *)
+
+<b>PROCEDURE</b> OpenOutputFile (<b>VAR</b> fileName: <b>ARRAY OF CHAR</b>);
+(* opens the file specified by FileName for redirection of output. If the name supplied is the empty string, control passes to OpenOutput and the filename eventually used is returned in the parameter. *)
+
+<b>PROCEDURE</b> CloseOutput;
+(* returns the standard output channel to the default value *)
+
+<b>PROCEDURE</b> OpenInput;
+(* engages the user in a dialog to obtain a file for redirection of standard Input and attempts to open the file so obtained *)
+
+<b>PROCEDURE</b> OpenInputFile (<b>VAR</b> fileName: <b>ARRAY OF CHAR</b>);
+(* opens the file specified by fileName for redirection of input. If the name supplied is the empty string or is not found, control passes to OpenInput and the filename eventually used is returned in the parameter. *)
+
+<b>PROCEDURE</b> CloseInput;
+(* returns the standard input channel to the default value *)
+
+<b>END</b> RedirStdIO.
+</PRE>
+
+<P>Whatever version of redirection is available (see the manuals for the individual system), the following apply:</P>
+<UL><!--€--><LI> Only one file can be opened by OpenOutput for output at a time.</LI>
+<!--€--><LI> Only one file can be opened by OpenInput for input at a time.</LI>
+<!--€--><LI> A program cannot close a file with <i>CloseOutput</i>, write to the screen, reopen it with <i>OpenOutput</i>, and continue writing where it left off. The insertion (writing) point is repositioned to the beginning upon opening, and the write operation following reopening would then erase and write over the top of what was there before. For a more sophisticated file handling technique that does allow this, see chapter 7.</LI>
+<!--€--><LI> Some systems allow the user to open up a special log file before running the program. When this is done, all the normal input and output at the console is copied to the log file, without the program having to do anything itself to achieve this. Depending on the system, use of this facility may prevent use of redirection.</LI></UL>
+<P><B>NOTE</B>:   Each system has its own rules in this regard, and all the possible details for correct syntax, device names, path names, and so on, cannot be covered here. System operating manuals must be consulted.</P>
+<P><B>WARNING</B>:  Failure to close a channel to a file using <I>CloseOutput</I> and/or <I>CloseInput</I>, as appropriate, before the program terminates could result in some of the data being lost or the file damaged. The operating system is not responsible for (and indeed may not even "know" about) files that are opened by a program.</P>
+<P>To illustrate some of the points made in this section, here is a program in classical-style Modula-2 that reads a sequence of real numbers from the keyboard and stores them into a data file on the disk for later use by another program. It determines that the sequence is finished when it fails to read a valid real or the number typed equals zero.</P>
+<PRE>
+<B>MODULE</B> NumsToDisk;
+
+(* Written by R.J. Sutcliffe *)
+(* in non-ISO classical Modula-2 *)
+(* to illustrate the use of redirection *)
+(* using Metropolis Modula-2 for the Macintosh computer *)
+(* last revision 1991 02 22 *)
+
+<B>FROM</B> InOut <B>IMPORT</B>
+  OpenOutput, CloseOutput, WriteLn, WriteString;
+<B>FROM</B> RealInOut <B>IMPORT</B>
+  ReadReal, WriteReal, Done;
+
+<B>VAR</B>
+  num : <B>REAL</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program creates a disk file and enters <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;the real numbers you type into the file. <!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;Type the numbers, separated by returns <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;When finished, type a letter, or the number 0<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  OpenOutput (<!--"-->&quot;TEXT<!--"-->&quot;);
+
+  <B>REPEAT</B>
+    ReadReal (num);
+    <B>IF</B> Done
+      <B>THEN</B>
+        WriteReal (num, 0);
+        WriteLn;
+      <B>END</B>;
+  <B>UNTIL</B> <B>NOT</B> Done <B>OR</B> (num = 0.0);
+
+  CloseOutput;
+
+<B>END</B> NumsToDisk.</PRE>
+
+<P>This program was run and some numbers entered. A picture of the screen is reproduced in figure 6.3 below:</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.3.GIF" BORDER="1"></CENTER><!----></P><P><!----></P>
+<P>Following this, the file test contained:</P>
+<PRE>
+12.20000
+15.67800
+11.90000
+0.3450000
+17.10000
+2.500000</PRE>
+
+<P>The use of <I>OpenInput</I> and <I>CloseInput</I> closely parallels that of <I>OpenOutput</I> and <I>CloseOutput</I>. The following module was used to open the file created above, examine the numbers in it, find the maximum, sum, and average and then display the results. It, however, is written in ISO Standard Modula-2, and employs the module <I>RedirStdIO</I> shown above.</P>
+<H3><B>Pseudocode:</B></H3>
+<PRE>Print an informative message
+Set the maximum, number read, and sum to zero
+Invoke OpenInput
+Repeat
+  read the next number
+  If read was successful then
+    add to the sum
+    increase the count of those read successfully
+    If the number is greater than the maximum then
+      set maximum to the number
+Until the read is unsuccessful
+Print the results</PRE>
+
+<PRE>
+<B>MODULE</B> StatsFromDisk;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of redirection on input *)
+(* using ISO Modula-2 for the Macintosh computer *)
+(* and RedirStdIO as implemented by R. Sutcliffe *)
+(* last revision 1993 03 02 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+   WriteLn, WriteString, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> RedirStdIO <B>IMPORT</B>
+  OpenInput, CloseInput;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>VAR</B>
+  numRead, max, sum, mean : <B>REAL</B>;
+  readOK : <B>BOOLEAN</B>;
+  howMany : <B>CARDINAL</B>;
+  key : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  howMany := 0; (* initialize variables *)
+  max := 0.0;
+  sum := 0.0;
+  WriteString (<!--"-->&quot;This program opens a disk file of real numbers<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;and computes their sum, average, and maximum. <!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  OpenInput; (* no default extension used in this version. *)
+
+  <B>REPEAT</B>
+    ReadReal (numRead); (* get a number from the file *)
+    readOK := (ReadResult () = allRight);
+    SkipLine;
+    <B>IF</B> readOK
+      <B>THEN</B>
+        sum := sum + numRead; (* if ok, add to sum *)
+        howMany := howMany + 1; (* and increment how many read *)
+        <B>IF</B> numRead <!-->-->&gt; max
+          <B>THEN</B>
+            max := numRead; (* reset maximum if needed *)
+          <B>END</B>;
+      <B>END</B>;
+  <B>UNTIL</B> <B>NOT</B> readOK;
+
+  CloseInput;
+  mean := sum / <B>FLOAT</B> (howMany);
+  
+  (* report results *)
+  WriteString (<!--"-->&quot;There were <!--"-->&quot;);
+  WriteCard (howMany, 0);
+  WriteString (<!--"-->&quot; numbers read, of which the largest was <!--"-->&quot;);
+  WriteFixed (max, 5, 0);
+  WriteLn;
+  WriteString (<!--"-->&quot;The sum of these numbers was <!--"-->&quot;);
+  WriteFixed (sum, 5, 0);
+  WriteString (<!--"-->&quot; and the mean was <!--"-->&quot;);
+  WriteFixed (mean, 5, 0);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->-->&gt; <!--"-->&quot;);
+  ReadChar (key);
+
+<B>END</B> StatsFromDisk.</PRE>
+
+<P>There follow two pictures of the screen taken when this program was run. In the first, the Macintosh operating system has brought up a standard dialog box used to find existing files. The user of the program has found the correct folder, has highlighted the correct file, and is about to press the return key to allow the file to be opened.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>The following is picture of the screen taken when this program was run.</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.5.GIF" BORDER="1"></CENTER><!----></P>
+<P>A common use of <I>OpenInput</I> and <I>OpenOutput</I> is to give the user the choice of where to obtain or send data. Subsequent program statements are then executed in the light of the user choice. The following module is a modification of the <I>DateCalc</I> example of chapter 3 so as to employ the last of the refinements discussed there and also to allow for a series of input data to come from a file. Notice that the flag <I>usingFile</I> is reset according to the results of the attempt to do the redirection.</P>
+<PRE>
+<b>MODULE</b> DateCalcB;
+
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<b>FROM</b> SWholeIO <b>IMPORT</b>
+  ReadCard, WriteCard;
+<b>FROM</b> RedirStdIO <b>IMPORT</b>
+  OpenInput, CloseInput, OpenResults, OpenResult;
+<b>FROM</b> SIOResult <b>IMPORT</b>
+  ReadResult, ReadResults;
+
+<b>VAR</b>
+  day, month, year, result, adjMonth, daysSinceMarch : <b>CARDINAL</b>;
+  usingFile, again, leap, readOK: <b>BOOLEAN</b>;
+  response : <b>CHAR</b>;
+
+<b>BEGIN</b>
+  (* header information left out*)
+
+  <b>REPEAT</b> (* main repeat loop *) 
+    (* check to see if user wants to use a file *)
+    WriteString ("Do you wish the information to come");
+    WriteString (" from a file? (Y/N) ====<!-->-->&gt; ");
+    ReadChar (response);
+    SkipLine;
+    WriteLn;
+    WriteLn;
+    usingFile := <b>CAP</b> (response) = "Y";
+    (* all other responses mean we are not using file input *)
+
+    <b>IF</b> usingFile
+      <b>THEN</b>
+        OpenInput;
+      <b>END</b>;
+    usingFile := usingFile <b>AND</b> (OpenResult () = opened);
+
+    (* now get the data, either from file or keyboard *)
+    <b>REPEAT</b> (* process until bad data *)
+      <b>IF</b> <b>NOT</b> usingFile  (* prompts printed only if no file used *)
+        <b>THEN</b>
+          WriteString ("Enter the year number here ====<!-->-->&gt;");
+        <b>END</b>;
+      ReadCard (year);
+      readOK := (ReadResult() = allRight);
+      SkipLine;
+      <b>IF</b> readOK
+        <b>THEN</b>
+          <b>IF</b> <b>NOT</b> usingFile
+            <b>THEN</b>
+              WriteLn;
+              WriteString ("Enter the month (1 - 12) here ====<!-->-->&gt;");
+            <b>END</b>;
+        <b>END</b>;
+      ReadCard (month);
+      readOK := (ReadResult() = allRight);
+      SkipLine;
+      <b>IF</b> readOK
+        <b>THEN</b>
+          <b>IF</b> <b>NOT</b> usingFile
+            <b>THEN</b>
+              WriteLn;
+              WriteString ("Enter the day number here ====<!-->-->&gt;");
+            <b>END</b>;
+          <b>END</b>;
+      ReadCard (day);
+      readOK := (ReadResult() = allRight);
+      SkipLine;
+      <b>IF</b> readOK
+        <b>THEN</b>
+            (* next section computes number of days *)
+          leap:= (year <b>MOD</b> 400 = 0)
+                  <b>OR</b> ((year <b>MOD</b> 4 = 0) <b>AND</b> (year <b>MOD</b> 100 # 0));
+          adjMonth := month + 12 * (( 12 - month) <b>DIV</b> 10);
+          daysSinceMarch := <b>TRUNC</b>(30.6 * <b>FLOAT</b> (adjMonth - 3) + 0.5);
+          result := (59 + daysSinceMarch + day);
+          <b>IF</b> result <!-->&gt; 365 
+            <b>THEN</b>
+              <b>DEC</b> (result, 365)
+            <b>END</b>;
+          <b>IF</b> leap <b>AND</b> (month <!-->-->&gt; 2)
+            <b>THEN</b>
+              <b>INC</b> (result);
+            <b>END</b>;
+          
+          (* Output the result in the required form *)
+          WriteCard (year, 4);
+          WriteCard (month, 3); (* ensure one space between *)
+          WriteCard (day, 3);
+          WriteString (" is day number ");
+          WriteCard (result, 4);
+          WriteString (" in that year.");
+          WriteLn;
+          WriteLn;
+        <b>END</b>;  (* if *)
+    <b>UNTIL</b> <b>NOT</b> (readOK);
+
+     (* close the file if it was open *)
+    <b>IF</b>  usingFile
+      <b>THEN</b>
+        CloseInput;
+      <b>ELSE</b>
+        WriteLn;
+      <b>END</b>;
+    WriteString ( "Do you wish to do another group? Y or N ==<!-->&gt; ");
+    ReadChar (response);
+    again := <b>CAP</b> (response) = "Y";
+    SkipLine;
+    WriteLn;
+  <b>UNTIL</b> <b>NOT</b> again;
+
+<b>END</b> DateCalcB.</PRE>
+
+<P>When this program was run, the data below was placed in a file that was chosen at the point when the user asked for file input:</P>
+<PRE>
+1992
+03
+01
+1992
+12
+31
+2000
+12
+31
+1500</PRE>
+
+<P>Observe that the fourth data group contains only a year and is therefore incomplete. Here is a picture of the screen taken during a run of this program:</P>
+<P><CENTER><IMG SRC="Figure/Figure_6.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>Notice the two places at which input errors are trapped and the series terminated.</P>
+<H3><B><A NAME="6.3.5">6.3.5</A> Writing Special Characters To a Terminal </B></H3>
+<P>It is sometimes important to be aware that certain <I>control characters</I> have rather standard actions when sent to a terminal device. These considerations apply regardless of whether the I/O library is of the classical style or is ISO standard, and regardless of whether Modula-2 is used, or some other programming notation. Rather, the actions of these characters when they arrive at an output device like a screen or other terminal, is <I>hard wired</I> into that device and not under the control of the program or the user. There may be others as well, but the following are <U>likely</U> (but not guaranteed) to have the effect indicated:</P>
+<P>1. CHR (30), also called EOL (End-Of-Line)<!--‹-->--Sets the writing position to the beginning of the next line. (Use <I>WriteLn</I> instead.)<BR>
+2. CHR (13), also called CR (Carriage Return)<!--‹-->--Sets the writing position to the beginning of the current line.<BR>
+3. CHR (10), also called LF (LineFeed)<!--‹-->--Moves the writing position down to the same position on the next line.<BR>
+4. CHR (8), also called BS (Backspace)<!--‹-->--Moves the writing position back by one position leaving the character backspaced over intact.<BR>
+5. CHR (127), also called DEL (Delete)<!--‹-->--Backspaces and deletes the character.<BR>
+6. CHR (12), also called FF (Form Feed)<!--‹-->--Clears the screen, setting the cursor in the top left corner.</P>
+<P><B>NOTE</B>:	On some terminals and on many printers an EOL, CR, CR/LF or LF/CR all do the same thing as a carriage return followed by a line feed. It is because of this variation from one system to another that the ISO standard regards the reaching of the end-of-line as a <I>state</I>  or condition rather than as the reading of a particular character. (It may be more than one character in character based systems.)</P>
+<P>Other control codes may be implemented on some terminals, but the above are the most common. All of these can be defined as constants, or if a module such as <I>ASCII</I> is provided (See <A HREF="../Appendices/Ap4.html#A4.7">Appendix 4.7</A>), the names (EOL, CR, etc.) may be imported instead. Some such modules may spell these with lower case letters.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

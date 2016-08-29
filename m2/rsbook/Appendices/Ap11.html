@@ -1,0 +1,159 @@
+<HTML><HEAD><TITLE>Appendix 11--Modula-2 and Pascal</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 11<!--</B>‹<B>-->--Modula-2 and Pascal</B></H2>
+
+<P><!--revised 1995 06 11--></P>
+<P>This information is included for the benefit of those who are coming to the Modula-2 language from Pascal.  Only the differences between the two languages are shown.  Since there are many versions of Pascal, the information here may not be correct for a given version.</P>
+<H3><B><A NAME="A11.1">A11.1</A> Statement Syntax Differences</B></H3>
+<TABLE CELLSPACING=0 CELLPADDING=0 WIDTH=400>
+<TR>          <TH>Modula-2</TH>:	          <TH>Pascal</TH>:</TR>
+<TR><TD>FOR i := S TO N [BY M]</TD>	<TD>for i := S [down]to N do</TD></TR>
+<TR><TD>   DO statement sequence END;</TD>	<TD><!--<-->&lt;compound<!-->&gt; statement</TD></TR>
+
+<TR><TD>WHILE .. DO .. END;</TD>	<TD>while .. do .. ;</TD></TR>
+
+<TR><TD>LOOP .. {EXIT} .. END;</TD>	<TD>n/a</TD></TR>
+
+<TR><TD>RETURN (* Required in function procedure,<BR>
+       optional in regular procedure *)</TD>	<TD>n/a</TD></TR>
+
+<TR><TD>IF .. THEN ..</TD>	<TD>if .. then</TD></TR>
+<TR><TD>  {ELSIF .. THEN ..}</TD>	<TD>[else ..]</TD></TR>
+<TR><TD>  [ELSE ..]</TD></TR>
+<TR><TD>  END;</TD></TR>
+
+<TR><TD>CASE labels:</TD></TR>
+<TR>  <TD>constant expressions or ranges</TD>	<TD>must be constants</TD></TR>
+<TR>      <TD>ELSE available;</TD>	<TD>no else available</TD></TR>
+<TR>      <TD>delimiter is    |</TD></TR>
+
+<TR><TD>RECORDS:</TD></TR>
+<TR><TD>  Any number or order of variants in record</TD>	<TD>one variant at end of record</TD></TR>
+<TR>  <TD>WITH unqualifies one level</TD>	<TD>with can unqualify many levels</TD></TR>
+
+<TR><TD>NEW, DISPOSE must be translated to</TD>	<TD>NEW, DISPOSE execute directly</TD></TR>
+<TR>         <TD>functions [DE]ALLOCATE</TD></TR></TABLE>
+<H3><B><A NAME="A11.2">A11.2</A> Symbols</B></H3>
+<TABLE CELLSPACING=0 CELLPADDING=0 WIDTH=500>
+<TR><TD>	</TD><TH>Modula-2</TH>	<TH>Pascal</TH></TR>
+<TR><TD>Not equals</TD>	<TD><!--<-->&lt;<!-->&gt; or #</TD>	<TD><!--<-->&lt;<!-->&gt;</TD></TR>
+<TR><TD>Conjunction</TD>	<TD>AND or <!--& -->&amp;</TD>	<TD>and</TD></TR>
+<TR><TD>Comment delimiters</TD>	<TD>(* *)</TD>	<TD>(* *) or { }</TD></TR>
+<TR><TD>Quotation marks</TD>	<TD>' or <!--"-->&quot;</TD>	<TD>' only</TD></TR>
+<TR><TD>Character constants</TD>	<TD>literal or <!--<-->&lt;octal<!-->&gt;C</TD>	<TD> literal only</TD></TR>
+<TR><TD>Decimal</TD>	<TD>explicit</TD>	<TD>may be implicit</TD></TR>
+<TR><TD>Scale factor</TD>	<TD>E</TD>	<TD>E or e</TD></TR>
+<TR><TD>Set delimiters</TD>	<TD>{ .. }</TD>	<TD>[ .. ]</TD></TR>
+<TR><TD>Subrange delimiters</TD>	<TD>[ .. ]</TD>	<TD>n/a</TD></TR>
+<TR><TD>Statement delimiter </TD>	<TD>;*</TD>	<TD>;</TD></TR>
+<TR><TD>Case delimiter</TD>	<TD>|*</TD>	<TD>;</TD></TR>
+<TR><TD>Dereferencing operator</TD>	<TD>^ (not in declaration)</TD>	<TD>^ (also in declaration)</TD></TR>
+<TR><TD>Set operations</TD>	<TD>IN,INCL,EXCL,+,-,*,/</TD>	<TD>IN,+,-</TD></TR>
+<TR><TD>Symbols for octal, hex</TD></TR>
+<TR><TD>  and char constants</TD>	<TD>B, H, C</TD>	<TD>n/a</TD></TR>
+
+<TR><TD>* may be superfluous</TD></TR>
+</TABLE>
+<H3><B><A NAME="A11.3">A11.3</A> Overall Structure</B></H3>
+<TABLE CELLSPACING=0 CELLPADDING=0 WIDTH=500>
+<TR>	<TH>Modula-2</TH>	<TH>Pascal</TH></TR>
+<TR><TD>Modules</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Regular Procedures</TD>	<TD>yes</TD>	<TD>yes</TD></TR>
+<TR><TD>Function Procedures</TD>	<TD>PROCEDURE</TD>	<TD>function</TD></TR>
+<TR><TD>Separate Compilation</TD>	<TD>yes</TD>	<TD>not usually</TD></TR>
+<TR><TD>Low-level facilities</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Coroutines</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Compound Statements</TD>	<TD>statement sequence</TD>	<TD>begin .. end</TD></TR>
+<TR><TD>Comment Nesting</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Ranges used by name</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Control transfer</TD>	<TD>EXIT, RETURN</TD>	<TD>goto </TD></TR>
+<TR><TD>I/O Statements</TD>	<TD>imported type specific</TD>	<TD>(general) read[ln], write[ln]</TD></TR>
+
+<TR><TD>General Syntax:</TD></TR>
+<TR><TD>Program Heading</TD>	<TD>MODULE name;</TD>	<TD>PROGRAM Name (I/O list);</TD></TR>
+<TR><TD>Program Ending</TD>	<TD>END name.</TD>	<TD>end.</TD></TR>
+<TR><TD>Import Lists</TD>	<TD>any number</TD>	<TD>n/a</TD></TR>
+<TR><TD>Export lists</TD>	<TD>only one</TD>	<TD>n/a</TD></TR>
+<TR><TD>Declaration order</TD>	<TD>any order</TD>	<TD>const, type, var, procedures</TD></TR>
+<TR><TD>Reserved words,</TD>	<TD>upper case</TD>	<TD>any case</TD></TR>
+<TR><TD>Standard identifiers</TD>	<TD>upper case</TD>	<TD>any case</TD></TR>
+<TR><TD>Constant expressions<BR>
+in  Declaration</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Identifiers - case</TD>	<TD>sensitive</TD>	<TD>insensitive</TD></TR>
+<TR><TD>               - length</TD>	<TD>unlimited</TD>	<TD>usually limited</TD></TR>
+<TR><TD>Predefined types</TD>	<TD>CARDINAL</TD>	<TD>n/a</TD></TR>
+<TR><TD>	</TD><TD>INTEGER</TD>	<TD>integer</TD></TR>
+<TR><TD>	</TD><TD>REAL, LONGREAL</TD>	<TD>real</TD></TR>
+<TR><TD>	</TD><TD>COMPLEX, LONGCOMPLEX</TD>	</TD><TD>n/a</TD></TR>
+<TR><TD>	</TD><TD>CHAR</TD>	<TD>char</TD></TR>
+<TR><TD>	</TD><TD>POINTER</TD>	<TD>pointer</TD></TR>
+<TR><TD>	</TD><TD>BOOLEAN</TD>	<TD>boolean</TD></TR>
+<TR><TD>	</TD><TD>ARRAY</TD>	<TD>array</TD></TR>
+<TR><TD>	</TD><TD>RECORD</TD>	<TD>record</TD></TR>
+<TR><TD>	</TD><TD>PACKEDSET</TD>	<TD>n/a</TD></TR>
+<TR><TD>	</TD><TD>PROC</TD>	<TD>n/a</TD></TR>
+<TR><TD>	</TD><TD>SYSTEM.LOC</TD>	<TD>n/a</TD></TR>
+<TR><TD>Type coercion</TD>	<TD>SYSTEM.CAST</TD>	<TD>no</TD></TR>
+<TR><TD>Procedures as variables</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Scalar type arithmetic</TD>	<TD>INC (s), INC (s,n), </TD></TR>
+<TR><TD>	</TD><TD>DEC (s), DEC (s,n)</TD>	<TD>pred, succ </TD></TR>
+<TR><TD>function declaration</TD>	<TD>PROCEDURE name</TD>	<TD>Function name</TD>	</TR>
+<TR><TD>	</TD><TD>({params}): resultType</TD>	<TD>{(params)}: resultType</TD></TR>
+<TR><TD>Calls to parameterless<BR>
+        functions</TD>	<TD>empty parameter list required</TD>	<TD>no parameter list</TD></TR>
+<TR><TD>Mutual recursion</TD>	<TD>FORWARD in one-pass compilers</TD>	<TD>forward is required</TD></TR>
+<TR><TD>Boolean expression</TD></TR>
+<TR><TD>  evaluation</TD>	<TD>Short-circuted</TD>	<TD>whole expression</TD></TR>
+<TR><TD>Mixed expressions</TD>	<TD>not allowed</TD>	<TD>often allowed</TD></TR>
+<TR><TD>Open arrays using</TD></TR>
+<TR><TD>  generic LOC</TD>	<TD>allowed</TD>	<TD>not allowed</TD></TR>
+<TR><TD>Explicit SET typing</TD>	<TD>yes</TD>	<TD>no</TD></TR>
+<TR><TD>Packing ARRAY OF CHAR</TD>	<TD>automatic</TD>	<TD>explicitly done</TD></TR>
+<TR><TD>Multiple range</TD>	<TD>[a..b],[c..d]</TD>	<TD>{a..b,c..d}</TD></TR>
+<TR><TD>inverse of ORD</TD>	<TD>VAL</TD>	<TD>only for CHR</TD></TR>
+<TR><TD>Terminate program</TD>	<TD>HALT</TD>	<TD>use goto</TD></TR>
+<TR><TD>capitalization</TD>	<TD>CAP</TD>	<TD>n/a</TD></TR>
+<TR><TD>Round off</TD>	<TD>TRUNC (x+.5)</TD>	<TD>round (x)</TD></TR>
+<TR><TD>NIL</TD>	<TD>standard identifier</TD>	<TD>reserved word</TD></TR>
+<TR><TD>Exceptions</TD>	<TD>available</TD>	<TD>n/a</TD></TR>
+<TR><TD>Termination</TD>	<TD>can be trapped <!--& -->&amp; handled</TD>	<TD>n/a</TD></TR></TABLE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

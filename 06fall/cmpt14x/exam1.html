@@ -1,0 +1,159 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.2em; }
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+--></style>
+
+<title>CMPT/ISYS 14x Fall2006 Midterm ch1-5, Trinity Western University.
+6 Oct 2006.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:         </td><td>__________________________</td></tr>
+  <tr><td>Student ID:   </td><td>__________________________</td></tr>
+</table>
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b> <br>
+problem solving as described in the text.
+<br>(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[5]</u><br><br>
+
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Name the five computer <b>program flow</b> abstractions described in the text.
+<u>[5]</u><br><br>
+
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to
+indicate if it is a <b>legal</b> Python identifier.
+<u>[6]</u><br>
+
+<center><table><tr>
+<td><tt>	numApples	</tt></td><td width=90>______</td>
+<td><tt>	21st_birthday	</tt></td><td width=90>______</td>
+<td><tt>	prime-factor	</tt></td><td width=90>______</td>
+</tr><tr>
+<td><tt>	for		</tt></td><td width=90>______</td>
+<td><tt>	_illegal	</tt></td><td width=90>______</td>
+<td><tt>	L337_hAX0rz	</tt></td><td width=90>______</td>
+</tr></table></center>
+
+<li>
+Evaluate each of the following Python expressions,
+or if it gives an error, indicate why.
+<u>[10]</u><br>
+
+<center><table cellpadding=2><tr>
+<td><tt>	(5 % 12 == 2) or False and not False	</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	2 ** 3+16.2 // 5			</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	0!=-0 and 0-0/0&lt;0			</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	'pi' + 2*'z' + 'a'			</tt></td>
+<td>_________________________</td></tr><tr>
+<td><tt>	2*range(3)				</tt></td>
+<td>_________________________</td></tr><tr>
+</tr></table></center>
+
+
+<li>
+The following loop was intended to count down from ten to one, then print
+"Blast off!".
+What is <b>wrong</b> with the loop?  How would you <b>fix</b> it?
+<u>[4]</u>
+<pre>
+counter = 10.0
+while counter != 1.0:
+	print int(counter),
+	counter -= 1.0
+print "Blast off!"
+
+</pre>
+
+<li>
+Recall that in Python int/float/bool parameters are essentially passed 
+by value, and lists/dictionary parameters are essentially
+passed by reference.  What is printed by the following block of Python
+code?
+<u>[4]</u>
+<pre>
+def double_me(x):
+	x *= 2
+y = 3.0
+z = range(3)
+double_me(y)
+double_me(z)
+print 'y =', y, ', z =', z
+</pre>
+
+
+<li class="break">
+Leibniz' formula for calculating pi is an infinite series:<br>
+<center><img src="leibniz.png" width=369 height=49></center><p>
+
+In the space below the next problem, write <b>pseudocode</b> for a 
+function procedure
+<tt>leibniz()</tt> that returns an estimate of pi.  A parameter should 
+be used to tell the function the maximum value of n to use in the sum.
+For example, <tt>leibniz(3)</tt> should add terms up to and including
+n==3.
+<u>[8]</u>
+
+<li>
+On a separate sheet of paper, write a <b>complete</b> Python program,
+declaring the procedure <tt>leibniz()</tt>.
+The body of the program should invoke <tt>leibniz()</tt> a few times
+to test it out, using a different number of terms of the infinite series.
+(You could also let the user interactively specify the parameter to
+<tt>leibniz()</tt>.)
+<u>[8]</u>
+
+<p>
+Docstrings (including preconditions) are required for your whole 
+module and for each function.
+You are not required to comment your code on this
+exam, however if your code is incorrect, your comments may earn you partial
+credit if they show good design thinking.  Little partial credit will be
+given for uncommented incorrect code.
+
+</ol>
+
+</body></html>
+

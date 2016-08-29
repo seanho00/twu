@@ -1,0 +1,329 @@
+<HTML>
+<HEAD>
+<TITLE>4.8 Recursion</TITLE>
+<meta NAME="keywords" CONTENT="recursion, fibbonacci, sequence, factorial, recursive, employ, employs, call, calls,itself, value, variable, parameter, re-enter, re-enters, enter, enters, tower, towers, of, hanoi, origin, destination, temporary, forward, mutual, indirect, recursion">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Procedures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>4.8 Recursion</B></H2>
+<P><A HREF="../Ch3/Ch3.8.html">Section 3.8</A> introduced the idea of a sequence of numbers defined by a formula that could be applied to the numbers 1, 2, 3, 4, 5, ... in succession to produce the terms of the sequence.   Not all sequences are defined in this manner; some are given in terms of a rule that works from previous terms to construct succeeding ones.  For example, the <I>Fibonacci</I> sequence is defined as</P>
+<P>a<sub>n</sub> = 1 if n = 1 or 2</P>
+<P>a<sub>n</sub> = a<sub>n-1</sub> + a<sub>n-2</sub> otherwise.</P>
+<P>Thus, the first few terms are: 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</P>
+<P>Likewise, the mathematical function <I>factorial</I> is defined on non-negative integers as:</P>
+<P>n! = 1 if n = 0</P>
+<P>n! = n(n - 1)! if n <!-->&gt; 0</P>
+<P>Thus one has :</P>
+<Pre>	1! = 1 <!--¥-->*  0! = 1
+	2! = 2 <!--¥-->*  1! = 2
+	3! = 3 <!--¥-->*  2! = 6
+	4! = 4 <!--¥-->*  3! = 24
+	5! = 5 <!--¥-->*  4! = 120 and so on.</Pre>
+<P>Such definitions, and indeed any definition that uses itself as part of itself, is said to be <I>recursive</I>.  Since Modula-2 procedures must be constructed to model the calculations they perform, they too may have occasion to use themselves.</P>
+<BLOCKQUOTE><I><A NAME="Recursive">Any</A> routine that employs itself during execution is said to be <U>recursive</U>.</I></BLOCKQUOTE>
+<P>This idea will be introduced here with some simple examples.  Much more sophisticated use will be applied later in the text in a variety of contexts.</P>
+<P><A NAME="Fac"></A>For the first, consider a procedure that implements a computation of the factorial function as it is defined, that is, recursively.</P>
+<PRE>
+  <B>PROCEDURE</B> Fac (num : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+
+    <B>IF</B> num = 0
+      <B>THEN</B>
+        <B>RETURN</B> 1
+      <B>ELSE</B>
+        <B>RETURN</B> num * Fac (num - 1);
+      <B>END</B>;
+  <B>END</B> Fac;</PRE>
+
+<P>Suppose the flow of control in a program enters this procedure via the call <I>Fac (3)</I>.  The statement under the ELSE would execute, causing 3 * Fac (2) to be computed.  But this re-enters <I>Fac</I>, this time with <i>num</i> equal to 2.  Since num is a <I>value</I> parameter, a new memory location is assigned to <I>num</I> on every entry.  The statement under the ELSE executes again since num # 0, and a computation of 2 * Fac (1) is called for, so Fac is entered a third time asking for Fac (1).  This causes a fourth entry to ask for Fac (0) which is dutifully returned back up the chain one step at a time.  The successive returns are 1, 1, 2 and 6 and at the last return the calculation from the very first execution of ELSE concludes and the procedure ends.</P>
+<P>There is one potential problem though.  As in the writing of loops, one must be very careful not to specify a stopping condition on the chain of recursive calls that can never be achieved.   (Here the stopping condition is n=0).  Recursive procedures must be carefully designed, and not every programming language allows them, this being a technique that Modula-2 inherits from Pascal. </P>
+<P>Even though the code given above does provide a simple and easily understood illustration of how recursion works, it is not difficult to see that calculating factorials does not have to be done recursively, for the solution is easily reformulated non-recursively as follows: </P>
+<PRE>
+  <B>PROCEDURE</B> FactorialNonRecursive (n : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+  <B>VAR</B>
+    count, result : <B>CARDINAL</B>;
+  <B>BEGIN</B>
+    result := 1;
+    count := 0;
+    <B>WHILE</B> count <!--<-->&lt; n
+      <B>DO</B>
+        <b>INC</b> (count);
+        result := result * count
+      <B>END</B>;
+    <B>RETURN</B> result
+  <B>END</B> FactorialNonRecursive;</PRE>
+
+<P><A NAME="Hanoi"></A>On the other hand, recursion <I>is</I> inherent in a wide variety of problems, and some of these are rather more difficult to follow than the example above.   In particular, it is not always so easy to reformulate a recursive idea in a non-recursive fashion.   An ancient problem of intermediate difficulty whose solution is more naturally recursive is called the <I>Tower of Hanoi</I>.  Often built as a child's toy, this puzzle consists of a rigid base into which are mounted three upright pegs, and a series of concentric disks of various sizes that can be placed over the pegs. To start with, all the disks are on one of the pegs, arranged with the largest at the bottom, in descending order of radius to the smallest at the top.  The idea is to move all the disks from the first peg to the second, while at all times maintaining the correct size order on each of the pegs.  That is, in making a move, one must always place a disk on top of one that is larger in diameter (not necessarily the next larger, but it must be larger).</P>
+<P><CENTER><IMG SRC="Figure/Figure_4.8.GIF" BORDER="1"></CENTER><!----></P>
+<P>This problem is best solved by building up a solution from the simplest case.  Suppose that the three pegs are labelled <I>origin</I>, <I>destination</I>, and <I>temporary</I>.  If there is only one disk involved in the game, then one need only to remove it from peg <I>origin</I> and place it on peg <I>destination</I> and the game is over.</P>
+<P>If two disks are involved, the top one can be taken from <I>origin</I> and placed on <I>temporary</I>, and the game is then reduced to two single disk moves, namely of the second disk to <I>destination</I> and then the first one from <I>temporary</I> to <I>destination</I> on top of the larger disk.</P>
+<P>If three disks are involved, one has to move two (one less than the total number) to the <i>temporary</i> peg (use the moves for a two-disk game as above), but using the <i>destination</i> peg as a <i>temporary</i>.  Then one moves the bottom disk on the <i>origin</i> peg to the (now empty) <i>destination</i> peg and finally, using the <i>original</i> peg as a <i>temporary</i>, moves the two remaining ones to the final <i>destination</i>, again using a two-disk subgame.  Likewise, if one starts with four disks, one first moves three to the <i>temporary</i> peg, using the <i>destination</i> peg as a <i>temporary</i> and the rules for a move of three disks (including the sub-games for two disks and one disk) then move the last disk to the <i>destination</i>, then again use the steps above for a game of three disks to transfer those disks now on the <i>temporary</i> peg to the <i>destination</i> peg using the origin peg as the <i>temporary</i>.  That is, the game of four disks includes two sub-games of three disks, each with its sub-games of two disks and one disk.</P>
+<P><CENTER><IMG SRC="Figure/Figure_4.9.GIF" BORDER="1"></CENTER><!--<--></P>
+<P>That is, at any degree of complexity for the game, one can formulate the required steps to transfer a given number of pegs in terms of two sub-games involving one fewer disk, one before and one after a move of one disk.  The overall solution is therefore formulated recursively in this fashion:</P>
+<P>To move <I>numberToMove</I> disks from the origin peg to the destination peg:</P>
+<UL><!--€--><LI> move <I>numberToMove</I> - 1 disks to the temporary peg using the destination peg as a temporary</LI>
+<LI><!--€--><LI> move the last disk to the destination</LI>
+<LI><!--€--><LI> move the <I>numberToMove</I> - 1 disks again, this time to the destination, using the origin peg as the temporary</LI></UL>
+<P>The procedure can call itself to do the moves, with the stopping point in each series of calls being the one at which only one disk needs to be moved.  Each time the procedure is called, the pegs to be regarded as <I>origin</I>, <I>destination</I>, and <I>temporary</I> will depend on the current stage of the game.</P>
+<P>This recursive procedure is formulated within a module that is capable of testing the entire operation and repeating the game several times.  Assuming that the end user of the program has a physical model of the game onto which the moves can be translated as they are provided by the machine, instructions will be given as to which move to make at each step, with the top disk on a given peg always being the one being referred to.</P>
+<PRE>
+<B>MODULE</B> TryHanoi;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate recursion *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 26 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteChar, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadCard, WriteCard;
+
+<B>VAR</B>
+  origin, destination, temporary, key: <B>CHAR</B>;
+  userNumber: <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> TowerOfHanoi (numToMove : <B>CARDINAL</B>;
+                       origin, destination, temp : <B>CHAR</B>);
+<B>BEGIN</B>
+  <B>IF</B> numToMove = 1 (* only then do we move anything *)
+    <B>THEN</B>
+      WriteString (<!--"-->&quot; Move a disk from peg <!--"-->&quot;);
+      WriteChar (origin);
+      WriteString (<!--"-->&quot; to peg <!--"-->&quot;);
+      WriteChar (destination);
+      WriteLn
+    <B>ELSE</B> (* else make a recursive call to this *)
+      TowerOfHanoi ((numToMove - 1), origin, temp, destination); 
+      TowerOfHanoi (1, origin, destination, temp );
+      TowerOfHanoi ((numToMove - 1), temp, destination, origin )
+    <B>END</B>
+<B>END</B> TowerOfHanoi;
+
+<B>BEGIN</B>   (* Main program starts here *)
+  WriteLn;
+  WriteString ('Before starting, please label the pegs of your ');
+  WriteLn;
+  WriteString ('Tower of Hanoi game as <!--"-->&quot;A<!--"-->&quot;, <!--"-->&quot;B<!--"-->&quot;, and <!--"-->&quot;C<!--"-->&quot;.');
+  WriteLn;
+  WriteString ('Now, place the disks in order on peg <!--"-->&quot;A<!--"-->&quot;.');
+  WriteLn;
+  WriteString (<!--"-->&quot;Enter number of disks to move <!--"-->&quot;);
+  WriteString (<!--"-->&quot;(use zero to end the program instead) ==<!-->&gt;<!--"-->&quot;);
+  ReadCard (userNumber);
+  SkipLine;
+  WriteLn;
+  <B>IF</B> (userNumber <!-->&gt; 0)
+    <B>THEN</B>
+      WriteLn;
+      (* assume they start at <!--"-->&quot;A<!--"-->&quot; and end at <!--"-->&quot;B<!--"-->&quot; *)
+      TowerOfHanoi (userNumber, <!--"-->&quot;A<!--"-->&quot;, <!--"-->&quot;B<!--"-->&quot;, <!--"-->&quot;C<!--"-->&quot;)
+    <B>END</B>;
+  WriteString (<!--"-->&quot;press any key to continue<!--"-->&quot;);
+  ReadChar (key);
+
+<B>END</B> TryHanoi.</PRE>
+
+<P>One run of this program produced the following output in the selected file for the choice of four disks:</P>
+<PRE>
+Before starting, please label the pegs of your 
+Tower of Hanoi game as <!--"-->&quot;A<!--"-->&quot;, <!--"-->&quot;B<!--"-->&quot;, and <!--"-->&quot;C<!--"-->&quot;.
+Now, place the disks in order on peg <!--"-->&quot;A<!--"-->&quot;.
+Enter number of disks to move (use zero to end the program instead) ==<!-->&gt;4
+
+ Move a disk from peg A to peg C
+ Move a disk from peg A to peg B
+ Move a disk from peg C to peg B
+ Move a disk from peg A to peg C
+ Move a disk from peg B to peg A
+ Move a disk from peg B to peg C
+ Move a disk from peg A to peg C
+ Move a disk from peg A to peg B
+ Move a disk from peg C to peg B
+ Move a disk from peg C to peg A
+ Move a disk from peg B to peg A
+ Move a disk from peg C to peg B
+ Move a disk from peg A to peg C
+ Move a disk from peg A to peg B
+ Move a disk from peg C to peg B
+press any key to continue</PRE>
+
+<P><B>NOTE</B>:   An interesting addition to this would be an animation that shows the progress of the game as it is conducted, or perhaps one that scores a user's attempts to play the game by forbidding incorrect moves.</P>
+<P><A NAME="cardBin"></A>One more simple example of recursion is found in the next example.  It differs from the last two in that the recursion is not of a procedure invoking itself directly, but of two procedures that cooperate on a task by invoking each other.  The solution is presented in detail.  The student who is unfamiliar with binary notation might wish to review  <A HREF="../Ch8/Ch8.2.html">section 8.2</A> for the theory.</P>
+<H3><B>Problem:</B></H3>
+<P>Write and test a procedure that prints out cardinal numbers in binary form.  It should be declared as: PROCEDURE WriteCardBin (card : CARDINAL).</P>
+<H3><B>Suitability:</B></H3>
+<P>This is the very kind of repeated computation that is especially suited to a computer solution.  This type of conversion is based on repeated division, followed by writing down the remainders in reverse order.  For instance, to convert 2456 to binary (base two) form, one divides by 2 repeatedly:</P>
+<IMG SRC="Figure/Eq4.8.1.GIF"><!--
+2) 2456
+2) 1228	r 0
+2)  614	r 0
+2)  307	r 0
+2)  153	r 1
+2)   76	r 1
+2)   38	r 0
+2)   19	r 0
+2)    9	r 1
+2)    4	r 1
+2)    2	r 0
+2)    1	r 0
+      0	r 1-->
+<P>The binary equivalent of the decimal numeral is now read from the remainders in reverse order.  It is 100110011000.</P>
+<H3><B>Restatement:</B></H3>
+<P>A solution to this problem can be formulated in terms of two procedures.  The first will divide the remaining number by two and call the  second to print the remainder.  The second will examine the quotient and actually print the remainder if this quotient is zero.  Otherwise, it will call the first procedure again before printing.</P>
+<H3><B>Library use:</B></H3>
+<P>Only STextIO and SWholeIO are used.  Procedures to obtain the number to convert, and to print cardinals (zero and one) are all that are required.</P>
+<H3><B>Problem refinement:</B></H3>
+<P>Two procedures that call each other present a little difficulty.  Ordinarily, one follows a <!--"-->&quot;declare-it-before-using-it<!--"-->&quot; rule in Modula-2, at the very least for the sake of clarity and readability.  The Modula-2 <I>language</I> rules do not require this be done, envisioning that the code can be scanned as many times as necessary to resolve these circular references.  However, some Modula-2 compilers only scan the source code once, so they do have <!--"-->&quot;declare-it-before-using-it<!--"-->&quot; as an inflexible rule.  The difficulty is, if two procedures call each other, which one ought to be written out first?  This is solved in such versions by adding a special reserved word FORWARD following the declaration of the <I>syntax</I> of one of the procedures at a point before its code is produced.  When this is done, the compiler can check that syntax in the invocation by the second procedure, and postpone looking for actual code.  The body of the procedure can then be elaborated somewhere else in the program, as long as the parameter list is repeated exactly at the time that is done.  Note that if the compiler is of the type that makes several passes through the code, it can resolve such references <I>without</I> needing to have one procedure declared as FORWARD.</P>
+<BLOCKQUOTE><I><A NAME="Recursion">If</A> two procedures each invoke the other, or control can otherwise pass through a chain of procedure calls and reach the original calling procedure, this is called <U>mutual recursion</U> or <U>indirect recursion</U>.</I></BLOCKQUOTE>
+<P><B>NOTES</B>: 1. Although the multiple pass technique initially defined standard Modula-2, Wirth himself later began to write one-pass compilers in order to gain speed at compile time.  As a result, FORWARD came to be regarded as an optional standard reserved word, rather than as a non-standard one.  The ISO standard accepts this and allows compilers to conform regardless of which model is used, though multiple pass compilers should accept and deal correctly with FORWARD declarations, even if all they do is ignore them.  That is, in the ISO standard, FORWARD is a reserved word; whether its use causes the compiler to do anything or not is optional.</P>
+<P>	 2. The programmer must, as in all recursive situations, ensure that progress is actually made toward an eventual goal, or the program could end up executing in an infinite loop.</P>
+<P>	 3. If the procedure being declared as FORWARD has a parameter list and/or a return type, this heading must be duplicated exactly when the procedure code is actually elaborated.</P>
+<H3><B>Data table:</B></H3>
+<P>The only variables that are needed in the main program are a cardinal to convert, a character variable keyboard responses to questions, and a boolean for recycling the entire program.  Necessary imports include ReadCard, WriteCard, WriteString, WriteLn, SkipLine, and ReadChar.</P>
+<H3><B>Sample I/O:</B></H3>
+<P>An input of 2456 will produce an output of 100110011000.  No padding with blanks will be undertaken; the Write will take the amount of room necessary for the output number.</P>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> CardBinConvert;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate mutual recursion *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 26 *)
+(* This program drives a procedure that prints a cardinal in binary form *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard, ReadCard;
+
+(*
+<B>PROCEDURE</B> WriteRem (whatsLeft, RemToPrint : <B>CARDINAL</B>); <B>FORWARD</B>; 
+*)     (* uncomment if one-pass version *) (* code comes later *)
+
+<B>PROCEDURE</B> WriteCardBin (x : <B>CARDINAL</B>);
+(* This procedure writes the supplied cardinal in binary form
+Pre: none
+Post: The binary representation is written to the standard output *)
+<B>VAR</B>
+  quotient, rem : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+   quotient := x <B>DIV</B> 2;
+   rem := x <B>MOD</B> 2;
+   WriteRem (quotient, rem);
+<B>END</B> WriteCardBin;
+
+<B>PROCEDURE</B> WriteRem (whatsLeft, remToPrint : <B>CARDINAL</B>);
+(* writes out the remainder from the division
+Pre: whatsLeft is the current quotient from dividing by two
+        remToPrint is the last remainder obtained
+Post: if the quotient supplied was zero, the remainder is printed
+         else, WriteCardBin is first called with the current quotient *)
+
+<B>BEGIN</B>  
+  <B>IF</B> whatsLeft <!-->&gt; 0
+    <B>THEN</B>
+      WriteCardBin (whatsLeft)
+    <B>END</B>;
+  WriteCard (remToPrint, 1); (* one digit, no space extra *)
+<B>END</B> WriteRem;
+
+<B>VAR</B> (* main program variables *)
+  theNumber : <B>CARDINAL</B>;
+  again : <B>BOOLEAN</B>;
+  key, answer : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program tests a procedure to print <!--"-->&quot;);
+  WriteString (<!--"-->&quot;cardinals in binary form<!--"-->&quot;);
+  WriteLn;
+
+  <B>REPEAT</B> (* main repeat loop *)
+    (* get the number *)
+    WriteString (<!--"-->&quot;Enter the number to be changed <!--"-->&quot;);
+    WriteString (<!--"-->&quot;to binary form ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (theNumber);
+    SkipLine;
+    WriteLn;
+    WriteString (<!--"-->&quot;The cardinal <!--"-->&quot;);
+    WriteCard (theNumber, 0);
+    WriteString (<!--"-->&quot; converted to binary form is: <!--"-->&quot;);
+    WriteCardBin (theNumber);
+
+    WriteLn;
+    WriteString (<!--"-->&quot;Do another? Y/N <!--"-->&quot;);
+    ReadChar (answer);
+    SkipLine;
+    again := (<B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;);
+  <B>UNTIL</B> <B>NOT</B> again;
+  
+<B>END</B> CardBinConvert.</PRE>
+
+<P>Here is one run from this program:</P>
+<PRE>
+This program tests a procedure to print cardinals in binary form
+Enter the number that is to be changed to binary form ==<!-->&gt; <B>12</B>
+The cardinal 12 converted to binary form is: 1100
+Do another? Y/N <B>Y</B>
+Enter the number that is to be changed to binary form ==<!-->&gt; <B>15</B>
+The cardinal 15 converted to binary form is: 1111
+Do another? Y/N <B>y</B>
+Enter the number that is to be changed to binary form ==<!-->&gt; <B>65535</B>
+The cardinal 65535 converted to binary form is: 1111111111111111
+Do another? Y/N <B>y</B>
+Enter the number that is to be changed to binary form ==<!-->&gt; <B>0</B>
+The cardinal 0 converted to binary form is: 0
+Do another? Y/N <B>y</B>
+Enter the number that is to be changed to binary form ==<!-->&gt; <B>8</B>
+The cardinal 8 converted to binary form is: 1000
+Do another? Y/N <B>n</B></PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

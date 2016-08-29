@@ -1,0 +1,90 @@
+
+<HTML><HEAD><TITLE>Chapter 3: Basic Program Structure Abstractions</TITLE><STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<CENTER><H1><B>Chapter 3<BR>
+Basic Program Structure Abstractions</B></H1></CENTER>
+
+
+<BR><A class = navgrn HREF="Ch3.0.html">3.0 Chapter Goals</A><!--	74-->
+<BR><A class = navgrn HREF="Ch3.1.html">3.1 Statement Sequences</A><!--	74-->
+<BR><A class = navgrn HREF="Ch3.2.html">3.2 Simple Selection</A><!--	75-->
+<BR><A class = navgrn HREF="Ch3.3.html">3.3 Boolean Variables and Expressions</A><!--	83-->
+<BR><A class = navgrn HREF="Ch3.4.html">3.4 Repetition (1) <!--‹-->-- the WHILE Statement</A><!--	88-->
+<BR><A class = navgrn HREF="Ch3.5.html">3.5 Repetition (2) <!--‹-->-- the REPEAT Statement</A><!--	90-->
+<BR><A class = navgrn HREF="Ch3.6.html">3.6 Analysis of Loops</A><!--	95-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch3.6.html#3.6.1">  3.6.1 Loops and Boolean Flags</A><!--	95-->
+<BR><A class = navgrn HREF="Ch3.7.html">3.7 Counting Loops</A><!--	98-->
+<BR><A class = navgrn HREF="Ch3.8.html">3.8 Replacing Loops With Closed Forms</A><!--	101-->
+<BR><A class = navgrn HREF="Ch3.9.html">3.9 Qualified Import</A><!--	103-->
+<BR><A class = navgrn HREF="Ch3.10.html">3.10 Insect Control Again<!--‹-->--Some Common Errors</A><!--	107-->
+<BR><A class = navgrn HREF="Ch3.11.html">3.11 Style and Prettyprinting</A><!--	111-->
+<BR><A class = navgrn HREF="Ch3.12.html">3.12 An Extended Example (Day Number in a year)</A><!--	113-->
+<BR><A class = navgrn HREF="Ch3.13.html">3.13 Chapter Summary</A><!--	119-->
+<BR><A class = navgrn HREF="Ch3.14.html">3.14 Assignments</A><!--	119-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch3i.html">  First Interregnum<!--</B>‹<B>-->--A Short History of Computing</A><!--	122-->
+<BR>
+<!--Version History:
+Version 3.0 released to MS 93 07 19 to Deane 94 01 04
+Version 3.0.1 with character graphics 1994 01 24
+Version 3.0.2 with table of contents 1994 08 25
+Version 4.0 with HTML markup by G Tisher 1995 05 15
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 06 13 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe--><!--
+«INCLUDE Ch3.0.html»
+«INCLUDE Ch3.1.html»
+«INCLUDE Ch3.2.html»
+«INCLUDE Ch3.3.html»
+«INCLUDE Ch3.4.html»
+«INCLUDE Ch3.5.html»
+«INCLUDE Ch3.6.html»
+«INCLUDE Ch3.7.html»
+«INCLUDE Ch3.8.html»
+«INCLUDE Ch3.9.html»
+«INCLUDE Ch3.10.html»
+«INCLUDE Ch3.11.html»
+«INCLUDE Ch3.12.html»
+«INCLUDE Ch3.13.html»
+«INCLUDE Ch3.14.html»
+«INCLUDE Ch3i.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

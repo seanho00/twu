@@ -1,0 +1,90 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2007 Lab4, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+li { margin-top: 0.5em; }
+--></style>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a>
+Lab4 (30 pts): Quaternions</h1>
+
+In this lab you will add a virtual trackball using quaternions to the OpenGL
+viewer you developed in the previous lab.
+
+<ul>
+<h2>Objectives</h2>
+<li> To learn about quaternions.
+<li> To create an easy-to-use virtual trackball interface for rotating 3D
+models.
+
+<h2>Background</h2>
+
+<li> A virtual trackball interface maps 2D mouse coordinates onto a 3D upper
+hemisphere.  The 2D mouse coordinates in the x-z-plane are (x, 0, z).  This
+projects up to the point (x, y, z) on a hemisphere centred at the origin.
+Moving the mouse corresponds to moving from point p1 to p2 on the hemisphere.
+From p1 and p2 we can derive the axis of rotation n, and the rotation angle.
+
+<br><img src="trackball1.jpg" width=240 height=179 alt="trackball">
+<img src="trackball2.jpg" width=240 height=179 alt="trackball">
+
+<li> A quaternion can be represented as an array of 4 floats.  From the axis of
+rotation and the rotation angle, a quaternion describing this rotation can be
+derived.  Every incremental mouse motion corresponds to a new quaternion;
+individual quaternions can be multiplied to give a larger rotation.
+
+<li> Lastly, from the quaternion, an OpenGL 4x4 rotation matrix needs to be
+derived.
+
+<li> If you'd like to read in more complex models rather than generating your
+own, a fairly basic library to read Alias Wavefront OBJ files is 
+<a href="http://www.xmission.com/~nate/tutors.html">Nate Robins' GLM</a>.
+You can get it from many places, e.g.,
+<a href="http://svn.avimator.com/avimator/trunk/">Avimator's SVN</a>
+(glm.cpp and glm.h).  Basic usage (see the header file):
+<pre>#include "glm.h"
+GLMmodel* myModel = glmReadOBJ("myfile.obj", 0);
+glmDraw(myModel, GLM_NONE, 0);
+</pre>
+
+<h2>Basic requirements</h2>
+
+<li> To your OpenGL viewer from Lab3, add a virtual trackball interface using
+quaternions, to let the user rotate the model in 3D.  You must write your own
+implementation of quaternions.  You should write code that translates from 2D
+mouse motion to a quaternion, and from a quaternion to a 4x4 rotation matrix
+suitable for glMultMatrix().  Part of that will involve recoding the
+functionality of glRotate().
+
+
+<li> Make the user interface so that when the user moves the mouse with a
+certain mouse button (e.g., left) held down, the model is rotated using your
+virtual trackball.
+
+<h2>Extra credit (up to 5 pts, only if basic requirements are met)</h2>
+
+<li> For extra credit, allow the user to "toss" the rotation of an object: if
+the user releases the mouse button while still moving the mouse, the object
+continues to rotate on its own.  See FLTK idle callbacks.
+
+<li> Provide a way to stop the animation (perhaps by single-clicking the mouse).
+
+<h2>Lab write-up</h2>
+
+<li> Follow <a href="lab_template.html">the template lab write-up</a>
+to document your program.  Name your write-up:
+<br><tt>your_name_lab4_writeup.doc</tt> (or .txt, etc.)
+<br>Put it in the same project directory as your code so that it will be
+included in the tarball.
+
+<h2>Electronic turn-in</h2>
+
+<li> Put everything (C++ code, header files, executable, lab
+write-up) into a tarball/ZIP and upload it to eCourses under "Lab4":
+<br><tt>your_name_lab4.zip</tt>
+
+</ul>
+
+</body></html>

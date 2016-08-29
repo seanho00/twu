@@ -1,0 +1,5 @@
+AuthUserFile /home/seanho/twu/08fall/cpsy501/articles/.htpw
+AuthType Basic
+AuthName "=== User is cpsy, Password is 501 ==="
+Require valid-user
+

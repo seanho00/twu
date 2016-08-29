@@ -1,0 +1,156 @@
+<HTML>
+<HEAD>
+<TITLE>12.8 Pointers and Return Types</TITLE><meta NAME="keywords" CONTENT="pointer, pointers, return, type, types, function, procedure, procedures, structure, structured, adt, abstract, data, implementation, implement, select, selected, illegal, return, pass, passing">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.8 Pointers and Return Types</B></H2>
+<P>On occasion, it might be more practical to have a function return a pointer to a RECORD or an ARRAY, rather than the data item itself.  Indeed, early versions of Modula-2 did not allow a function procedure to return a structured type, and a work-around returning a pointer was often necessary.  More commonly, a library module might implement an ADT as a pointer, and its function procedures that return this type will be returning pointers.  (As shall be seen in succeeding sections, this is in fact the standard way of working).  To illustrate some of the points relating to such methods, the following module provides a partial implementation of a dynamic (but fixed length) string type, together with a function procedure that reads a string and returns a pointer to the string.  There is a brief testing harness at the end.</P>
+<P><B>NOTE</B>:	The choice of <I>ReadString</I> to do the assignment is for the sake of illustration only.  The analysis and comments apply to <I>any</I> procedure that is to assign something to dynamic memory and communicate back to a caller.</P>
+<PRE>
+<B>MODULE</B> DynStringDemo;
+
+(* A crude demonstration of pointer return styles
+    by R. Sutcliffe  1995 05 17 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadString;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE;
+<B>CONST</B>
+  maxChars = 80;
+<B>TYPE</B>
+  String = <B>ARRAY</B> [0..maxChars-1] <B>OF</B> <B>CHAR</B>;
+  StrPoint = <B>POINTER</B> <B>TO</B> String;
+
+<B>VAR</B>
+  sPoint : StrPoint; 
+
+<B>PROCEDURE</B> ReadDynStr1 () : StrPoint;
+<B>VAR</B>
+  answer : StrPoint;
+<B>BEGIN</B>
+  <B>NEW</B> (answer);
+  ReadString (answer^);
+  SkipLine;
+  <B>RETURN</B> answer
+<B>END</B> ReadDynStr1;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;type string1 here=<!-->&gt; <!--"-->&quot;);
+  sPoint := ReadDynStr1 ();
+  WriteLn;
+  WriteString (sPoint^);
+  WriteLn;
+
+<B>END</B> DynStringDemo.</PRE>
+<P>In place of the first two lines of the main block, one might be tempted to reason that since the procedure <I>ReadDynStr1</I> returns a pointer to an item that is the correct type for the parameter to <I>ReadString</I> one could write:</P>
+<PRE>
+  WriteString (ReadDynStr1 ()^);</PRE>
+<P>However, this is not the case in Modula-2.  The rule is:</P>
+<BLOCKQUOTE><I>Modula-2 function procedures cannot be selected.  It is illegal to write:<BR>
+Proc (params)^<BR>
+Proc (params) [index]<BR>
+Proc (params).fieldname</I></BLOCKQUOTE>
+<P>This style of working may be adequate for some purposes; however there may also be some difficulties.  Repeated calls to a procedure that must create a new dynamic string in order to have something to return might litter up the memory quote unnecessarily.  Moreover, the creation of a new dynamic entity has been combined with the act of reading one, and this seems rather unstylish.  One possible modification would be to separate the creation of the dynamic entity from the reading of one by having two procedures.</P>
+<PRE>
+<B>PROCEDURE</B> MakeDynStr () : StrPoint;
+<B>VAR</B>
+  answer : StrPoint;
+<B>BEGIN</B>
+  <B>NEW</B> (answer);
+  <B>RETURN</B> answer;
+<B>END</B> MakeDynStr;
+
+<B>PROCEDURE</B> ReadDynStr2 () : StrPoint;
+<B>VAR</B>
+  answer : StrPoint;
+<B>BEGIN</B>
+  ReadString (answer^);
+  SkipLine;
+  <B>RETURN</B> answer
+<B>END</B> ReadDynStr2;</PRE>
+<P>One would call them as follows:</P>
+<PRE>
+  WriteString (<!--"-->&quot;type string2 here=<!-->&gt; <!--"-->&quot;);
+  sPoint := MakeDynStr ();
+  sPoint := ReadDynStr2 ();
+  WriteLn;
+  WriteString ( sPoint^);
+  WriteLn;</PRE>
+<P>However, this style too has its disadvantages, for it requires the use of a variable global to both procedures, a solution that is sure to be unsatisfactory in a library module.  Once such a global variable had its contents passed back to a program, the next time the procedure was called it would alter that global variable, and the calling program could be thereby invalidated, for whatever one of its pointer variables had been pointed at the global item would now also be altered.</P>
+<P>Perhaps a more satisfactory style to use when it is necessary to return a pointer to a calling procedure is the variable parameter:</P>
+<PRE>
+<B>PROCEDURE</B> ReadDynStr3 (<B>VAR</B> strPoint: StrPoint);
+
+<B>BEGIN</B>
+  ReadString (strPoint^);
+  SkipLine;
+<B>END</B> ReadDynStr3;</PRE>
+<P>Here, it is the responsibility of  the caller to provide the (static) memory for the pointer variable, and to allocate memory to which it can point.  The function procedure accesses this via a variable parameter and assigns directly into the supplied memory; it does not obtain any more of its own.  This one would be called in the more conventional style shown below (where the call to NEW with <I>sPoint</I> has already been made):</P>
+<PRE>
+  WriteString (<!--"-->&quot;type string3 here=<!-->&gt; <!--"-->&quot;);
+  ReadDynStr3 (sPoint);
+  WriteLn;
+  WriteString (sPoint^);
+  WriteLn;</PRE>
+<P>It may be easier to declare a local variable in the procedure to hold the data temporarily and then pass this to the space pointed to by the variable parameter; this is very little different from the third variation above and is called the same way.</P>
+<PRE>
+<B>PROCEDURE</B> ReadDynStr4 (<B>VAR</B> strPoint: StrPoint);
+<B>VAR</B>
+  result : String;
+
+<B>BEGIN</B>
+  ReadString (result);
+  SkipLine;
+  strPoint^ := result;
+<B>END</B> ReadDynStr4;</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

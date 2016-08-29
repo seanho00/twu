@@ -1,0 +1,231 @@
+<HTML><HEAD><TITLE>16.1 Generics in the Base Language</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Generics in the Base Language">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<H2><b>16.1 Generics In the Base Language (Revisited)</b></H2>
+<P>Chapter 15 included some discussion of the problems encountered when attempting to make various techniques and abstract data types generic , that is, to make them readily applicable to a variety of underlying data types. Here, these goals and the difficulties with them are reviewed so as to set the stage for the introduction of more powerful techniques from ISO standard Generic Modula-2.</P>
+<H3><b><A NAME="16.1.1">16.1.1</A> Semi Generic Methods and Structures</b></H3>
+<P>Chapters 14 and 15 emphasized the need to create conventional data structures in as generic a fashion as possible.  The basic technique was to write the major part of the module in terms of some general data type name such as <i>TheDataDype</i> and then to have a renaming line at the top where the module was customized to a particular type.  As this line is easily changed, the bulk of the code can readily be re-used.</P>
+<P>Thus, one would write, for instance</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> IntSorts;
+<b>FROM</b> IntegerInfo <b>IMPORT</b>
+  Compare;
+<b>FROM</b> Comparisons <b>IMPORT</b>
+  CompareResults;
+<b>TYPE</b>
+  Item = <b>INTEGER</b>;
+<b>CONST</b>
+  GenCompare = Compare;
+
+<b>TYPE</b>
+  CompareProc = <b>PROCEDURE</b> (Item, Item) : CompareResults;
+
+<b>PROCEDURE</b> Quick (<b>VAR</b> data : <b>ARRAY</B> <B>OF</b> Item);
+
+  (* Other procedures and functions could be included as well. *)
+<b>END</b> IntSorts.</PRE>
+
+<P>If the issue were the creation of a data structure, one could proceed as follows:</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> CardStack;
+
+<b>TYPE</b>
+  Element = <b>CARDINAL</b>;
+
+<b>CONST</b>
+  StackSize = 100;
+
+<b>PROCEDURE</b> Push (item : Element);
+
+<b>PROCEDURE</b> Pop (<b>VAR</b> item : Element);  
+
+<b>PROCEDURE</b> Empty () : <b>BOOLEAN</b>;
+
+<b>END</b> CardStack.</PRE>
+
+<P>The implementation module can access the renamed item, but its code has to be written in terms of the  general name <i>Element</i> rather than the specific one <i>CARDINAL</i>.  A simple change on one line of a copy the definition part of the module followed by a recompilation of both under a different module name then suffices to re-use the code with another numeric type.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> CardStack;
+<b>VAR</b>
+   stack    : <b>ARRAY</b> [0..StackSize] <b>OF</b> Element;
+   stackPtr : <b>CARDINAL</b>;
+(* One could also arrange for StackSize to be a parameter. *)
+
+<b>PROCEDURE</b> Push (item : Element);
+<b>BEGIN</b>
+  <b>INC</b> (stackPtr);
+  stack[stackPtr] := item;
+<b>END</b> Push;
+
+<b>PROCEDURE</b> Pop (<b>VAR</b> item : Element);   
+<b>BEGIN</b>
+  item := stack[stackPtr];
+  <b>DEC</b> (stackPtr)
+<b>END</b> Pop;
+
+<b>PROCEDURE</b> Empty () : <b>BOOLEAN</b>;
+<b>BEGIN</b>
+  <b>RETURN</b> stackPtr = 0
+<b>END</b> Empty;
+
+<b>BEGIN</b> (* module body initialization *)
+  stackPtr := 0
+<b>END</b> CardStack. </PRE>
+<H3><b><A NAME="16.1.2">16.1.2</A> Limitations of Fully Generic Techniques</b></H3>
+<P>As indicated in <A HREF="../Ch15/Ch15.10.html">section 15.10</A>, when one attempts to implement a fully generic technique (such as sorting), one is forced to sacrifice type checking, and this is a serious loss given the otherwise closely type-checked style of Modula-2. Consider, for example a simple swap, which in order to be generic has to be written:</P>
+
+<PRE><b>PROCEDURE</b> Swap (itemA, itemB : <b>ARRAY</B> <B>OF</b> LOC);</PRE>
+
+<P>which is quite unsatisfactory, both because there is now no proper type checking.</P>
+
+<P>Moreover one cannot even use the following --</P>
+
+<PRE><b>TYPE</b> 
+  SwapProc = <b>PROCEDURE</b> (<b>VAR</B> <B>ARRAY OF</b> LOC, <b>VAR</B> <B>ARRAY OF</b> LOC);
+  CompareProc = <b>PROCEDURE</b> (<b>ARRAY</B> <B>OF</b> LOC, <b>ARRAY</B> <B>OF</b> LOC) : CompareResults;</PRE>
+
+<P>because specific typed procedures, such as</P>
+
+  <PRE><b>PROCEDURE</b> SwapReal (<b>VAR</b> x, y : <b>REAL</b>);</PRE>
+
+<P>and</P>
+
+  <PRE><b>PROCEDURE</b> CompareReal (x, y : <b>REAL</b>) : CompareResults;</PRE>
+
+<P>cannot be assigned, respectively, to variables of these two types due to the type compatibility rules for parameters. (An ARRAY OF LOC is not the same kind of parameter as a REAL.)</P>
+<H3><b><A NAME="16.1.3">16.1.3</A> Limitations of Fully Generic Structures</b></H3>
+<P>Such code can also be made entirely generic, but at the same kind of cost as noted for techniques in <A HREF="#16.1.1">section 16.1.1</A>. For instance, an ADT such as a list can only be established if, upon creation of an instance of such a list, information is made available about the size of the items to be listed. This is possible by using the following strategy:</P>
+
+<PRE><b>DEFINITION</B> <B>MODULE</b> Lists;
+
+<b>TYPE</b>
+  List;
+
+<b>PROCEDURE</b> Init (Size : <b>CARDINAL</b>) : List;
+
+<b>PROCEDURE</b> Append (Item : <b>ARRAY</B> <B>OF LOC</b>; To : List);
+
+       (* etc. *)
+
+<b>END</b> Lists.</PRE>
+
+<P>which could then be implemented in a manner similar to the following:</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> Lists;
+
+<b>IMPORT</b> Storage;
+<b>FROM</b> SYSTEM <b>IMPORT</b>
+  LOC;
+
+<b>TYPE</b>
+  NodePointer = <b>POINTER</B> <B>TO</b> Node;
+  Node = 
+    <b>RECORD</b>
+      to : NodePointer
+    <b>END</b>;
+  List = <b>POINTER</B> <B>TO</b> ListData;
+  ListData = 
+    <b>RECORD</b>
+      item_size, length : <b>CARDINAL</b>;
+      head : NodePointer
+    <b>END</b>;
+
+
+<b>PROCEDURE</b> Init (Size : <b>CARDINAL</b>) : List;
+
+<b>VAR</b>
+  Res : List;
+
+<b>BEGIN</b>
+  <b>NEW</b> (Res);
+  Res^.item_size := Size;
+  Res^.length := 0;
+  Res^.head := <b>NIL</b>;
+  <b>RETURN</b> Res
+<b>END</b> Init;
+
+<b>PROCEDURE</b> Append (Item : <b>ARRAY</B> <B>OF</b> LOC; To : List);
+
+<b>VAR</b>
+  Ptr : ADDRESS;
+  Last : NodePointer;
+
+<b>BEGIN</b>
+  <b>IF</b> To.size = <b>SIZE</b> (item) 
+    <b>THEN</b>
+       <b>ALLOCATE</b> (Ptr, To.size);
+       <b>IF</b> To.length = 0
+         <b>THEN</b>
+            To.head := Ptr
+          <b>ELSE</b>
+            Last := To.head;
+            <b>WHILE</b> Last.to <> <b>NIL</b>
+              <b>DO</b>
+                 Last := Last.to
+              <b>END</b>;
+            Last.to := Ptr;
+            Last.to.to := <b>NIL</b>
+          <b>END</b>
+    <b>ELSE</b>
+          (* code to raise a suitable exception *)
+    <b>END</b>
+<b>END</b> Append;
+
+<b>END</b> Lists.</PRE>
+
+<P>Notice in this example that, apart from the awkwardness of this method, no safe check can be conducted on the type of the item being enlisted, or on the instance of the list itself.  Only the size of the item one is attempting to enlist can be checked, so that if several lists of items of different types (but of the same size) are generated in a single application program, this technique is all but worthless.  The only fix evident would be to generate yet another module that would serve as a kind of type registry to generate unique values of a type <i>TypeId</i> that would then have to be produced when generating the instance of the generic type and then supplied on every call to one of the procedures so that its value could be checked.  Such a scheme might recover safety, but at the expense of both more awkwardness and re-inventing at run time the type checking that in most circumstances is done automatically by the compiler in a static fashion.</P>
+<H3><b><A NAME="16.1.4">16.1.4</A> Summary</b></H3>
+<P>One is forced to conclude that truely generic software is difficult to produce in the base Modula-2 language, and that doing so has significant cost.  That is, in the critical matter of producing re-usable code, Modula-2 fails to deliver on safe type-checked techniques, and so is a clumsy tool at best for generic software.</P>
+<P>The question is, can the base language rules be modified in a simple and unobtrusive way to allow the development of generic structures and techniques that permit the translator to do its proper job of type checking on the actual parameters when an instance of the structure or technique is employed?</P>
+<P>Such questions were raised by R. Sutcliffe at the 1987 meeting of the Modula-2 standards committee, and again in a discussion paper by K. Hopper and R. Sutcliffe at its 1994 meeting.  After two years of considering various proposals, the committee decided that the answer is yes. In order to meet these requirements for modern programming facilities, Modula-2 can be extended by introducing parameterised type abstraction modules as described in the following sections.</P>
+<P><b>NOTE</b>:  These facilities will only be available as described here in implementations that have included the generic Modula-2 extensions to the base language.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

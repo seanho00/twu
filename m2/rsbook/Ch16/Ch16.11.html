@@ -1,0 +1,104 @@
+<HTML><HEAD><TITLE>16.11 Assignments</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Assignments">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>16.11 Assignments</b></H2>
+
+<P><b>Questions</b></P>
+<P>1.  What is meant by the term <i>generic software</i>?</P>
+<P>2.  What new keyword is used in standard Generic Modula-2, and in what contexts is it used?</P>
+<P>3.  What are the four new kinds of compilation units in Generic Modula-2?</P>
+<P>4.  What are the three kinds of refining modules in Generic Modula-2?</P>
+<P>5.  Describe the kinds of formal parameters used in Generic Separate modules.</P>
+<P>6.  What actual parameters are compatible with these formal parameters?</P>
+<P>7.  Why are variables not permitted as actual parameters in refining modules when they are allowed for formal value parameters in procedures?</P>
+<P>8.  "The reserved word <i>TYPE</i> is re-used in Generic modula-2 as though it were a pervasive."  Explain this statement.</P>
+<P>9.  If Generic Modula-2 were implemented with a program that simply read a refining module and then created a copy for compilation of the appriopriate generic separate module without the parameters but with a few lines renaming the formal parameters as the actual ones in the style of <A HREF="Ch16.1.html#16.1.1">section 16.1.1</A>, what differences would there be between this and an implementation that evaluated the actual parameters and did the substitution as part of the compilation process without creating a copy?</P>
+<P>10. The generic module <i><A HREF="Ch16.7.html#Lists">Lists</A></i> in section 16.7 has a bare minimum of comments.  Study the code carefully and comment it in detail.</P>
+<P>11. Give a detailed description of generics in at least two other computing languages and compare both to each other and to Modula-2.</P>
+<P>12. Name at least four programs either from the examples in the book or from the assignments you have done that would <i>not</i> be appropriate as generic separate modules. Explain why in detail.</P>
+<P>13. Discuss ways in which Standard Generic Modula-2 might eliminate the need for variant records. Or, does it?</P>
+<P>14. In what ways is refining locally different from refining separately?</P>
+<P>15. What additional functionality does the ability to refine locally provide that cannot be had by refining separately only?</P>
+<P>16. What can a local refining module have that a separate refining module cannot have?</P>
+<P><b>Problems</b></P>
+<P>17. Consider the module <A HREF="../Ch3/Ch3.8.html#Arithseq"><i>ArithSeq</i></A> in section 3.8. Rewrite this module so as to be generic for the data in the sequence and test your code with a client that imports a refinement.</P>
+<P>18. Consider the module <A HREF="../Ch4/Ch4.3.html#SortThree"><i>SortThree</i></A> in section 4.3. Rewrite this module so as to be generic for the data to be sorted and test your code with a client that imports a refinement.</P>
+<P>19. Consider the module <A HREF="../Ch6/Ch6.9.html"><i>Points</i></A> in section 6.9. Rewrite this module so as to be generic for the data in the ordered pair and test your code with a client that imports a refinement.</P>
+<P>20. Consider the module <A HREF="../Ch6/Ch6.9.html#PointToPoint"><i>PointToPoint</i></A> in section 6.9. Rewrite this module so as to be generic for the data in the sequence and to have all the facilities of the module <i>Points</i> also available for export and then and test your code with a client that imports a refinement.</P>
+<P>21. Consider the module <A HREF="../Ch7/Ch7.11.html#Vectors"><i>Vectors</i></A> in section 7.11. Rewrite this module so as to be generic for the data in the components and test your code with a client that imports a refinement.
+22. Produce and test a generic insert sort.</P>
+<P>23. Produce and test a generic shell sort.</P>
+<P>24. Produce and test a generic merge sort.</P>
+<P>25. Produce and test a generic heapsort.</P>
+<P>26. Produce and test a refinement of a sort that can sort an array of your favourite type of records.</P>
+<P>27. Test by using a refinement of the generic module <i><A HREF="Ch16.7.html#Lists">Lists</i> in section 16.7.1.</A></P>
+<P>28. Complete and test the simple generic separate module <A HREF="Ch16.2.html#16.2.1Example1"><i>Stacks</i></A> in section 16.2.1 and test your code with a client that imports a refinement.</P>
+<P>29. Complete and test the simple generic separate module <A HREF="Ch16.2.html#16.2.1Example2"><i>Matrix</i></A> in section 16.2.1 and test your code with a client that imports a refinement. You will need to add some simple matrix manipulation procedures as you deem appropriate.</P>
+<P>30. Complete and test the simple generic separate module <A HREF="Ch16.2.html#16.2.1Example4"><i>Sorts</i></A> in section 16.2.1 and test your code with a client that imports a refinement.</P>
+<P>31. Complete and test the simple generic separate module <A HREF="Ch16.2.html#16.2.1Example5"><i>Counter</i></A> in section 16.2.1 and test your code with a client that imports a couple of refinements.</P>
+<P>32. Provide and test the implementation part of the generic module <i><A HREF="Ch16.7.html#16.7.2">Queues</A></i> in section 16.7.2.</P>
+<P>33. Provide and test the implementation part of the generic module <i><A HREF="Ch16.7.html#16.7.3">Stacks</A></i> in section 16.7.3.</P>
+<P>34. Design, implement, and test a generic binary tree ADT.</P>
+<P>35. From the last question, create, using refinement, a balanced binary tree.</P>
+<P>36. Complete and test the simple generic separate module <A HREF="Ch16.6.html#ListsSorted"><i>ListsSorted</i></A> and the refinement  <A HREF="Ch16.6.html#IntListsSorted"><i>IntListsSorted</i></A> in section 16.6 and test your code. You may make use of the <A HREF="Ch16.6.html#Lists">generic list module</A> in that same section, or another one elsewhere in the chapter.</P>
+<P>37. Complete and test the simple generic separate module <i>PriorityQueues</i> and the refinement <i>StudentPriorityQueues</i> in section 16.6 and test your code. You may make use of the generic queue module in that same section, or another one elsewhere in the chapter.</P>
+<P>38. Refine and test the generic module <A HREF="Ch16.7.html#Lists"><i>Lists</i></A> in section 16.7.1.</P>
+<P>39. Design, implement, and test a two way list ADT. Can you base it on the above module <A HREF="Ch16.7.html#Lists"><i>Lists</i></A>? Why or why not?</P>
+<P>40. Design, implement, and test a circular list ADT. Can you base it on the above module <A HREF="Ch16.7.html#Lists"><i>Lists</i></A>? What about on the two way list? Why or why not?</P>
+<P>41. Complete, refine and test the generic module <A HREF="Ch16.7.html#16.7.2"></A><i>Queues</i> in section 16.7.2.</P>
+<P>42. Complete, refine and test the generic module <A HREF="Ch16.7.html#16.7.3"></A><i>Stacks</i> in section 16.7.3.</P>
+<P>43. Pretend that yor implementation lacks the standard generic Modula-2 extensions. (You may not need to pretend.) Write a program that will take as input a file containing only a refining separate module (implementation or definition) and find and refine the appropriate generic separate module (text file) using renaming as in <A HREF="Ch16.1.html#16.1.1">section 16.1.1</A>.</P>
+<P><b>Challenges</b></P>
+<P>44. Add to the code in the last question the ability to refine as a local module.</P>
+<P>45. Redesign, implement, and test the <A HREF="../Ch7/Ch7.7.html#Stats">statistics modules</A> in section 7.7 so as to take advantage of generics. Show your design to your instructor before producing code. Among several other things, your modules should work for both real types.</P>
+<P>46. Gather several of your generic sorting techniques into a single module. Make a new such module, but with the comparison procedure type having reference semantics rather than the value semantics employed in most such routines. Can the choice of semantics also be made generic? Why or why not?</P>
+<P>47. Design, implement, and test a generic table ADT. Show your design to your instructor before producing code.</P>
+<P>48. Design, implement, and test a generic B-tree ADT.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

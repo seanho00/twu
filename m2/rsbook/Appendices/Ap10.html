@@ -1,0 +1,159 @@
+<HTML><HEAD><TITLE>Appendix 10--ISO Process Support</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 10<!--</B>‹<B>-->--ISO Process Support</B></H2>
+
+<P><!--revised 1995 06 11--></P>
+<H3><B><A NAME="A10.1">A10.1</A> Processes</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Processes;
+
+  (* This module allows concurrent algorithms to be expressed using processes.  A process is a unit of a program that has the potential to run in parallel with other processes. *)
+
+<B>IMPORT</B> SYSTEM;
+
+<B>TYPE</B>    
+  ProcessId;                      (* Used to identify processes *)
+  Parameter     = SYSTEM.ADDRESS; (* Used to pass data between processes *)
+  Body          = <B>PROC</B>;   (* Used as the type of a process body *)
+  Urgency       = <B>INTEGER</B>;     (* Used by the internal scheduler *)
+  Sources       = <B>CARDINAL</B>;    (* Used to identify event sources *)
+  ProcessesExceptions =        (* Exceptions raised by this module *)
+    (passiveProgram, processError);
+
+(* The following procedures create processes and switch control between them. *)
+
+<B>PROCEDURE</B> Create (procBody: Body; extraSpace: <B>CARDINAL</B>; procUrg: Urgency; procParams: Parameter; <B>VAR</B> procId: ProcessId);
+  (* Creates a new process with procBody as its body, and with urgency and parameters given by procUrg and procParams.  At least as much workspace (in units of SYSTEM.LOC) as is specified by extraSpace is allocated to the process.
+     An identity for the new process is returned in procId.
+     The process is created in the passive state; it will not run until
+activated. *)
+
+<B>PROCEDURE</B> Start (procBody: Body; extraSpace: <B>CARDINAL</B>; procUrg: Urgency; procParams: Parameter; <B>VAR</B> procId: ProcessId);
+  (* Creates a new process, with parameters as for Create.
+     The process is created in the ready state; it is eligible to run
+immediately. *)
+
+<B>PROCEDURE</B> StopMe ();
+  (* Terminates the calling process.
+     The process must not be associated with a source of events. *)
+
+<B>PROCEDURE</B> SuspendMe ();
+  (* Causes the calling process to enter the passive state.  The procedure only returns when the calling process is again activated by another process. *)
+
+<B>PROCEDURE</B> Activate (procId: ProcessId);
+  (* Causes the process identified by procId to enter the ready state, and thus to become eligible to run again. *)
+
+<B>PROCEDURE</B> SuspendMeAndActivate (procId: ProcessId);
+  (* Executes an atomic sequence of SuspendMe() and Activate(procId). *)
+
+<B>PROCEDURE</B> Switch (procId: ProcessId; <B>VAR</B> info: Parameter);
+  (* Causes the calling process to enter the passive state; the process
+identified by procId becomes the currently executing process. Info is used to pass parameter information from the calling to the activated process.
+     On return, info will contain information from the process that chooses to switch back to this one (or will be NIL if Activate or SuspendMeAndActivate are used instead of Switch). *)
+
+<B>PROCEDURE</B> Wait ();
+  (* Causes the calling process to enter the waiting state.  The procedure will return when the calling process is activated by another process, or when one of its associated eventSources has generated an event. *)
+
+(* The following procedures allow the association of processes with 
+sources of external events. *)
+
+<B>PROCEDURE</B> Attach (eventSource: Sources);
+  (* Associates the specified eventSource with the calling process. *)
+
+<B>PROCEDURE</B> Detach (eventSource: Sources);
+  (* Dissociates the specified eventSource from the program. *)
+
+<B>PROCEDURE</B> IsAttached (eventSource: Sources): <B>BOOLEAN</B>;
+  (* Returns TRUE if and only if the specified eventSource is currently
+associated with one of the processes of the program. *)
+
+<B>PROCEDURE</B> Handler (eventSource: Sources): ProcessId;
+  (* Returns the identity of the process, if any, that is associated with the
+specified eventSource. *)
+
+(* The following procedures allow processes to obtain their identity,
+parameters, and urgency. *)
+
+<B>PROCEDURE</B> Me (): ProcessId;
+  (* Returns the identity of the calling process (as assigned when the process was first created). *)
+
+<B>PROCEDURE</B> MyParam (): Parameter;
+  (* Returns the value specified as procParams when the calling process was created. *)
+
+<B>PROCEDURE</B> UrgencyOf (procId: ProcessId): Urgency;
+  (* Returns the urgency established when the process identified by procId was first created. *)
+
+(* The following procedure provides facilities for exception handlers. *)
+
+<B>PROCEDURE</B> ProcessesException (): ProcessesExceptions;
+  (* If the current coroutine is in the exceptional execution state because of the raising of a language exception, returns the corresponding enumeration value, and otherwise raises an exception. *)
+
+<B>PROCEDURE</B> IsProcessesException (): <B>BOOLEAN</B>;
+  (* Returns TRUE if the current coroutine is in the exceptional execution state because of the raising of an exception in a routine from this module; otherwise returns FALSE. *)
+
+<B>END</B> Processes.</PRE>
+<H3><B><A NAME="A10.2">A10.2</A> Semaphores</B></H3>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Semaphores;
+
+  (* Provides mutual exclusion facilities for use by processes. *)
+
+<B>TYPE</B>
+  SEMAPHORE;
+
+<B>PROCEDURE</B> Create (<B>VAR</B> s: SEMAPHORE; initialCount: <B>CARDINAL</B> );
+  (* Creates and returns s as the identity of a new semaphore that has its associated count initialized to initialCount, and has no processes yet waiting on it. *)
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> s: SEMAPHORE);
+  (* Recovers the resources used to implement the semaphore s, provided that no process is waiting for s to become free. *)
+
+<B>PROCEDURE</B> Claim (s: SEMAPHORE);
+  (* If the count associated with the semaphore s is non-zero, decrements this count and allows the calling process to continue; otherwise suspends the calling process until s is released. *)
+
+<B>PROCEDURE</B> Release (s: SEMAPHORE);
+  (* If there are any processes waiting on the semaphore s, allows one of them to enter the ready state; otherwise increments the count associated with s. *)
+
+<B>PROCEDURE</B> CondClaim (s: SEMAPHORE): <B>BOOLEAN</B>;
+  (* Returns TRUE if the call Claim(s) would cause the calling process to be suspended; in this case the count associated with s is not changed. Otherwise returns TRUE and the associated count is decremented. *)
+
+<B>END</B> Semaphores.</PRE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

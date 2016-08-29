@@ -1,0 +1,94 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2007 Lab0, Trinity Western University</title>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a>
+Lab0 (5 pts): FLTK Orientation</h1>
+
+<p>
+Your first assignment is just to get oriented with FLTK, Fluid, and our C++ 
+development environment.
+
+<ol>
+
+<li> Login to a PC on the senior lab.  If you don't have an account, ask Dave
+Friesen or Joel Schwartz.  Note that this lab is isolated from the rest of
+campus; your "My Documents" here is different from your "My Documents" (enoch)
+in the campus drop-in lab.
+
+<h2>"Hello World" example</h2>
+
+<li> Under "My Documents", make a subdirectory for this course
+and a nested subdirectory for this project, call it "hello".
+
+<li> Right-click to <a href="fltk/Makefile">download this template Makefile</a>
+and <a href="fltk/hello/hello.cxx">this hello.cxx code</a> 
+into your "hello" directory.  Make sure the Makefile doesn't have any file
+extension; Firefox/IE sometimes try to add an ".htm" extension.
+
+<li> Get to a Cygwin prompt: there should be an icon on your desktop, or try
+the Programs menu, Cygwin, "Cygwin bash shell".  Use "cd" to get to your
+"hello" directory.
+
+<li> <a href="http://fltk.org/doc-1.1/basics.html">Work through ch2 of the
+FLTK-1 documentation</a> (the "Hello World" example).  To compile, run
+"make" in your "hello" directory.  To run, type "./hello.exe" in that
+directory.  The "./" is needed to tell Cygwin bash to look in the current
+directory to find the executable, rather than the default run PATH.
+
+<li> Read through both the <tt>hello.cxx</tt> code and the <tt>Makefile</tt>
+and make sure you understand roughly what's going on.  Make sure you know how
+to modify the Makefile to fit your own projects.  Play around with the
+<tt>fltk-config</tt> command.
+
+<h2>FLUID video</h2>
+
+<li> <a href="http://seriss.com/people/erco/fltk-videos/fluid-intro.html">
+Watch Greg Ercolano's cool Fluid tutorial in flash (16 mins)</a>.
+You may wish to pause the video and follow along in your own Fluid window.
+Be sure you know how to do everything in the video.
+<li> If you copy Greg's Fluid "Execute command" (Alt-X), you can try this
+command instead: <tt>make &amp;&amp; ./hello.exe</tt> (use the name of your 
+executable).  Unfortunately, I don't know how to get Fluid to remember this
+command across sessions.
+<li> You optionally may also want to check out 
+<a href="http://seriss.com/people/erco/fltk-videos/">Greg's other FLTK videos</a>.
+
+<h2>"CubeView" example</h2>
+
+<li> Make another directory called "CubeView", and 
+<a href="fltk/CubeView/">Download all these files</a> into it.
+The CubeView.exe executable is a sample solution.
+
+<li> <a href="http://fltk.org/doc-1.1/fluid.html">Work through ch9 of the
+FLTK-1 documentation</a>.  Make sure to name your Fluid file "CubeViewUI.fl",
+so that the output source code is "CubeViewUI.cxx" and "CubeViewUI.h".
+
+<li> (addendum to ch9 tutorial): you will want to adjust the "Minimum",
+"Maximum", and "Step" values in the GUI tab of the slider widgets.
+
+<li>
+Run "make" and test it out!  Again, read through the Fluid-generated code and
+through CubeView.cxx to make sure you understand what's going on.
+
+<h2>Electronic turn-in</h2>
+
+<li> No lab write-up is required for this lab.
+
+<li> Package up all your CubeView files, including the executable: 
+from within your CubeView directory, run:
+<br><tt>tar czf your_name_lab0.tar.gz .</tt>
+<br>(Update: ZIP is okay, too: <tt>your_name_lab0.zip</tt>)
+
+<li> Upload this tarball to eCourses: in the Workspace, under the "Lab0"
+folder.
+
+<li> This lab is worth fewer point than the others, but be sure you've
+completed all these steps and understand FLTK and fluid by the due date!  The
+first "real" lab is in two days, and it assumes that you've already gotten all
+this down fluently.
+
+</ol>
+
+</body></html>

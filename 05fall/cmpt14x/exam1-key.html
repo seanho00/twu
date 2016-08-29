@@ -1,0 +1,233 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<style type="text/css"><!--
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+li {
+  margin-top: 1em;
+}
+.break {
+  page-break-before: always;
+}
+--></style>
+<title>CMPT/ISYS 14x Fall2005 Midterm ch1-4 KEY, Trinity Western University.
+7 Oct 2005.</title>
+</head><body>
+
+<ol>
+
+<li>
+Name the five steps to <b>top-down</b> problem solving
+as described in the text.
+<br>(It's okay if you can't remember the exact wording;
+<br>the concepts are more important.)
+
+<center><table width=80%><tr>
+<td width=20%>___Write___</td>
+<td width=20%>_Apprehend_</td>
+<td width=20%>__Design___</td>
+<td width=20%>_Execute___</td>
+<td width=20%>_Scrutinize</td>
+</tr></table></center>
+
+<li>
+Name the five computer <b>hardware</b> abstractions described in the text.
+(Again, concepts are more important than exact wording.)
+
+<center><table width=80%><tr>
+<td width=20%>__Input____</td>
+<td width=20%>_Memory____</td>
+<td width=20%>_Processor_</td>
+<td width=20%>__Control__</td>
+<td width=20%>__Output___</td>
+</tr></table></center>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to
+indicate if it is a <b>legal</b> Modula-2 identifier.
+<center><table><tr>
+<td><tt>	numApples	</tt></td><td width=90>_yes__</td>
+<td><tt>	sockeye-salmon	</tt></td><td width=90>_no___</td>
+<td><tt>	95percent	</tt></td><td width=90>_no___</td>
+</tr><tr>
+<td><tt>	DO		</tt></td><td width=90>_no___</td>
+<td><tt>	L337_hAX0rz	</tt></td><td width=90>_yes__</td>
+<td><tt>	Module		</tt></td><td width=90>_yes__</td>
+</tr></table></center>
+
+<li>
+Evaluate each of the following four <b>Boolean</b> expressions,
+or if they give an error, indicate why.
+<center><table cellpadding=2><tr>
+<td><tt>	~(CAP('q') &lt;&gt; 'Q')		</tt></td>
+<td>_________TRUE____________</td></tr><tr>
+<td><tt>	(5 / 11 = 2) OR NOT FALSE AND FALSE	</tt></td>
+<td>_________FALSE___________</td></tr><tr>
+<td><tt>	0#0&amp;~0/0&lt;0			</tt></td>
+<td>_invalid operand: NOT 0__</td></tr><tr>
+<td><tt>	(6 REM 4 &gt; 2) AND (2 REM 0 = 2)	</tt></td>
+<td>_________FALSE___________</td>
+</tr></table></center>
+
+<li>
+Given the following declarations:
+<pre>	card1, card2 : CARDINAL;
+	int1, int2 : INTEGER;
+	real1, real2 : REAL;	</pre>
+Indicate whether each of the following five <b>statements</b> is 
+"okay", "expression incompatible", or "assignment incompatible".
+A statement cannot be both expression and assignment incompatible;
+the first error returned is expression incompatibility.
+Assume all the variables have been initialized already.
+
+<center><table><tr>
+<td><tt>	int1 := int2 - 56;		</tt></td>
+<td>_____okay______________</td></tr><tr>
+<td><tt>	int1 := card2 DIV 7;		</tt></td>
+<td>_____okay______________</td></tr><tr>
+<td><tt>	real1 := real2 + 23;		</tt></td>
+<td>_expression incompat___</td></tr><tr>
+<td><tt>	int1 := VAL(CARDINAL, 52.3);	</tt></td>
+<td>_____okay______________</td></tr><tr>
+<td><tt>	real1 := TRUNC(real2);		</tt></td>
+<td>_assignment incompat___</td>
+</tr></table></center>
+
+
+<li>
+What is <b>wrong</b> with this loop?  How would you <b>fix</b> it?
+<pre>
+MODULE BuggyLoop;
+VAR
+	counter : CARDINAL;
+BEGIN
+	counter := 1;
+	REPEAT				<em>(* count up to 10 by twos *)</em>
+		<em>statement sequence;</em>
+		counter := counter + 2;
+	UNTIL counter &gt;= 10;		<em>(* counter never hits 10 exactly *)</em>
+END BuggyLoop.
+</pre>
+
+<li class="break">
+In the space below, write <b>pseudocode</b> for a function procedure
+<tt>GetReal</tt> that does <em>robust</em> interactive user input:
+
+<p>
+The procedure should prompt the user to enter a positive real value,
+which is then passed back to the calling context via one of 
+<tt>GetReal</tt>'s parameters.
+If the user does not enter a positive value, print an error message and
+prompt the user again.  Another parameter should specify how many times
+to keep trying before giving up.
+The function should also return TRUE if the user eventually typed a good
+value, or FALSE if it had to give up.
+
+<li>
+On a separate sheet of paper, write a <b>complete</b> Modula-2 module, 
+declaring the procedure <tt>GetReal</tt>.
+The body of the module should have a few different
+invocations of <tt>GetReal</tt> to test it out.
+
+<p>
+<em>Hints:</em> What parameters does <tt>GetReal</tt> need?  
+Call-by-value or call-by-reference?  What return type should it use?
+Be careful to choose different names for <em>formal</em> parameters
+and <em>actual</em> parameters.
+
+</ol>
+
+<h2><tt>GetReal</tt> Pseudocode:</h2>
+<ul>
+<li> Loop: <ul>
+  <li> Prompt user for input
+  <li> Get a real value from user
+  <li> If the value is greater than or equal to zero, then <ul>
+    <li> Send that value back to the calling context via a parameter
+    <li> Return TRUE from the function
+    </ul>
+  <li> Print an error message
+  <li> Keep looping until we run out of tries
+  </ul>
+<li> Return FALSE from the function
+</ul>
+
+<h2><tt>GetReal</tt> Code:</h2>
+<pre>
+(* This module is a test suite for the GetReal function,
+ * which repeatedly tries to get the user to input a positive real.
+ * Author: Sean Ho
+ *)
+MODULE GetRealTest;
+
+FROM STextIO IMPORT
+	WriteString, WriteLn, SkipLine;
+FROM SRealIO IMPORT
+	ReadReal, WriteFixed;
+
+VAR
+	userInput : REAL;
+
+(* This procedure prompts the user to type in a positive real.
+ * If the user types something negative, we try again, up to maxTries times.
+ * The procedure returns TRUE if we got a positive value, or FALSE if
+ * we gave up after maxTries attempts.
+ * Pre: maxTries &gt; 0 (maxTries = 0 means we don't even try once)
+ * Post: if the function returns TRUE, then result holds a positive real.
+ *)
+PROCEDURE GetReal (VAR result : REAL; maxTries : CARDINAL) : BOOLEAN;
+VAR
+	try : CARDINAL;
+BEGIN
+	try := 1;
+	WHILE try &lt;= maxTries
+		DO
+			WriteString ("Please type a positive number: ");
+			ReadReal (result);
+			SkipLine;
+			IF result &gt;= 0
+				THEN
+					WriteString ("Thanks!");
+					WriteLn;
+					RETURN TRUE;
+				END;
+			WriteString ("Sorry, please try again.  ");
+			INC (try);
+		END;
+	WriteString ("Bah, I give up!!");
+	WriteLn;
+	RETURN FALSE;
+END GetReal;
+
+BEGIN
+	WriteString ("Let's test GetReal with one try.");
+	WriteLn;
+	IF GetReal (userInput, 1)
+		THEN
+			WriteString ("Here's what GetReal produced:");
+			WriteFixed (userInput, 2, 0);
+			WriteLn;
+		ELSE
+			WriteString ("Aww, GetReal gave up on you.");
+			WriteLn;
+		END;
+	WriteString ("Let's test GetReal with three tries.");
+	WriteLn;
+	IF GetReal (userInput, 3)
+		THEN
+			WriteString ("Here's what GetReal produced:");
+			WriteFixed (userInput, 2, 0);
+			WriteLn;
+		ELSE
+			WriteString ("Aww, GetReal gave up on you.");
+			WriteLn;
+		END;
+END GetRealTest.
+
+</body></html>
+

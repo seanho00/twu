@@ -1,0 +1,153 @@
+<HTML>
+<HEAD>
+<TITLE>7.11 Applications from Physics</TITLE>
+<meta NAME="keywords" CONTENT="application, applications, physics, vector, vectors, rectangular, rectangle, coordinate, coordinates, polar, magnitude, modulus, absolute, value, argument, scalar, reflection, negation, multiplication, add, addition, multiplication, cross, product">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.11 Applications from Physics</B></H2>
+<P>Vectors were introduced in chapter 5 as one-dimensional arrays.  The simplest applications for vectors are motivated by representing them geometrically as arrows on a coordinate system.</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>Thus the length-2 vector <IMG SRC="Figure/Eq7.11.1.GIF" ALIGN="MIDDLE"><!----> is represented by an arrow with its initial point at the origin and terminating at the point (i, j).</P>
+<P>Notice that the vector can be completely determined by specifying either the <i>rectangular coordinates</i> (i, j), or the <i>polar coordinates</i> (r, <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q-->)  where r is the length of the vector, and <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--> is the angle it makes with the positive x-axis.</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.3.GIF" BORDER="1"></CENTER><!----></P>
+<P>In most, if not almost all applications employing vectors, it is the latter representation that best abstracts the data.</P>
+<H3><B>Examples of vector quantities:</B></H3>
+<P>1. A current of 15 km/h from the Northwest.<BR>
+2. A wind of 80 km/h from the Southeast.<BR>
+3. A force of 15 Newtons at 45<!--°-->&deg; to the x-axis.<BR>
+4. A car going 80 km/h East.<BR>
+5. A vertical velocity of 20 m/s.<BR>
+6. A plane travelling 1000 km/h on a 180 heading.</P>
+<BLOCKQUOTE><I><A NAME="Vector">A</A> <U>vector</U> is any quantity measured with both a length  and a direction. The length r of the vector is also called the <u>magnitude</u>, <U>modulus</U> or <U>absolute value</U>, and the direction <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q--> is the <U>argument</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>A quantity that has only a magnitude but no direction is called a <u>scalar</u>.</BLOCKQUOTE></I>
+<P>The examples of vectors given above are inconsistent, in that some have the  direction they point <I>from</I> and others the direction <I>to</I>.  For consistency, actual computations are always done with the direction <I>to</I> which the vector points, and this is measured counterclockwise from the positive x-axis, which is identified with East.  (Note that <I>headings</I> or <I>bearings</I> are by convention measured from North at 000 clockwise to 359 and must be translated into the standard system for computations.)</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>Thus the above examples would be translated into the standard measurement system as: (radian measure in  parentheses )</P>
+<P>1. 15 km/h at 315<!--°-->&deg; (7<!--¼-->&#188;/4)<BR>
+2. 80 km/h at 135<!--°-->&deg; (3<!--¼-->&#188;/4)<BR>
+3. 15 Newtons at 45<!--°-->&deg;  (<!--¼-->&#188;/4)<BR>
+4. 80 km/h at 0<!--°-->&deg;   (0)<BR>
+5. 20 m/s  at 90<!--°-->&deg; (<!--¼-->&#188;/2)<BR>
+6. 100 km/h at 270<!--°-->&deg; (3<!--¼-->&#188;/2)</P>
+<P>Thinking about an ADT Vector for a moment, it ought to be clear that there are similarities to the type <I>Point</I> discussed in section 6.9.  Assignment of a pair of numbers to an abstract vector and the extraction of components (these are called <i>projections onto the axes</i>) are both required to maintain the abstract nature of the type.  Extraction of the length (absolute value, denoted |v|) and angle (argument) as well as the construction of a vector from this information are also required.  Most of the translations defined on the ADT Point are not used with vectors, however.  The exceptions are:</P>
+<P>1. reflection in the origin, and this is termed <I>negation</I> as it results in a vector with the same length but the opposite direction, and<BR>
+2. scaling the vector, which is termed <I>scalar multiplication</I>.</P>
+<P>There are other operations required on vectors that are not appropriate for the type <I>Point</I>:</P>
+<P><I>Addition</I>:</P>
+<P>The first operation is motivated by the desire to determine the net effect of the two vectors of a similar kind acting simultaneously.</P>
+<H3><B>Example:</B></H3>
+<P>What single force is the equivalent of the two forces 15N at 10<!--°-->&deg; above the positive x-axis and 25N at 40<!--°-->&deg;  below the positive x-axis?</P>
+<H3><B>Answer:</B></H3>
+<P>Algebraically, the net forces in the x-direction are u<sub>x</sub>+ v<SUB>x</SUB> and in the y-direction are u<SUB>y</SUB> +v<SUB>y</SUB>.</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.5.GIF" BORDER="1"></CENTER><!----></P>
+<P>Geometrically, this can be expressed by sliding one of the vectors until its origin becomes the  head of the other, and thinking of the two as being in some sense <!--"-->&quot;successive<!--"-->&quot;.  The sum of the vectors is the diagonal of the triangle formed.</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>The order in which this  is done is irrelevant, so that (<B>u</B> + <B>v</B>) = (<B>v</B> + <B>u</B>).  That is, this operation is commutative, and the sum can also be thought of as the diagonal of a parallelogram.</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>An alternate labelling of the diagram shows the correspondence between the algebraic and geometric views of addition.</P>
+<P><CENTER><IMG SRC="Figure/Figure_7.8.GIF" BORDER="1"></CENTER><!----></P>
+<BLOCKQUOTE><I><A NAME="VectorSum">The</A> <U>sum</U> of two vectors u and v is the vector formed from summing the corresponding components of u and v.</I></BLOCKQUOTE>
+<P>The solution to the specific question posed above is therefore the vector:</P>
+<P><IMG SRC="Figure/Eq7.11.2.GIF"><!----></P>
+<P>If this is converted into the conventional (r, <IMG SRC="../Ch6/Figure/theta.GIF" HEIGHT=9 WIDTH=10><!--q-->) notation using <IMG SRC="Figure/Eq7.11.3.GIF"><!----> and <IMG SRC="Figure/Eq7.11.4.GIF"><!----> the result can be expressed as a force of 36.4N at 21.6<!--°-->&deg; below the positive x-axis.</P>
+<P><I>Subtraction</I>:</P>
+<P>As in arithmetic, subtraction is a short-cut for adding the opposite, that is,  <B>u</B> -  <B>v</B> =  <B>u</B> + (-<B>v</B>).  Since negation has already been postulated as an operation on an ADT <I>Vector</I>, no further algebra is necessary.  Geometrically, since <B>u</B> = <B>v</B> + (<B>u</B> - <B>v</B>), the difference <B>u</B> - <B>v</B> between two vectors produces the arrow from the endpoint of first to the endpoint of the second.  (The diagram is drawn with <B>u</B> as the resultant.)</P>
+<A NAME="fig7.9"></A><P><CENTER><IMG SRC="Figure/Figure_7.9.GIF" BORDER="1"></CENTER><!----></P>
+<P><I>Multiplication</I>:</P>
+<P>The only multiplication operation defined on two dimensional vectors is the <I>dot product</I>, given by u <!--€-->&#183; v = u<SUB>1</SUB>v<SUB>1</SUB> + u<SUB>2</SUB> v<SUB>2</SUB>.  (On three dimensional vectors, there is another multiplication called <I>cross product</I>.)  Here, the corresponding components are multiplied and summed.  Since the result is a single number, and not a vector (it has magnitude but not direction), this result is also known as the <I>scalar product</I>.</P>
+<P>By their very nature, vectors are more often abstracted using polar representation than using rectangular representation.  Addition must be done with the rectangular coordinates, but the resultant is almost always expressed in polar form, to correspond with the form in which the addends have been given.</P>
+<P>However, there are calculations that can be done in either rectangular or polar coordinates, as convenient, and the dot product is one of these.  Refer to <A HREF="#fig7.9">figure 7.9</A> above and suppose q is the angle between two vectors u and v.  By the law of cosines;</P>
+<P><IMG SRC="Figure/Eq7.11.5.GIF"><!----></P>
+<P>This provides a way of computing the dot product from the lengths of the two vectors and the angle between them without using the rectangular coordinates.  Alternately, since from this last line <IMG SRC="Figure/Eq7.11.6.GIF"><!----> the angle between two vectors could be calculated from their components without first obtaining the individual arguments as intermediate results.</P>
+<P>This latter observation may be more useful in a client program than in a library module, but taking all the other ideas into consideration, the following interface can be constructed.</P>
+<PRE>
+<A NAME="Vectors"></A><B>DEFINITION</B> <B>MODULE</B> Vectors;
+
+<B>TYPE</B> 
+  Vector = <B>ARRAY</B> [0..1] <B>OF</B> <B>REAL</B>;
+
+<B>PROCEDURE</B> assignR (x, y :  <B>REAL</B>) : Vector;
+  (* returns the vector with the supplied parameters as rectangular components *)
+
+<B>PROCEDURE</B> assignP (abs, arg: <B>REAL</B>) : Vector;
+  (* returns the vector with the supplied parameters as its length and argument *)
+
+<B>PROCEDURE</B> projectX (v : Vector) : <B>REAL</B>;
+  (* returns the x-coordinate of v *)
+
+<B>PROCEDURE</B> projectY (v : Vector) :<B>REAL</B>;
+  (* returns the y-coordinate of  v *)
+
+<B>PROCEDURE</B> abs (v : Vector) : <B>REAL</B>;
+  (* returns the length of the vector v *)
+
+<B>PROCEDURE</B> arg (v : Vector) : <B>REAL</B>;
+  (* returns the angle between v and the x-axis *)
+
+<B>PROCEDURE</B> neg (v : Vector) : Vector;
+  (* returns the vector with opposite components to v *)
+
+<B>PROCEDURE</B> scalarMult (v : Vector; scaleFactor: <B>REAL</B> ) : Vector;
+  (* returns the vector that is scaleFactor times as long as v and in the same direction *)
+
+<B>PROCEDURE</B> add (u, v : Vector) : Vector;
+  (* returns the vector sum of u and v *)
+
+<B>PROCEDURE</B> sub (u, v : Vector) : Vector;
+  (* returns the vector difference u - v *)
+
+<B>PROCEDURE</B> dotProduct (u, v : Vector) : <B>REAL</B>;
+  (* returns the scalar or dot product of the two vectors *)
+
+<B>END</B> Vectors.</PRE>
+<P>At this point, it is necessary to make a decision about the meaning of representation of the type <I>Vector</I>.  (The syntax has already been chosen, but the semantics and the implementation details have not yet.)  Will the ordered pair stored contain the rectangular coordinates or the polar coordinates?  So long as the client program will not be looking at these numbers directly, it may not matter in one sense.  However, unlike the similar type <I>Point</I> discussed in <A HREF="../Ch6/Ch6.9.html">section 6.9</A>, vectors are more naturally thought of in polar terms (angle and length) than in rectangular ones (x and y-coordinates).  Polar is therefore the best representation.</P>
+<P>With this much of the work done, however, and all the important decisions made, the production of the implementation part of the module and a test harness to solve vector problems is left as one of the exercises at the end of the chapter.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,434 @@
+<HTML>
+<HEAD>
+<TITLE>13.6 Sorting With Auxiliary Storage</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.6 Sorting With Auxiliary Storage</B></H2>
+<P>All the sorting methods considered thus far used a single array as both the source and the destination of the data.  In most cases, a single temporary variable to hold a pivot or a value for swapping was all the extra storage required.  Sometimes, however, it may not be practical to do things this way, and additional so data being sorted may be required.  Consider, for instance, the problem of combining two already sorted lists of items into a single sorted list.</P>
+<BLOCKQUOTE><I><A NAME="Merging">Combining</A> two sorted lists into a single sorted list is called <U>merging</U>.</I></BLOCKQUOTE>
+<P>The original lists will not do as a destination for the data (they may well be too small for one thing).  Even if each were actually large enough to hold all the data from both, an auxiliary store might still be needed to hold data from one while that from the other was being inserted into its proper place.</P>
+<H3><B>Example:</B></H3>
+<P>Merge list 2 with list 1.</P>
+<P><I>list 1</I>: <BR>
+1,4,5,23,78,90,340,1190,3456,...<BR>
+<I>list 2</I>:<BR> 150,234,250,300,340,456,784,987,1121,...</P>
+<P>Because of this, merging is usually done from the two source lists into a third destination one.  A counter is set up for each of the three lists, and the smallest of the two items at the current counter positions in the source lists is placed at the counter position in the destination.  When one of the two sources is exhausted, the other source is copied into the destination.  Here is some pseudocode to express this algorithm:</P>
+<PRE>
+Merge:
+set countS1, countS2 and countD all to zero
+while countS1 <!--<-->&lt; lengthS1 and countS2 <!--<-->&lt; lengthS2
+  if source1 [countS1] <!--<-->&lt; source2 [countS2] then
+    set dest [countD] to source1 [countS1]
+    increment countS1
+  else
+    set dest [countD] to source2 [countS2]
+    increment countS2
+  end while
+  increment countD
+if countS1 = lengthS1 then
+  while countS2 <!--<-->&lt; lengthS2
+    set dest [countD] to source2 [countS2]
+    increment countS2
+    increment countD
+  end while
+else
+  while countS1 <!--<-->&lt; lengthS1
+    set dest [countD] to source1 [countS1]
+    increment countS1
+    increment countD
+  end while
+end if</PRE>
+<P>This code could be simplified somewhat by introducing sentinels after the end of the two source ranges, provided those positions are available for use, and one is not concerned about a few extra comparisons.  In this version, when one list is exhausted, the comparisons are still made, but to the sentinel, and the other list is appended without having to write separate code to do so.</P>
+<PRE>
+Merge1:
+set countS1, and countS2 to zero
+set source1 [lengthS1] and source1 [lengthS2] to maxcard
+for countD = 0 to lengthS1 + lengthS2 
+  if source1 [countS1] <!--<-->&lt; source2 [countS2] then
+    set dest [countD] to source1 [countS1]
+    increment countS1
+  else
+    set dest [countD] to source2 [countS2]
+    increment countS2
+  end while
+  increment countD</PRE>
+<P>Merging is a useful technique for combining two sorted disk files into one.  If the cost of the extra space can be borne, however, the method can also be used to sort an array.</P>
+<H3><B><A NAME="13.6.1">13.6.1</A> The Merge Sort</B></H3>
+<P>One of the difficulties with the quicksort was the fact that it could not be guaranteed to partition the initial list into two (roughly) equal sub-lists, even when the middle item in the initial list is chosen as the pivot.  This partitioning could be <I>forced</I> to take place, though it would be done at the expense of not positioning a particular item in the right position when the partition is done.  Some other method must then be found to get the items in the right positions.</P>
+<P>Suppose upon doing a partition that there is only one item in the sub-list created.  Then, the sub-list is already sorted, and the routine can return.  If there are two items, they can be compared and swapped if necessary.  On a small scale, this gives a left and right sub-list (but not around a placed pivot) that are both sorted in themselves.  At this point, the two lists need to be combined into a single sorted entity before returning to the next higher level of the recursive calls.</P>
+<P>It is at this point that a merge is performed and some extra storage is required.  Since all the sorting routines thus far have sorted open arrays, where the number of elements has not been specified ahead of time, it may not be immediately obvious where the extra storage space is going to come from.  One solution is to enclose the working code in a nested procedure with a value parameter to which the array can be copied.  The internal procedure can then copy from portions of this copy to the actual array which can remain global to it.  Because the two lists being merged are adjacent in the original array, it is not possible to use the trick with the sentinels mentioned above, so the first of the two algorithms is employed here.</P>
+<PRE>
+<B>PROCEDURE</B> MergeSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; lBound, uBound : <B>CARDINAL</B>);
+
+<B>PROCEDURE</B> Merge (temp : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+           left, mid, right : <B>CARDINAL</B>);
+
+(* merges lists [left .. mid] and [mid + 1 .. right] to the
+  list [left .. right] copying from the temporary copy to the main
+   array global to this procedure *)
+
+<B>VAR</B>
+  countS1, countS2, countD : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  countS1 := left;
+  countS2 := mid + 1;
+  countD := left;
+  
+<B>WHILE</B> (countS1 <!--<-->&lt;= mid) <B>AND</B> (countS2 <!--<-->&lt;= right)
+  <B>DO</B>
+    <B>IF</B> (temp [countS1] <!--<-->&lt; temp [countS2]) 
+      <B>THEN</B>
+        source [countD] := temp [countS1];
+        <B>INC</B> (countS1)
+      <B>ELSE</B>
+        source [countD] := temp [countS2];
+        <B>INC</B> (countS2)
+      <B>END</B>; (* if *)
+    <B>INC</B> (countD);
+  <B>END</B>;  (* while *)
+<B>IF</B> countS1 <!-->&gt; mid
+  <B>THEN</B>
+    <B>WHILE</B> countS2 <!--<-->&lt;= right
+      <B>DO</B> 
+        source [countD] := temp [countS2];
+        <B>INC</B> (countS2);
+        <B>INC</B> (countD);
+      <B>END</B>;  (* while *)
+  <B>ELSE</B>
+    <B>WHILE</B> countS1 <!--<-->&lt;= mid
+      <B>DO</B> 
+        source [countD] := temp [countS1];
+        <B>INC</B> (countS1);
+        <B>INC</B> (countD);
+      <B>END</B>;  (* while *)
+  <B>END</B>; (* if *)
+
+<B>END</B> Merge;
+
+<B>VAR</B> 
+  middle : <B>CARDINAL</B>;
+
+<B>BEGIN</B> (* main mergesort procedure *)
+
+<B>IF</B> lBound <!-->&gt;= uBound
+  <B>THEN</B>
+    <B>RETURN</B>
+  <B>END</B>;
+
+  middle := (lBound + uBound) <B>DIV</B> 2; (* do the partition *)
+  MergeSort (source, lBound, middle); (* sort the left half *)
+  MergeSort (source, middle + 1, uBound); (* sort the right half *)
+  Merge (source, lBound, middle, uBound);
+    (* merge the two into a single list *)
+<B>END</B> MergeSort;</PRE>
+<P>Although the merge sort can guarantee that it will do its comparisons and merges using partitions that are equal in size, the additional copying and the extra work in merging the two lists together make this sort uncompetitive with the quicksort.</P>
+<P>It is possible to merge two lists that are sub-lists of a larger one in place without using any auxiliary storage.  One way this can be done is to scan both lists side-by-side swapping items in the ith positions in each list that are out of order.  (This is actually a k-sort with k equal to (list length) DIV 2.  At the conclusion of this scan, the least item will be in the lowest position of the first sub-list. If this process is now repeated but with the first list starting at its second item, two items will be in place.  When this step is repeated up to the last item in the first list, all its items will be less than or equal to all items in the second part and the entire list will be sorted.</P>
+<H3><B>Example:</B></H3>
+<P>Merge list 2 with list 1.</P>
+<P><I>list 1</I>:   1,   4,   5,  23,  78,  90, 340,1190,3456<BR>
+<I>list 2</I>: 150, 234, 250, 300, 340, 456, 784, 987,1121</P>
+<P>On the first pass, only the items in the last two positions are interchanged, and the first list is considered sorted at the first position and so shortened, producing:</P>
+<P>   1,   4,   5,  23,  78,  90, 340, 987,1121<BR>
+ 150, 234, 250, 300, 340, 456, 784,1190,3456</P>
+<P>which is now interpreted as:</P>
+<P>   1,<BR>
+       4,   5,  23,  78,  90, 340, 987,1121<BR>
+     150, 234, 250, 300, 340, 456, 784,1190,3456</P>
+<P>and sorted as:</P>
+<P>   1,<BR>
+       4,   5,  23,  78,  90, 340, 784,1121<BR>
+     150, 234, 250, 300, 340, 456, 987,1190,3456</P>
+<P>and subsequently, as:</P>
+<P>   1,   4,<BR>
+      5,  23,  78,  90, 340, 456, 987<BR>
+    150, 234, 250, 300, 340, 784,1121,1190,3456</P>
+<P></P>
+<P>   1,   4,   5,<BR>
+     23,  78,  90, 300, 340, 784<BR>
+    150, 234, 250, 340, 456, 987,1121,1190,3456</P>
+<P></P>
+<P>   1,   4,   5,  23,<BR>
+     78,  90, 250, 340, 456<BR>
+    150, 234, 300, 340, 784, 987,1121,1190,3456</P>
+<P></P>
+<P>   1,   4,   5,  23,  78,<BR>
+     90, 234, 300, 340<BR>
+    150, 250, 340, 456, 784, 987,1121,1190,3456</P>
+<P></P>
+<P>   1,   4,   5,  23,  78,  90,<BR>
+    150, 250, 340<BR>
+    234, 300, 340, 456, 784, 987,1121,1190,3456</P>
+<P></P>
+<P>   1,   4,   5,  23,  78,  90, 150,<BR>
+    234, 300<BR>
+    250, 340, 340, 456, 784, 987,1121,1190,3456</P>
+<P></P>
+<P>   1,   4,   5,  23,  78,  90, 150, 234,<BR>
+    250<BR>
+    300, 340, 340, 456, 784, 987,1121,1190,3456</P>
+<P>at which point the list is sorted.  The code is presented below:</P>
+<PRE>
+<B>PROCEDURE</B> Merge1 (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; left, mid, right : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  startS1, countS1, countS2 : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  startS1 := left; (* set first start point at left *)
+  <B>WHILE</B> startS1 <!--<-->&lt;= mid (* will go through left list *)
+    <B>DO</B> (* set up counters on both sides *)
+      countS1 := startS1;
+      countS2 := mid + 1;
+
+      <B>WHILE</B> (countS2 <!--<-->&lt;= right)
+       <B>DO</B>
+         <B>IF</B> source [countS1] <!-->&gt; source [countS2]
+           <B>THEN</B>
+             Swap (source [countS1], source [countS2])
+           <B>END</B>;
+         <B>INC</B> (countS1);
+         <B>INC</B> (countS2);
+       <B>END</B>;  (* while countS2 *)
+     <B>INC</B> (startS1); (* next starting position in list one *)
+   <B>END</B>;  (* while startS1 *)
+<B>END</B> Merge1;</PRE>
+<P>Yet another variation is to step through the first sorted sub-list, comparing with the first item only of the second sorted sub-list.  If something is found in the first list that is larger than the first item of the second list, the two items are swapped.  The new item in the first list will be in its correct final place.  The new item in the second list may not be the smallest one there, so it must be inserted into its correct place.  Using the example above,</P>
+<H3><B>Example:</B></H3>
+<P>Merge list 2 with list 1.</P>
+<P><I>list 1</I>: <BR>
+1, 4, 5, 23, 78, 90, <U>340</U>, 1190, 3456
+<BR>
+<I>list 2</I>:<BR>
+<U>150</U>, 234, 250, 300, 340, 456, 784, 987, 1121</P>
+<P>The first stopping place in the scan is at 340, where the number 150 from the second list belongs (everything before that in the first list is already in place.)  Place 150 into a temporary variable, assign 340 to its position in the second first list, and then insert the number 340 into its correct place in <I>list2</I> by a series of shifts to the left.  This produces:</P>
+<P><I>list 1</I>: <BR>
+1, 4, 5, 23, 78, 90, 150, 1190, 3456
+<BR>
+<I>list 2</I>:<BR>
+234, 250, 300, 340, 350, 456, 784, 987, 1121</P>
+<P>At this point, there are still two sorted lists to merge, but the process can be picked up from where it was left off in the first list.  On successive steps, one gets:</P>
+<P><I>list 1</I>: <BR>
+1, 4, 5, 23, 78, 90, 150, 234, 3456
+<BR>
+<I>list 2</I>:<BR>
+250, 300, 340, 350, 456, 784, 987, 1121, 1190</P>
+<P></P>
+<P><I>list 1</I>: <BR>
+1, 4, 5, 23, 78, 90, 150, 234, 250
+<BR>
+<I>list 2</I>:<BR>
+300, 340, 350, 456, 784, 987, 1121, 1190, 3456</P>
+<P>As soon as the end of the first list is reached, the merge is complete, for all the items in the second list are  greater than the last one in the first list, and both lists have been kept in order throughout.</P>
+<P>Writing this algorithm as a Modula-2 procedure, one obtains:</P>
+<PRE>
+<B>PROCEDURE</B> Merge2 (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; left, mid, right : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  countS1, countS2, temp : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  countS1 := left;  (* start through first list *)
+  <B>WHILE</B> countS1 <!--<-->&lt;= mid (* quit when first list exhausted *)
+    <B>DO</B>
+      <B>IF</B> source [countS1] <!-->&gt; source [mid + 1]
+      (* compare to first in second list *)
+        <B>THEN</B> 
+          temp := source [countS1]; (* set aside first list item *)
+          source [countS1] := source [mid + 1]; (* give its spot up *)
+
+          (* now find the correct place for that item that was in the
+          first list and must now be in the second one instead *)
+
+          countS2 := mid + 2;
+          <B>WHILE</B>  (countS2 <!--<-->&lt;= right) <B>AND</B> (temp <!-->&gt; source [countS2])
+            <B>DO</B> (* a typical insert loop *)
+              source [countS2 - 1] := source [countS2];
+              <B>INC</B> (countS2);
+            <B>END</B>;
+          source [countS2 - 1] := temp;  (* stick it in its spot *)
+        <B>END</B>; (* if *)
+      <B>INC</B> (countS1); (* continue counting on first list *)
+     <B>END</B>;  (* while *)
+
+<B>END</B> Merge2;</PRE>
+<P>It has been left as an exercise to the student to determine whether this method of merging gives better results than the one that used additional storage.  Notice, however, that many shifts in position are required by this method, and this will reduce its efficiency.</P>
+<P>There are other sorting methods than the ones presented in this chapter.  However, the ones given here are represent the easiest to understand and implement for the purpose of sorting arrays.  Other advanced techniques also have their place in specialized circumstances, for not all data comes in arrays.  These other methods will be touched upon later in the text, once the appropriate data structures have been considered.
+<H3><B><A NAME="AuxPointers"></A><A NAME="13.6.2">13.6.2</A> Pointers and Sorting</B></H3>
+<P>As indicated in <A HREF="../Ch12/Ch12.2.html#12.2.2">section 12.2.2</A>, another situation where one might wish to sort using additional storage is the one in which the actual data items are large and therefore inconvenient to move around in memory. In such cases, it may be more efficient to use an array of pointers to the storage where the items are kept, and just move the pointers around.  This is especially useful if the records are to be sorted sometimes according to one field, and sometimes according to another.</P>
+<P>For example, suppose that the basic data types were defined by:</P>
+<PRE>
+<B>FROM</B> Strings <B>IMPORT</B>
+  Compare, CompareResults;
+<B>TYPE</B>
+  Data =
+    <B>RECORD</B>
+      studentNumber : <B>CARDINAL</B>;
+      studentName : <B>ARRAY</B> [0..80] <B>OF</B> <B>CHAR</B>;
+      (* many other fields here *)
+    <B>END</B>;
+  DataPoint = <B>POINTER</B> <B>TO</B> Data;
+  CompareDataProc = <B>PROCEDURE</B> (Data, Data) : CompareResults;
+  Adrs = <B>ARRAY</B> [1 .. 13] <B>OF</B> DataPoint;
+ 
+<B>VAR</B>
+  theStuff : <B>ARRAY</B> [1 .. 13] <B>OF</B> Data;
+  theStuffNumAdrs, theStuffNameAdrs : Adrs;
+  count : <B>CARDINAL</B>;
+  CompareData : CompareDataProc;</PRE>
+<P>The purpose of the procedure type is to allow the code for the sorting procedure to be written only once, but called in two different ways from the main program.  Here, a test program was written using the following procedures:</P>
+<PRE>
+<B>PROCEDURE</B> CompareDataNum (first, second : Data) : CompareResults;
+  
+<B>BEGIN</B>
+  <B>IF</B> first.studentNumber <!--<-->&lt; second.studentNumber
+      (* alter code to suit data type *)
+    <B>THEN</B>
+      <B>RETURN</B> less
+    <B>ELSIF</B> first.studentNumber <!-->&gt; second.studentNumber <B>THEN</B> 
+       (* here too *)
+      <B>RETURN</B> greater
+    <B>ELSE</B>
+      <B>RETURN</B> equal
+    <B>END</B>;
+<B>END</B> CompareDataNum;
+
+<B>PROCEDURE</B> CompareDataName (first, second : Data) : CompareResults;
+  
+<B>BEGIN</B>
+  <B>RETURN</B> Compare (first.studentName, second.studentName);
+<B>END</B> CompareDataName;</PRE>
+<P>First, the main data array <I>theStuff</I> was initialized by giving values to the two fields.  This data will remain in place and not be moved throughout the sorting.  Next, a simple procedure was written to output the data, and one of the versions of the ShellSort was modified in a single place (highlighted in the code below) to handle the data:</P>
+<PRE>
+<B>PROCEDURE</B> ShellSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> DataPoint; lBound, uBound : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  k, listCount, count, moveCount: <B>CARDINAL</B>;
+  temp : DataPoint; 
+  
+<B>BEGIN</B>
+  k := 1;
+  <B>REPEAT</B>   (* get first <!--"-->&quot;k<!--"-->&quot; in sequence *)
+    k := 3 * k + 1
+  <B>UNTIL</B> k <!-->&gt; uBound - lBound;
+  
+  <B>REPEAT</B>
+    k := k <B>DIV</B> 3;   (* work backwards on same sequence *)
+    <B>FOR</B> listCount := lBound <B>TO</B> lBound + k - 1
+      (* Start as many k-lists as possible. *)
+      <B>DO</B>
+        count := listCount + k;
+        <B>WHILE</B> count <!--<-->&lt;= uBound 
+          <B>DO</B>  (* each k-sort starts here *)
+            temp := source [count];
+                 (* set aside pointer to unsorted one *)
+            moveCount := count;
+            <B>WHILE</B> (moveCount <!-->&gt;= lBound + k)
+              <B>AND</B> (* (source [moveCount - k] <!-->&gt; temp) *) (* original *)
+           (CompareData (source [moveCount - k]^, temp^) = greater)
+              <B>DO</B>
+                source [moveCount] := source [moveCount - k];
+               (*  move along to make room *)
+                <B>DEC</B> (moveCount, k)   (* count backward in k-list *)
+              <B>END</B>;
+            source [moveCount] := temp;   (* insert new item *)
+            <B>INC</B> (count, k);
+          <B>END</B>;   (* while count *)
+      <B>END</B>;   (* for listCount *) 
+  <B>UNTIL</B> k = 1
+<B>END</B> ShellSort;</PRE>
+<P>In the main program code, two copies were made of the arrays of pointers to this data:</P>
+<PRE>
+  <B>FOR</B> count := 1 <B>TO</B> 13 (* set up addresses *)
+    <B>DO</B>
+    theStuffNumAdrs [count] := <B>ADR</B> (theStuff [count])
+  <B>END</B>;
+  theStuffNameAdrs := theStuffNumAdrs; (* start both arrays same *)</PRE>
+<P>Finally, the sorting procedures were checked with invocations (among other) including:</P>
+<PRE>
+  CompareData := CompareDataNum;
+  PrintIt (theStuffNumAdrs,13, 4, 5);  WriteLn; (* before num sort *)
+  ShellSort (theStuffNumAdrs,0,12); (* whole thing *)
+  PrintIt (theStuffNumAdrs,13, 4, 5);  WriteLn; (* after num sort *)
+
+  CompareData := CompareDataName;
+  
+  PrintIt (theStuffNameAdrs,13, 4, 5); WriteLn; (* before name sort *)
+  ShellSort (theStuffNameAdrs,0,12); (* whole thing *)
+  PrintIt (theStuffNameAdrs,13, 4, 5); WriteLn; (* after name sort *)</PRE>
+<P>This version of the procedure PrintIt is not included here, but the parameters indicate the number of items to print, and some formatting information.  The results were:</P>
+<PRE>
+  113 = joe           77 = bob            0 = alice         50 = gerda
+  113 = richard      114 = allan        900 = fred         113 = freda      
+   15 = donna        300 = rod           13 = don          135 = joe        
+    1 = Alouyicious   
+
+    0 = alice          1 = Alouyicious   13 = don           15 = donna
+   50 = gerda         77 = bob          113 = freda        113 = joe        
+  113 = richard      114 = allan        135 = joe          300 = rod        
+  900 = fred       
+
+  113 = joe           77 = bob            0 = alice         50 = gerda      
+  113 = richard      114 = allan        900 = fred         113 = freda      
+   15 = donna        300 = rod           13 = don          135 = joe        
+    1 = Alouyicious   
+
+    1 = Alouyicious    0 = alice        114 = allan         77 = bob       
+   13 = don           15 = donna        900 = fred         113 = freda      
+   50 = gerda        113 = joe          135 = joe          113 = richard
+  300 = rod </PRE>
+<P>Notice that because the actual array is accessed via the pointers (including in the procedure <I>PrintIt</I>) the sorting by numbers has no affect on the sorting by name<!--‹-->--the pointers are in different arrays, and the original data is never moved.  Of course, something similar could be done with other sorting algorithms, and with much larger data collections.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

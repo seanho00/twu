@@ -1,0 +1,213 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 12 Answer Key</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 12</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	A pointer is a variable that identifies a memory location and holds the address of some other entity.  It "points" to the other entity.</P>
+
+<P>2.	The "^" character is known as the dereferencing operator.</P>
+
+<P>3.	A use of point employs the value of a memory location.  Using point^ references the actual value.  It has been dereferenced.</P>
+
+<P>4.	All pointers are assignment compatible with the type ADDRESS and with the type of NIL.</P>
+
+<P>5.	Pointers are more easily moved around than actual values.  Moving a data value may take significantly more steps than changing the value of a pointer.</P>
+
+<P>6.	Some pointers should be guarded, because they could hold the value NIL.  Referencing an unguarded pointer when it holds the value NIL causes an error.</P>
+
+<P>7.	Procedures that can do pointer arithmetic are (from SYSTEM):  ADDADR, SUBADR, DIFADR.</P>
+
+<P>8.	A dangling pointer is a pointer that has been left pointing to a memory location that has been deallocated.</P>
+
+<P>9.	Passing a pointer as a value parameter makes a copy of the pointer and therefore will be pointing to the same memory location as the original pointer.  Since it is pointing to the same memory location, any changes to the value dereferenced will be reflected in the original memory, replicating the effect of a variable procedure.</P>
+
+<P>10.	A stack is an area of memory where procedure activation records are placed.  Each time a procedure is called, an activation record is placed on top of the last activation record.  Every time a procedure calls itself, another copy of its activation record is created, and they have to be removed in reverse order they were placed.  The stack's ability to grow is dependent on how much memory is allocated to the stack and how deep the current chain of procedure calls is.  A stack pointer is a marker that delimits the top end of the currently allocated stack.  It is not available for program manipulation.</P>
+
+<P>11.	An activation record is the contents of the memory assigned to a procedure for its parameters and variables when it is invoked.</P>
+
+<P>12.	Since a new activation record is created for each procedure call for that specific procedure,  each level of activation yields a new set of variables for independent manipulation.  Once a recursive call is finished it can give a value back to the previous activation record and the values are passed down the chain to the original procedure.  The amount of recursion that can be handled depends on how much memory is allocated to the stack.</P>
+
+<P>13.	The use of activation records is automatic, not under programmer control and so not truly dynamic.</P>
+
+<P>14.	A heap is the region of memory above the stack and in which program-controlled dynamic allocation and deallocation of memory can take place.</P>
+
+<P>15.	NEW and DISPOSE are used in Modula-2 to manage the heap.</P>
+
+<P>16.	These two procedures are relatively low level and their implementations may vary by machine, so they call ALLOCATE and DEALLOCATE, which must be visible.  Their other magical property is that they have more than one possible syntax.</P>
+
+<P>17.	The two library procedures are ALLOCATE and DEALLOCATE from Storage.  Any procedures with these names can be used, however, so the programmer can define ones other than those in Storage and make them visible.</P>
+
+<P>18.	A function procedure identifier cannot be dereferenced.</P>
+
+<P>19.	One can have the record contain another pointer; thus every allocation of such a record generates another pointer.</P>
+
+<P>20.	Two applications of dynamic memory include a dynamic database and an open ended queue.</P>
+
+<P>21.	A linked list consists of a sequence of dynamically allocated data items; each element of which includes a pointer to the next item on the list.  The first item is the head, the last the tail.  One needs at least a head pointer pointing to the head of the list.</P>
+
+<P>22.	Two extensions to the linked list ADT are append and delete.  In append an item is linked to the last item of the linked list.  In delete,  an item is removed from one of the places in the list.</P>
+
+<P>23.<pre>	DEFINITION MODULE LinkListADT;
+
+	TYPE
+	  ItemPointType = POINTER TO ItemData;
+	  ItemData =
+	  RECORD
+	    number : CARDINAL;
+	    toPoint : ItemPointType;
+	  END;
+
+	PROCEDURE Create (VAR List : ItemPointType);
+
+	PROCEDURE Dispose (VAR List : ItemPointType);
+
+	PROCEDURE AppendFirst (item : ItemData);
+
+	PROCEDURE Append (item : ItemData);
+
+	PROCEDURE Delete (index : CARDINAL);
+
+	END LinkListADT.</pre></P>
+
+<P>24.	An opaque data type is a type that is defined in a definition module, but whose details are hidden in the implementation module.  They have to be declared as another opaque type or as a pointer type.</P>
+
+<P>25.	This limitation was made because it was thought that a compiler could only set aside memory for opaque types if they were all the same size and it was also thought that this implies they must be pointers.</P>
+
+<P>26.	When keeping track of variant dynamic records, one must reserve only the amount necessary to store each variant field.  More house keeping is needed to ensure that the right amount of space is allotted for each variant.</P>
+
+<P>27.	The varying amounts of memory needed for variants of a dynamic record are handled using the alternate syntax of NEW.</P>
+
+<P>28.	Static memory allocation is determined when the program starts to run.  The maximum amount of memory for the largest possible variant must be set aside.</P>
+
+<P>29.	Sub-record tags do affect the memory allocation, whether static or dynamic.</P>
+
+<P>30.	One would use handle^^ to point to the integer.</P>
+
+<P>31.	The built-in identifier SIZE will return the size of the type point^.</P>
+
+<P><B>Problems</B></P>
+
+<P>Note: Not all problems are shown.  Most problems are left up to students as labs.</P>
+
+<pre>(*  Created
+    June 22 1999
+    Chapter 12 Question 34 *)
+
+MODULE TestVariantSize;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, SkipLine;
+FROM SWholeIO IMPORT
+  WriteCard;
+FROM Storage IMPORT
+  ALLOCATE, DEALLOCATE;
+FROM SYSTEM IMPORT
+  TSIZE;
+TYPE
+  EnumDatType = (red, green, blue);
+  Item = POINTER TO SomeItem;
+  SomeItem =
+    RECORD
+      int : INTEGER;
+      card : CARDINAL;
+      real : REAL;
+
+      CASE bool : BOOLEAN OF
+        TRUE:
+          colour : EnumDatType; |
+        FALSE:
+          char : CHAR;
+          str : ARRAY [0..19] OF CHAR;
+      END; (* end CASE *)
+
+      CASE color : EnumDatType OF
+        red:
+          array1 : ARRAY [0..9] OF CARDINAL; |
+        green:
+          array2 : ARRAY [0..9] OF INTEGER; |
+        blue:
+          array3 : ARRAY [0..9] OF Item;
+      END; (* end CASE *)
+    END; (* end RECORD *)
+
+VAR
+  test1, test2, test3 : Item;
+
+BEGIN
+  NEW (test1, blue);
+  WriteString ("The size of test1^ is :");
+  WriteCard (SIZE(test1), 0);
+  WriteLn;
+  WriteString ("The tsize of test1^ is :");
+  WriteCard (TSIZE(SomeItem, blue), 0);
+  WriteLn;
+  NEW (test2, TRUE);
+  WriteString ("The size of test2^ is :");
+  WriteCard (SIZE(test2), 0);
+  WriteLn;
+  WriteString ("The tsize of test2^ is :");
+  WriteCard (TSIZE(SomeItem, TRUE, blue), 0);
+  WriteLn;
+  NEW (test3, FALSE);
+  WriteString ("The size of test3^ is :");
+  WriteCard (SIZE(test3), 0);
+  WriteLn;
+  WriteString ("The tsize of test3^ is :");
+  WriteCard (TSIZE(SomeItem, FALSE, green), 0);
+  WriteLn;
+  SkipLine;
+END TestVariantSize.</pre>
+
+</BODY>
+
+</HTML>

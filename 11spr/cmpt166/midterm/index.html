@@ -1,0 +1,235 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Midterm :: CMPT166 11SP :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li> Describe the <b>MVC</b> design pattern, and give an example of
+  each component of the MVC system. <u>[4]</u>
+<br><i><dl>
+<dt>Model:
+<dd>Data structures and methods to interact with the data.
+e.g., 2D array of letters for word-search
+<dt>View:
+<dd>Display/output, summary of the data, statistics, etc.
+e.g., Swing labels, text output
+<dt>Controller:
+<dd>Input/control from the user or other programs.
+e.g., Swing buttons, keyboard input
+</dl></i>
+<div class="answerbox" style="height:10em"></div>
+
+<li> What does the acronym <b>CRUD</b> mean, in reference to
+database systems? Describe an example application in which CRUD
+might be useful.  <u>[4]</u>
+<br><i>
+  Create, Read, Update, Destroy: e.g., a student enrolment database:
+  add a new student to the system, print out information on an existing
+  student, change a student's information (name, GPA, etc.), and
+  remove a student from the system (e.g., after graduation).
+</i>
+<div class="answerbox" style="height:8em"></div>
+
+<li> Consider Java interfaces and abstract classes. <ol class="subparts">
+  <li> What is an <b>interface</b> in Java?  Describe an example. <u>[3]</u>
+  <br><i>
+    An interface is a named set of methods, for instance the ActionListener
+    interface specifies the actionPerformed() method and advertises that a class
+    knows how to respond to action events.</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> What is an <b>abstract class</b>?  Describe an example. <u>[3]</u>
+  <br><i>
+    An abstract class is not meant to be instantiated directly. An abstract
+    superclass can be used as a way of organizing its subclasses under one
+    category. For example, Dog, Cat, and Cow all are within the Mammal category.
+    It makes sense to have specific instances of Dog, Cat, and Cow, but not of
+    Mammal. Mammal is the abstract superclass.</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Describe the <b>differences</b> between interfaces and abstract classes.
+    <u>[3]</u>
+  <br><i>
+    Interfaces specify functionality,
+    i.e., what a class knows how to do.  Abstract superclasses specify identity,
+    i.e., what a class is.  Multiple classes that inherit from different
+    superclasses may implement the same interface, but in Java multiple
+    inheritance is not permitted. </i>
+  <div class="answerbox" style="height:8em"></div>
+</ol>
+
+<li> What is the effect of the <b><tt>static</tt></b> keyword on
+attributes and methods?  Why must <tt>main()</tt> be declared static?
+Describe another example of an appropriate use of 'static' on an
+attribute or method.
+<u>[5]</u>
+<br><i>
+  Static members belong to the whole class, rather than to each instance.
+  Static methods can be invoked from the class without needing to instantiate
+  the class.  <tt>main()</tt> has to be static because when it is run no
+  objects have been instantiated yet.
+  The String library has a number of static utility methods, e.g.,
+  String.format().  Another example is the constant Math.PI.
+</i>
+<div class="answerbox" style="height:8em"></div>
+
+<li> What is <b>event-driven programming</b>?  Describe an example
+in detail. <u>[3]</u>
+<br><i>
+  Action happens in response to events.  Events may be user-triggered
+  (e.g., click on button, or press a key), or may be synthetic (e.g., timer).
+  Event handlers/listeners are connected to each object which may send events,
+  and the listeners define what should happen when an event is received
+  (i.e., the callbacks).
+  E.g., when a user clicks on a JButton, an ActionEvent is sent.
+  If the JButton has an ActionListener set, then that listener's
+  actionPerformed() method is called.  When the callback completes,
+  control returns to the main event loop, which waits for the next event.
+</i>
+<div class="answerbox" style="height:8em"></div>
+
+<li> Name and briefly describe the features of at least 4
+<b>Swing widgets</b> (i.e., subclasses of JComponent).
+If you can't remember the exact name of the class, describe the
+widget in as much detail as you can.  <u>[5]</u>
+<br><i>Many to choose from: JPanel, JFrame, JButton,
+  JCheckBox, JComboBox, JRadioButton, JLabel, JTextField, JPasswordField,
+  JTextArea, JMenu, JMenuItem, JSlider, JProgressBar, ...
+</i>
+<div class="answerbox" style="height:10em"></div>
+
+<li class="break"> Consider the UML class diagram below (from
+  <a href="http://www.agiledata.org/essays/objectOrientation101.html">
+    AgileData.org</a>).
+  <br><img src="agiledata-class.gif" width="100%">
+  <ol class="subparts">
+    <li> Describe all the relationships involving the Seminar class
+    (top right) in the diagram.  Consider multiplicity. <u>[6]</u>
+    <br><i>
+      Each Seminar has at least one SeminarEnrollment object (which
+      references a Student).  There can be any number of students
+      on the waitlist.  There can be either 0 or 1 professors instructing
+      the Seminar.  The Seminar is an offering of a Course (although
+      there can be multiple Seminars for one Course).
+    </i>
+    <div class="answerbox" style="height:6em"></div>
+    <li> What is the role of the SeminarEnrollment class?  Why not
+    just have a direct relationship between Student and Seminar? <u>[3]</u>
+    <br><i>
+      The SeminarEnrollment object holds the info for a registered
+      Student in a Seminar: e.g., that Student's marks.
+      If the SeminarEnrollment class did not exist, the marks would
+      have to be stored either in the Student (disconnected from the
+      course) or in the Seminar (disconnected from the Student).
+    </i>
+    <div class="answerbox" style="height:4em"></div>
+    <li> What does the looping arrow below and to the right of the
+    Professor class mean?  Consider multiplicity. <u>[3]</u>
+    <br><i>
+      Professors can mentor other Professors: one would be the advisor,
+      and the other would be the associate.  Each Professor can be
+      the advisor for any number of associates, but each associate may
+      have at most one advisor.
+    </i>
+    <div class="answerbox" style="height:4em"></div>
+  </ol>
+
+<li class="break"> On a separate page, declare simple <b>Java classes</b> and sketch 
+a UML <b>class diagram</b> to formalize the following set of statements.
+Declare and diagram every (non-primitive) class used.
+Implementations of methods are not required.<u>[10]</u>
+<ul>
+  <li> Every <tt>Person</tt> has a <tt>name</tt> and a <tt>phoneNumber</tt>.
+  <li> <tt>TWUPerson</tt> is a kind of <tt>Person</tt>, and every 
+    <tt>TWUPerson</tt> has a <tt>yearOfContact</tt> (i.e., when they joined the
+    university).
+  <li> Every <tt>Student</tt> is a <tt>TWUPerson</tt> and has a <tt>GPA</tt>
+    and can <tt>registerForClasses</tt>.
+  <li> Another kind of <tt>TWUPerson</tt> is an <tt>Employee</tt>, who
+    also has a <tt>salary</tt>.
+  <li> Two kinds of <tt>Employee</tt>s are <tt>Faculty</tt> and <tt>Staff</tt>.
+    <tt>Faculty</tt> can <tt>teachClass()</tt>.
+  <li> <tt>joe</tt> is a <tt>Student</tt>.
+</ul>
+<i><pre>
+abstract class Person {
+	String name;
+	int phoneNumber;
+}
+abstract class TWUPerson extends Person {
+	int yearOfContact;
+}
+class Student extends TWUPerson {
+	float GPA;
+	void registerForClasses();
+}
+class Employee extends TWUPerson {
+	float salary;
+}
+class Faculty extends TWUPerson {
+	void teachClass();
+}
+class Staff extends TWUPerson {}
+Student joe = new Student();
+</pre></i>
+
+<li> Consider Java copy constructors. <ol class="subparts">
+  <li> What is a <b>copy constructor</b>, and what is it used for? <u>[3]</u>
+  <br><i>A copy constructor performs deep copy: the one parameter is another object
+    of the same type, and the copy constructor copies attributes from the other
+    object into the current object.</i>
+  <div class="answerbox" style="height:4em"></div>
+  <li> On a separate page, implement in Java a <tt>Song</tt> class with
+  attributes <tt>title</tt> (String), <tt>artist</tt> (String), and 
+  <tt>year</tt> (int).  Write three constructors: one with no parameters, one
+  with three parameters (String, String, float), and one that is a copy
+  constructor.  Remember that 'String' is a class in Java, not a primitive type.
+  <u>[5]</u>
+  <br><i> See <a href="Song.java">Song.java</a>.  </i>
+</ol>
+
+<li> The task in this programming problem is to implement a complete
+Java program using serialized I/O on the <tt>Song</tt> class you defined in
+the previous question.
+<br><br>
+Your program should open the file "<tt>song.obj</tt>", which you can
+assume contains one serialized Song (e.g., generated by your program previously).
+Read in the Song object, append the year in parentheses to the title, and
+store the object back to the same file.
+<br><br>
+For example, if the file "<tt>song.obj</tt>" previously contained a song with
+title "Amazing Grace", artist "John Newton", and year 1779, then after your
+program runs, the file should contain a song object that has a
+title of "Amazing Grace (1779)".
+<br><br>
+You do need to worry about exceptions that could be raised.
+You do not need any keyboard/console I/O.
+You may need to modify your <tt>Song</tt> class slightly.
+Docstrings and comments are not necessary but may be good for partial
+credit.
+
+Some standard Java classes you may find helpful:
+<tt>File, FileInputStream/FileOutputStream, 
+  ObjectInputStream/ObjectOutputStream</tt>.
+Don't worry about importing (i.e., assume all relevant imports are already done).
+
+<u>[10]</u>
+<br><i>
+  See <a href="SongTitle.java">SongTitle.java</a>.
+</i>
+
+</ol>
+
+</body></html>

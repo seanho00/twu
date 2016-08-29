@@ -1,0 +1,203 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Final Exam :: CMPT166 10SP :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers online ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 110
+
+<ol class="main">
+
+<li> What do you think of the <b>Java</b> programming language overall?
+Compare it to another language you know. <u>[4]</u>
+<br><br><br><br><br><br>
+
+<li> What is <b>object-oriented</b> programming?  How does it differ
+from procedural programming? <u>[4]</u>
+<br><i>
+  Procedural programming is action-oriented: the code is a sequence of
+  procedures, and the data structures are passed as parameters to the
+  procedures. The focus is on the 'verbs'. In contrast, object-oriented
+  programming is data-oriented: code is organized into classes, centred
+  around objects, and the procedures are treated as methods within each
+  class. The focus is on the 'nouns'.
+</i>
+<br><br><br><br><br>
+
+<li> Describe and contrast the four options we have in Java for 
+<b>access modifiers</b> on attributes/methods. <u>[4]</u>
+<br><br><i><dl>
+<dt> <tt>private</tt> <dd> only methods in this class can access
+<dt> (no modifier) <dd> methods in this class and this package can access
+<dt> <tt>protected</tt> <dd> also subclasses can access
+<dt> <tt>public</tt> <dd> anyone can access
+</dl></i>
+<br><br><br>
+
+<li> What is the effect of the <b><tt>static</tt></b> keyword on
+attributes and methods?  Why must <tt>main()</tt> be declared static?
+Describe another example of an appropriate use of 'static' on an
+attribute or method.
+<u>[6]</u>
+<br><i>
+Static members belong to the whole class, rather than to each instance.
+Static methods can be invoked from the class without needing to instantiate
+the class.  <tt>main()</tt> has to be static because when it is run no
+objects have been instantiated yet.
+The String library has a number of static utility methods, e.g.,
+String.format().  Another example is the constant Math.PI.
+</i>
+<br><br><br><br><br><br>
+
+<li> What is the effect of the <b><tt>final</tt></b> keyword on
+  <ul class="subparts">
+  <li> instance variables? <u>[2]</u>
+  <br><i>Constant: cannot change the value of the variable</i>
+  <br>
+
+  <li> methods? <u>[2]</u>
+  <br><i>Subclasses cannot override (redefine) the method</i>
+  <br>
+
+  <li> classes? <u>[2]</u>
+  <br><i>Cannot be subclassed</i>
+</ul>
+
+<li> Tell me everything you know about <b>polymorphism</b>.
+Why is it cool?  <u>[5]</u>
+<br><i>
+Polymorphism in object-oriented programming is when a single program
+or method can act upon multiple types of objects using the same code.
+If we write a program to operate on instances of a superclass, then we
+can run that program on instances of subclasses of the given superclass
+without writing a new version of the program.  We can even create new 
+subclasses that hadn't been thought of when the program was written, and
+it will run just the same on instances of the new subclass.
+</i>
+<br><br><br>
+
+<li class="break"> Contrast <b>TCP</b> with <b>UDP</b>.  Describe an application in
+which TCP would be more appropriate, and one in which UDP would be more
+appropriate. <u>[6]</u>
+<br><i>
+TCP provides connection-oriented network communication, with certain guarantees
+about the circuit.
+UDP provides connectionless communication: packets may arrive out of order, or
+duplicated, or may not arrive at all.
+</i>
+<br><br><br><br><br>
+
+<li> What is an <b>interface</b> in Java?  What is an <b>abstract class</b>?
+What's the difference?  Describe an example of each (you may come up with your
+own).  <u>[6]</u>
+<br><i>
+  An abstract class is not meant to be instantiated directly. An abstract
+  superclass can be used as a way of organizing its subclasses under one
+  category. For example, Dog, Cat, and Cow all are within the Mammal category.
+  It makes sense to have specific instances of Dog, Cat, and Cow, but not of
+  Mammal. Mammal is the abstract superclass.<br>
+  An interface is a named set of methods, for instance the ActionListener
+  interface specifies the actionPerformed() method and advertises that a class
+  knows how to respond to action events.  Interfaces specify functionality,
+  i.e., what a class knows how to do.  Abstract superclasses specify identity,
+  i.e., what a class is.  Multiple classes that inherit from different
+  superclasses may implement the same interface, but in Java multiple
+  inheritance is not permitted.
+</i>
+<br><br><br><br><br><br>
+
+<li> What is object <b>serialization</b> in Java?  Describe, in as much detail
+as you can, a situation where serialization might be useful. <u>[4]</u>
+<br><i>
+  Serialization converts Java objects into byte streams that can be sent across
+  any I/O channel. Objects can be serialized if their classes implement the
+  Serializable interface and if all its non-transient instance variables are
+  serializable. Primitive types (int, char, etc.) and arrays of primitive types
+  are serializable. Any kind of inter-process communication may benefit from
+  object serialization: e.g., a client-server restaurant ordering system may
+  wish to send objects that represent customer orders over a network I/O
+  channel.
+</i>
+<br><br><br><br><br>
+
+<li> Write a complete Java program that reads in a file "input.txt",
+removes all <b>digits</b>, and outputs the result in the file "output.txt".
+Include full <b>doc-comments</b> with pre-/post-conditions.  <u>[8]</u>
+<br><i>
+  (See <a href="StripDigits.java">StripDigits.java</a>.)
+</i>
+
+<li> A <b><tt>BankTransaction</tt></b> consists of an account number, date,
+dollar amount, and a flag that indicates whether it was a withdrawal or deposit.
+Write a complete Java <b>class</b> defining a BankTransaction, including 
+attributes, constructors (include a default constructor with no parameters
+and a copy constructor), and get/set methods. <u>[10]</u>
+<br><i>
+  (See <a href="BankTransaction.java">BankTransaction.java</a>.)
+</i>
+
+<li> Design a <b>class hierarchy</b> of your own choosing: include an 
+abstract superclass and at least two concrete subclasses.  Design attributes and
+methods appropriate for each class.  Design a method that takes advantage of the
+<b>polymorphism</b> in this class hierarchy, and explain how it does so.  The
+polymorphic method does not have to live inside any of the classes. <u>[8]</u>
+
+<li class="break"> What is <b>Android</b>?
+Describe how applications are made in Android.  <u>[5]</u>
+<br><i>
+  Android is a Linux-based operating system made by Google and the Open Handset 
+  Alliance, designed for mobile phones, tablets, and low-end computers.
+  It is also a component system for building mobile applications.
+  Android applications may be composed of multiple Activities, background
+  Services, BroadcastReceivers, and ContentProvider databases.
+  Each component is implemented by making a subclass of the appropriate type
+  (Activity, Service, etc.) and overriding specific methods (hooks), e.g.,
+  onCreate(), onResume(), etc.
+</i>
+<br><br><br><br><br><br><br>
+
+<li> Name and describe three <b>Creational</b> design patterns. 
+Give an example or analogy for each. <u>[6]</u>
+<br><i> factory method, abstract factory, prototype, singleton </i>
+<br><br><br><br><br><br><br><br><br>
+
+<li> Name and describe three <b>Structural</b> design patterns.
+Give an example or analogy for each. <u>[6]</u>
+<br><i> facade, adapter, bridge, proxy, decorator, flyweight</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li> Name and describe three <b>Behavioural</b> design patterns.
+Give example or analogy for each. <u>[6]</u>
+<br><i>observer, mediator, chain of responsibility, iterator, 
+  memento, command </i>
+<br><br><br><br><br><br><br><br><br>
+
+<li> We wish to design software to run a <b>programmable thermostat</b>
+(controls heating and cooling).  Draw a UML <b>use-case</b> diagram for the
+thermostat. <u>[8]</u>
+
+<li> You want to learn from your friend what he had for breakfast.
+The problem is that you are standing on opposite cliffs of a large <b>canyon</b>,
+so you have to yell, and you and your friend might <b>hear incorrectly</b> or
+<b>not hear</b> what was said.  You also don't know how many items he had for
+breakfast.  Draw a UML <b>sequence diagram</b> for a reliable way to learn
+what your friend had for breakfast via this unreliable communication channel.
+<em>(This is roughly what <b>yodeling</b> was originally used for.)</em>
+<u>[8]</u>
+
+</ol>
+
+</body></html>
+
+

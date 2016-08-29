@@ -1,0 +1,441 @@
+<HTML><HEAD><TITLE>17.2 Complex Numbers</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Complex Numbers">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>17.2 Complex Numbers</B></H2>
+<P><h3><B><a name="17.2.1">17.2.1 </a>Complex Numbers Defined</B></h3></P>
+<P>There are a number of applications in mathematics and physics for which the real number are insufficient. An extended one of these will be considered later in this chapter. From an aesthetic point of view alone, it is convenient to be able to talk about solutions to equations such as x<SUP>2</SUP> = -4 in much the same way as equations such as x<SUP>2</SUP> = 4.  After all, there is not, at first glance, much difference between the two, except that the solution to the former, whatever it is, it is not a real number, because the square of a real number can only be positive.  To answer this and other more important needs, we define the complex numbers:</P>
+
+<P><A NAME="Complex"></A>	<I>A <U>Complex number</U> has the form a + bi where a and b are Real numbers and i<SUP>2</SUP> = -1. The number "a" is called the <U>real</U> part,  and the number "b" is the <U>imaginary</U> part.</I></P>
+
+<P>In pictorial form, a complex number can be thought of as being a point in the complex plane. This is defined by two axes, much like a two dimensional real plane, except that only the horizontal axis has real numbers. The vertical or <I>imaginary</I> axis is marked in units of <I>i</I> (the square root of negative one).  Points in the plane can be though of as ordered pairs (a, b), but are normally written in the notation above as <I>a + bi</I>.</P>
+
+<CENTER><IMG SRC="Figure/figure17.1.GIF" BORDER="1"></CENTER><!---->
+
+<P>The complex number zero is defined to be the one that represents the origin in the above diagram, that is a complex number is zero if and only if both its real part and its imaginary part are zero (0 + 0i).</P>
+<P>Addition and subtraction of complex numbers is performed in the same way as it is for vectors (see Chapter 7) where the components are added.  Thus, in order to add two complex numbers, one just adds the real parts and we add the imaginary parts.  That is, </P>
+
+<P>(a + bi)  +  (c + di)  =  (a + c)  +  (b + d)i</P>
+
+<P>To multiply two complex numbers, one treats them as any other binomial expressions and multiplies each term of the first by each term of the second:</P>
+
+<P>(a + bi)  *  (c + di)  =  a  * (c + di)  +  bi *  (c + di) =  (ac - bd)  +  (ad + bc)i</P>
+
+<P>The reciprocal of a pure imaginary complex number (one with zero real part) is found by multiplying the numerator and denominator by i.  Thus:</P>
+
+<P><IMG SRC="Figure/figure17.1a.GIF"><!----></P>
+
+<P>For other divisions, one multiplies numerator and denominator by the complex conjugate of the denominator. This results in a real denominator and a complex number in the proper form.</P>
+
+<P><A NAME="ComplexConjugate"></A><I>	The<U> complex conjugate</U> of a complex number a + bi is the number a - bi.</I></P>
+
+<P><IMG SRC="Figure/figure17.1b.GIF"><!----></P>
+
+<P>In the introductory Calculus course it is shown that certain transcendental functions of real numbers can be expanded (so as to be approximated) as power series in the following way:</P>
+
+<P><IMG SRC="Figure/figure17.1c.GIF"><!----></P>
+
+<P>If one replaces <I>x</I> with <I>ix</I> in the latter series, it can readily be seen that:</P>
+
+<P><IMG SRC="Figure/figure17.1d.GIF"><!----></P>
+
+<P>This last equation is known as Euler's Formula.  From it, one also has that</P>
+
+<P><IMG SRC="Figure/figure17.1e.GIF"><!----></P>
+
+<P>so that it is also possible to write:</P>
+
+<P><IMG SRC="Figure/figure17.1f.GIF"><!----></P>
+
+<P>These formulas provide a means of taking powers and roots of complex numbers readily. First observe that, if in figure 17.1, the distance from the origin to the point representing the complex number is denoted as <I>r</I> and the angle that a ray through the origin and this point makes with the positive real axis is denoted <I>t</I>, then as for vectors, one can write:</P>
+
+<P><IMG SRC="Figure/figure17.1g.GIF"><!---->    and     <IMG SRC="Figure/figure17.1h.GIF"><!----></P>
+<P>Thus, if , for instance z = (1 - i)<SUP>4</SUP> were expressed using these two relations as </P>
+
+<P><IMG SRC="Figure/figure17.1i.GIF"><!----></P>
+
+<P>then one could write</P>
+
+<P><IMG SRC="Figure/figure17.1j.GIF"><!----></P>
+
+<P>and this works for fractional exponents as well, allowing one to take various roots, so that, for instance, the sixth root of one can be written as </P>
+
+<P><IMG SRC="Figure/figure17.1k.GIF"><!----></P>
+
+<P>and since the angle  <I>0</I> is coterminal with the angles 2¼, 4¼, 6¼, 8¼, and 10¼ there are also roots at</P>
+
+<P><IMG SRC="Figure/figure17.1l.GIF"><!----></P>
+
+<P>for each of these, yielding</P>
+
+<P><IMG SRC="Figure/figure17.1m.GIF"><!---->for n = 1,2,3,4, and 5.</P>
+
+<P>At n = 6 the results begin to repeat. After all, there can only be six sixth roots of a number.  These roots are therefore :</P>
+
+<P><IMG SRC="Figure/figure17.1n.GIF"><!----></P>
+<P>This discussion of power and root finding has been undertaken mainly as illustration.  However, the underlying principles will be returned to later in the chapter.</P>
+
+<P><h3><a name="17.2.2">17.2.2 </a>Implementing non-ISO Complex Numbers</h3></P>
+<P>There are a variety of approaches to implementing complex numbers in non ISO standard versions of Modula-2. One could do so transparently:</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> ComplexNumbers;
+(* by R. Sutcliffe
+  last modified 1996 10 30 *)
+
+<B>TYPE</B>
+  Parts = (re, im);
+  Complex = <B>ARRAY</B> Parts <B>OF</B> <B>REAL</B>;
+
+<B>PROCEDURE</B> Cmplx (real, imag : <B>REAL</B>) : Complex;
+(* constructs a complex from an ordered pair *)
+<B>PROCEDURE</B> Re (num : Complex) : <B>REAL</B>;
+(* returns the real part of a complex number *)
+<B>PROCEDURE</B> Im (num : Complex) : <B>REAL</B>;
+(* returns the imaginary part of a complex number *)
+<B>PROCEDURE</B> Add (first, second : Complex) : Complex;
+<B>PROCEDURE</B> Subtract (first, second : Complex) : Complex;
+<B>PROCEDURE</B> Multiply (first, second : Complex) : Complex;
+<B>PROCEDURE</B> Divide (first, second : Complex) : Complex;
+<B>END</B> ComplexNumbers.</pre>
+
+<P>Alternately, one could use a record with two fields called <I>re</I> and <I>im</I>, and otherwise the same arithmetic operations. </P>
+<P>The implementation module for this data type as defined above is fairly straightforward, and most of it is shown below:</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> ComplexNumbers;
+(* by R. Sutcliffe
+  last modified 1996 10 30 *)
+
+<B>PROCEDURE</B> Cmplx (real, imag : <B>REAL</B>) : Complex;
+(* constructs a complex from an ordered pair *)
+<B>VAR</B>
+  temp : Complex;
+<B>BEGIN</B>
+  temp [re] := real;
+  temp [im] := imag;
+  <B>RETURN</B> temp;
+<B>END</B> Cmplx;
+
+<B>PROCEDURE</B> Re (num : Complex) : <B>REAL</B>;
+(* returns the real part of a complex number *)
+<B>BEGIN</B>
+  <B>RETURN</B> num[re];
+<B>END</B> Re;
+
+<B>PROCEDURE</B> Im (num : Complex) : <B>REAL</B>;
+(* returns the imaginary part of a complex number *)
+<B>BEGIN</B>
+  <B>RETURN</B> num[im];
+<B>END</B> Im;
+
+<B>PROCEDURE</B> Add (first, second : Complex) : Complex;
+<B>VAR</B>
+  temp : Complex;
+<B>BEGIN</B>
+  temp [re] := first [re] + second [re];
+  temp [im] := first [im] + second [im];
+  <B>RETURN</B> temp;
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Subtract (first, second : Complex) : Complex;
+<B>VAR</B>
+  temp : Complex;
+<B>BEGIN</B>
+  temp [re] := first [re] - second [re];
+  temp [im] := first [im] - second [im];
+  <B>RETURN</B> temp;
+<B>END</B> Subtract;
+<B>PROCEDURE</B> Multiply (first, second : Complex) : Complex;
+<B>VAR</B>
+  temp : Complex;
+<B>BEGIN</B>
+  temp [re] := first [re] * second [re] - first [im] * second [im];
+  temp [im] := first [re] * second [im] + first [im] * second [re]; 
+  <B>RETURN</B> temp;
+<B>END</B> Multiply;
+
+<B>PROCEDURE</B> Divide (first, second : Complex) : Complex;
+<B>VAR</B>
+  temp : Complex;
+<B>BEGIN</B>
+(* left as an exercise *)
+<B>END</B> Divide;
+	
+<B>END</B> ComplexNumbers.</pre>
+
+<P>There are other things that would still have to be taken care of, such as I/O and various mathematical operations, but these could be done in other library modules. In addition, it might be desirable to have a separate ADT called <I>LongComplex</I> whose parts were LONGREAL.</P>
+<P>For minimal testing purposes at this juncture, it is worth while to include a small application program that makes use of the data type <I>Complex</I>. It incidentally addresses the issue of writing complex numbers.</P>
+
+<h3><a name="17.2.3">17.2.3</a> Testing the non-ISO Complex Implementation</h3>
+
+<pre><B>MODULE</B> TestComplex;
+(* by R. Sutcliffe
+  to test transparent implementation of complex numbers
+  modified 1996 10 30 *)
+<B>FROM</B> ComplexNumbers <B>IMPORT</B>
+  Complex, Add, Multiply, Cmplx, Re, Im;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar, WriteLn, WriteString;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal;
+<B>VAR</B> 
+  number1, number2, number3 : Complex;
+
+<B>PROCEDURE</B> WriteComplex (number : Complex; flen : <B>CARDINAL</B>);
+(* Of the space provided in flen, four places are needed to write the + between the two reals, and one to write the letter i.  The rest is divided equally between the two reals. *)
+<B>VAR</B>
+  realFlen : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> flen <!--<-->&lt; 4
+    <B>THEN</B>
+      realFlen := 0;
+    <B>ELSE</B>
+      realFlen := (flen - 4) <B>DIV</B> 2;
+    <B>END</B>;
+  WriteReal (Re(number), realFlen);
+  WriteString (" + ");
+  WriteReal (Im(number), realFlen);
+  WriteChar ('i');
+<B>END</B> WriteComplex;
+
+<B>BEGIN</B>
+  (* Initialize complex numbers *)
+  number1 := Cmplx (4.0, 16.0);
+  number2 := Cmplx (-13.0, 2.0);
+
+  number3 := Add(number1, number2);
+  WriteString ("The sum is ");
+  WriteComplex (number3, 20);
+  WriteLn;
+  number3 := Multiply (number1, number2);
+  WriteString ("The product is ");
+  WriteComplex (number3, 20);
+  WriteLn;
+<B>END</B> TestComplex.</pre>
+
+<P>The output from this program, as expected was:</P>
+
+<pre>The sum is -9.00000 + 18.00000i
+The product is -84.0000 + -200.000i</pre>
+
+<h3><a name="17.2.4">17.2.4</a> Opaque non-ISO Complex Numbers</h3>
+<P>Notice that the client program "knows" the names of the parts of the type <I>Complex</I>. This fact has not actually been used because the procedures <I>Cmplx</I>, <I>Re</I>, and <I>Im</I> were used to construct and find the parts of a complex number, but it could have been.  As indicated in earlier chapters, it is a better idea  to keep such details hidden, so that the client program does not have access to such information, but rather the data can be operated upon only by the procedures which are also contained in the module along with the data type definition. There have been several instances of such opaque types throughout the text.  However, as noted in <A HREF="../Ch12/Ch12.8.html">section 12.8</A> and illustrated with the module <I>points</I> in that chapter, one cannot have a procedure allocate memory for a temporary opaque variable and then return it because every call to such a procedure would use a little more memory unnecessarily, and one cannot deallocate the memory before returning either because then the memory pointed to after the return is no part of a valid allocation. The real problem is that in writing</P>
+
+<pre>  number3 := Add(number1, number2);</pre>
+
+<P>with opaque variables, access to the memory pointed to by <I>number3</I> before the assignment is simply lost. This is a consequence of the fact that opaque types are in fact pointers.</P>
+<P>Thus, an implementation of complex numbers in classic Modula-2 requires that one use variable parameters in regular procedures rather than function procedures returning an item of the opaque type. Moreover, procedures are needed to initialize and destroy complex entities.  We could have:</P>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> ComplexNumbersO;
+(* by R. Sutcliffe
+  last modified 1996 10 30 *)
+
+<B>TYPE</B>
+  Complex;   (* no details here *)
+<B>PROCEDURE</B> Init (<B>VAR</B> complexToInit : Complex);
+  (* Must be called to create a Complex number. The number created will
+     have both real and imaginary parts zeroed. *)
+<B>PROCEDURE</B> Destroy (<B>VAR</B> complexToDestroy : Complex);
+  (* Call to give back the memory allocated to a Complex number *)
+<B>PROCEDURE</B> Cmplx (real, imag : <B>REAL</B>; <B>VAR</B> result : Complex);
+  (* Takes two reals as the parts and assigns them to the complex. *)
+<B>PROCEDURE</B> Re (cNumber : Complex) : <B>REAL</B>;
+  (* Returns the real part of the given complex number. *)
+<B>PROCEDURE</B> Im (cNumber : Complex) : <B>REAL</B>;
+  (* Returns the imaginary part of the given complex number. *)
+<B>PROCEDURE</B> Negate (originalNum: Complex; <B>VAR</B> result : Complex);
+  (* Returns the opposite of the complex number. *)
+<B>PROCEDURE</B> Add (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+  (* Returns the sum of the two complex numbers. *)
+<B>PROCEDURE</B> Subtract (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+  (* Returns the difference of the two complex numbers. *)
+<B>PROCEDURE</B> Multiply (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+  (* Returns the product of the two complex numbers. *)
+<B>PROCEDURE</B> Divide (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+  (* Returns the quotient of the two complex numbers. *)
+<B>END</B> ComplexNumbersO.</pre>
+
+<P>One must still decide whether to implement the type as an array or a record. A record style implementation is given below.</P>
+
+<pre><B>IMPLEMENTATION</B> <B>MODULE</B> ComplexNumbersO;
+(* by R. Sutcliffe
+  last modified 1996 10 30 *)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+<B>TYPE</B>
+  Complex = <B>POINTER</B> <B>TO</B> ComplexData;   (* opaque, so must be a pointer *)
+  ComplexData =   (* now here is its structure *)
+    <B>RECORD</B>
+      re : <B>REAL</B>;
+      im : <B>REAL</B>;
+    <B>END</B>   (* record *);
+
+<B>PROCEDURE</B> Init (<B>VAR</B> complexToInit : Complex);
+<B>BEGIN</B>
+  <B>NEW</B> (complexToInit);  (* get memory dynamically *)
+  complexToInit^.re := 0.0;  (* and zero it off *)
+  complexToInit^.im := 0.0;
+<B>END</B> Init;
+
+<B>PROCEDURE</B> Cmplx (re, im : <B>REAL</B>; <B>VAR</B> complexToAssign: Complex);
+<B>BEGIN</B>
+  complexToAssign^.re := re;
+  complexToAssign^.im := im;
+<B>END</B> Cmplx;
+
+<B>PROCEDURE</B> Re (cNumber : Complex) : <B>REAL</B>;
+<B>BEGIN</B>
+   <B>RETURN</B> cNumber^.re;
+<B>END</B> Re;
+
+<B>PROCEDURE</B> Im ( cNumber : Complex) : <B>REAL</B>;
+<B>BEGIN</B>
+  <B>RETURN</B> cNumber^.im; 
+<B>END</B> Im;
+
+<B>PROCEDURE</B> Negate (originalNum: Complex; <B>VAR</B> result : Complex);
+<B>BEGIN</B>
+  result^.re := -originalNum^.re;
+  result^.im := -originalNum^.im;
+<B>END</B> Negate;
+
+<B>PROCEDURE</B> Add (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+<B>BEGIN</B>
+  result^.re := firstNum^.re + secondNum^.re;
+  result^.im := firstNum^.im + secondNum^.im;
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Subtract (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+<B>BEGIN</B>
+  result^.re := firstNum^.re - secondNum^.re;
+  result^.im := firstNum^.im - secondNum^.im;
+<B>END</B> Subtract;
+
+<B>PROCEDURE</B> Multiply (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+<B>BEGIN</B>
+  result^.re := firstNum^.re * secondNum^.re  - firstNum^.im * secondNum^.im;
+  result^.im := firstNum^.re * secondNum^.im  + firstNum^.im * secondNum^.re;
+<B>END</B> Multiply;
+
+<B>PROCEDURE</B> Divide (firstNum, secondNum : Complex; <B>VAR</B> result : Complex);
+<B>BEGIN</B>
+  result^.re :=
+   (firstNum^.re*secondNum^.re + firstNum^.im*secondNum^.im)/
+      (secondNum^.re*secondNum^.re + secondNum^.im*secondNum^.im);
+  result^.im := 
+   (firstNum^.im*secondNum^.re + firstNum^.re*secondNum^.im)/
+      (secondNum^.re*secondNum^.re + secondNum^.im*secondNum^.im);
+<B>END</B> Divide;
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> complexToDestroy : Complex);
+<B>BEGIN</B>
+  <B>DISPOSE</B> (complexToDestroy);
+<B>END</B> Destroy;
+
+<B>END</B> ComplexNumbersO.</pre>
+
+<P>As usual, the implementation could be changed without affecting the definition in any way. Now, consider how the client program must be written with the new regular procedure syntax for the calls:</P>
+
+<h3><a name="17.2.5">17.2.5</a> Testing the Opaque non-ISO Complex Implementation</h3>
+
+<pre><B>MODULE</B> TestComplexO;
+(* by R. Sutcliffe
+  last modified 1996 10 30 *)
+
+<B>FROM</B> ComplexNumbersO <B>IMPORT</B>
+  Complex, Init, Cmplx, Re, Im, Add, Multiply;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString, WriteChar;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal;
+<B>VAR</B> 
+  number1, number2, number3 : Complex;
+
+<B>PROCEDURE</B> WriteComplex (number : Complex; flen : <B>CARDINAL</B>);
+(* Of the space provided in flen, four places are needed to write the + between the two reals, and one to write the letter i.  The rest is divided equally between the two reals. *)
+<B>VAR</B>
+  realFlen : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> flen <!--<-->&lt; 4
+    <B>THEN</B>
+      realFlen := 0;
+    <B>ELSE</B>
+      realFlen := (flen - 4) <B>DIV</B> 2;
+    <B>END</B>;
+  WriteReal (Re(number), realFlen);
+  WriteString (" + ");
+  WriteReal (Im(number), realFlen);
+  WriteChar ('i');
+<B>END</B> WriteComplex;
+
+<B>BEGIN</B>   (* ClientProgram *)
+  (* Create the complex numbers *)
+  Init (number1);
+  Init (number2);
+  Init (number3);
+  
+  (* Initialize the complex numbers number1 and number2 *)
+  Cmplx (4.0, 16.0, number1);
+  Cmplx (-13.0, 2.0, number2);
+
+  (* the last part is the same as before. *)
+  Add (number1, number2, number3);
+  WriteString ("The sum is ");
+  WriteComplex (number3, 20);
+  WriteLn;
+  Multiply (number1, number2, number3);
+  WriteString ("The product is ");
+  WriteComplex (number3, 20);
+  WriteLn;
+<B>END</B> TestComplexO.</pre>
+
+<P>Having to use such syntax for the manipulation of a numeric type is a nuisance. One does not expect any numeric type to have to be initialized or to be added using three parameter regular procedures.  However, if all one has is classical Modula-2 the only choice is to implement transparently or to live with the extra apparatus required by an opaque implementation.</P>
+<P>If it is necessary to go further and define arithmetic and mathematical operations on the type complex, that can be done in a separate module. For details on what such a module should contain, see the next section.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

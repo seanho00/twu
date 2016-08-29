@@ -1,0 +1,104 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>HW3 Rubric :: CPSY501 09FA :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/09fall/cpsy501/">
+    CPSY 501 Fall 2009</a> HW3 Answer Key / Marking Rubric</h1>
+
+<h2>Total: 20pts</h2>
+
+<h2>APA style (2pts)</h2><ul>
+  <li> Format of reporting statistical results (most important!)
+  <li> Use appropriate statistical symbols, no typos
+  <li> Pagination and running heads, clear organization
+  <li> Figures/tables not required, but if present must be in APA style
+  <li> Detailed output goes in separate SPSS output file
+</ul>
+
+<h2>(1) Outliers (2pts)</h2><ul>
+  <li> Run boxplots, note no potential outliers.
+  <li> Note that missing data is a problem.
+  If we use <tt>Graphs &rarr; Boxplots &rarr; List-wise</tt> deletion,
+  then there are 7 missing data cases.
+  <li> If the other option is selected, there are more missing cases for
+  follow-up than for other cases, due to attrition.
+  <li> FYI: In helping sessions, explain about mean imputation and the need for
+  dealing with missing data, but encourage them to allow listwise deletion for
+  the exercise.
+</ul>
+
+<h2>(2) Sphericity and Equality of Covariance (2pts)</h2><ul>
+  <li> Run <tt>Analyze &rarr; GLM &rarr; Univariate &rarr; Repeated-Measures</tt>
+  <li> Sphericity is not satisfied; use Huynh-Feldt epsilon (&epsilon;)
+  for correction.  Report <em>W</em> and &Chi;<sup>2</sup>.
+  <li> Equality of variances is okay; report Levene's test <em>F</em> and
+  <em>p</em>-value for all three DVs.
+  <li> Covariance matrices are not equal; report Box's test <em>M</em> and
+  <em>F</em>.
+  <li> FYI: we can still proceed with analysis even though equality of
+  covariance matrices is violated, because the sample size is fairly big,
+  so the <em>p</em>-values are likely to be conservative.  Checking this
+  would involve randomly deleting cases until cell sizes are equal, which
+  is more involved than the scope of this assignment.
+</ul>
+
+<h2>(3) Time Effect and Interaction (6pts)</h2><ul>
+  <li> Run <tt>Analyze &rarr; GLM &rarr; Univariate &rarr; Repeated-Measures</tt>.
+  DV is WEL; IVs are Video Type and Time.
+  <li> Can also combine this ANOVA run with the next question and include
+  Gender as another IV.
+  <li> Need to use the Huynh-Feldt epsilon (&epsilon;) for correction.
+  <li> Main effect for Time is significant, however
+  <li> Interaction between Time and Video Type is significant, so the Time 
+  main effect is not interpretable by itself.
+  <li> Interpretation of the interaction: the workshop leads to an increase in
+  WEL for both groups, but only those viewing the modelling video show
+  maintained (or increased) WEL at the follow-up period.
+  Use an interaction plot and/or the cell means to demonstrate this pattern.
+  <li> EXTRA: If anyone wanted to test for simple effects, they would
+  have to focus on the group difference at the follow-up period. If it is done
+  correctly, acknowledge and commend.  But post hoc tests for
+  Time are not appropriate, given that the main effect is misleading.
+</ul>
+
+<h2>(4) Gender as a Moderator (8pts)</h2><ul>
+  <li> Run <tt>Analyze &rarr; GLM &rarr; Univariate &rarr; Repeated-Measures</tt>.
+  DV is WEL; IVs are Video Type, Gender, and Time.
+  <li> Need to use the Huynh-Feldt epsilon (&epsilon;) for correction.
+  <li> The highest significant interaction is the 3-way interaction.
+  It shows how the treatment effect looks different for each gender
+  (i.e., is moderated by gender).
+  <b>(2pts for SPSS, labelling output, identifying 3-way interaction)</b>
+
+  <li> Graph the <b>3-way</b> interaction and interpret its meaning.
+  <b>(2pts: graphs, stats, clear interpretation)</b><ul>
+    <li> The treatment effect for the nature video is the same for men and
+    women: higher WEL scores show at the end of the workshop and then drop off
+    at follow-up.
+    <li> The treatment effect for the modelling video, on the other hand, is 
+    different for males and females. Women show a "delayed" effect of the 
+    modelling video: self efficacy (WEL) continues to rise after the workshop.
+    That pattern is not shown among the men.
+  </ul>
+
+  <li> Consider the significant <b>2-way</b> interactions (graphs/stats),
+  or note that the significant 3-way interaction supersedes the 2-way
+  interactions, so they don't need to be interpreted independently.
+  <b>(2pts)</b>
+
+  <li> <b>Treatment effect</b>: The Time x Video Type interaction is the 
+  treatment effect. The 3 way interaction shows that the treatment effect 
+  pattern is true for women ("most similar"), while for men, the pattern is 
+  just that the WEL decline at follow-up is somewhat less for men who viewed 
+  the modelling video, compared to the men who viewed the nature video 
+  (i.e., the pattern for men seems more different from the overall pattern 
+  than is true for women). <b>(2pts)</b>
+
+  <li> EXTRA: If anyone wanted to test for simple effects, they would have to
+  focus on the group difference at the follow-up period. This is especially
+  difficult to do with the more complex analysis, but support discussion of
+  these points.
+</ul>
+
+</body></html>

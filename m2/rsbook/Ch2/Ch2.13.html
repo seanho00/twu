@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<TITLE>2.13 Chapter Summary</TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, modula-2, module, program, identifier, identifiers, entity, entities, comments, literals, literal, variable, contstant, constants, assign, values, integer, cardinal, char, real, expressions, precedence, type, conversions, io, input, output, i/o">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.13 Chapter Summary</B></H2>
+<P>This chapter covered these topics:</P>
+
+<UL><!--€--><LI> what a Modula-2 program is</LI>
+<!--€--><LI> what the basic structure of a Modula-2 program is</LI>
+<!--€--><LI> what a module is</LI>
+<!--€--><LI> how to give correct names (identifiers) to Modula-2 entities</LI>
+<!--€--><LI> how to write comments</LI>
+<!--€--><LI> how to distinguish among literals, variables and constants</LI>
+<!--€--><LI> how to assign values to variables and equate values to constants</LI>
+<!--€--><LI> about the types INTEGER, CARDINAL, CHAR, and REAL</LI>
+<!--€--><LI> about expressions, precedence and some type conversions</LI>
+<!--€--><LI> how to talk to a program and make it talk to a user</LI></UL>
+
+<P>It included discussion of the following Modula-2 built-ins:</P>
+
+<TABLE WIDTH=350><TR><TH ALIGN=LEFT>Reserved Words</TH>	<TH ALIGN=LEFT>Standard Identifiers</TH></TR>
+
+<TR><TD>BEGIN ... END</TD>	<TD>CARDINAL</TD></TR>
+<TR><TD>CONST</TD>	<TD>CHAR</TD></TR>
+<TR><TD>DIV</TD>	<TD>FLOAT</TD></TR>
+<TR><TD>DO</TD>	<TD>INT</TD></TR>
+<TR><TD>FROM ... IMPORT</TD>	<TD>INTEGER</TD></TR>
+<TR><TD>MOD</TD>	<TD>LONGREAL</TD></TR>
+<TR><TD>MODULE</TD>	<TD>LFLOAT</TD></TR>
+<TR><TD>REM</TD>	<TD>REAL</TD></TR>
+<TR><TD>WHILE</TD>	<TD>TRUNC</TD></TR>
+<TR><TD>VAR</TD>	<TD>VAL</TD></TR>
+<TR><TD></TD>	<TD>CARD*</TD></TR>
+<TR><TD></TD>	<TD>LONGCARD*</TD></TR>
+<TR><TD></TD>	<TD>LONGINT*</TD></TR></TABLE>
+<P>* indicates a non-standard word that <I>may</I> be present in some versions.</P>
+
+<TABLE WIDTH=350><TR><TH ALIGN=LEFT>Symbols</TH>	<TH ALIGN=LEFT>Imports</TH>
+</TR>
+<TR><TD></TD>	<TD>From STextIO (InOut):</TD>	<TD>ReadChar (Read)</TD></TR>
+<TR><TD>+</TD>	<TD></TD>	<TD>WriteChar (Write)</TD></TR>
+<TR><TD>-</TD>	<TD></TD>	<TD>WriteLn</TD></TR>
+<TR><TD>*</TD>	<TD></TD>	<TD>WriteString</TD></TR>
+<TR><TD>=</TD>	<TD></TD>	<TD>SkipLine</TD></TR>
+<TR><TD>/</TD>	<TD>From SWholeIO (InOut):</TD>	<TD>ReadCard</TD></TR>
+<TR><TD>E</TD>	<TD></TD>	<TD>WriteCard</TD></TR>
+<TR><TD>:=</TD>	<TD></TD>	<TD>ReadInt</TD></TR>
+<TR><TD></TD>	<TD></TD>	<TD>WriteInt</TD></TR>
+<TR><TD></TD>	<TD>From SRealIO:</TD>	<TD>ReadReal</TD></TR>
+<TR><TD></TD>	    <TD ALIGN=CENTER>(RealInOut)</TD>	<TD>WriteReal</TD></TR>
+<TR><TD></TD>	<TD></TD>	<TD>WriteFloat (ISO only)</TD></TR>
+<TR><TD></TD>	<TD></TD>	<TD>WriteFixed (ISO only)</TD></TR></TABLE>
+ indicates the usual name in non ISO compliant versions using InOut.
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

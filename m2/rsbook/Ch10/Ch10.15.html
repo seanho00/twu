@@ -1,0 +1,197 @@
+<HTML>
+<HEAD>
+<TITLE>10.15 Assignments</TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, scope, visibility, final, finally, loop, eport, import, qualified, except, exit, halt, return, retry, library, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>10.15 Assignments</B></H2>
+<H3><B>Questions</B></H3>
+<P>1.  What is a block?</P>
+<P>2.  What differences are there between a procedure block and a module block?</P>
+<P>3.  When <I>must/must not</I> a module have a block body?</P>
+<P>4.  Define <I>scope</I>.</P>
+<P>5.  Which of (a) a Procedure's name (b) its parameters (c) its local variables are part of its scope?</P>
+<P>6.  Under what circumstances might a procedure's name <I>not</I> be visible in its body?</P>
+<P>7.  Define the terms <I>local</I> and <I>global</I> as they pertain to procedures.</P>
+<P>8.  Why is it important to avoid using many global variables?</P>
+<P>9.  Suppose the declaration VAR z : BOOLEAN were contained in a program module, again in a procedure, and yet again in another procedure inside this one.  Does an assignment to <I>z</I> in the innermost procedure change the value of the variable in the main program? in the first procedure? in some other procedure declared in the main program? in some other procedure defined inside the first one?  What if yet another procedure were declared inside the one innermost above, this one with no BOOLEANs declared in it, but also with an assignment to <I>z</I>.  At what level(s) in the above hierarchy is <I>z</I> affected? </P>
+<P>10.  What does <I>visibility</I> mean?</P>
+<P>11  Define the term <I>side effect</I>.</P>
+<P>12. Under what circumstances are side effects good? bad?</P>
+<P>13. Under what circumstances might a program have many variables with the same name, and how does the compiler distinguish among them?</P>
+<P>14. Describe the differences between the scope rules for nested procedures and those for nested modules.</P>
+<P>15. What is meant by <!--"-->&quot;the outermost scope level?<!--"-->&quot;</P>
+<P>16. How do modules import two items of the same name into the same scope?</P>
+<P>17. Can two modules EXPORT items of the same name into the same scope?</P>
+<P>18. What is the difference between a variable that is EXPORTed and one that is EXPORTed as QUALIFIED?  Illustrate with examples.</P>
+<P>19. A program module cannot have an EXPORT list.  Why?</P>
+<P>20. What is the difference between a standard identifier and a reserved word?</P>
+<P>21. What is a dynamic module?</P>
+<P>22. How may the visibility of identifiers inside a dynamic module be different from that in the scope immediately surrounding it?</P>
+<P>23. What is a Fibonacci sequence?</P>
+<P>24. What is the difference between an opaque type and a transparent type?</P>
+<P>25. What is a procedure type?</P>
+<P>26. Show how to define procedure types in each case that could have the following assigned to it.<BR>
+	(a) SeqFile.OpenWrite<BR>
+	(b) STextIO.WriteString<BR>
+	(c) RealIO.WriteFixed<BR>
+	(d) Strings.Append<BR>
+	(e) LongMath.ln</P>
+<P>27. When should you use or not use the LOOP .. EXIT construction?</P>
+<P>28.  What two Modula-2 commands cause the program to unconditionally transfer control to some other line of code?</P>
+<P>29. Which two commands can cause a program to terminate?</P>
+<P>30. In what other way, besides the issuing of a direct command, might a program be caused to terminate?</P>
+<P>31. How is a termination event detected?</P>
+<P>32. How does one determine whether a program is in normal or exceptional execution state?</P>
+<P>33. What is an exception?</P>
+<P>34. How is an exception trapped?</P>
+<P>35. What are the three strategies that can be followed in an exception handler?</P>
+<P>36. What specific tools are necessary, and how are they used, to declare and detect exceptions in user-written code?</P>
+<P>37 How do the exceptions facilities prevent the raising of exceptions by code that does not contain the definition of those exceptions in its own scope?</P>
+<P>38. How many exception handlers may a program module contain?</P>
+<P>39. How many exception handlers may the body of a module itself have attached?</P>
+<P>40. What is the output of the following program?</P>
+
+<PRE><B>MODULE</B> Scramble;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn;
+<B>VAR</B>
+  w, x, y, z : <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> Scram (x, y : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  z : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  w := 7;
+  x := 8;
+  y := 9;
+  z := 10;
+<B>END</B> Scram;
+
+<B>BEGIN</B>  (* Main *)
+  w := 1;
+  x := 2;
+  y := 3;
+  z := 4;
+  WriteCard (w, 6);
+  WriteCard (x, 6);
+  WriteCard (y, 6);
+  WriteCard (z, 6);
+  WriteLn;
+  Scram (x, y);
+  WriteCard (w, 6);
+  WriteCard (x, 6);
+  WriteCard (y, 6);
+  WriteCard (z, 6);
+  WriteLn;
+<B>END</B> Scramble.</PRE>
+<P>41. Make a list of the variables visible at the places marked <I>point 1</I>, <I>point 2</I>, etc.  If some are visible provided that they are written as qualified identifiers, please indicate this also.  This question of course assumes a multi pass compiler. Why?</P>
+<PRE><B>MODULE</B> Exercise;
+<B>VAR</B>
+  outA, outB : <B>REAL</B>;
+
+  <B>MODULE</B> Inner1;
+  
+  <B>EXPORT</B> inner1C, days;
+
+  <B>TYPE</B>
+    days = (Sat, Sun);
+
+  <B>VAR</B>
+    inner1C, inner1D : <B>REAL</B>;
+    (* point 1 *)
+
+  <B>END</B> Inner1;
+
+  <B>MODULE</B> Inner2;
+
+  <B>EXPORT</B> <B>QUALIFIED</B> inner2E, Inner3;
+
+  <B>VAR</B>
+    inner2E, inner2F : <B>REAL</B>;
+    (* point 2 *)
+
+    <B>MODULE</B> Inner3;
+
+    <B>EXPORT</B> inner3H;
+
+    <B>VAR</B>
+      inner3G, inner3H : <B>REAL</B>;
+
+    <B>END</B> Inner3;
+    (* point 3 *)
+
+  <B>END</B> Inner2;
+
+  (* point 4 *)
+<B>END</B> Exercise.</PRE>
+<H3><B>Problems:</B></H3>
+<P>42. Give an example of a program (not the same as in the text) in which unexpected results are obtained because a procedure modifies a variable global to it.</P>
+<P>43. Give an example of a program (not the same as in the text) in which unexpected results are obtained because a procedure has a variable parameter when a value parameter would do.</P>
+<P>44.  Expand upon the <A HREF="Ch10.2.html#BarGraph">bar graph program</A> in section 10.2 as follows:  Write a module that allows a user to enter data in several (1 - 10) subcategories of some main category and that then prints out an appropriately scaled bar graph that pictures the data.  Make the program module general, but test it on the following data:</P>
+<P>	The number of students at TWU taking each of the following courses are in parentheses: Chemistry (120), Physics (70), Mathematics (200), Biology (130), and Computer Science (200).</P>
+<P>45. Write a program module to examine the contents of Modula-2 program files and count the number of occurrences of the various reserved words and standard identifiers. Use a LOOP in the routine that reads the file.</P>
+<P>46. Select a program from <A HREF="../Ch8/Ch8.html">chapter 8</A> that employed <I>StreamFile</I> and add to it a FINALLY clause that closes any channels still open.</P>
+<P>47. Select a program from <A HREF="../Ch8/Ch8.html">chapter 8</A> that employed <I>SeqFile</I> and add to it a FINALLY clause that closes any channels still open.</P>
+<P>48. Select a program from <A HREF="../Ch8/Ch8.html">chapter 8</A> that employed <I>RndFile</I> and add to it a FINALLY clause that closes any channels still open.</P>
+<P>49. Revise the module <I><A HREF="../Ch6/Ch6.9.html#PointToPoint">PointToPoint</A></I> in chapter 6 to add a procedure to compute the slope (using the slope formula) of a segment joining two points.  Forbid vertical segments with an appropriate precondition, but add an exception to cover cases where client software ignores the rules.  Encapsulate the whole thing in a library module and test the result.</P>
+<P>50. Revise the module <I><A HREF="Ch10.13.html#Fractions">Fractions</A></I> in this chapter to raise a different exception <I>indeterminate</I> in cases where both the numerator and denominator are zero.  Do a complete test of the result.</P>
+<P>51. Add exceptions as appropriate to the module <I><A HREF="../Ch7/Ch7.7.html#Stats">Stats</A></I> in chapter 7, and test the result.</P>
+<P>52. Write a program module to demonstrate (by catching and handling the exception and printing the message) that an ISO library module that tries to close a channel it did not open causes an exception.</P>
+<P>53. Write a program module to demonstrate (by catching and handling the exception and printing the message) that a program that attempts to access an array element with too large an index causes an exception.</P>
+<P>54. Write a program module to demonstrate (by catching and handling the exception and printing the message) that a program that attempts to obtain the error number of an exception but provides the wrong source identifier causes an exception.</P>
+<P>55. Write a program module to demonstrate (by catching and handling the exception and printing the message) that a program that attempts to use <I>RndFile.NewPos</I> to compute a file position past the end of the file causes an exception.</P>
+<H3><B>Challenges</B></H3>
+<P>56. Modify the program in #15 to print the bar graphs with vertical bars instead of horizontal ones. </P>
+<P>57. Write a new version of the ISO library module <I><A HREF="../Ch7/Ch7.3.html#Strings">Strings</A></I> with the same content as in the standard, but with exceptions added to cover all those cases where attempts are made to overfill strings.  That is, require the user of the module to employ such procedures as <I>CanDeleteAll</I> and <I>CanInsertAll</I>, before <I>Delete</I> and <I>Insert</I> are used, by removing the silent truncation semantics from the latter and replacing them with the raising of exceptions when the limits are violated.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

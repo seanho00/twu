@@ -1,0 +1,333 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT370 Spr2009 Midterm 2, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers on web ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 70
+
+<ol class="main">
+
+<li>
+In your own words, compare the complementary fields of <b>computer graphics</b>
+and <b>image analysis</b>. <u>[3]</u>
+<br><i>
+  Synthesis vs. analysis: both are components of visual computing.
+  <b>Computer graphics</b> starts with digital representations of objects
+  (triangle meshes, lights, etc.) and produces images on screen.
+  <b>Image analysis</b> starts with images (digital camera, satellite, MRI,
+  etc.) and produces digital representations of the objects in the images.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li>
+What is <b>colour</b>?  Is an RGB triple (e.g., "#00FF77") a colour?  Discuss.
+<u>[4]</u>
+<br><i>
+  <b>Colour</b> is a distribution of light energy across the visible spectrum
+  ("frequency distribution").  An <b>RGB triple</b> is a point in a colour
+  space, a combination of three chromaticities.  Without specifying what those
+  chromaticities are or how they are combined, an RGB triple is not a colour.
+</i>
+<br><br><br><br><br><br><br><br><br><br>
+
+<li>
+Contrast the goals of <b>off-line</b> rendering vs. <b>real-time</b> graphics.
+Which is OpenGL generally used for? <u>[4]</u>
+<br><i>
+  <b>Off-line</b> rendering prioritizes photorealism and image quality over
+  rendering time -- it's okay if each frame takes days to render, as long as
+  it looks really good.  <b>Real-time</b> graphics places a constraint of
+  rendering time -- we still want it to look good, but not if that means our
+  framerate drops below, say, 60 frames per second.
+  OpenGL is generally used for real-time rendering.
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li>
+What does it mean for a set of vectors to be <b>linearly independent</b>?
+<u>[3]</u>
+<br><i>
+  A set of vectors is linearly independent if no one vector in the set can be
+  expressed as a linear combination of the other vectors.  If we were to remove
+  any vector from the set, then the vector space spanned by the set would
+  collapse by a dimension.
+</i>
+<br><br><br><br>
+
+<li>
+What are <b>homogeneous coordinates</b>, and how are they used in 3D computer
+graphics?  <u>[3]</u>
+<br><i>
+  A consistent representation of both points and vectors.
+  We add a fourth component, w, which is 0 for vectors and
+  non-zero for points.  Every (x,y,z,w), with w != 0, represents
+  the 3D point (x/w, y/w, z/w).
+  We apply transforms in homogeneous coordinates via 4x4 matrices;
+  e.g., the model-view matrix.
+</i>
+<br><br><br><br><br>
+
+<li>
+Describe the stages of the OpenGL rendering <b>pipeline</b>.  There is some
+flexibility in how to divide the stages, but describe the operations that
+must happen to get from geometry (GL primitives) to what we see on screen.
+<u>[6]</u>
+<br><i><dl>
+    <dt>(1) Vertex processing:</dt> <dd>Transform vertex and normal via
+    model-view matrix, per-vertex lighting calculation (for Gouraud),
+    projection matrix</dd>
+    <dt>(2) Assembly/clipping:</dt> <dd>Connect vertices into primitives,
+    view frustum culling, clip against view volume</dd>
+    <dt>(3) Rasterizer:</dt> <dd>Convert into pixel grid, interpolate
+    per-vertex values across the primitive</dd>
+    <dt>(4) Fragment processing:</dt> <dd>Per-fragment calculations,
+    textures</dd>
+    <dt>(5) Blending:</dt> <dd>Hidden-surface removal (depth buffer) and
+    blending, final output to framebuffer</dd>
+</dl></i>
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<li>
+What are OpenGL <b>display lists</b>?  Why use them?
+Describe an example situation well-suited to display lists. <u>[4]</u>
+<br><i>
+  OpenGL display lists store a sequence of OpenGL commands (e.g., material
+  definitions, lights, primitives, matrix transforms) that are then stored in
+  graphics hardware memory.  The display list can then be executed multiple
+  times (perhaps with OpenGL state change in between) without resending the
+  data to the hardware; this can potentially speed up the rendering.  For
+  instance if a scene is to have many hundreds of teapots, it would make sense
+  to store the teapot vertex data in a display list.
+</i>
+<br><br><br><br><br><br><br>
+
+<li>
+The two most important transform matrices in OpenGL are 
+the <b>model-view</b> matrix and the <b>projection</b> matrix.
+Contrast the roles of these two matrices. <u>[4]</u>
+<br><i>
+  The <b>model-view</b> matrix transforms from world coordinates to camera 
+  coordinates: it specifies the location of objects in the virtual world 
+  relative to the camera.  It is also what we use to position objects relative
+  to each other.
+  The <b>projection</b> matrix transforms from camera coordinates to screen 
+  coordinates: it converts from 3D points to 2D points.
+</i>
+<br><br><br><br><br><br><br>
+
+<li>
+Contrast <b>orthographic</b> projection with <b>perspective</b> projection.
+<u>[3]</u>
+<br><i>
+  The projector lines in orthographic projection are all parallel, whereas the
+  projector lines in perspective projection converge to a single point, the
+  center of projection.  Orthographic projection is equivalent to perspective
+  projection with a center of projection infinitely far away.  Perspective
+  results in foreshortening: closer objects appear larger, farther objects
+  appear smaller.
+</i>
+<br><br><br><br>
+
+<li>
+Contrast <b>clipping</b> with <b>culling</b>.  Why are they important? <u>[4]</u>
+<!-- fewer pts: 3pts -->
+<br><i><dl>
+    <dt>Clipping:</dt> <dd>Trims primitives to fit within the viewport and the
+    current clip.  User-defined clip planes may be specified.  Clipping may
+    reshape and introduce new vertices for primitives which intersect the
+    clipping planes.
+    </dd>
+    <dt>Culling:</dt> <dd>Removes primitives which are not visible, even though
+    they may be within the viewport.  For instance, back-face culling removes
+    primitives that face away from the camera, which are generally not visible.
+    </dd>
+</dl></i>
+<br><br><br><br><br>
+
+<li>
+The GLUT function <tt>glutSolidTeapot(1.0)</tt> renders a
+<a href="http://www.sjbaker.org/wiki/index.php?title=The_History_of_The_Teapot">Utah Teapot</a> with size 1, centred at the origin.
+We want to render the teapot with size <tt>size</tt> (C++ float),
+centred at the point (5, 6, 7),
+and rotated counter-clockwise about its own z-axis by &theta;
+(C++ float <tt>theta</tt>) degrees.
+<ol class="subparts">
+  <li>
+  Without changing the call to <tt>glutSolidTeapot()</tt>,
+  write a block of <b>C/C++ OpenGL code</b> to accomplish this. 
+  (The parameter to <tt>glutSolidTeapot()</tt> is actually a size
+  parameter, but I'm asking you not to use that for this question.)
+  The exact naming/syntax of the functions is not as important as the 
+  ordering.  <u>[3]</u>
+  <br><i><pre>
+  glTranslate3f( 5.0, 6.0, 7.0 );
+  glRotatef( theta, 0.0, 0.0, 1.0 );
+  glScalef( size, size, size );
+  glutSolidTeapot(1.0);
+  </pre></i>
+  <br><br><br><br><br><br>
+
+  <li>
+  Write a single <b>4x4 matrix</b> that converts from the coordinate system 
+  of the teapot (object coords) to the coordinate system of the world
+  (world coords).  Assume left multiplication; i.e., a point p in
+  homogeneous object coords will be multiplied by this matrix M to get
+  the world coords <tt>p' = M p</tt>.
+  (Hint: construct 4x4s for each of the transforms,
+  and multiply the matrices in the correct order.  I will be lenient
+  on minor mathematical errors as long as you show your work.)
+  <u>[4]</u>
+  <br><i>
+    <table border="1"><tr>
+	<td> size * cos(&theta;) </td>
+	<td> -sin(&theta;) </td>
+	<td> 0 </td>
+	<td> 5 </td>
+	</tr><tr>
+	<td>  sin(&theta;) </td>
+	<td> - size * cos(&theta;) </td>
+	<td> 0 </td>
+	<td> 6 </td>
+	</tr><tr>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> size </td>
+	<td> 7 </td>
+	</tr><tr>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 0 </td>
+	<td> 1 </td>
+    </tr></table>
+  </i>
+  <br><br><br><br><br><br><br><br><br>
+</ol>
+
+<!--
+<li>
+What are <b>quaternions</b> and how are they used in computer graphics?
+<u>[4]</u>
+<br><i>
+  Quaternions are a 4D Clifford algebra (extension of the complex numbers)
+  having one real part and three imaginary parts: a typical quaternion
+  might be, e.g., 3 + 6i - 5j + 0.2k.  Quaternion multiplication is
+  associative but not commutative.  The unit quaternions are used to represent
+  rotations in 3D; composition of rotations is simply multiplication of
+  the corresponding quaternions.
+</i>
+<br><br><br><br><br><br>
+-->
+
+<li>
+Describe three representations of rotations in 3D that we talked about in class.
+What are pros/cons of each?  <u>[4]</u>
+<br><i><dl>
+    <dt>Euler angles:</dt> <dd>Three angles indicating amount of rotation about the
+    x, y, and z axes, respectively.  Order is important.  Problems with gimbal lock.
+    </dd>
+    <dt>Axis-angle:</dt> <dd>Three numbers indicating a unit vector about which to 
+    rotate, and one number indicating angle of rotation about that axis.  This is 
+    the format expected by <tt>glRotatef()</tt>.</dd>
+    <dt>Unit quaternion:</dt> <dd>Four numbers (as described in previous problem).
+    Easy to derive from axis-angle representation.  Easy to compose multiple 
+    rotations via quaternion multiplication.</dd>
+</dl></i>
+<br><br><br><br><br><br><br>
+
+<li>
+Name and describe the four terms in the OpenGL local <b>illumination model</b>.
+For each term, list what <b>vectors</b>, if any, are required to compute the
+term. <u>[5]</u>
+<br><i><dl>
+    <dt>Ambient:</dt> <dd>Uniform light that shines everywhere.
+    No vectors needed.  </dd>
+    <dt>Diffuse:</dt> <dd>Light that shines on a dull, non-shiny object.
+    Need normal vector and vector to the light source.</dd>
+    <dt>Specular:</dt> <dd>Highlights reflecting off a shiny object.
+    Need view vector to camera and reflection vector.</dd>
+    <dt>Emissive:</dt> <dd>Simulates a glowing object.  No vectors needed.</dd>
+</dl></i>
+<br><br><br><br>
+
+<li>
+How many numbers are needed to specify completely all the material properties
+provided by OpenGL for an object?  Describe them. <u>[3]</u>
+<br><i>
+  17 numbers: RGBA for each of ambient, diffuse, specular, and emissive colours,
+  plus the shininess coefficient.
+</i>
+<br><br><br><br><br>
+
+<li>
+Contrast <b>Gouraud</b> shading with <b>Phong</b> shading.  Which is better and
+why?  Describe a situation where the difference might be very pronounced.
+Which one is supported by the regular fixed-function OpenGL pipeline? <u>[4]</u>
+<br><i><dl>
+    <dt>Gouraud:</dt> <dd>Lighting calculations done <b>per-vertex</b>;
+    shaded vertex colours are then interpolated (rasterized) across the face of
+    the polygon.</dd>
+    <dt>Phong:</dt> <dd>Lighting calculations done <b>per-fragment</b>
+    (per-pixel): more work, but more accurate.</dd>
+  </dl>
+  The default OpenGL pipeline only does Gouraud.
+  On a large polygon with high shininess, the small specular highlight may
+  lie in the middle of the polygon, missing all the vertices.  In that case,
+  Gouraud shading would miss the highlight altogether, whereas Phong shading
+  would capture it.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Describe <b>bump mapping</b>: what is its purpose and how does it achieve it?
+Describe an example situation where it might be useful.<u>[4]</u>
+<br><i>
+  Emulating bumpy surfaces without actually creating more geometry (more
+  vertices).  Uses a bump map texture to indicate displacement of the surface
+  (in or out).  Calculates how that displacement would perturb the normal
+  vectors.  Per-fragment Phong shading then calculates the shaded colour of
+  each fragment using the perturbed normals.  Example: orange.
+</i>
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+Describe all the steps needed to create and apply a <b>texture map</b>
+in OpenGL.  The exact name/syntax of function calls is not as important as
+the concepts. <u>[5]</u>
+<br><i><dl>
+    <dt>Load image:</dt> <dd>Read from file or generate in program</dd>
+    <dt>Get new texture object:</dt>
+    <dd><tt>glGenTextures()</tt> to get a texture ID</dd>
+    <dt>Select this texture:</dt>
+    <dd><tt>glBindTexture()</tt> to make it current</dd>
+    <dt>Set options:</dt> <dd><tt>glTexParameter()</tt></dd>
+    <dt>Load image to texture:</dt> 
+    <dd><tt>glTexImage2D()</tt> or <tt>gluBuild2DMipmaps()</tt></dd>
+    <dt>Enable texturing:</dt> <dd><tt>glEnable( GL_TEXTURE_2D );</tt></dd>
+    <dt>Assign texture coordinates:</dt>
+    <dd><tt>glTexCoord()</tt> with each vertex, or
+    <tt>glTexGen()</tt> to auto-generate texture coordinates</dd>
+</dl></i>
+<br><br>
+
+<!--
+<li>
+What is <b>environment mapping</b>?
+-->
+
+</ol>
+
+</body></html>
+
+

@@ -1,0 +1,193 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.5em; } 
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+--></style>
+
+<title>CMPT140 Fall2006 FINAL ch1-8 Part1, Trinity Western.
+25 Oct 2006.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>__________________</td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<ol class="main">
+
+<li>
+Describe the five <b>program structure/flow</b> 
+<br>abstractions mentioned in the text.<br><br>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li>
+Describe the five <b>hardware</b> 
+abstractions mentioned in the text.<br><br>
+<center><table width=80%><tr>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+<td width=20%>___________</td>
+</tr></table></center>
+
+<li> Fill in the blank: <ol class="subparts">
+  <li> "Computers are t________s, and computing scientists are t___________s."
+  <li> A procedure that invokes itself is called a _________________ procedure.
+  <li> In statically-typed languages, before we can use the value of a 
+  variable for the first time in <br> a program, we need to
+  ________________ and   ___________________ it.
+  <li> True or False (circle one): The word <tt>define</tt> 
+    is a legal Python identifier.
+  <li> What English part of speech should a variable generally be?  ___________
+  <li> Assume <tt>myFile</tt> is a file handle that has already been opened 
+  for reading.  We wish to ensure that the next <tt>read()</tt> starts from
+  the beginning of the file.  What command do we use (including any arguments)?
+  ______________________
+  <li> The standard function that converts strings to ALL-CAPS is found in the
+  <br>_______________ standard library and is named _______________ .
+  <li> The standard function that evaluates natural logarithms is found in the
+  <br>_______________ standard library and is named _______________ .
+  <li> The standard error I/O channel is found in the 
+  <br>_______________ standard library and is named _______________ .
+  <li> A requirement imposed by a function upon its parameters, such that
+    the correctness of the result is not guaranteed if the requirement is
+    not met, is called a _______________________ .
+  <li> A RAM module contains 32 chips, each of size 256Mb.  What is the
+  total capacity of the RAM module, in bytes/kilobytes/megabytes/gigabytes
+  (use binary units)?  _________________ .
+</ol>
+
+<li>
+Name two operations/functions/properties that Python <b>lists</b> have that 
+M2/C arrays do not.
+
+<li class="break">
+Explain all the differences between the following, and give examples of each:
+  <ol class="subparts">
+  <li> <b>reserved words</b>: <br><br><br>
+  <li> <b>standard identifiers</b>: <br><br><br>
+  <li> <b>standard library items</b>: <br><br><br>
+</ol>
+
+<li>
+What is a <b>backtrace</b>?
+<br><br><br><br><br><br>
+
+<li>
+Assume that the positive integer with binary representation
+<b>1100101</b> is stored in variable <tt>x</tt>.  Evaluate as Python:
+  <ol class="subparts">
+  <li> <tt>hex(x)</tt>
+  <li> <tt>oct(x)</tt>
+  </ol>
+
+<li>
+Use the Python <tt>range()</tt> function to create this list:
+<tt>[ 11, 8, 5, 2 ]</tt>.
+<br><br><br>
+
+<li>
+Write Python code to create a 15x25 matrix, using lists.
+<br><br><br><br><br><br><br><br><br>
+
+<li>
+What is <b>wrong</b> with the following block of Python code?
+How would you fix it?
+<pre>
+apples = [ 'Fuji', 'Gala', 'Braeburn', 'Rome' ]
+idx = 1
+while idx &lt;= len(apples):
+	print apples[idx],
+	idx += 1
+</pre>
+
+
+<li class="break">
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume the following initialization:
+<pre>	myApple = "Braeburn"	</pre>
+  <ol class="subparts">
+  <li><tt> 2 + 3&gt;4 and (5/0 &lt; 1)	</tt>
+  <li><tt> 2.0 + 14 / 4	</tt>
+  <li><tt> "%03d%s" % (27.95, 'apples')	</tt>
+  <li><tt> "%05.2f" % 3.1415926	</tt>
+  <li><tt> len(myApple) = 7	</tt>
+  <li><tt> range(len(myApple))	</tt>
+  <li><tt> myApple[2:5]	</tt>
+  <li><tt> string.upper(myApple[-1])	</tt>
+  <li><tt> myApple &lt; "Brayburn"	</tt>
+  <li><tt> 'z' &lt; 'w' </tt>
+  <li><tt> ord('z') - ord('w') </tt>
+  <li><tt> 'z' - 'w' </tt>
+  <li><tt> 'z' + 'w' </tt>
+  <li><tt> 6 &amp; 5 </tt>
+</ol>
+<br><br><br>
+
+<li>
+What is output by the following block of Python code?
+<pre>
+def increment(x, y):
+	x += y
+a = 3
+b = range(3)
+increment(a, 1)
+increment(b, [1])
+print "a = ", a, "b = ", b
+</pre>
+
+<li class="break">
+What is output by the following block of Python code?
+<pre>
+myList = [ ('a', 'b'), range(5), [ [2, 3, 4], 5], 'xyz' ]
+for item in myList:
+	print len(item),
+</pre>
+<br><br><br><br>
+
+<li>
+Assume that <tt>myList</tt> is a Python list.  Explain all the differences
+between <br><tt>yrList = myList</tt> and <tt>yrList = myList[:]</tt>.
+<br><br><br><br><br><br><br>
+
+<li>
+Tell me everything you know about <b>libraries</b> in the context of 
+programming.
+
+</ol>
+
+</body></html>
+

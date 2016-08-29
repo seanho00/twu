@@ -1,0 +1,109 @@
+<HTML><HEAD><TITLE>Chapter 10: Intermediate Program Structuring</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter 10<BR>
+Intermediate Program Structuring</B></H1></CENTER>
+
+
+<BR><A class = navgrn HREF="Ch10.0.html">10.0 Chapter Goals</A><!--	434-->
+<BR><A class = navgrn HREF="Ch10.1.html">10.1 Introduction</A><!--	434-->
+<P><b>Part A<!--‹-->--Scope and Visibility Issues</b></P>
+<A class = navgrn HREF="Ch10.2.html">10.2 Blocks, Global and Local Variables, Side Effects</A><!--	434-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.2.html#10.2.1">  10.2.1 Procedure Blocks and Scope</A><!--	435-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.2.html#10.2.2">  10.2.2 Side effects and Counting Loops</A><!--	436-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.2.html#10.2.3">  10.2.3 Other Global side effects</A><!--	438-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.2.html#10.2.4">  10.2.4 Nested Procedure Scopes</A><!--	439-->
+<BR><A class = navgrn HREF="Ch10.3.html">10.3 Parameters Revisited</A><!--	443-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.3.html#10.3.1">  10.3.1 The Scope of Parameters</A><!--	443-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.3.html#10.3.2">  10.3.2 Parameters and side effects</A><!--	444-->
+<BR><A class = navgrn HREF="Ch10.4.html">10.4 Procedure Types and their Variables</A><!--	445-->
+<BR><A class = navgrn HREF="Ch10.5.html">10.5 Local Modules<!--‹-->--Scope and Visibility Rules</A><!--	448-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.5.html#10.5.1">  10.5.1 Standard Identifiers and Scope</A><!--	453-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.5.html#10.5.2">  10.5.2 Dynamic Modules</A><!--	453-->
+<BR><A class = navgrn HREF="Ch10.6.html">10.6 An Extended Example<!--‹-->--Fibonacci Sequences</A><!--	454-->
+<BR><A class = navgrn HREF="Ch10.7.html">10.7 Library Modules<!--‹-->--Scope and Visibility Rules</A><!--	456-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.7.html#10.7.1">  10.7.1 Access to Imported Libraries at Inner Scopes</A><!--	456-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.7.html#10.7.2">  10.7.2 Visibility in Library Modules</A><!--	457-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.7.html#10.7.3">  10.7.3 Opaque Types<!--‹-->--a Brief Introduction</A><!--	458-->
+<P><b>Part B<!--‹-->--Program Control and Error Handling Issues</b></P>
+<A class = navgrn HREF="Ch10.8.html">10.8 Transfer of Control</A><!--	458-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.8.html#10.8.1">  10.8.1 GOTO and Other Noxious Weeds</A><!--	458-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.8.html#10.8.2">  10.8.2 RETURN in a Regular Procedure</A><!--	459-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.8.html#10.8.3">  10.8.3 Repetition Revisited<!--‹-->--The Generalized LOOP Statement</A><!--	460-->
+<BR><A class = navgrn HREF="Ch10.9.html">10.9 Error Handling Revisited</A><!--	463-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.9.html#10.9.1">  10.9.1 Typical Library Errors</A><!--	463-->
+<BR><A class = navgrn HREF="Ch10.10.html">10.10 Controlling Program Termination</A><!--	464-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.10.html#10.10.1">  10.10.1 HALT and Abnormal Termination</A><!--	464-->
+<BR><A class = navgrn HREF="Ch10.11.html">10.11 FINALLY: Termination Detection and Cleanup</A><!--	465-->
+<BR><A class = navgrn HREF="Ch10.12.html">10.12 Exceptions</A><!--	468-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.12.html#10.12.1">  10.12.1 Language Exceptions</A><!--	469-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.12.html#10.12.2">  10.12.2 Library Exceptions</A><!--	470-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.12.html#10.12.3">  10.12.3 Handling Exceptions</A><!--	470-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.12.html#10.12.4">  10.12.4 Exceptions and Termination</A><!--	475-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch10.12.html#10.12.5">  10.12.5 User-Defined Exceptions</A><!--	477-->
+<BR><A class = navgrn HREF="Ch10.13.html">10.13 An Extended Example<!--‹-->--Fractions and Exceptions</A><!--	479-->
+<BR><A class = navgrn HREF="Ch10.14.html">10.14 Chapter Summary</A><!--	483-->
+<BR><A class = navgrn HREF="Ch10.15.html">10.15 Assignments</A><!--	484-->
+
+<!--Version History
+Version 3.0 first cut completed 1994 06 02 
+Version 3.01 corrections and table of contents 1994 11 1
+Version 3.02 corrections to formatting and table of contents 1994 11 25
+Version 4.0 with HTML markup by G Tisher May 1995
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 07 04 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch10.0.html»
+«INCLUDE Ch10.1.html»
+«INCLUDE Ch10.2.html»
+«INCLUDE Ch10.3.html»
+«INCLUDE Ch10.4.html»
+«INCLUDE Ch10.5.html»
+«INCLUDE Ch10.6.html»
+«INCLUDE Ch10.7.html»
+«INCLUDE Ch10.8.html»
+«INCLUDE Ch10.9.html»
+«INCLUDE Ch10.10.html»
+«INCLUDE Ch10.11.html»
+«INCLUDE Ch10.12.html»
+«INCLUDE Ch10.13.html»
+«INCLUDE Ch10.14.html»
+«INCLUDE Ch10.15.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

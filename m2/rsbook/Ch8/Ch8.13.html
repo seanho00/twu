@@ -1,0 +1,126 @@
+<HTML>
+<HEAD>
+<TITLE>8.13 Assignments</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, high, low, level, implementation, dependent, defined, binary, octal, hexadecimal, unit, units, storage, system, cast, val, generic, generics, logical, program, physical, file, sequence, stream, streams, channel, channels, sequential, random, access, file, files, restricted, restrict, module, modules, raw, input, output, iso, modula, termfile, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.13 Assignments</B></H2>
+<H3><B>Questions:</B></H3>
+<P>1.  What is an implementation restriction?  Give an example.</P>
+<P>2.  What is meant by implementation defined?  Give a specific example.  What is meant by implementation dependent?  Give a specific example.</P>
+<P>3.  What is the difference between a high level programming language and a low level language?  Give an example of each and state which category Modula-2 falls into.</P>
+<P>4.  What is the difference between a high level language construct and a low level language construct?  Give an example of each from Modula-2.</P>
+<P>5.  Represent the following decimal numerals in binary, octal, and hexadecimal:  a) 123    b) 255   c) 1024   d) 4096   e)1500   f)4179</P>
+<P>6.  Represent the following binary numerals in decimal, hexadecimal, and octal: a) 10110101   b) 01110111   c) 11001011   d)11110000    e)10101010   f)01101101</P>
+<P>7.  Represent the following hex or octal numerals in binary and decimal: a)0A081H  b)1734B  c)0C000H  d)1000H  e)0300H  f)7617B  g)0D000H  h)0F800H</P>
+<P>8.  Represent the following decimal numerals in binary and hexadecimal:  a)10  b)100  c)1000  d)10000  e)256  f)1024  g) 65535  h) 5234  i)10253</P>
+<P>9.  Define the following terms:  bit, byte, nibble, word, <!--"-->&quot;K<!--"-->&quot;</P>
+<P>10. What is the length of a word in your system?  Make a table of the storage length in words and bytes of all the standard data types in your system. </P>
+<P>11. Define the following terms for your system: page, sector, track, block.</P>
+<P>12. What is a data location, and how is it abstracted in Modula-2?</P>
+<P>13. What is an address?  Name some procedures in ISO standard Modula-2 that can be used to manipulate addresses.</P>
+<P>14. What procedure is used to find the address of a Modula-2 item?</P>
+<P>15. Show how to declare a CARDINAL variable to have the fixed address B7ED in Modula-2.</P>
+<P>16. What immediately marks a Modula-2 program as system dependent or non-portable?</P>
+<P>17. What is the difference between safe and unsafe type transfers, and how is each realized in Modula-2?</P>
+<P>18. How is each of: a) octal character numbers  b) octal numeric literals and c) hexadecimal numeric literals indicated in Modula-2?  Give examples.</P>
+<P>19. What is a file?</P>
+<P>20. Distinguish among the terms logical file, program file, and physical file.</P>
+<P>21. Distinguish between the terms random access file and sequential file.</P>
+<P>22. Name the high level modules for file I/O in ISO standard Modula-2.</P>
+<P>23. Name the device drivers in ISO standard Modula-2 that were discussed in this chapter.  Are these high, medium, or low level modules?</P>
+<P>24. What modules are used in the ISO suite to do input and output of binary data?  Are these high, medium, or low level modules?</P>
+<P>25. Distinguish between the terms <i>sequence</i> and <i>stream</i>.</P>
+<P>26. What are the properties of a stream?</P>
+<P>27. Why is the sequence 1, 1.1, 2, 2.2, 3, 3.3, 4, 4.4, ... not a stream?</P>
+<P>28. What is the difference between a text stream and a raw stream?</P>
+<P>29. What is a channel?</P>
+<P>30. Distinguish between the terms <i>sequential file</i> and <i>text file</i>.</P>
+<P>31. Detail ALL the steps that are required (implicitly or explicitly) to do input/output with a physical file.  Which ones are explicitly required on an ISO system? Which ones are explicitly required on the system you use?</P>
+<P>32. Distinguish between the terms restricted stream and rewindable sequential stream.  What ISO Modula-2 libraries implement each model?</P>
+<P>33. Why is it important that any application program that opens files also closes them?</P>
+<P>34. What is a buffer?</P>
+<P>35. Detail any implementation restrictions/dependencies on your system that relate to the specification and use of file names.</P>
+<P>36. What is the difference between the <i>StdChan</i> procedures <i>InChan</i> and <i>OutChan</i> on the one hand, and <i>StdInChan</i> and <i>StdOutChan</i> on the other.</P>
+<P>37. Look up in the documentation and explain a possible use for the ISO channel identifiers <i>StdChan.NullChan</i>, and <i>IOChan.InvalidChan</i>.</P>
+<P>38. What ISO module is used for device independent I/O?</P>
+<P>39. Define the term echo.</P>
+<P>40. In <i>TermFile</i> driven channels, what is the difference between character mode input and line mode input, and how is each set?</P>
+<P>41. How many <i>TermFile</i> channels have to be in character mode in postpone all echoing?</P>
+<P>42. What is a generic procedure?</P>
+<H3><B>Problems</B></H3>
+<P>43. Write a program module that will change a user supplied CARDINAL into a binary number and print out the result. Do not use recursion as was done in the example in chapter 4.</P>
+<P>44. Write a program module that will write out a user-supplied REAL byte by byte in hexadecimal format.</P>
+<P>45. Write a program module that will write out a user-supplied REAL byte by byte in binary format.</P>
+<P>46. Write a module to determine the size (in LOCs) of all the built in data types in Modula-2.</P>
+<P>47. Write a module that will determine what happens when you try to do output to the channel returned by StdChans.InChan.</P>
+<P>48. Write a module that will determine what happens when you try to do input or output to the channel returned by IOChan.InvalidChan.</P>
+<P>49. Write a module that will allow you to type a paragraph or two of text from the keyboard and store it on the disk as a text file, with each character being stored as it is read from the keyboard.</P>
+<P>50. Write a module that will allow you to type a paragraph or two of text from the keyboard and store it on the disk as a text file, with each line being stored as it is read from the keyboard.</P>
+<P>51. Now rewrite the module in Chapter 7, Problem #16 to read the source text from the disk file created in #50 above, reformat it according to the rules followed in the Chapter 7 problem, and both output it to the printer and also re-write it to another text file under a different name.</P>
+<P>52. Write a module that can read a text file from the disk and analyze the frequency of the characters in the file, and then save a chart of this information to another file.</P>
+<P>53. Write a module that can read a text file from the disk and analyze the frequency of the words in the file, and then save a chart of this information to another file.</P>
+<P>54. Write a program module that will collect class grading information from the keyboard, and write it out in a series of lines in a text file following the format below, where the first item is a student name, the second is a lab mark out of 25, the third and fourth are midterms out of 40, and the last a final exam mark out of 100.<BR>John Jacobs, 23.5, 32.7, 39.3, 74.5<BR>Chriss Waltermore, 13.5, 22.7, 40, 64.5<BR>and so on. Commas are to separate the items on each line, and end of line markers the student line items.</P>
+<P>55. Write a program module that will read the data in the file created in #54 and print out a nicely formatted report, together with a final percentage based on weighing the lab mark as 20%, the midterms together as 35% and the final as 45%.  This program should also calculate and report on class averages for each marking category and for the overall class average.</P>
+<P>56. Write a program module that will read the data in the file created in #54 and ask the user for a student number for each student, then write a new file one above, but with the student number following the name.</P>
+<P>57. Write a program module that will read a file, ask the user for a password, and then encrypt the file using the password and then write it to a new file.</P>
+<P>58. Write the complement to the program in #57 to decrypt the file using the password.  Compare to the original.</P>
+<P>59. Use a previously created file of prime numbers (or create one if you have not already) to solve the problem of finding the prime factorization of cardinals typed from the keyboard.  For instance an input of 150 should produce an output of:150 has 1 factor of 2, 1 factor of 3, and 2 factors of 5.Of course, the program should be able to do any number of factorings before being exited, so the file of primes will need to be rewound to the beginning for each.</P>
+<P>60. Use a previously created file of random numbers (or create one if you have not already) to determine the fastest way of reading and writing an array of cardinals.  Should it be done one number at a time using <i>ReadCard</i>, or <i>ReadRaw</i>, (<i>WriteCard/WriteRaw</i>) or in some larger data chunk?</P>
+<P>61. Suppose that you do not have the procedures <i>ReadCard</i> and <i>ReadInt</i> available.  Write both using the facilities of <i>IOChan</i>.  Test what you have written.  Note that you will also have to look up and employ the facilities of appropriate conversion routines in other library modules.</P>
+<P>62. Consider the version of <A HREF="Ch8.9.html#RedirStdIO"><i>RedirStdIO</i></A> presented in <A HREF="Ch8.9.html">section 8.9</A>.  Rewrite this for a text based system so that a simple prompt will be presented to the user in text form, say, for <i>OpenInput</i>:</P>
+<P>Input File <!-->&gt; </P>
+<P>The user responds by typing a file name.  If the file is not found, the prompt is repeated.  If the user types a control-C character (or another suitable one of your choice) as the beginning of the string, the dialog is escaped and the situation shall be as if no <i>OpenInput</i> had been encountered in the code.</P>
+<P>63. Combine the facilities of the program modules <i>GetNStash</i>, <i>ReadNAdd</i>, <i>StashMoreAndType</i> from <A HREF="Ch8.6.html">section 8.6</A> into a single menu-driven module that allows the user to create a file for the numbers, put more numbers into the file, read them and determine maximum, minimum, sum, and average at any point, clear an existing file, or and close the open file, exiting the program.  Some flag will have to mark the end of a series of inputs for a return to the main menu.</P>
+<H3><B>Ambitious Projects</B></H3>
+<P>64. Implement and test <i>StreamFile</i> on top of whatever lower level file handling modules may be available.  Warning: You must first fully understand the use of <i>IOLink</i> for writing device drivers.</P>
+<P>65. Implement and test a module that opens a logging channel to a disk file and logs all input and output going through the standard channels so that it is echoed in the file as well as on the screen. Test your code. </P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

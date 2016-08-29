@@ -1,0 +1,295 @@
+<HTML>
+<HEAD>
+<TITLE>13.1 Searching</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.1 Searching</B></H2>
+<P>The type ARRAY has been used extensively in several chapters thus far, to store and manipulate itemized information of the same type.  Now suppose one goes beyond mere storage and asks questions about retrieval systems for data that has been organized this way.  Specifically, suppose one has an array of some type of data and wishes to discover whether or not the value of some separately held item of that same type is already in the array, and if so, at what position. (i.e. What is its index?) </P>
+<H3><B><A NAME="13.1.1">13.1.1</A> Linear (Sequential) Searches</B></H3>
+<P>The most straightforward solution to this problem is to start with the lowest array index, and compare the value of the separately held item in question systematically to every item in the array to see if it is equal to one of them.</P>
+<BLOCKQUOTE><I>The <A NAME="Search">search</A> of a list of items in consecutive order by examining each item in the list in turn is called a <U>linear</U> or, <U>sequential</U> search.</I></BLOCKQUOTE>
+<P>A linear search does not depend for its success on the items being searched already being in any particular order.  The value being sought will either be equal to one of the ones already in the array, or it will not.  If it is, the index number of the position at which it is found can be returned.  Otherwise, some indication that the search has failed must be passed back.  Here is a procedure to do just that:</P>
+<PRE>
+<B>PROCEDURE</B> Find (item: ItemType;
+    offset, num : <B>CARDINAL</B>;
+    source: <B>ARRAY</B> <B>OF</B> ItemType;
+    <B>VAR</B> found: <B>BOOLEAN</B>; <B>VAR</B> pos : <B>CARDINAL</B>);
+
+(* searches for the item in the array source from offset to end
+Pre: offset is the number of positions after the first at which the search is to begin; num is the number of positions after the offset that are to be examined. 
+offset + num  <!--<-->&lt;= HIGH ( source)
+Post: if the value is found in the array, the cardinal returned is the number of positions after start where it is found and found is set to true.  If the value is not found, the cardinal returned is undefined and found is set to false *)
+
+<B>BEGIN</B>
+  pos := offset;
+  found := <B>FALSE</B>;
+  <B>WHILE</B> (num <!-->-->&gt; 0) <B>AND</B> <B>NOT</B> found
+    <B>DO</B>
+      <B>IF</B> item = source [pos]
+        <B>THEN</B>
+          found := <B>TRUE</B>;
+        <B>ELSE</B>
+          <B>INC</B> (pos); (* check next one *)
+          <B>DEC</B> (num); (* decrease number remaining *)
+        <B>END</B> (* if *)
+    <B>END</B>; (* while *)
+<B>END</B> Find;</PRE>
+<P>Because an open array parameter is employed in this procedure, it can be used for any size array.  However, since not all the positions of the array may be in use, and to allow some to be skipped at the beginning, the starting point relative to the first item, and the number of items to examine are both passed.  If the item value being searched for is found, its relative index from <I>offset</I> will be returned, along with a boolean flag set to <I>true</I>.  If the entire specified range of the array is searched without success, the flag is set to <I>false</I> and the value in <I>pos</I>  will be invalid.  (The logic implemented here will actually result in pos being set to <I>offset</I> + <I>num</I>, but the specifications could have been met in some other manner.)</P>
+<P>Notice that this procedure cannot be used as is to find an element of any type whatever in an array of that type, just by changing a few names.  It will work as it is presented here only for values of those types for which the relation <!--"-->&quot;=<!--"-->&quot; is meaningful.  That is, it works for integer, cardinal, real, character , and boolean types, but not for arrays of these.</P>
+<P>However, if the line where the comparison is done is replaced by:</P>
+<PRE>
+<B>IF</B> Compare (item, source [count]) = equal;</PRE>
+<P>where</P>
+<PRE>
+<B>TYPE</B>
+  CompareResult = (less, equal, greater);</PRE>
+<P>and</P>
+<PRE>
+<B>PROCEDURE</B> Compare (item1, item2 : ItemType) : CompareResult;</PRE>
+<P>are suitable (possibly imported) procedure for making such comparisons on the data type in question, then this procedure will approach universality.  It will need only the specific type name inserted to create a specific instance of it to work in any situation.</P>
+<P>To cast this specifically as searching an array of strings to find a specific string, and assuming that the enclosing module contains the lines:</P>
+<PRE>
+<B>FROM</B> Strings <B>IMPORT</B>
+  CompareResult, Compare;
+
+<B>TYPE</B>
+  String : <B>ARRAY</B> [0 .. maxSize] <B>OF</B> <B>CHAR</B>;
+
+yields (with the comments removed to avoid repetition:)
+
+<B>PROCEDURE</B> Find (item: String;
+    offset, num : <B>CARDINAL</B>;
+    source: <B>ARRAY</B> <B>OF</B> String;
+    <B>VAR</B> found: <B>BOOLEAN</B>; <B>VAR</B> pos : <B>CARDINAL</B>);
+
+<B>BEGIN</B>
+  pos := offset;
+  found := <B>FALSE</B>;
+  <B>WHILE</B> (num <!-->&gt; 0) <B>AND</B> <B>NOT</B> found
+    <B>DO</B>
+      <B>IF</B> Compare (item, source [pos]) = equal;
+        <B>THEN</B>
+          found := <B>TRUE</B>;
+        <B>ELSE</B>
+          <B>INC</B> (pos); (* check next one *)
+          <B>DEC</B> (num); (* decrease number remaining *)
+        <B>END</B> (* if *)
+    <B>END</B>; (* while *)
+<B>END</B> Find;</PRE>
+<H3><B><A NAME="13.1.2">13.1.2</A> Binary Searches</B></H3>
+<P>The linear search algorithm works quite well if one is looking through rather small lists.  Assuming that of the total number <I>num</I> of items in the part of the list being searched, each is equally likely to be the target, a linear search, will on average make <I>num/2</I> comparisons in those cases where the item is found, and <I>num</I> comparisons in those cases where the search fails.  The overall average will depend on how often one searches for something that is not there, but will in any case be proportional to the number <I>num</I> of items in the search range of the array.</P>
+<BLOCKQUOTE><I>The idea that the worst-case  time taken for an algorithm is proportional to some function f of the size n of the problem is expressed by saying that the algorithm is order f(n).  Notation: <B>O</B>(f (n))</I></BLOCKQUOTE>
+<P>A linear search is <B>O</B>(n).  One can do very much better than this, however, if the array items through which one is searching have been sorted beforehand.  Suppose they are arranged from smallest to largest.  One can now make more intelligent comparisons that allow large portions of the array to be ignored as unsuitable for searching without first making comparisons with every item in those portions.</P>
+<P>This is done by making the first comparison with the middle item in the search range.  If the target value is greater than this, the search need subsequently consider only the half of the range above this point; if it is less than this one, then only the half of the range below this point.  In either situation, the algorithm ignores as unnecessary for any further searching half of the items.  Of course, if the comparison produced equality, the match has been found and the routine can exit.</P>
+<P>Applying the same principle repeatedly to the remaining sub-range not already eliminated, at each step discard half of the rest until either there is a match or nothing remains with which to work.  The latter condition exists if the counter on the top of the range is decremented below the counter on the bottom of the range.  Since this could mean that the top counter becomes -1, if the last item looked at was item zero, the counters should be integers.</P>
+<BLOCKQUOTE><I><A NAME="Binary">Successive</A> partition of a sorted range of items into halves to find a specified value is called a <U>binary search.</U></I></BLOCKQUOTE>
+<P>Given an array [0 .. n-1] of items, and a value to search for:</P>
+<PRE>
+Binary search algorithm:
+  bottom = 0
+  top = n - 1
+  found = false
+  repeat
+    search position = (top + bottom) DIV 2;
+      if value <!--<-->&lt; source [search position] then   (* ignore top half *)
+        top = search position - 1;
+        (* by setting new top just below middle *)
+      elsif value <!-->-->&gt; source [search position] then
+           (* ignore bottom half *)
+        bottom := search position + 1
+        (* set new bottom just above middle *)
+      else   (* must be equal *)
+        found = true;
+      end (* if *)
+  until found or (top <!--<-->&lt; bottom);</PRE>
+<P>A numeric example using this algorithm is stepped through below:</P>
+<H3><B>Example:</B></H3>
+<P>Given the following sorted list of numbers</P>
+<P>11, 21, 46, 52, 55, 67, 79, 81, 86, 97, 99</P>
+<P>(i) search for the value 81.</P>
+<H3><B>Solution:</B></H3>
+<P>The algorithm proceeds as follows:</P>
+<P>1. The terms are numbered from 0 .. 10.  The first search position is 5, at which is found the number 67.  The value 81 is compared to it and 81 is greater.<BR>
+2. Next the items from position 6 through 10 are considered.  These are 79, 81, 86, 97, 99.  Here, the search position is 8 at which is the number 86, and 81 is less than this.<BR>
+3. Thus the list is reduced to items 6 through 7.  The remaining list is 79, 81.  The search position item is the first one holding 79, and 81 is greater than this.<BR>
+4. All that remains is the list with item 6 or 81 in it.  The one wanted is equal to this, and so has been found.  If it were not, then at the next step the bottom counter would be greater than the top counter; there would be no list left, and the search would fail.</P>
+<P>(ii) search for 50 in the list.</P>
+<P>The successive item numbers at the beginning of each step, the  lists to be checked, and the search positions and results for each step are:</P>
+<PRE>
+range	        list	                pos	   result	     new range
+1) [0 .. 10]	the whole list;	        5 (67)	   less	             [0 .. 4]
+2) [0 .. 4]	11, 21, 46, 52, 55;	2 (46)	   greater	     [3 .. 4]
+3) [3 .. 4]	52, 55;	                3 (52)	   less	             [4 .. 3] fails</PRE>
+<P>(ii) search for 10 in the list.</P>
+<PRE>
+range	        list	                pos	   result	     new range
+1) [0 .. 10]	the whole list;	        5 (67)	   less	             [0 .. 4]
+2) [0 .. 4]	11, 21, 46, 52, 55;	2 (46)	   less	             [0 .. 1]
+3) [0 .. 1]	11, 21;	                0 (11)	   less	             [0 .. -1] fails</PRE>
+<P>Having now hand traced the algorithm to make sure that it works, it is time to translate this into a working procedure.  As in the linear search, the binary one returns both the index, and a flag to indicate the validity of the data.  To maintain compatibility with the last search procedure, the parameters are set out in the same manner, with an offset at which to begin within the array, and a maximum number of positions to search beyond that point.  In addition, the algorithm has been reformulated in a <I>while</I> loop, and to ensure that the condition <I>top <!--<-->&lt; bottom</I> for exit does not mean either <I>top <!--<-->&lt; 0</I> (integer type needed) or <I>bottom <!-->&gt; HIGH (array)</I> (bad index error) the loop is exited as soon as <I>top = bottom</I> and then a last check is done to probe the item at that position.</P>
+<PRE>
+<B>PROCEDURE</B> FindB (item: ItemType;
+    offset, num : <B>CARDINAL</B>;
+    source: <B>ARRAY</B> <B>OF</B> ItemType;
+    <B>VAR</B> found: <B>BOOLEAN</B>; <B>VAR</B> pos : <B>CARDINAL</B>);
+
+(* searches for the item in the array source from offset to end
+Pre: offset is the number of positions after the first at which the search is to begin; num is the number of positions after the offset that are to be examined. 
+offset + num  <!--<-->&lt;= HIGH ( source)
+Post: if the value is found in the array, the cardinal returned is the number of positions after start where it is found and found is set to true.  If the value is not found, the cardinal returned is undefined and found is set to false*)
+
+<B>VAR</B>
+  bottom, top, max : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  bottom := offset;
+  max := bottom + num;
+  top := max;
+  found := <B>FALSE</B>;
+
+  <B>WHILE</B> (bottom <!--<-->&lt; top) <B>AND</B> <B>NOT</B> found
+    <B>DO</B>
+      pos := (top + bottom) <B>DIV</B> 2;
+        <B>IF</B> (item <!--<-->&lt; source [pos])
+          <B>THEN</B>   (* ignore top half *)
+            top := pos - 1;
+          <B>ELSIF</B> (item <!-->-->&gt; source [pos])  <B>THEN</B>
+            bottom := pos + 1   (* ignore bottom half *)
+          <B>ELSE</B>  (* item = source [pos]  *)
+            found := <B>TRUE</B>;
+          <B>END</B>; (* if *)
+    <B>IF</B> <B>NOT</B> found (* but bottom = top now *)
+    <B>THEN</B> (* have not yet probed at bottom/top *)
+      pos := bottom;
+    <B>IF</B> item = source [pos] 
+      <B>THEN</B>
+        found := <B>TRUE</B>;
+      <B>END</B>;
+    <B>END</B>;
+  <B>END</B>; (* while *)
+
+<B>END</B> FindB;</PRE>
+<P>Just how much better is the binary search than the linear one?  In the list of eleven items in the range [0 .. 10] a maximum of four comparisons were required, though the actual number could be less if the value is found.  In the linear case, the average number of comparisons would be 5.5 and the maximum number would be eleven.  The number of linear comparisons depends on n, the number of items, (it is <B>O</B>(n)) but the number of binary method comparisons depends on the number of times <I>t</I> that one could take half of n before reaching a list length of one.   This number is the same as the number of times one would have to double the number one to get n. Writing 2<sup>t</sup> = n, and taking logarithms with base two on both sides yields t = log<sub>2</sub> (n).</P>
+<BLOCKQUOTE><I>A binary search is <B>O</B>(log<sub>2</sub> (n)).</I></BLOCKQUOTE>
+<P>For an array of 1000 items, one could be unlucky enough to require 1000 comparisons in a linear search (though the average would be 500), whereas the maximum number of comparisons to search the same data in binary fashion is ten.  The savings become truly enormous with large lists.  Note however, that the array must be sorted before being searched in binary fashion, and that the sorting will also take time.</P>
+<P>However, for smaller arrays, the extra overhead involved in the binary search will be more important than the savings in making fewer comparisons.  When the two methods are both used on the same arrays and the results compared, it turns out that a linear search is often more efficient below about 100 items.  Since the time ratio between the extra arithmetic on the one hand and the extra comparisons on the other will vary depending on the architecture of the computer, it is not possible to state that this boundary is accurate for all cases.  (The student is invited to find a more accurate limit as one of the exercises.)</P>
+<P>It is also worth noting that the binary search has two comparisons in the IF statement in the inner loop, and succeeds only when both of those comparisons fail.  Moreover, an individual probe at a position <i>pos</i> fails to find the item sought more often than it succeeds.  One might therefore try to improve the algorithm by having only one comparison inside the inner loop, ensuring that the search converges to a single item and then exits.  The test for equality on that single item can then be done once, outside the loop.  These ideas can be expressed as follows:</P>
+<PRE>
+<B>PROCEDURE</B> FindB1 (item: ItemType;
+    offset, num : <B>CARDINAL</B>;
+    source: <B>ARRAY</B> <B>OF</B> ItemType;
+    <B>VAR</B> found: <B>BOOLEAN</B>; <B>VAR</B> pos : <B>CARDINAL</B>);
+
+(* same predicates *)
+<B>VAR</B>
+  bottom, top : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  bottom := offset;
+  top := offset + num;
+  found := <B>FALSE</B>;
+
+  <B>WHILE</B> (bottom <!--<-->&lt; top)
+    <B>DO</B>
+      pos := (top + bottom + 1) <B>DIV</B> 2;
+        <B>IF</B> item <!--<-->&lt; source [pos]
+          <B>THEN</B>   (* ignore top half *)
+            top := pos - 1;
+          <B>ELSE</B>
+            bottom := pos   (* ignore bottom half *)
+          <B>END</B>; (* if *)
+    <B>END</B>; (* while *)
+  pos := bottom;
+  <B>IF</B> item = source [pos]
+    <B>THEN</B>
+      found := <B>TRUE</B>;
+    <B>END</B>;
+<B>END</B> FindB1;</PRE>
+<P>The improvement in the inner loop that results from having only one comparison instead of two is partially offset by having to use the expression (top + bottom + 1) instead of just (top + bottom).  It is also reduced by the fact that the loop will now not exit just because it happens to probe the right place.  It only exits when the probe range has been reduced to one item.  One might expect that any gains achieved are likely to be less with short lists, where the probability of hitting the item with a probe is higher (if it is there).  On the other hand, for unsuccessful searches, the second method is likely to have some speed advantage.</P>
+<P>For the sake of completeness, the binary search is also presented below in a more generic form that assumes a <I>Compare</I> procedure is visible in the same scope.</P>
+<PRE>
+<B>PROCEDURE</B> FindBg (item: ItemType;
+    offset, num : <B>CARDINAL</B>;
+    source: <B>ARRAY</B> <B>OF</B> ItemType;
+    <B>VAR</B> found: <B>BOOLEAN</B>; <B>VAR</B> pos : <B>CARDINAL</B>);
+
+(* same predicates *)
+<B>VAR</B>
+  bottom, top : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  bottom := offset;
+  top := offset + num;
+  found := <B>FALSE</B>;
+
+  <B>WHILE</B> (bottom <!--<-->&lt; top)
+    <B>DO</B>
+      pos := (top + bottom + 1) <B>DIV</B> 2;
+        <B>IF</B> Compare (item, source [pos]) = less
+          <B>THEN</B>   (* ignore top half *)
+            top := pos - 1;
+          <B>ELSE</B>
+            bottom := pos   (* ignore bottom half *)
+          <B>END</B>; (* if *)
+    <B>END</B>; (* while *)
+  pos := bottom;
+  <B>IF</B> item = source [pos]
+    <B>THEN</B>
+      found := <B>TRUE</B>;
+    <B>END</B>;
+<B>END</B> FindBg;</PRE>
+<P>Several variations on the theme are possible.  If the user does not mind using integer variables for the indexing and has an extra unused array position available, the indices can be allowed to run past one another without harm being done.  In that event, and since a <I>Compare</I> procedure is ternary-valued, a CASE statement in the inner loop could be quite efficient.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

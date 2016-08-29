@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+<TITLE>1.11 Assignments</TITLE>
+<meta NAME="keywords" CONTENT="problem, solving, problems, solve, refince, solution, solutions, refined, abstract, abstractions, represent, representation, manipulate, manipulation, data, hardware, software, program, programming, notation, notations, machince, sequence, selection, repetition, composition, parallelism, pseudocode, syntax, semantics, errors">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document. For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>1.11 Assignments</B></H2>
+<H3><B>Questions</B></H3>
+<P>1. What is the difference between top-down and bottom-up design? </P>
+<P>2. What are the major steps that must be undertaken to solve problems using top-down design?</P>
+<P>3. <!--"-->&quot;Driving a car is an abstraction.<!--"-->&quot; Explain.</P>
+<P>4. What is an abstraction?</P>
+<P>5. <!--"-->&quot;A human being is more than just a machine made of meat.<!--"-->&quot; Comment on this statement in the light of this chapter, and your own knowledge of the state-of-the-art of computational machine capabilities.</P>
+<P>6. Elaborate on the contention that money<!--‹-->--however expressed<!--‹-->--is an abstraction of wealth.</P>
+<P>7. What is a paradigm? a model? a world view? a meme?</P>
+<P>8. <!--"-->&quot;Abstractions are intellectual creations; they are not discoveries.<!--"-->&quot; Comment on this statement made in the text. Perhaps you have a different view of the matter.</P>
+<P>9. Into what two major categories do the abstractions of interest to the study of computing fall? Break each of the categories into two major sub-categories as well.</P>
+<P>10. What is the difference between data and information?</P>
+<P>11. Classify as compound or atomic entities: (a) a class of students, (b) the number 4.5, (c) a book, (d) a computer program, (e) the slope of a line, (f) the slope of a line when expressed as rise/run.</P>
+<P>12. Classify according to unsigned whole number, signed whole number, real, character, string or boolean types. (Some might be more than one; some might be compound types.)<BR>
+<Pre>	(a) 23.589
+	(b) 4
+	(c) (3, 4)
+	(d) <!--"-->&quot;Yesterday, today and forever<!--"-->&quot;
+	(e) -12
+	(f) 5 <!--<-->&lt; 2
+	(g) 15 - 9
+	(h) 4.3 - 1.3
+	(i) (6 <!--<-->&lt; 2) and (5 <!-->&gt; -12)
+	(j) {1, 2, 5, 7, 11}
+	(k) y2 - y1</pre>
+<P>13. What is an abstract data type?</P>
+<P>14. Why is there a difference between an abstract data type and the representation of one?</P>
+<P>15. What is the difference between a variable and a named constant?</P>
+<P>16. What is an expression? How is it assigned a type?</P>
+<P>17. What are the major tasks of the computing hardware?</P>
+<P>18. What is the difference between ROM and RAM?</P>
+<P>19. What is the difference between hardware and firmware?</P>
+<P>20. What is meant by the term <!--"-->&quot;virtual machine?<!--"-->&quot;</P>
+<P>21. What are the major tasks of an operating system?</P>
+<P>22. Who was the inventor of two major programming languages, and which ones are they?</P>
+<P>23. What language is principally used for business applications?</P>
+<P>24. What is the difference between a compiler and an interpreter?</P>
+<P>25. Explain the five principal abstractions for structuring programs.</P>
+<P>26. Explain, with examples, the difference between top-of-loop and bottom-of-loop testing.</P>
+<P>27. What are the advantages of writing out programs in pseudocode before coding them in an actual programming notation?</P>
+<P>28. What is an algorithm?</P>
+<P>29. What is the difference between the syntax and the semantics of a notation?</P>
+<P>30. What are the two major sources of errors in computer programs, and how are they best prevented?</P>
+<H3><B>Problems</B></H3>
+<P>31. Evaluate the following expressions, giving the value produced for the variable. You may assume that the variable is of the correct type to name the simplified entity from the expression. If any cannot be evaluated for some reason, indicate why not.</P>
+<Pre>	(a) x = 12 + 34 * 15
+	(b) y = 1.2 - 3.4 / 1.7
+	(c) t = 3 + 5 * 8 - 6 / 2 + 7
+	(d) m = (1 <!--<-->&lt; 5) and (-2 <!--<-->&lt; 0)
+	(e) b = (3 <!--¾-->&lt;= 3) or false
+	(f) r = (not (5 + 4 <!--<-->&lt; 2)) and (5 / 1 <!--<-->&lt; 1)
+	(g) c = 15 <!--<-->&lt; true
+	(h) q = (1.5 <!--¥-->* 106) <!--¥-->* 1000
+	(i) n = ((15 - 2 * 3) <!--<-->&lt; 4) or not (62 - 10)
+	(j) Z = 4.5 / 1.5 + float (4)</Pre>
+<P>32. Write an algorithm in pseudocode to write out the first twenty squares. Use a loop.</P>
+<P>33. Write an algorithm in pseudocode to test whether a number is even or odd.</P>
+<P>34. What is the output of the pseudocode:</P>
+<PRE>	for i = 1 to 10
+		for j = 1 to i
+			write the value of i
+			write a comma and a space
+			write the value of j
+		go to the next line
+		end <!--"-->&quot;for j<!--"-->&quot; loop
+	end <!--"-->&quot;for i<!--"-->&quot; loop</PRE>
+
+<P>35. Write an algorithm in pseudocode to add the squares of the first n positive integers, where the number n is determined by asking the user of the program.</P>
+<P>36. Write an algorithm in pseudocode to add ten numbers, each of which is typed by the user.</P>
+<P>37. Write an algorithm in pseudocode to add n numbers, each of which is typed by the user. The user must first be asked for n.</P>
+<P>38. Modify the algorithm in #37 to add the squares of the numbers as well as the numbers themselves in separate totals.</P>
+<P>39. Write an algorithm in pseudocode to sort three numbers in order from smallest to largest.</P>
+<P>40. The following piece of pseudo-code is meant to be an algorithm to compute the average of a sequence of real numbers. However, it will not work as shown. Make one correction so that it will.</P>
+<PRE>	Compute Average
+		read n (* number of reals to do *)
+		set count to 1
+		set partial sum to 0
+		while count <!--<-->&lt;= n
+			read currentReal
+			add currentReal to partial sum
+			add 1 to count
+		end while
+		set average to partial sum/ count
+		write out average
+	end Compute average</PRE>
+
+<P>41. Write an algorithm to find the largest and the smallest number of a sequence of numbers.</P>
+<P>42. Combine the corrected algorithm for #40 and #41 to produce a single piece of pseudo code to examine a sequence of numbers and determine the largest, smallest, and average of the numbers.</P>
+<P>43. A matrix is a rectangular array of numbers, such as:</P>
+<PRE>	1	4	9	-7	6
+	3	2	89	5	34
+	1	-56	7	8	13</PRE>
+
+<P>	This particular one is a three row by five column matrix. Write an algorithm for adding together all the cells of the matrix.</P>
+<P>44. Generalize the pseudo code for the last problem by having the number of rows and the number of columns as named constants <I>numrows</I> <!--& -->&amp; <I>numcols</I> rather than as specific numbers (three and five.)</P>
+<P>45. You have a column of numbers a<sub>1</SUB>, a<sub>2</SUB>, a<sub>3</SUB> through a<sub>12</SUB> that represent the monthly profits of your organization. You want to project these to the following year by adding 5% to each one and putting the result into another column numbered b<sub>1</SUB>, b<sub>2</SUB>,... through b<sub>12</SUB>. Write the pseudocode for this. (Note that the two columns constitute a matrix.)</P>
+<P>46. You have three columns of numbers labelled revenue, expense and net profit. Each row is numbered 1,2,3,... lastItemNumber. Assume the first two columns are already filled in with data. Write the pseudocode to construct the third.</P>
+<P>47. As in #46 above, but the columns are labelled price, GST (tax) and total. Only the first column is filled in. The second is constructed by finding 7% of the number in the first, and the third by taking the total  of the first two.  Write pseudocode to do this.</P>
+<P>48. There are five columns of numbers labelled first, second, third, max, and average. The rows are numbered 1,2,3,... lastItemNumber. The first four columns are filled in. Write the pseudocode to fill in the last two columns of each row with the maximum and average of the first three in that row.</P>
+<P>49. As in #48 above, but there are only three columns labelled first, second, and third. Write the pseudocode to obtain those numbers from a user and to put them into sorted order in the table. You can do this in one combined piece of code, or in two stages.</P>
+<P>50. A vector is an array of numbers that has only one row (or column, as the case may be). If two vectors have the same length, their dot product is defined as the sum of the products of their respective components. That is, the dot product of (2, 3, 5) with (1, -7, 9) is 2 + (-21) + 45, a total of 26. Write the pseudocode to read in the values of two vectors, check to see if they are the same length, and if so, compute their dot product. If not output an error message.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER>
+</BODY>
+</HTML>

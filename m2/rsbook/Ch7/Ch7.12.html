@@ -1,0 +1,137 @@
+<HTML>
+<HEAD>
+<TITLE>7.12 Further Applications From Business</TITLE>
+<meta NAME="keywords" CONTENT="application, applications, business, nominal, interest, rate, effective, annual">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.12 Further Applications From Business</B></H2>
+There are a variety of additional problems that can be solved using the formulas and techniques of section <A HREF="../Ch4/Ch4.9.html">4.9</A>.
+<H3><B>Example 1:</B></H3>
+At a given compound interest applied annually, how long does it take to double an investment?
+<H3><B>Discussion:</B></H3>
+<P>The annual version of the compound interest formula A<sub>t</sub> = A<sub>0</sub> (1 + r)<sup>t</sup> can have 2A<sub>0</sub> substituted for A<sub>t</sub> (because the amount doubles) and then solved for t as follows:</P>
+2A<sub>0</sub>	=	A<sub>0</sub> (1 + r)<sup>t</sup><BR>
+2	=	(1 + r)<sup>t</sup><BR>
+ln(2)	=	t ln(1+r)<BR>
+t	=	<IMG SRC="Figure/Eq7.12.1.GIF" ALIGN="MIDDLE" WIDTH=47 HEIGHT=28><!----><BR>
+<P>If the interest is, say 6%, this yields 11.89, which, since the question specifies annual interest, must be rounded to 12 years.  Note that any growth factor <!---->A<sub>t</sub>/A<sub>0</sub> could be substituted for the number 2 in this discussion.  Modula-2 code would be:</P>
+<P>time := ( ln ( Amount / Principal ) / ln ( 1 + rate ) )</P>
+<H3><B>Example 2:</B></H3>
+<P>What is the effective annual rate for interest that is compounded more often than annually?</P>
+<H3><B>Discussion:</B></H3>
+<P>The idea here is that compounding more than annually produces a slightly higher rate of interest than if it were annual.  Since many jurisdictions require a lender to report the rate as an annual one, an adjustment must be made.</P>
+<BLOCKQUOTE><P><A NAME="nominal interest"></A><i>The <U>nominal interest rate</u> is the rate that is divided by the number of annual compounding periods to obtain the rate per period.  The <u>effective annual interest rate</u> is the rate that would be applied annually to produce the same result as the nominal rate.</i></P></BLOCKQUOTE>
+<P>For instance $1000 at a nominal 10% for one year compounded each six months yields (100 * .05) = $50, and then (1050 * .05) = $52.50 or 102.50 altogether.  Clearly the effective annual rate is 10.25%.</P>
+<P>In general, if the nominal rate is <i>i</i>, the number of compounding periods is <i>n</i>, and the effective rate is <i>r</i>, for the two to yield an equivalent amount in t years</P>
+<P>A<sub>0</sub> (1 + r)<sup>t</sup> = A<sub>0</sub> <IMG SRC="Figure/Eq7.12.2.GIF" ALIGN="MIDDLE" WIDTH=56 HEIGHT=30><!----></P>
+<P>Multiplying both sides by 1/A<sub>0</sub> and then taking t<sup>th</sup> roots yields</P>
+<P>(1 + r) =  <IMG SRC="Figure/Eq7.12.3.GIF" ALIGN="MIDDLE" WIDTH=52 HEIGHT=29><!----></P>
+<P>or</P>
+<P>r = <IMG SRC="Figure/Eq7.12.3.GIF" ALIGN="MIDDLE" WIDTH=52 HEIGHT=29><!----> - 1</P>
+<P>Thus, if the investment (or loan) is of 10% compounded monthly, we would have</P>
+<P>r = <IMG SRC="Figure/Eq7.12.4.GIF" ALIGN="MIDDLE" WIDTH=64 HEIGHT=31><!----> -1</P>
+= .1047 or 10.47% for the effective rate.
+<P>These new formulas, along with several others discussed in section <A HREF="../Ch4/Ch4.9.html">4.9</A> can be collected into a library, say, with the following definition:</P>
+
+<PRE><A NAME="FinanceMath"></A><b>DEFINITION</b> <b>MODULE</b> FinanceMath;
+
+<b>PROCEDURE</b> SimpleInterest (principal, rate: <b>REAL</b>; time: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: none
+   Post: computes interest= principal * rate * time *)
+
+<b>PROCEDURE</b> CompoundAmountA (principal, rate: <b>REAL</b>; time: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: none
+   Post: computes A = principal (1 + rate)^time *)
+
+<b>PROCEDURE</b> CompoundAmount (principal, rate: <b>REAL</b>; time, numberPerYear: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: numberPerYear # 0
+   Post: computes A = principal (1 + rate/numberPerYear)^(time * numberPerYear) *)
+
+<b>PROCEDURE</b> EffectiveRate (nominalRate: <b>REAL</b>; numberPerYear: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: numberPerYear # 0
+   Post: computes r = (1 + nominalrate/numberPerYear)^numberPerYear - 1 *)
+
+<b>PROCEDURE</b> SCInterestFactor (interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: computes the series compound interest factor ((1 + i)^n - 1) *)
+	 
+<b>PROCEDURE</b> FutureValue (payment, interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: computes the future value of a payment by the formula payment * SCInterestFactor *)
+
+<b>PROCEDURE</b> SinkingFundFactor (interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: computes the sinking fund factor, which is the reciprocal of the series compound interest factor *)
+
+<b>PROCEDURE</b> AnnuitySize (amount, interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: computes the size of an annuity or payment for a total amount by the formula AnnuitySize = R = Amount * SinkingFundFactor *)
+
+<b>PROCEDURE</b> PWorthFactor (interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: Computes the series presentworthfactor as (1 - (1 + i)^-n)/i *)
+	 
+<b>PROCEDURE</b> PresentWorth (payment, interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>): <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: Computes the present worth, which is the payment times present worth factor *)
+
+<b>PROCEDURE</b> CRFactor (interestPerPeriod: <b>REAL</b>; numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: Computes the capital recovery factor, which is the reciprocal of the series present worth factor *)
+	 
+<b>PROCEDURE</b> AmortizePayment (amount, interestPerPeriod: <b>REAL</b>;  numberOfPeriods: <b>CARDINAL</b>) : <b>REAL</b>;
+(* Pre: interestPerPeriod # 0
+   Post: Computes the payment to amortize an amount as amount * CRFactor *)
+
+<b>END</b> FinanceMath.</PRE>
+<P>Implementation and testing of this library module is left as an exercise for the student.</P>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

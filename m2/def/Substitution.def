@@ -1,0 +1,10 @@
+DEFINITION MODULE Substitution;
+
+TYPE
+  CodeString = ARRAY [0..25] OF CHAR;
+
+PROCEDURE Encode (src: ARRAY OF CHAR; VAR dst: ARRAY OF CHAR; key: CodeString);
+
+PROCEDURE Decode (src: ARRAY OF CHAR; VAR dst: ARRAY OF CHAR; key: CodeString);
+
+END Substitution.

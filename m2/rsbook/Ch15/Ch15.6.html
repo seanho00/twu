@@ -1,0 +1,148 @@
+<HTML><HEAD><TITLE>15.6 Toward More Generic Structures</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Toward More Generic Structures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.6 Toward More Generic Structures</B></H2>
+<P>Throughout this book, the principles of code reusability have been heavily promoted. Where possible, routines have been made multi-purpose, and the structures employed so far (such as the list, stack, trees, etc.) have been capable of modification by using a different data module to import from and recompiling.</P>
+<P>In order to write these more generic routines than these, we could try to construct them in such a way that they can be used without resorting to recompiling for every new data type.  That is, a list is just that, and nothing more.  It is conceived of as a list, not as a list of something.  One very general way to work with such abstractions is to ensure that the items that are to be listed are of the type ARRAY OF LOC. If this is done, any type of data is compatible.  When a new structure, such as a list, is created, the size of the items to be placed in the structure must be supplied, and then whenever space for a data item is required in the implementation module, ALLOCATE can be called directly on a pointer variable to fetch some dynamic memory.  The declaration of the list and node types could look like:</P>
+
+<pre><B>
+TYPE</B>
+  NodePoint = <B>POINTER</B> <B>TO</B> Node;
+  Node = 
+    <B>RECORD</B>
+      dataLoc : ADDRESS;
+      next,
+      last : NodePoint;
+    <B>END</B>;
+
+  List = <B>POINTER</B> <B>TO</B> ListInfo;
+  ListInfo = 
+    <B>RECORD</B>
+      dataSize,
+      numItems : <B>CARDINAL</B>;
+      head,
+      tail,
+      curInsert,
+      curDelete,
+      curFetchup : NodePoint;
+      delAtHead : <B>BOOLEAN</B>;
+    <B>END</B>;</pre>
+
+<P>When memory is needed for a new node and its associated data, one could call:</P>
+
+  <pre>ALLOCATE (local, <B>SIZE</B>(Node) ); (* get a new node *)
+  ALLOCATE (local^.dataLoc, list^.dataSize); (* get space for actual data *)</pre>
+
+<P>However, a difficulty that must still be overcome is that of handling assignments.  One cannot simply write (in the implementation module)</P>
+
+  <pre>theNode.dataLoc^ := itemPassedIn;</pre>
+
+<P>where <I>itemPassedIn</I> is of type ARRAY OF LOC, as there will be a type conflict error. The relevant field is an address, not a pointer to anything in particular.  To get around this problem, it is necessary to first build two routines to copy data‹one from an address into the contents of a variable represented as an ARRAY OF LOC, and the other to do the reverse.  This can be done as follows:</P>
+<B><h2><a name="15.6.1">15.6.1</a> Low Level Assignment Routines</h2></B>
+
+<pre><B>DEFINITION</B> <B>MODULE</B> CopyLocs;
+
+(* Low level copying routines to move data around by locs *)
+(* copyright © 1995 by R. Sutcliffe *)
+(* last modification 1996 01 03 *)
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  ADDRESS, LOC;
+  
+<B>PROCEDURE</B> CopyToAdr (source: <B>ARRAY</B> <B>OF</B> LOC; adr: ADDRESS);
+(* Pre: the user has <B>SIZE</B> (source) LOCs available to use at adr 
+   Post: the source item is copied to the locations starting at the given address *)
+   
+<B>PROCEDURE</B> CopyFromAdr (adr: ADDRESS; <B>VAR</B> dest: <B>ARRAY</B> <B>OF</B> LOC);
+(* Pre: none, though the items at adr ought to be meaningful to the program
+   Post: the <B>SIZE</B> (dest) LOCs strting at adr are copied into dest. *)
+
+<B>END</B> CopyLocs.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> CopyLocs;
+
+(* Low level copying routines to move data around by locs *)
+(* copyright © 1995 by R. Sutcliffe *)
+(* last modification 1995 03 31 *)
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  ADDRESS, LOC, ADDADR;
+  
+<B>PROCEDURE</B> CopyToAdr (source: <B>ARRAY</B> <B>OF</B> LOC; adr: ADDRESS);
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (source) (* can't do SIZE on open array *)
+    <B>DO</B>
+      adr^ := source [count];
+      adr := ADDADR (adr, 1);
+    <B>END</B>;
+<B>END</B> CopyToAdr;
+
+<B>PROCEDURE</B> CopyFromAdr (adr: ADDRESS; <B>VAR</B> dest: <B>ARRAY</B> <B>OF</B> LOC);
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> <B>HIGH</B> (dest)
+    <B>DO</B>
+      dest [count] := adr^;
+      adr := ADDADR (adr, 1);;
+    <B>END</B>;
+<B>END</B> CopyFromAdr;
+
+<B>END</B> CopyLocs.
+
+</pre>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

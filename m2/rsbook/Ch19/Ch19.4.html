@@ -1,0 +1,137 @@
+<HTML><HEAD><TITLE>19.4 Untraced Objects</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Untraced Objects">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.4 Untraced Objects</b></H2>
+
+<P>Untraced OOM-2 objects (in the sense described in <A HREF="Ch19.2.html">section 19.2</A>)  are declared and used in almost exactly the same way as are traced objects. They are allowed to have the same kinds of components, and the same things are forbidden. The differences are as follows:</P>
+<UL><LI><!--…--> the reserved word TRACED is omitted</LI>
+<LI><!--…--> the reserved word UNSAFEGUARDED must be placed in front of the word MODULE to mark the compilation unit as containing untraced objects</LI>
+<LI><!--…--> the programmer is responsible for destroying the object when it is no longer needed</LI>
+<LI><!--…--> the object body can have a FINALLY clause (a finalization body) that is executed when any of its objects are destroyed (this is of course forbidden for traced objects).</LI></UL>
+
+<P><b>Example:</b> The class in this demonstration allows actions to be timed. When a member of the class <i>Timer</i> is instantiated, the current time is stored. At any time desired, the elapsed time on that timer can be displayed. The code here is only a demonstration, and is not very complete, but it is adequate for a minute/second timer. In this example, the class has a private procedure to calculate a <i>DateTime</i> difference, and a revealed one to invoke this and display the result. The FINALLY clause is there just to demonstrate that it is invoked when the object is destroyed. In practice, this clause would only be necessary if some other memory deallocation had to be done as part of the destruction of the object.</P>
+
+<PRE><b>UNSAFEGUARDED</b> <b>MODULE</b> TimeClassDemo;
+
+<b>FROM</b> SysClock <b>IMPORT</b>
+  DateTime, GetClock;
+<b>FROM</b> SWholeIO <b>IMPORT</b>
+  WriteCard;
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteLn, WriteString, ReadChar, WriteChar;
+<b>FROM</b> Storage <b>IMPORT</b>
+  ALLOCATE, DEALLOCATE;
+
+<b>CLASS</b> Timer;
+  <b>REVEAL</b> WriteElapsed;
+  <b>VAR</b>
+    start, elapsed : DateTime;
+  
+  <b>PROCEDURE</b> CalcElapsed;
+  <b>VAR</b>
+    current : DateTime;
+    borrow : <b>BOOLEAN</b>;
+    difference : <b>INTEGER</b>;
+  <b>BEGIN</b>
+    GetClock (current);
+    (* note the necessity to use integer arithmetic on the cardinal fields *)
+    difference  := <b>INT</b> (current.second) - <b>INT</b> (start.second);
+    borrow := (difference < 0);
+    elapsed.second := difference <b>MOD</b> 60; (* put back as a cardinal *)
+    difference  := <b>INT</b> (current.minute) - <b>INT</b> (start.minute);
+    <b>IF</b> borrow
+      <b>THEN</b>
+        <b>DEC</b> (difference)
+      <b>END</b>;
+    borrow := (difference < 0);
+    elapsed.minute := difference <b>MOD</b> 60;
+    (* repeat for hours, days, and years to finish off. *)
+    (* only enough code here for a minute/second timer *)
+  <b>END</b> CalcElapsed;
+  
+  <b>PROCEDURE</b> WriteElapsed;
+  <b>BEGIN</b>
+    CalcElapsed;
+    <b>WITH</b> elapsed
+      <b>DO</b>
+        (* add more code for years, months, days, hours if desired *)
+        WriteCard (minute, 1);
+        WriteChar (":");
+        WriteCard (second, 1);
+      <b>END</b>;
+  <b>END</b> WriteElapsed;
+  
+  <b>BEGIN</b> (* initialize *)
+    GetClock (start);
+  <b>FINALLY</b>
+    WriteLn;
+    WriteString ("This timer has been destroyed.");
+    WriteLn;
+    (* well, we could put something useful here, anyway. *)
+  <b>END</b> Timer;
+  
+  <b>VAR</b>
+    time : Timer;
+    ch : <b>CHAR</b>;
+    
+  <b>BEGIN</b> (* main *)
+    <b>CREATE</b> (time);
+    WriteString ("Timer started; press return to see elapsed time ");
+    ReadChar (ch);
+    time.WriteElapsed;
+    <b>DESTROY</b> (time);
+  <b>END</b> TimeClassDemo.</PRE>
+    
+<P>There may be a surprise or two in this code, so it ought to be read over carefully. <i>First,</i> observe that when untraced objects are created and destroyed, the memory management is turned over to ALLOCATE and DEALLOCATE respectively, which must therefore be made visible, as is the case with using pointers with NEW and DISPOSE. These imports did not have to be made for working with traced classes, because the garbage collector is given authority over the relevant memory. Second, note that the module has to be marked UNSAFEGUARDED because it contains an untraced class. This would be the case even if it contained several traced classes as well; the presence of even one untraced class means that the module is unsafeguarded. This is also true if any imports are made from an unsafeguarded module, so safeguarded modules cannot do that either.</P>
+<P>When the code was run, and the <i>return</i> key pressed almost immediately, the result was as shown below, verifying the correct action of the destructor:</P>
+
+<PRE>Timer started; press return to see elapsed time 
+0:2
+This timer has been destroyed.</PRE>
+
+<P>The reader should note that, although there is little difference between the outward effects of using traced or untraced objects, the efficacy of secure memory management by the garbage collector is lost when untraced objects are employed. It would be advisable therefore, to use only traced objects unless there are compelling reasons to do otherwise. Almost all the remaining examples in this chapter will be of traced objects in safeguarded modules. To drive this point home, consider what happens when CREATE is called more than once on an untraced object reference.</P>
+
+<PRE><b>CREATE</b> (thingy);
+ (* some code here, but no DESTROY *)
+<b>CREATE</b> (thingy); (* again *)</PRE>
+
+<P>Unlike the situation with traced objects, the garbage that is generated by leaving memory that was allocated to the reference <i>thingy</i> in the first call to CREATE without a valid reference is not collected, and indeed it cannot be, for the garbage collector has never been told to trace objects of such a class. Such garbage will simply pile up until the program runs out of memory and (probably) crashes.</P>
+<P>It should also be apparent that it is an error to attempt to use DESTROY on an object of a traced class.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

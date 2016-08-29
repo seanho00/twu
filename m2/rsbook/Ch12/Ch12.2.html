@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE>12.2 Applications of Pointers</TITLE>
+<meta NAME="keywords" CONTENT="application, applications, pointer, pointers, variable, variables, parameter, parameters, value, data, aray, arays, system, system.adr,sorting, record, records, comparison, comparisons">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.2 Applications of Pointers</B></H2>
+<H3><B><A NAME="12.2.1">12.2.1</A> Pointers and Parameters</B></H3>
+<P>Sometimes procedures need to operate on rather large data collections.  If these are passed as value parameters, considerable resources of both time and memory may be consumed in copying the information from the main memory to the portion employed by the procedure.  There are two possible ways around this problem.</P>
+<P>One is to use a variable parameter, contrary to the usual recommendation for parameter passing.  There is no copying, and the procedure's formal parameter becomes an alias to the actual parameter.</P>
+<P>A second solution would be to pass a pointer to the data as a value parameter, rather than the data itself.  For instance, if one had:</P>
+<PRE>
+<B>TYPE</B>
+  DataArray = <B>ARRAY</B> [1 ..100000] <B>OF</B> <B>REAL</B>;
+<B>VAR</B>
+  theData : DataArray;
+
+<B>PROCEDURE</B> Mean1 (data : DataArray; lBound, uBound : <B>CARDINAL</B>) : <B>REAL</B>;
+(* find the mean of the array data from item #lBound to item #uBound *)
+<B>VAR</B>
+  count, number : <B>CARDINAL</B>;
+  total : <B>REAL</B>;
+<B>BEGIN</B>
+  number := uBound - lBound + 1;
+  <B>IF</B> number <!-->&gt; 0
+    <B>THEN</B>
+      total := 0.0;
+      count := lBound;
+      <B>WHILE</B> count <!--<-->&lt;= uBound
+        <B>DO</B>
+          total := total + data [count];
+          <B>INC</B> (count);
+        <B>END</B>;
+      <B>RETURN</B> total / <B>FLOAT</B> (number)
+    <B>ELSE</B>
+      <B>RETURN</B> 0.0
+    <B>END</B>
+<B>END</B> Mean1;</PRE>
+<P>and invoked this with</P>
+<PRE>
+  mean := Mean1 (theData, 1, 100000);</PRE>
+<P>it might be useful to pass a value parameter pointer to the data array, rewriting things as:</P>
+<PRE>
+<B>TYPE</B>
+  DataPoint = <B>POINTER</B> <B>TO</B> DataArray;
+<B>VAR</B>
+  dataP : DataPoint;
+  
+<B>PROCEDURE</B> Mean2 (data : DataPoint; lBound, uBound : <B>CARDINAL</B>) : <B>REAL</B>;</PRE>
+<P>with all as above except the line</P>
+<PRE>
+          total := total + data^ [count];</PRE>
+<P>and invoke this by:</P>
+<PRE>
+  dataP := <B>SYSTEM</B>.<B>ADR</B> (theData);
+  mean := Mean2 (dataP, 1, 100000);</PRE>
+<P>In this manner, the procedure is referring to the original data, and only a pointer to that data needs to be passed rather than copying all of it to a value parameter.</P>
+<P>The astute student will note at this juncture that the effect is exactly the same as if a variable parameter had been used in the first place, and wonder why one would go to all this trouble to imitate something that is already in the language.  The answer is that in this case one would decidedly not go to the trouble.  However, many, if not most systems actually implement variable parameters by passing a pointer.  Although this action is transparent to the user, it is useful to know how it can be done (probably is done).</P>
+<H3><B><A NAME="AuxPointers"></A><A NAME="12.2.2">12.2.2</A> Pointers and Sorting</B></H3>
+<P>The example just concluded ought to make the same astute reader ask whether there are any other situations involving the moving of large quantities of data that can be avoided by the judicious use of pointers.</P>
+<P>When one is sorting cardinals as will be done in the examples of chapter 13, the data movement involves rather small items.  However, suppose that instead of sorting an array of cardinals, one is sorting arrays of rather large records.  In such a situation, the movement of the data items can become so large a task that it overwhelms that of making comparisons, and any sorting method would quickly run into performance difficulties.  In such cases, it may be best to keep an array of pointers to the data, make comparisons on the original data, and swap around only the pointers.  This is especially true if one wants to sort the records according to different field values at different times (or even at the same time). To see the details of how this is achieved in a particular instance can be seen in <A HREF="../Ch13/Ch13.6.html#13.6.2">section 13.6.2</A>.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

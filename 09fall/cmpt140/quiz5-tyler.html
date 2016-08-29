@@ -1,0 +1,56 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Quiz 5 :: CMPT140 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 20
+
+<ol class="main">
+
+<li> What are mutator/accessor (set/get) functions?  
+Why should we design our ADTs (abstract data types) to use them? <u>[6]</u>
+<br><i>
+  Read/write access to attributes/variables
+  Protect our internal attributes from unauthorized access
+  API stability: internals may change
+</i><br><br><br><br><br><br><br><br><br>
+
+<li> Name and describe at least 3 methods special to Python dictionaries.
+<u>[5]</u>
+<br><i>
+  .keys(), .values(), .items(), .get()
+  Also: indexing [], len(), del, in, .copy()
+</i><br><br><br><br><br><br><br><br>
+
+<li> Write a line of Python code to create a Python dictionary with at 
+least 3 entries and save it in a variable.  <u>[3]</u>
+<br><i><pre>
+appleInv = { 'Fuji':15, 'Gala':3, 'Rome': 1 }
+</pre></i><br><br>
+
+<li> Write a block of Python code to print the contents of your dictionary
+in the format:<br>
+"<tt>key ==&gt; value</tt>", one entry per line. <u>[6]</u>
+<br><i><pre>
+for key in appleInv:
+	print “%s ==> %d” % (key, appleInv[key])
+</pre></i>
+
+</ol>
+
+</body></html>
+
+

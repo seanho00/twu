@@ -1,0 +1,472 @@
+<HTML><HEAD><TITLE>Appendix 3: The Syntax of Modula-2</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 3 The Syntax of Modula-2</B></H2>
+
+<P><!--revised 1997 07 11--></P>
+<H3><B><A NAME="A3.1">A3.1</A> A Notation to Describe Languages</B></H3>
+<P>The purpose of this section is to describe a concise notation in which the syntax of computer notations (languages) can be unambiguously defined or described.</P>
+<P>Acomputer language is a collection of sequences of symbols that are formed according to certain well-defined rules.  Such rules constitute the grammar of the notation, or language.  In a sense, a computer program can be thought of as corresponding to a sentence in some spoken language, and the component parts of a program are roughly analogous to such language constructs as subject, predicate, and object or complement.</P>
+<P>Spoken languages, though they express ideas with a finite number of sounds (phonemes) are capable of expressing an infinite number of such ideas.  Likewise, a programming notation may have a finite number of symbols and rules for manipulating these, but be capable of expressing an infinite number of programs.</P>
+<P>There are four rules which allow on to create all the syntax definitions for any programming language.  They are similar to the basic programming abstractions noted in chapter one of this text and elaborated on in Modula-2 for the writing of programs.</P>
+<H3><B>1. The Rule of Succession</B></H3>
+<P>If a language construction C uses two elements P and Q in succession, one expresses this as:</P>
+<PRE>
+C = PQ</PRE>
+<H3><B>2. The rule of alternatives</B></H3>
+<P>If a language construction C uses one or the other of two elements P or Q, one writes this rule as:</P>
+<PRE>
+C = P | Q</PRE>
+<H3><B>3. The rule of option</B></H3>
+<P>If a language construction C may be either P or nothing at all (empty), then one writes the syntax rule as:</P>
+<PRE>
+C = [ P ]</PRE>
+<H3><B>4. The rule of Repetition</B></H3>
+<P>If a construction C consists of any number (including zero) of repetitions of P then one writes:</P>
+<PRE>
+C = { P }</PRE>
+
+<BLOCKQUOTE><I>The notation described by the four rules of succession, alternatives, option, and repetition with the notation above is called <U>Extended Backus-Naur Formalism</U> or EBNF for short.</I></BLOCKQUOTE>
+<H3><B><A NAME="A3.2">A3.2</A> Some Examples of EBNF</B></H3>
+<P>Before looking at the complete definition of Modula-2 in this notation, consider a few particular cases and see how EBNF can save space and gain some precision.</P>
+<P>One of the earliest definitions was that of an identifier.  It went as follows:</P>
+<BLOCKQUOTE><I>An identifier is a sequence of letters and numbers that starts with a letter.</I></BLOCKQUOTE>
+<P>The same rule can be written in EBNF as:</P>
+<PRE>
+identifier = letter { letter | digit }</PRE>
+<P>As indicated in the rules above, the braces signify a repetition of any number of the elements inside them, and this can be either a letter or a digit.</P>
+<P>A further example of the use of the vertical bar to indicate alternatives is given in the following series of definitions:</P>
+<PRE>
+octalDigit = <!--"-->&quot;0<!--"-->&quot; | <!--"-->&quot;1<!--"-->&quot; | <!--"-->&quot;2<!--"-->&quot; | <!--"-->&quot;3<!--"-->&quot; | <!--"-->&quot;4<!--"-->&quot; | <!--"-->&quot;5<!--"-->&quot; | <!--"-->&quot;6<!--"-->&quot; | <!--"-->&quot;7<!--"-->&quot;
+digit = octalDigit | <!--"-->&quot;8<!--"-->&quot; | <!--"-->&quot;9<!--"-->&quot; 
+hexDigit = digit | <!--"-->&quot;A<!--"-->&quot; | <!--"-->&quot;B<!--"-->&quot; | <!--"-->&quot;C<!--"-->&quot; | <!--"-->&quot;D<!--"-->&quot; | <!--"-->&quot;E<!--"-->&quot; | <!--"-->&quot;F<!--"-->&quot;</PRE>
+<P>Here, each definition is built up from the previous one in order to avoid needless repetition.  Notice the use of quotes to surround elements which, if they are used, must appear exactly as given.  That last line for instance tells us the rather familiar fact that a hexadecimal digit must be either a digit or a letter from <!--"-->&quot;A<!--"-->&quot; to <!--"-->&quot;F<!--"-->&quot;.</P>
+<P>The option notation is can be illustrated in the description of the import construction, where the <I>FROM moduleName</I> is an optional form.  One could express this in EBNF as:</P>
+<PRE>
+import = [<B>FROM</B> ident] <B>IMPORT</B> identList <!--"-->&quot;;<!--"-->&quot;</PRE>
+<P>Notice how the EBNF shows clearly that the semicolon is required at the end of this construction.</P>
+<H3><B><A NAME="A3.3">A3.3</A> The Syntax of Modula-2 in EBNF</B></H3>
+<P>The concrete syntax in this section is taken from ISO/IEC IS 10514, the international standard for Modula-2.</P>
+<PRE>
+<B>compilation module</B> =
+   program module | definition module | implementation module ;
+<B>program module</B> =
+   <!--"-->&quot;MODULE<!--"-->&quot;, module identifier, [protection], semicolon,
+   import lists, module block, module identifier, period ;
+<B>module identifier</B> =
+   identifier ;
+<B>protection</B> =
+   left bracket, protection expression, right bracket ;
+<B>protection expression</B> =
+   constant expression ;
+<B>definition module</B> =
+   <!--"-->&quot;DEFINITION<!--"-->&quot;, <!--"-->&quot;MODULE<!--"-->&quot;, module identifier, semicolon,
+   import lists, definitions, <!--"-->&quot;END<!--"-->&quot;, module identifier, period ;
+<B>implementation module</B> =
+   <!--"-->&quot;IMPLEMENTATION<!--"-->&quot;, <!--"-->&quot;MODULE<!--"-->&quot;, module identifier, [protection], 
+   semicolon, import lists, module block, module identifier, period ;
+<B>import lists</B> =
+   {import list} ;
+<B>import list</B> =
+   simple import | unqualified import ;
+<B>simple import</B> =
+   <!--"-->&quot;IMPORT<!--"-->&quot;, identifier list, semicolon ;
+<B>unqualified import</B> =
+   <!--"-->&quot;FROM<!--"-->&quot;, module identifier, <!--"-->&quot;IMPORT<!--"-->&quot;, identifier list, semicolon ;
+<B>export list</B> =
+   unqualified export | qualified export ;
+<B>unqualified export</B> =
+   <!--"-->&quot;EXPORT<!--"-->&quot;, identifier list, semicolon ;
+<B>qualified export</B> =
+   <!--"-->&quot;EXPORT<!--"-->&quot;, <!--"-->&quot;QUALIFIED<!--"-->&quot;, identifier list, semicolon ;
+<B>qualified identifier</B> =
+   {module identifier, period}, identifier ;
+<B>definitions</B> =
+   {definition} ;
+<B>definition</B> =
+   <!--"-->&quot;CONST<!--"-->&quot;, {constant declaration, semicolon} |
+   <!--"-->&quot;TYPE<!--"-->&quot;, {type definition, semicolon} |
+   <!--"-->&quot;VAR<!--"-->&quot;, {variable declaration, semicolon} |
+   procedure heading, semicolon ;
+<B>procedure heading</B> =
+   proper procedure heading | function procedure heading ;
+<B>type definition</B> =
+   type declaration | opaque type definition ;
+<B>opaque type definition</B> =
+   identifier ;
+<B>proper procedure heading</B> =
+   <!--"-->&quot;PROCEDURE<!--"-->&quot;, procedure identifier, [formal parameters] ;
+<B>formal parameters</B> =
+   left parenthesis, [formal parameter list], right parenthesis ;
+<B>formal parameter list</B> =
+   formal parameter, {semicolon, formal parameter} ;
+<B>function procedure heading</B> =
+   <!--"-->&quot;PROCEDURE<!--"-->&quot;, procedure identifier, formal parameters,
+   colon, function result type ;
+<B>function result type</B> =
+   type identifier ;
+<B>formal parameter</B> =
+   value parameter specification | variable parameter specification ;
+<B>value parameter specification</B> =
+   identifier list, colon, formal type ;
+<B>variable parameter specification</B> =
+   <!--"-->&quot;VAR<!--"-->&quot;, identifier list, colon, formal type ;
+<B>declarations</B> =
+   {declaration} ;
+<B>declaration</B> =
+   <!--"-->&quot;CONST<!--"-->&quot;, {constant declaration, semicolon} |
+   <!--"-->&quot;TYPE<!--"-->&quot;, {type declaration, semicolon} |
+   <!--"-->&quot;VAR<!--"-->&quot;, {variable declaration, semicolon} |
+   procedure declaration, semicolon |
+   local module declaration, semicolon ;
+<B>constant declaration</B> =
+   identifier, equals, constant expression ;
+<B>type declaration</B> =
+   identifier, equals, type denoter ;
+<B>variable declaration</B> =
+   variable identifier list, colon, type denoter ;
+<B>variable identifier list</B> =
+   identifier, [ machine address], {comma, identifier, 
+   [machine address] } ;
+<B>machine address</B> =
+   left bracket, value of address type, right bracket ;
+<B>value of address type</B> =
+   constant expression ;
+<B>procedure declaration</B> =
+   proper procedure declaration | function procedure declaration ;
+<B>proper procedure declaration</B> =
+   proper procedure heading, semicolon, (proper procedure block, 
+   procedure identifier | <!--"-->&quot;FORWARD<!--"-->&quot;) ;
+<B>procedure identifier</B> =
+   identifier ;
+<B>function procedure declaration</B> =
+   function procedure heading, semicolon, (function procedure block,
+    procedure identifier | <!--"-->&quot;FORWARD<!--"-->&quot;) ;
+<B>local module declaration</B> =
+   <!--"-->&quot;MODULE<!--"-->&quot;, module identifier, [protection], semicolon,
+   import lists, [export list], module block, module identifier ;
+<B>type denoter</B> =
+   type identifier |new type ;
+<B>ordinal type denoter</B> =
+   ordinal type identifier | new ordinal type ;
+<B>type identifier</B> =
+   qualified identifier ;
+<B>ordinal type identifier</B> =
+   type identifier ;
+<B>new type</B> =
+   new ordinal type | set type | packedset type | pointer type |
+   procedure type | array type | record type ;
+<B>new ordinal type</B> =
+   enumeration type | subrange type ;
+<B>enumeration type</B> =
+   left parenthesis, identifier list, right parenthesis ;
+<B>identifier list</B> =
+   identifier, {comma, identifier} ;
+<B>subrange type</B> =
+   [range type], left bracket, constant expression, ellipsis,
+   constant expression, right bracket ;
+<B>range type</B> =
+   ordinal type identifier ;
+<B>set type</B> =
+   <!--"-->&quot;SET<!--"-->&quot;, <!--"-->&quot;OF<!--"-->&quot;, base type ;
+<B>base type</B> =
+   ordinal type denoter ;
+<B>packedset type</B> =
+   <!--"-->&quot;PACKEDSET<!--"-->&quot;, <!--"-->&quot;OF<!--"-->&quot;, base type ;
+<B>pointer type</B> =
+   <!--"-->&quot;POINTER<!--"-->&quot;, <!--"-->&quot;TO<!--"-->&quot;, bound type ;
+<B>bound type</B> =
+   type denoter ;
+<B>procedure type</B> =
+   proper procedure type | function procedure type ;
+<B>proper procedure type</B> =
+   <!--"-->&quot;PROCEDURE<!--"-->&quot;, [left parenthesis, [formal parameter type list],
+    right parenthesis] ;
+<B>function procedure type</B> =
+   <!--"-->&quot;PROCEDURE<!--"-->&quot;, left parenthesis, [formal parameter type list],
+    right parenthesis, colon, function result type ;
+<B>formal parameter type list</B> =
+   formal parameter type, {comma, formal parameter type} ;
+<B>formal parameter type</B> =
+   variable formal type | value formal type ;
+<B>variable formal type</B> =
+   <!--"-->&quot;VAR<!--"-->&quot;, formal type ;
+<B>value formal type</B> =
+   formal type ;
+<B>formal type</B> =
+   type identifier | open array formal type ;
+<B>open array formal type</B> =
+   <!--"-->&quot;ARRAY<!--"-->&quot;, <!--"-->&quot;OF<!--"-->&quot;, {<!--"-->&quot;ARRAY<!--"-->&quot;, <!--"-->&quot;OF<!--"-->&quot;}, type identifier ;
+<B>array type</B> =
+   <!--"-->&quot;ARRAY<!--"-->&quot;, index type, {comma, index type}, <!--"-->&quot;OF<!--"-->&quot;, component type ;
+<B>index type</B> =
+   ordinal type denoter ;
+<B>component type</B> =
+   type denoter ;
+<B>record type</B> =
+   <!--"-->&quot;RECORD<!--"-->&quot;, field list, <!--"-->&quot;END<!--"-->&quot; ;
+<B>field list</B> =
+   fields, {semicolon, fields} ;
+<B>fields</B> =
+   [fixed fields | variant fields] ;
+<B>fixed fields</B> =
+   identifier list, colon, field type ;
+<B>field type</B> =
+   type denoter ;
+<B>variant fields</B> =
+   <!--"-->&quot;CASE<!--"-->&quot;, [tag identifier], colon, tag type, <!--"-->&quot;OF<!--"-->&quot;,
+   variant list, <!--"-->&quot;END<!--"-->&quot; ;
+<B>tag identifier</B> =
+   identifier ;
+<B>tag type</B> =
+   ordinal type identifier ;
+<B>variant list</B> =
+   variant, {case separator, variant}, [variant else part] ;
+<B>variant else part</B> =
+   <!--"-->&quot;ELSE<!--"-->&quot;, field list ;
+<B>variant</B> =
+   [variant label list, colon, field list] ;
+<B>variant label list</B> =
+   variant label, {comma, variant label} ;
+<B>variant label</B> =
+   constant expression, [ellipsis, constant expression] ;
+<B>proper procedure block</B> =
+   declarations, [procedure body], <!--"-->&quot;END<!--"-->&quot; ;
+<B>procedure body</B> =
+   <!--"-->&quot;BEGIN<!--"-->&quot;, block body ;
+<B>function procedure block</B> =
+   declarations, function body, <!--"-->&quot;END<!--"-->&quot; ;
+<B>function body</B> =
+   <!--"-->&quot;BEGIN<!--"-->&quot;, block body ;
+<B>module block</B> =
+   declarations, [module body], <!--"-->&quot;END<!--"-->&quot; ;
+<B>module body</B> =
+   initialization body, [finalization body], ;
+<B>initialization body</B> =
+   <!--"-->&quot;BEGIN<!--"-->&quot;, block body ;
+<B>finalization body</B> =
+   <!--"-->&quot;FINALLY<!--"-->&quot;, block body ;
+<B>block body</B> =
+   normal part, [<!--"-->&quot;EXCEPT<!--"-->&quot;, exceptional part] ;
+<B>normal part</B> =
+   statement sequence ;
+<B>exceptional part</B> =
+   statement sequence ;
+<B>statement</B> =
+   empty statement | assignment statement | procedure call |
+    return statement |retry statement | with statement |
+    if statement | case statement |while statement |
+    repeat statement | loop statement |exit statement |for statement ;
+<B>statement sequence</B> =
+   statement, {semicolon, statement} ;
+<B>empty statement</B> =
+   ;
+<B>assignment statement</B> =
+   variable designator, assignment operator, expression ;
+<B>procedure call</B> =
+   procedure designator, [actual parameters] ;
+<B>procedure designator</B> =
+   value designator ;
+<B>return statement</B> =
+   simple return statement | function return statement ;
+<B>simple return statement</B> =
+   <!--"-->&quot;RETURN<!--"-->&quot; ;
+<B>function return statement</B> =
+   <!--"-->&quot;RETURN<!--"-->&quot;, expression ;
+<B>retry statement</B> =
+   <!--"-->&quot;RETRY<!--"-->&quot; ;
+<B>with statement</B> =
+   <!--"-->&quot;WITH<!--"-->&quot;, record designator, <!--"-->&quot;DO<!--"-->&quot;, statement sequence, <!--"-->&quot;END<!--"-->&quot; ;
+<B>record designator</B> =
+   variable designator | value designator ;
+<B>if statement</B> =
+   guarded statements, [if else part], <!--"-->&quot;END<!--"-->&quot; ;
+<B>guarded statements</B> =
+   <!--"-->&quot;IF<!--"-->&quot;, boolean expression, <!--"-->&quot;THEN<!--"-->&quot;, statement sequence,
+   {<!--"-->&quot;ELSIF<!--"-->&quot;, boolean expression, <!--"-->&quot;THEN<!--"-->&quot;, statement sequence} ;
+<B>if else part</B> =
+   <!--"-->&quot;ELSE<!--"-->&quot;, statement sequence ;
+<B>boolean expression</B> =
+   expression ;
+<B>case statement</B> =
+   <!--"-->&quot;CASE<!--"-->&quot;, case selector, <!--"-->&quot;OF<!--"-->&quot;, case list, <!--"-->&quot;END<!--"-->&quot; ;
+<B>case selector</B> =
+   ordinal expression ;
+<B>case list</B> =
+   case alternative, {case separator, case alternative},
+   [case else part] ;
+<B>case else part</B> =
+   <!--"-->&quot;ELSE<!--"-->&quot;, statement sequence ;
+<B>case alternative</B> =
+   [case label list, colon, statement sequence] ;
+<B>case label list</B> =
+   case label, {comma, case label} ;
+<B>case label</B> =
+   constant expression, [ellipsis, constant expression] ;
+<B>while statement</B> =
+   <!--"-->&quot;WHILE<!--"-->&quot;, boolean expression, <!--"-->&quot;DO<!--"-->&quot;, statement sequence, <!--"-->&quot;END<!--"-->&quot; ;
+<B>repeat statement</B> =
+   <!--"-->&quot;REPEAT<!--"-->&quot;, statement sequence, <!--"-->&quot;UNTIL<!--"-->&quot;, boolean expression ;
+<B>loop statement</B> =
+   <!--"-->&quot;LOOP<!--"-->&quot;, statement sequence, <!--"-->&quot;END<!--"-->&quot; ;
+<B>exit statement</B> =
+   <!--"-->&quot;EXIT<!--"-->&quot; ;
+<B>for statement</B> =
+   <!--"-->&quot;FOR<!--"-->&quot;, control variable identifier, assignment operator, 
+   initial value, <!--"-->&quot;TO<!--"-->&quot;, final value, [<!--"-->&quot;BY<!--"-->&quot;, step size], <!--"-->&quot;DO<!--"-->&quot;,
+   statement sequence, <!--"-->&quot;END<!--"-->&quot; ;
+<B>control variable identifier</B> =
+   identifier ;
+<B>initial value</B> =
+   ordinal expression ;
+<B>final value</B> =
+   ordinal expression ;
+<B>step size</B> =
+   constant expression ;
+<B>variable designator</B> =
+   entire designator | indexed designator |
+   selected designator | dereferenced designator ;
+<B>entire designator</B> =
+   qualified identifier ;
+<B>indexed designator</B> =
+   array variable designator, left bracket, index expression,
+   {comma, index expression}, right bracket ;
+<B>array variable </B><B>designator</B> =
+   variable designator ;
+<B>index expression</B> =
+   ordinal expression ;
+<B>selected designator</B> =
+   record variable designator, period, field identifier ;
+<B>record variable designator</B> =
+   variable designator ;
+<B>field identifier</B> =
+   identifier ;
+<B>dereferenced designator</B> =
+   pointer variable designator, dereferencing operator ;
+<B>pointer variable designator</B> =
+   variable designator ;
+<B>expression</B> =
+   simple expression, [relational operator, simple expression] ;
+<B>simple expression</B> =
+   [sign], term, {term operator, term} ;
+<B>term</B> =
+   factor, {factor operator, factor} ;
+<B>factor</B> =
+   left parenthesis, expression, right parenthesis | 
+   logical negation operator, factor |
+   value designator | function call |
+   value constructor | constant literal ;
+<B>ordinal expression</B> =
+   expression ;
+<B>relational operator</B> =
+   equals operator | inequality operator | less than operator |
+   greater than operator | less than or equal operator |
+   subset operator | greater than or equal operator | 
+   superset operator | set membership operator ;
+<B>term operator</B> =
+   plus operator | set union operator | minus operator |
+   set difference operator | logical disjunction operator | 
+   string catenate symbol ;
+<B>factor operator</B> =
+   multiplication operator | set intersection operator | 
+   division operator | symmetric set difference operator |
+   rem operator | div operator | mod operator |
+   logical conjunction operator ;
+<B>value designator</B> =
+  entire value | indexed value | selected value | dereferenced value ;
+<B>entire value</B> =
+   qualified identifier ;
+<B>indexed value</B> =
+   array value, left bracket, index expression,
+   {comma, index expression}, right bracket ;
+<B>array value</B> =
+   value designator ;
+<B>selected value</B> =
+   record value, period, field identifier ;
+<B>record value</B> =
+   value designator ;
+<B>dereferenced value</B> =
+   pointer value, dereferencing operator ;
+<B>pointer value</B> =
+   value designator ;
+<B>function call</B> =
+   function designator, actual parameters ;
+<B>function designator</B> =
+   value designator ;
+<B>value constructor</B> =
+   array constructor | record constructor | set constructor ;
+<B>array constructor</B> =
+   array type identifier, array constructed value ;
+<B>array type identifier</B> =
+   type identifier ;
+<B>array constructed value</B> =
+   left brace, repeated structure component,
+   {comma, repeated structure component}, right brace ;
+<B>repeated structure component</B> =
+   structure component, [<!--"-->&quot;BY<!--"-->&quot;, repetition factor] ;
+<B>repetition factor</B> =
+   constant expression ;
+<B>structure component</B> =
+   expression | array constructed value |
+   record constructed value | set constructed value ;
+<B>record constructor</B> =
+   record type identifier, record constructed value ;
+<B>record type identifier</B> =
+   type identifier ;
+<B>record constructed value</B> =
+   left brace, [structure component, {comma, structure component}],
+   right brace ;
+<B>set constructor</B> =
+   set type identifier, set constructed value ;
+<B>set type identifier</B> =
+   type identifier ;
+<B>set constructed value</B> =
+   left brace, [member, {comma, member}], right brace ;
+<B>member</B> =
+   interval | singleton ;
+<B>interval</B> =
+   ordinal expression, ellipsis, ordinal expression ;
+<B>singleton</B> =
+   ordinal expression ;
+<B>constant literal</B> =
+   whole number literal | real literal |
+   string literal | pointer literal ;
+<B>constant expression</B> =
+   expression ;
+<B>actual parameters</B> =
+   left parenthesis, [actual parameter list], right parenthesis ;
+<B>actual parameter list</B> =
+   actual parameter, {comma, actual parameter} ;
+<B>actual parameter</B> =
+   variable designator | expression | type parameter ;
+<B>type parameter</B> =
+   type identifier ;</PRE><HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

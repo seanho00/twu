@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<TITLE>8.1 Storage--An Introduction</TITLE>
+<meta NAME="keywords" CONTENT="storage, introduction, represent, inout, stextio, redirstdio">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.1 Storage<!--</B>‹<B>-->--An Introduction</B></H2>
+<P>To this point the main concern of the text has been issues of data and program structure<!--‹-->--how to represent data effectively, and how to implement in the Modula-2 notation an effective means of manipulating that data.  Little has been said thus far about how that data is stored, either in the machine itself or on external media.  As long as the amount of data is relatively small, this approach suffices, for small amounts of data can be typed in with each program run, and without much concern for how it is stored in the machine.</P>
+<P>However, there comes a point when attention must be given to data storage issues, for at the program level the amount of data eventually becomes too large to enter anew with each run of a program.  In the real world, data collections are very large, and new programs are frequently written for the sole purpose of manipulating files of existing data collections in ways not previously thought of.  Such programs must be structured with the existing stored data in view.  The file manipulation facilities provided by the simple classical high level Module <I>InOut</I> or that can be attached to <i>STextIO</i> using <i>RedirStdIO</i> are very primitive and will not do for much beyond simple demonstration purposes.  Thus, a Modula-2 implementation always has a suite of more elaborate modules for handling files and arranging for I/O between those files and a running program.</P>
+<P>Likewise, there are aspects of the internal data storage that are worthwhile knowing, even though many programmers will not make extensive use of this knowledge.  Since some of this has an impact on the understanding and use of file handling modules, this chapter will begin with the internal storage issues, and later consider the external ones.  Depending on the depth required by a given student, it may be possible to give this first part only a light read and move into Part B.  On the other hand, extensive low level work will require much more experience and knowledge than can be obtained in this chapter.  However, the information given here will provide the basis for applying that knowledge to a solution not only when using Modula-2, but also for other notations.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

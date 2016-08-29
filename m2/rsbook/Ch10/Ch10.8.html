@@ -1,0 +1,244 @@
+<HTML>
+<HEAD>
+<TITLE>10.8 Transfer of Control</TITLE>
+<meta NAME="keywords" CONTENT="program, control, error, handle, handling, transfer, goto, return, simple, function, regular, procedure, normal, program, termination, terminate, repetition, loop, exit, repeat, while, abnormal, transfers">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Program Structuring">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B><CENTER>Part B<!--</B>‹<B>-->--Program Control and Error Handling Issues</CENTER>
+10.8 Transfer of Control</B></H2>
+<H3><B><A NAME="10.8.1">10.8.1</A> GOTO and Other Noxious Weeds</B></H3>
+<P>Unlike most other programming languages, Modula-2 does not allow statements to be given numbers or labels nor does it permit a <I>GOTO line number</I> or a <I>GOTO label</I> to be used.</P>
+<P>Statements like the latter are often used by programmers in some languages to transfer control indiscriminately all over a program.  Their use therefore results in programs that are hard to read, harder still to modify, and nearly impossible to debug.  Programmers who think in an organized fashion and design in well-defined modules with pre-planned interfaces, and carefully packaged procedures do not need unconditional transfers of control except under very special circumstances.  Modula-2 does provide for those special circumstances where a regulated transfer of control is permitted.</P>
+<H3><B><A NAME="10.8.2">10.8.2</A> RETURN in a Regular Procedure</B></H3>
+<P>In Chapter 4, RETURN <!--<-->&lt;value<!-->&gt; was used as part of a function procedure to send a value back to the expression in which the function procedure was being invoked.  RETURN can also be used in a regular procedure all by itself.  It will immediately transfer control to a point just after the last statement in the body of the regular procedure, and may therefore be employed to achieve a controlled premature exit from a procedure, say, when an error is encountered.  It also allows for multiple exit points from a procedure, depending on certain conditions that might prevail on the data being manipulated.</P>
+<BLOCKQUOTE><I><A NAME="Return">A</A> RETURN used alone in a regular procedure is called a <U>simple return</U>.  There is an implicit simple return to the external environment of the code at the end of a regular procedure.</I></BLOCKQUOTE>
+<PRE>
+<B>PROCEDURE</B> DemoReturn (<B>VAR</B> a : <B>REAL</B>);
+
+<B>BEGIN</B>
+  (* statement sequence 1 *) 
+  <B>IF</B> error
+    <B>THEN</B>
+      <B>RETURN</B> (* just gives up *)
+    <B>END</B>;
+  (* statement sequence 2 *)   (* may never even get here *)
+  <B>IF</B> error
+    <B>THEN</B>
+      <B>RETURN</B> (* or gives up here*)
+    <B>END</B>;
+  (* statement sequence 3 *)   (* much less here *)
+(* execution of either return puts control here, at end. *)
+<B>END</B> DemoReturn;</PRE>
+<P>Some regard the use of this statement as a drastic step and as not being in particularly good taste, claiming that it should be employed only if there is no alternative.  Certainly, it should not be abused, as its frequent use leads to hard-to-read code.</P>
+<P>Of course, it is not permitted to use a bare RETURN in a function procedure, just as it is not permitted to use a RETURN <!--<-->&lt;value<!-->-->&gt; statement in a regular procedure.</P>
+<P>Note also that since program module execution is essentially similar to that of procedure execution, the use of RETURN in the body of a module will cause a transfer of control to a point just after the last statement in the body associated with that scope<!--‹-->--in this case, terminating the module.</P>
+<PRE>
+<B>MODULE</B> ReturnDemo;
+(* program by R. Sutcliffe
+   to demonstrate return from a module
+   revised 1994 04 15 *)
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResults, ReadResult;
+  
+<B>PROCEDURE</B> FinishUp;
+<B>BEGIN</B>
+  WriteLn;
+  WriteString (<!--"-->&quot;Press return to end == <!-->-->&gt;<!--"-->&quot;);
+  ReadChar (ch);
+  SkipLine;
+<B>END</B> FinishUp;
+
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program written to demonstrate<!--"-->&quot;);
+  WriteString (<!--"-->&quot; returning from a module body<!--"-->&quot;);
+  WriteLn;
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Do you wish to:<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;1. continue without returning?<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;2. return from the module<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;3. terminate normally<!--"-->&quot;);
+    WriteLn;
+    ReadChar (ch);
+    <B>IF</B> (ReadResult () # allRight) <B>OR</B> (ch = <!--"-->&quot;2<!--"-->&quot;)
+      <B>THEN</B>
+        SkipLine;
+        WriteString (<!--"-->&quot;returning from module<!--"-->&quot;);
+        FinishUp;
+        <B>RETURN</B>
+      <B>ELSE</B>
+        SkipLine;
+      <B>END</B>;
+  <B>UNTIL</B> (ReadResult () # allRight) <B>OR</B> (<B>ORD</B> (ch) <!-->-->&gt; <B>ORD</B> (<!--"-->&quot;3<!--"-->&quot;));
+  WriteString (<!--"-->&quot;Regular termination<!--"-->&quot;);
+  FinishUp;
+<B>END</B> ReturnDemo.</PRE>
+<P>When this program was run, the action of executing the RETURN from within the body of the module was indistinguishable from the action of merely concluding the program at the END in the normal way.  This is as it should be, because RETURN transfers control to a point just beyond the call to <I>FinishUp</I> and before the END of the enclosing procedure scope, which is in this case the module.</P>
+<P>What happens <I>after</I> a program terminates depends on the operating system being used; the user should be returned to the environment from which the program was run in the first place.</P>
+<BLOCKQUOTE><I><A NAME="Termination">Either </A>of<BR>
+(i)   allowing a program to run to its end, or<BR>
+(ii)  transferring control to the end by a simple RETURN statement<BR>
+ is called <U>normal program termination</U>.</I></BLOCKQUOTE>
+<H3><B><A NAME="10.8.3">10.8.3</A> Repetition Revisited<!--</B>‹<B>-->--The Generalized LOOP Statement</B></H3>
+<P>Besides the WHILE, REPEAT, and FOR loops, Modula-2 allows a generalized type of loop from which there may be several possible exits.  Here is an outline example that indicates one possible form in which this could exist:</P>
+<PRE>
+<B>LOOP</B>
+  Statement Sequence 1;
+  <B>IF</B> Condition 1
+    <B>THEN</B>
+      <B>EXIT</B>
+    <B>END</B>;   (* if *)
+<B>END</B>;    (* loop *)</PRE>
+<P>The syntax diagrams are simple:</P>
+<P><CENTER><IMG SRC="Figure/Figure_10.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>An EXIT statement within a LOOP serves the same purpose as a RETURN in a regular procedure, in that it transfers control to the END and thence out of the LOOP.  It differs, however, in that it is the only way to exit a LOOP, for this repetition will execute indefinitely if some EXIT statement is not encountered.</P>
+<P>To put it another way, the EXIT provides a mid-loop test in the same way that the WHILE loop has a top-of-loop test and the REPEAT loop has a bottom-of-loop test.  The following example reads in a Y or N, printing out a message only if some other character is pressed:</P>
+<PRE>
+<B>LOOP</B>
+  WriteString ('Enter <!--<-->&lt;Y<!-->-->&gt; or <!--<-->&lt;N<!-->-->&gt; please ... ');
+  Read (ch); SkipLine;
+  ch := <B>CAP</B> (ch);
+  <B>IF</B> (ch = 'Y') <B>OR</B> (ch = 'N')
+    <B>THEN</B>
+      <B>EXIT</B>
+    <B>END</B>; (* If *)
+  WriteString ('Error. You must '); (* and go around again *)
+<B>END</B>; (* Loop *)</PRE>
+<P>Other more familiar repetition structures can be simulated with the LOOP.</P>
+<PRE>
+<B>REPEAT</B>
+  Statement Sequence
+<B>UNTIL</B> Condition;</PRE>
+<P>could be simulated by</P>
+<PRE>
+<B>LOOP</B>
+  Statement Sequence;
+
+  <B>IF</B> Condition
+    <B>THEN</B>
+      <B>EXIT</B>
+    <B>END</B>;
+<B>END</B>;</PRE>
+<P>Moreover, there may be multiple test points within a LOOP for a possible exit from the structure, provided that the run-time logic eventually allows one of the exit points to be reached.</P>
+<PRE>
+<B>LOOP</B>
+  Statement Sequence1;
+  <B>IF</B> Condition1
+    <B>THEN</B>
+      <B>EXIT</B>
+    <B>END</B>;
+  Statement Sequence2;
+  <B>IF</B> Condition2
+    <B>THEN</B>
+      <B>EXIT</B>
+    <B>END</B>;
+  Statement Sequence3;
+<B>END</B>;</PRE>
+<P>Note, however, that in most cases the LOOP structure is not needed.  It should be used when</P>
+<UL><!--€--><LI> there must be more than one exit point from a loop</LI>
+<!--€--><LI> the flow of the program naturally lends itself to a loop structure</LI>
+<!--€--><LI> one must exit from a deeply nested loop or selection structure</LI></UL>
+<P>The latter case, where one uses LOOP..EXIT as a means to leave a very deeply nested loop within a loop without having to transfer control out one level at a time, can be illustrated in the outline:</P>
+<PRE>
+<B>LOOP</B>
+  <B>REPEAT</B>
+    (* some code *)
+    <B>REPEAT</B>
+      (* some more code *)
+      <B>CASE</B> selector <B>OF</B>
+        one:
+          (* more code *) |
+        two:
+          (* alternate *)
+        <B>ELSE</B>
+          <B>EXIT</B>
+        <B>END</B>;
+    <B>UNTIL</B> condition1
+  <B>UNTIL</B> condition2;
+  (* yet another statement sequence *)
+  <B>EXIT</B>; (* if we get here, processing done *)
+<B>END</B>;</PRE>
+<P>In cases like these, a normal repetition structure from which one wants to have an alternate exit points surrounded with a LOOP that has an EXIT at the very end.  If processing reaches that end point, normal termination of the repetition is assured by the terminating EXIT.  Alternately, it is possible to exit without concluding the repetition if necessary.</P>
+<P>LOOP structures are often used when processing data from or to sequential files, though they are usually not strictly necessary, and just save a little writing.  Typical code from Chapter 8 such as</P>
+<PRE>
+  <B>REPEAT</B>
+    WriteChar (<!--"-->&quot;<!-->&gt;<!--"-->&quot;); (* prompt *)
+    ReadInt (number);
+    <B>IF</B> ReadResult() = allRight
+      <B>THEN</B>
+        SkipLine;
+        WholeIO.WriteInt (outfile, number, 0);
+        TextIO.WriteLn (outfile); (* separate the numbers *)
+      <B>END</B>;  (* if *)
+  <B>UNTIL</B> ReadResult() # allRight;</PRE>
+<P>could be written:</P>
+<PRE>
+  <B>LOOP</B>
+    WriteChar (<!--"-->&quot;<!-->-->&gt;<!--"-->&quot;); (* prompt *)
+    ReadInt (number);
+    <B>IF</B> ReadResult() = allRight
+      <B>THEN</B>
+        SkipLine;
+        WholeIO.WriteInt (outfile, number, 0);
+        TextIO.WriteLn (outfile); (* separate the numbers *)
+      <B>ELSE</B>
+        <B>EXIT</B>
+      <B>END</B>;  (* if *)
+  <B>END</B>; (* loop *)</PRE>
+<P>Notice that the only saving here was not having to write the condition on <I>ReadResult</I> twice, and indeed, if the conditions for processing were slightly different from those for exiting, there would be no gain at all.  In general, it is better to try to employ one of the more conventional loop structures, and this can be done in the vast majority of situations.</P>
+<P>EXIT and RETURN are the only statements in Modula-2 that cause an immediate transfer of the normal flow of control, and these will transfer only to a point after the last statement in the statement sequence associated with the loop or the body of the current PROCEDURE.  There are <I>abnormal</I> transfers resulting from errors; these will be considered in the section on exceptions later in this chapter. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

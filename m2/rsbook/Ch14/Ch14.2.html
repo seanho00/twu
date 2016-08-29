@@ -1,0 +1,405 @@
+<HTML><HEAD><TITLE>14.2 Lists Revisited</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Lists Revisited">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.2 Lists Revisited</B></H2>
+<P>The lists of chapter twelve were rather simple in that only a few operations were sketched and the natural step of creating a library module to encapsulate the ADT List was not taken.  A number of issues arise when this next step is undertaken:</P>
+<UL><!--€--><LI> what kind(s) of data is (are) to be listed</LI></UL>
+<P>If there is only one type, a customized linked list package that takes the characteristics of the data fields into consideration in some way may be best.  One way of doing this is to provide more than one set of links to sort data by more than one key field.  If more than one kind of list (different types of enlisted data) are envisioned, then a more generic library package capable of easy modification to a variety of data is indicated.  In the example of this section, genericity is ensured by having the definition module import the data type from some other module and then rename it to a local type name.  This ensures that the module need only be changed in its first few lines to generate a new linked list for a different type of data.</P>
+<UL><!--€--><LI> whether single or double links will be used</LI></UL>
+<P>In this section, doubly linked lists will be employed, though in some applications single or circular links are indicated.</P>
+<UL><!--€--><LI> whether insertion and deletion are allowed by index number</LI>
+<!--€--><LI> whether data fetching and updating are allowed by index number</LI></UL>
+<P>In the example of this section, they will be.  However, for very large lists, it might be more useful to provide procedures to search for specific items by one of their fields and then update, fetch, insert, or delete the one found.</P>
+<UL><!--€--><LI> whether a <!--"-->&quot;current<!--"-->&quot; pointer will be kept for some operations.</LI></UL>
+<P>In the example of this section, such pointers will be kept separately for insertion, deletion, and fetch/update operations.  Moreover, an enumerated type is defined so that setting these pointers can be done operation by operation at a specific index number.</P>
+<P>With these ideas in mind, here is the definition module for a relatively robust linked list type.  It depends on a library module called <I>ItemADT</I> but this name can be changed as desired.  The only thing required from that module for the definition module <I>lists</I> to work is the definition of the ADT itself.  Observe the careful specification of predicates for each operation.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Lists;
+
+(* semi- generic implementation of lists  *)
+(* copyright © 1995 by R. Sutcliffe *)
+(* last modification 1995 05 29 *)
+
+(* To use, change ItemADT to the module name where the ADT to be listed is defined and ItemType in the following two lines to the correct name found there. Also required: an assignment procedures for the ADT. *)
+
+<B>FROM</B> ItemADT <B>IMPORT</B>
+  ItemType;
+<B>TYPE</B>
+  DataType (* local name *) = ItemType;
+
+<B>TYPE</B>
+  List;
+  Operation = (insert, delete, fetchup);
+
+<B>PROCEDURE</B> Create (<B>VAR</B> list : List);
+  (* Pre: none
+  Post: a new list of ItemType structure is initialized with length zero.  Insert, delete and fetch/update start out at the head of the list. *)
+
+<B>PROCEDURE</B> Discard (<B>VAR</B> list : List);
+  (* Pre: list is a validly created list
+    Post: list is undefined *)
+
+<B>PROCEDURE</B> Length (list : List) : <B>CARDINAL</B>;
+  (* Pre: list is a validly created list
+    Post: The number of items in the list is returned. *)
+
+<B>PROCEDURE</B> SetAtHead (<B>VAR</B> list : List; op : Operation);
+  (* Pre: list is a validly created list
+    Post: The position for the given insert, delete, or fetch/update operation is the first item. *)
+
+<B>PROCEDURE</B> SetAtTail (<B>VAR</B> list : List; op : Operation);
+  (* Pre: list is a validly created list
+    Post: The position for the given insert, delete, or fetch/update operation is the last item. *)
+
+<B>PROCEDURE</B> SetAtPos (<B>VAR</B> list : List; op : Operation; itemNum : <B>CARDINAL</B>);
+  (* Pre: list is a validly created
+    Post: The position for the given insert, delete, or fetch/update operation is the itemNum item. If ItemNum <!-->&gt;= Length, it is set to the last item. If it is zero or one, it is set to the head. Note, however that a delete or fetch/update position set to one or greater moves forward with the item it previously designated if inserting is done before it.  Likewise, an Insert  or fetch/update position pulls back one numerically with the item it designated prior to a delete that occurs in front of it. *)
+
+<B>PROCEDURE</B> Insert (<B>VAR</B> list : List; item : DataType);
+  (* Pre: list is a validly created list and item is the right size to be placed in the list.
+    Post: the item is inserted before the currently set insert position.  The insert position is now before the item just inserted.  For example, if inserting was being done at the head, it still is. The length is updated. *)
+
+<B>PROCEDURE</B> Append (<B>VAR</B> list : List; item : DataType);
+  (* Pre: list is a validly created list and item is the right size to be placed in the list.
+    Post: the item is inserted after the last item in the list. Note that Insert cannot be used to do this. *)
+
+<B>PROCEDURE</B> Update (<B>VAR</B> list : List; item : DataType);
+  (* Pre: list is a validly created list and item is the right size to be placed in the list.
+     Post: The old item at the currently set position for fetch/update is updated to item. The fetch/update position is not changed. *)
+
+<B>PROCEDURE</B> Fetch (list : List; <B>VAR</B> item : DataType);
+  (* Pre: list is a validly created list and item is the right size to receive data from the list.
+    Post: item gets the data at the current position for fetch/update. The fetch/update position is not changed. *)
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> list : List);
+  (* Pre: list is a validly created list
+    Post: the item at the current delete position is removed from the list and the length is updated. The current delete position is now at the item after the one deleted, or it if was the last, it points to the new last. That is, if we were deleting at the head, we still are and if we were deleting at the tail, we still are.  If we delete the position for either insert or fetch/update, their new item will be the same as the new delete item.
+     Note: The initial or default delete position is at the head.  Should the list shrink to zero items and then grow again, deleting will continue from either the head or the tail, depending on which was being conducted at the time the last item was deleted. -- see SetAtPos. *)
+
+<B>END</B> Lists.</PRE>
+<P>The new items are all implemented in the module below.  The reader should note that the handling of the various list pointers is only one of several possible approaches to the subject.  It may not be necessary to keep so many pointers to the list structure, but it can be convenient.  Completing the commenting of this implementation has been left as an exercise.</P>
+<PRE>
+<A NAME="Lists"></A><B>IMPLEMENTATION</B> <B>MODULE</B> Lists;
+
+(* semi- generic implementation of lists  *)
+(* copyright © 1995 by R. Sutcliffe *)
+(* last modification 1995 05 29 *)
+
+<B>FROM</B> Storage <B>IMPORT</B>
+  <B>ALLOCATE</B>, <B>DEALLOCATE</B>;
+
+<B>FROM</B> ItemADT <B>IMPORT</B>
+  Assign;
+  
+<B>TYPE</B>
+  NodePoint = <B>POINTER</B> <B>TO</B> Node;
+  Node = 
+    <B>RECORD</B>
+      data : DataType;
+      next,
+      last : NodePoint;
+    <B>END</B>;
+
+  List = <B>POINTER</B> <B>TO</B> ListInfo;
+  ListInfo = 
+    <B>RECORD</B>
+      numItems : <B>CARDINAL</B>;
+      head,
+      tail,
+      curInsert,
+      curDelete,
+      curFetchup : NodePoint;
+      delAtHead : <B>BOOLEAN</B>;
+    <B>END</B>;
+
+<B>PROCEDURE</B> Create (<B>VAR</B> list : List);
+
+<B>BEGIN</B>
+  <B>NEW</B> (list);
+  <B>WITH</B> list^
+    <B>DO</B>
+      numItems := 0;
+      head := <B>NIL</B>;
+      tail := head;
+      curInsert := head;
+      curDelete := head;
+      curFetchup := head;
+      delAtHead := <B>TRUE</B>;
+
+    <B>END</B>;
+<B>END</B> Create;
+
+<B>PROCEDURE</B> Discard (<B>VAR</B> list : List);
+
+<B>BEGIN</B>
+  SetAtHead (list, delete);
+  <B>WHILE</B> list^.numItems <!-->&gt; 0
+    <B>DO</B>
+      Delete (list);
+    <B>END</B>;
+  <B>DISPOSE</B> (list);
+<B>END</B> Discard;
+
+<B>PROCEDURE</B> Length (list : List) : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>RETURN</B> list^.numItems;
+<B>END</B> Length;
+
+<B>PROCEDURE</B> SetAtHead (<B>VAR</B> list : List; op : Operation);
+
+<B>BEGIN</B>
+  <B>CASE</B> op <B>OF</B>
+    insert:
+      list^.curInsert := list^.head |
+    delete:
+      list^.curDelete := list^.head;
+      list^.delAtHead := <B>TRUE</B>; |
+    fetchup:
+      list^.curFetchup := list^.head;
+    <B>END</B>;
+<B>END</B> SetAtHead;
+
+<B>PROCEDURE</B> SetAtTail (<B>VAR</B> list : List; op : Operation);
+
+<B>BEGIN</B>
+  <B>CASE</B> op <B>OF</B>
+    insert:
+      list^.curInsert := list^.tail |
+    delete:
+      list^.curDelete := list^.tail;
+      list^.delAtHead := <B>FALSE</B>; |
+    fetchup:
+      list^.curFetchup := list^.tail;
+    <B>END</B>;
+<B>END</B> SetAtTail;
+
+<B>PROCEDURE</B> SetAtPos (<B>VAR</B> list : List; op : Operation; itemNum : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  tempPoint : NodePoint;
+
+<B>BEGIN</B>
+  <B>IF</B> itemNum = 0 
+    <B>THEN</B> 
+      SetAtHead (list, op);
+    <B>ELSIF</B> itemNum <!-->&gt;= list^.numItems <B>THEN</B>
+      SetAtTail (list, op)
+    <B>ELSE</B> (* not setting at head or tail *)
+      <B>IF</B> itemNum <!-->&gt; (list^.numItems <B>DIV</B> 2) <B>THEN</B> (* past middle? *)
+        count := list^.numItems;
+        tempPoint := list^.tail; (* start at the back *)
+        <B>WHILE</B> count <!-->&gt; itemNum   (* back up if necessary *)
+          <B>DO</B>
+            tempPoint := tempPoint^.last;
+            <B>DEC</B> (count);
+          <B>END</B>;
+      <B>ELSE</B> (* before middle but not at zero *)
+        count := 1;
+        tempPoint := list^.head; (* start at the front *)
+        <B>WHILE</B> count <!--<-->&lt; itemNum   (* go forward  if necessary *)
+          <B>DO</B>
+            tempPoint := tempPoint^.next;
+            <B>INC</B> (count);
+          <B>END</B>;
+      <B>END</B>;
+      <B>CASE</B> op <B>OF</B>
+        insert:
+          list^.curInsert := tempPoint |
+        delete:
+          list^.curDelete := tempPoint;
+          list^.delAtHead := <B>FALSE</B>; |
+        fetchup:
+          list^.curFetchup := tempPoint;
+        <B>END</B>;
+    <B>END</B>;
+
+<B>END</B> SetAtPos;
+
+<B>PROCEDURE</B> Insert (<B>VAR</B> list : List; item : DataType);
+
+<B>VAR</B>
+  local : NodePoint;
+
+<B>BEGIN</B>
+  <B>NEW</B> (local);
+  local^.data := item;
+  local^.next := list^.curInsert;
+  <B>IF</B> list^.curInsert # list^.head (*inserting at head? *)
+    <B>THEN</B> (* no, so chain in new item *)
+      local^.last := list^.curInsert^.last; (* point back to previous node *)
+      list^.curInsert^.last^.next := local; (* and make it point to new one *)
+    <B>ELSE</B> 
+      local^.last := <B>NIL</B>; (* yes, so back pointer is <B>NIL</B> *)
+      <B>IF</B> (list^.curDelete = list^.head) <B>AND</B> list^.delAtHead
+       (* if delete is at head too, keep it there *)
+        <B>THEN</B>
+          list^.curDelete := local;
+        <B>END</B>;
+      <B>IF</B> list^.curFetchup = list^.head (* if fetchUp is at head too, keep it there *)
+        <B>THEN</B>
+          list^.curFetchup := local;
+        <B>END</B>;
+      <B>IF</B> list^.tail = <B>NIL</B> (* if this is the first item in *)
+        <B>THEN</B>
+          list^.tail := local;
+        <B>END</B>;
+      list^.head := local; (* revise the head *)
+    <B>END</B>;
+  <B>IF</B> list^.curInsert # <B>NIL</B>
+    <B>THEN</B>
+      list^.curInsert^.last := local;
+      <B>END</B>;
+    list^.curInsert := local; (* insert point becomes new item *)
+  <B>INC</B> (list^.numItems);
+
+<B>END</B> Insert;
+
+<B>PROCEDURE</B> Append (<B>VAR</B> list : List; item : DataType);
+
+<B>VAR</B>
+  local : NodePoint;
+
+<B>BEGIN</B>
+  <B>NEW</B> (local);
+  local^.data := item;
+  local^.last := list^.tail;
+  local^.next := <B>NIL</B>;
+  <B>IF</B> list^.tail = <B>NIL</B> (* list currently empty *)
+    <B>THEN</B>
+      <B>WITH</B> list^
+        <B>DO</B>
+          head := local;
+          curInsert := head;
+          curDelete := head;
+          curFetchup := head;
+      <B>END</B>;
+    <B>ELSE</B>
+      list^.tail^.next := local;
+    <B>END</B>;
+  list^.tail := local;
+  <B>INC</B> (list^.numItems);
+
+<B>END</B> Append;
+
+<B>PROCEDURE</B> Update (<B>VAR</B> list : List; item : DataType);
+
+<B>BEGIN</B>
+  Assign (item, list^.curFetchup^.data);
+<B>END</B> Update;
+
+<B>PROCEDURE</B> Fetch (list : List; <B>VAR</B> item : DataType);
+
+<B>BEGIN</B>
+  Assign (list^.curFetchup^.data, item);
+<B>END</B> Fetch;
+
+<B>PROCEDURE</B> Delete (<B>VAR</B> list : List);
+
+<B>VAR</B>
+  newCurDel, temp : NodePoint;
+
+<B>BEGIN</B>
+  <B>IF</B> list^.numItems = 0
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  temp := list^.curDelete;
+  <B>IF</B> list^.curDelete^.last # <B>NIL</B> (* if not at #1 *)
+    <B>THEN</B>
+      list^.curDelete^.last^.next := list^.curDelete^.next;
+    <B>ELSE</B>
+      list^.head := list^.curDelete^.next;
+    <B>END</B>;
+  <B>IF</B> list^.curDelete^.next # <B>NIL</B> (* if not at last item *)
+    <B>THEN</B>
+      list^.curDelete^.next^.last := list^.curDelete^.last;
+      newCurDel := list^.curDelete^.next;
+    <B>ELSE</B>
+      list^.tail := list^.curDelete^.last;
+      newCurDel := list^.curDelete^.last;
+    <B>END</B>;
+  <B>IF</B> list^.curDelete = list^.curInsert (* hammered off insert item? *)
+    <B>THEN</B>
+      list^.curInsert :=  newCurDel;
+    <B>END</B>;
+  <B>IF</B> list^.curFetchup = list^.curInsert (* hammered off fetchup item? *)
+    <B>THEN</B>
+      list^.curFetchup :=  newCurDel;
+    <B>END</B>;
+  <B>DEC</B> (list^.numItems);
+  list^.curDelete := newCurDel;
+  <B>DISPOSE</B> (temp);
+<B>END</B> Delete;
+
+<B>END</B> Lists.</PRE>
+<P>In order to complete the task, the ADT to be listed must be defined and implemented in a suitable module, along with the procedure <I>Assign</I>.  The name of this module and the name of the ADT are then substituted in the top lines of the definition and implementation modules above, and (possibly) new copies saved with unique names (<I>ListOfMyADT</I>).  All these must then be compiled before a client program can be written and linked.</P>
+<P>If a second list type using another ADT is required (perhaps even for the same client) it is not difficult to define that other ADT and make some minor editorial changes in the first few lines (only) of the modules above, then compile again.  This can be done as many times as desired without making any changes to the body of the implementation.</P>
+<P>Here is a simple version of a typical supplier of the information.  It actually uses the name <I>ItemADT</I> so that no changes at all are necessary to proceed.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ItemADT;
+
+<B>TYPE</B>
+  ItemType = <B>CARDINAL</B>;
+
+<B>PROCEDURE</B> Assign (a : ItemType; <B>VAR</B> b : ItemType);
+
+<B>END</B> ItemADT.
+
+<B>IMPLEMENTATION</B> <B>MODULE</B> ItemADT;
+
+<B>PROCEDURE</B> Assign ( a : ItemType; <B>VAR</B> b : ItemType);
+<B>BEGIN</B>
+  b:= a;
+<B>END</B> Assign;
+
+<B>END</B> ItemADT.</PRE>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,286 @@
+<HTML>
+
+<HEAD>
+<TITLE>Chapter 3 Answer Key</TITLE>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+
+<BODY BGCOLOR="CCFFFF">
+
+<H2><B>CHAPTER 3</B></H2>
+
+<H3><B>Questions</B></H3>
+
+<P>1.	A BOOLEAN variable can have either a TRUE or FALSE value.</P>
+
+<P>2.	Order of operations for Modula-2 Boolean expressions:<BR>
+		First		NOT (~)<BR>
+		Second		*, /, DIV, MOD, AND (<!--&-->&amp;)</P>
+		Third		+, -, OR</P>
+		Last		the relational operators =, <<!-->&gt; (or #), <!-->&gt;, <!-->&gt;=, <!--<-->&lt;, <!--<-->&lt;=</P>
+
+<P>3.	(a)  FALSE	(b)  TRUE	(c)  TRUE	(d)  TRUE</P>
+
+<P>4.	(a)  TRUE	(b)  TRUE	(c)  TRUE	(d)  FALSE	(e)  TRUE	(f)  FALSE</P>
+
+<P>5.	Change to:<BR>
+
+	<pre>	IF finished
+	  THEN
+	    a := a + 1;
+	END;</pre></P>
+
+<P>6.<pre>	REPEAT
+	  WriteString ("enter a cardinal here ==<!-->&gt;");
+	  ReadCard (myCard)
+	  flag := ReadResult () = allRight;
+	  SkipLine
+	UNTIL ~flag;</pre></P>
+
+<P>7.	The count will never equal 0 because decreasing an odd number by 2 will never result in an even number.</P>
+
+<P>8.	Unless count is a CARDINAL, nothing is wrong because the count will eventually be less than 0.</P>
+
+<P>9.	Variables used in the DEC (or INC) procedure have to be of type INTEGER or CARDINAL.</P>
+
+<P>10.	realCount = 0 has to be changed to realCount = 0.0.</P>
+
+<P>11.	STextIO:<BR>
+		ReadString:  Any read into a compatible variable will be legal because all characters can be part of a string.<BR>
+		ReadChar:  Any read will also be all right for the same reason, however only the first character will be read if there is a SkipLine following.<BR>
+	SWholeIO:<BR>
+		ReadCard;<BR>
+			ReadCard (x):<BR>
+			flag := ReadResult () = allRight;<BR>
+	SRealIO:<BR>
+		ReadReal:</P>
+			ReadReal (y);<BR>
+			flag := ReadResult () = allRight;</P>
+
+<P>12.	In the import section...</P>
+
+<pre>	FROM RealInOut IMPORT
+	  Done;
+	IMPORT InOut;</pre>
+
+<pre>	In the code...
+		refer to the first as Done;
+		refer to the second as InOut.Done;</pre></P>
+
+<P>13.	Answers may vary.</P>
+
+<P>14.	Answers left to the student.</P>
+
+<P>15.	(i)  	Include temporary print statements in the code.<BR>
+	(ii)  	Test a program with alternate data.<BR>
+	(iii)  	Hand check results for reasonability.<BR>
+	(iv)  	Check loops for efficiency and correctness.<BR>
+	(v)  	Use comments.<BR>
+	(vi)  	Watch for spelling and punctuation errors.</P>
+
+<H3><B>Problems</B></H3>
+
+<P>Note: Not all problems are shown.  Most problems are left up students as labs.</P>
+
+<pre>(*  Created
+    June 10, 1999
+    Chpater 3 Question 16
+    ERROR TRAPPING  *)
+
+MODULE Convert;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, ReadChar, SkipLine;
+FROM SRealIO IMPORT
+  ReadReal, WriteFixed;
+FROM SWholeIO IMPORT
+  ReadCard;
+FROM SIOResult IMPORT
+  ReadResult, ReadResults;
+
+VAR
+  option : CARDINAL;
+  toConvert, converted : REAL;
+  exit : CHAR;
+  ok : BOOLEAN;
+
+CONST
+  inchFactor = 2.54;	(* conversion factor: 1in. = 2.54cm *)
+
+BEGIN
+  REPEAT
+  (* Ask to choose what they want to convert *)
+    REPEAT
+      WriteString ("Choose one of the following options:"); WriteLn;
+      WriteString ("1)    Convert inches to centimeters."); WriteLn;
+      WriteString ("2)    Convert centimeters to inches."); WriteLn;
+      WriteLn;
+      WriteString ("Choice: ");
+      ReadCard (option);
+      ok := ReadResult() = allRight;
+
+      IF NOT ok THEN
+        WriteString ("Not an option!! Retry");
+	WriteLn;
+      END;
+
+      SkipLine;
+    UNTIL ok;
+
+    (* Get number to convert *)
+    ok := FALSE;
+
+    WHILE NOT ok DO
+      WriteString ("Enter the amount to convert: ");
+      ReadReal (toConvert);
+      ok := ReadResult() = allRight;
+
+      IF NOT ok THEN
+        WriteString ("Enter a proper number");
+        WriteLn;
+      END;
+
+      SkipLine;
+    END;
+
+    (* Do calculations and display*)
+    IF option = 1 THEN
+      converted := inchFactor * toConvert;
+      WriteFixed (toConvert, 2, 1);
+      WriteString (" inch(es) is equivalent to");
+      WriteFixed (converted, 2, 0);
+      WriteString (" centimeters.");
+    ELSE
+      converted := toConvert/inchFactor;
+      WriteFixed (toConvert, 2, 1);
+      WriteString (" centimeters is equivalent to");
+      WriteFixed (converted, 2, 0);
+      WriteString (" inch(es).");
+    END;
+
+    (* For exiting *)
+    ok := FALSE;
+    WriteLn;
+    WriteString ("Enter x to exit or any key run program again ");
+    ReadChar (exit);
+    SkipLine;
+
+    IF (exit = 'x') OR (exit = 'X') THEN
+      ok := TRUE;
+    END;
+
+    WriteLn; WriteLn;
+  UNTIL ok;
+END Convert.</pre>
+
+<pre>(*	Created
+	June.10.1999
+	Chapter 3 Question 19
+	NO ERROR TRAPPING  *)
+
+MODULE Sort3;
+
+FROM STextIO IMPORT
+  WriteString, WriteLn, SkipLine;
+
+FROM SWholeIO IMPORT
+  ReadCard, WriteCard;
+
+CONST
+  fieldLength = 6;
+
+VAR
+  num1, num2, num3, temp : CARDINAL;
+
+BEGIN
+  (* information *)
+  WriteString ("This program sorts two cardinal numbers from smallest to largest.");
+  WriteLn;
+  (* collect the numbers from the user *)
+  WriteString ("Enter the first number please. ==> ");
+  ReadCard (num1);
+  SkipLine;
+  WriteLn;
+  WriteString ("Enter the second number please. ==> ");
+  ReadCard (num2);
+  SkipLine;
+  WriteLn;
+  WriteString ("Enter the third number please. ==> ");
+  ReadCard (num3);
+  SkipLine;
+  WriteLn;
+  WriteString ("From least to greatest, the numbers are: ");
+
+  (* Sort them first *)
+  IF num1 > num2 THEN
+    temp := num2;
+    num2 := num1;
+    num1 := temp;
+  END;
+
+  IF num1 > num3 THEN
+    temp := num3;
+    num3 := num1;
+    num1 := temp;
+  END;
+
+  IF num2 > num3 THEN
+    temp := num2;
+    num2 := num3;
+    num3 := temp;
+  END;
+   (* Write them out *)
+  WriteCard (num1, fieldLength);
+  WriteString (", ");
+  WriteCard (num2, fieldLength);
+  WriteString (", ");
+  WriteCard (num3, fieldLength);
+  WriteLn;
+  SkipLine;
+END Sort3.</pre>
+
+</BODY>
+
+</HTML>

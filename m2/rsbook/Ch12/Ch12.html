@@ -1,0 +1,93 @@
+<HTML><HEAD><TITLE>Chapter 12: Pointers and Dynamic Data</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><CENTER><H1><B>Chapter 12<BR>
+Pointers and Dynamic Data</B></H1></CENTER>
+
+
+<BR><A class = navgrn HREF="Ch12.0.html">12.0 Chapter Goals</A><!--	524->
+<BR><A class = navgrn HREF="Ch12.1.html">12.1 Pointers</A><!--	524-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.1.html#12.1.1">  12.1.1 Pointer Variables</A><!--	524-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.1.html#12.1.2">  12.1.2 Pointer References</A><!--	525-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.1.html#12.1.3">  12.1.3 The value NIL</A><!--	526-->
+<BR><A class = navgrn HREF="Ch12.2.html">12.2 Applications of Pointers</A><!--	527-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.2.html#12.2.1">  12.2.1 Pointers and Parameters</A><!--	527-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.2.html#12.2.2">  12.2.2 Pointers and Sorting</A><!--	528-->
+<BR><A class = navgrn HREF="Ch12.3.html">12.3 Pointer Arithmetic</A><!--	528-->
+<BR><A class = navgrn HREF="Ch12.4.html">12.4 Dynamic and Static Memory</A><!--	528-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.4.html#12.4.1">  12.4.1 Static Memory Use</A><!--	529-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.4.html#12.4.2">  12.4.2 Procedures and the Stack<!--‹-->--Automatic Dynamics</A><!--	530-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.4.html#12.4.3">  12.4.3 Dynamic Memory and the Heap<!--‹-->--Program Controlled Dynamics</A><!--	531-->
+<BR><A class = navgrn HREF="Ch12.5.html">12.5 Managing Dynamic Memory in Modula-2</A><!--	532-->
+<BR><A class = navgrn HREF="Ch12.6.html">12.6 An Example<!--‹-->--Dynamic Records and Files</A><!--	535-->
+<BR><A class = navgrn HREF="Ch12.7.html">12.7 Towards A Dynamic Array ADT</A><!--	539-->
+<BR><A class = navgrn HREF="Ch12.8.html">12.8 Pointers and Return Types</A><!--	541-->
+<BR><A class = navgrn HREF="Ch12.9.html">12.9 Opaque Types Revealed</A><!--	543-->
+<BR><A class = navgrn HREF="Ch12.10.html">12.10 Pointers and Lists</A><!--	548-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.10.html#12.10.1">  12.10.1 Declaring The Linked List Apparatus</A><!--	548-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.10.html#12.10.2">  12.10.2 Maintaining The Linked List</A><!--	549-->
+<BR><A class = navgrn HREF="Ch12.11.html">12.11 Variations on the List Theme</A><!--	554-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.11.html#12.11.1">  12.11.1 Circular Lists</A><!--	554-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch12.11.html#12.11.2">  12.11.2 Two-Way Lists</A><!--	554-->
+<BR><A class = navgrn HREF="Ch12.12.html">12.12 Variant Dynamic Records</A><!--	557-->
+<BR><A class = navgrn HREF="Ch12.13.html">12.13 Chapter Summary</A><!--	559-->
+<BR><A class = navgrn HREF="Ch12.14.html">12.14 Assignments</A><!--	560-->
+
+<!--Version History 
+Version 4.0 HTML markup by G Tisher 1995 06 06
+Version 4.0.1 corrected 1996 07 18
+Version 4.0.2 corrected 1997 07 07 by N. Sutcliffe
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch12.0.html»
+«INCLUDE Ch12.1.html»
+«INCLUDE Ch12.2.html»
+«INCLUDE Ch12.3.html»
+«INCLUDE Ch12.4.html»
+«INCLUDE Ch12.5.html»
+«INCLUDE Ch12.6.html»
+«INCLUDE Ch12.7.html»
+«INCLUDE Ch12.8.html»
+«INCLUDE Ch12.9.html»
+«INCLUDE Ch12.10.html»
+«INCLUDE Ch12.11.html»
+«INCLUDE Ch12.12.html»
+«INCLUDE Ch12.13.html»
+«INCLUDE Ch12.14.html»--><HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

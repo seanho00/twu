@@ -1,0 +1,183 @@
+<HTML><HEAD><TITLE>19.9 Guard Statement</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Guard Statement">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.9 Guard Statement</b></H2>
+
+<P>Sometimes, the code one may wish to execute may depend on the (dynamic) type of the object reference. This situation is similar to ones that result in the use of a CASE statement, where various courses of action are selected based on the value of some variable at the time. However, the CASE statement will not serve in this instance, because it is selection on the dynamic type of the object, not on its value that one is interested in.</P>
+
+<P><i>A statement that selects actions based on some dynamic state is said to be a <u>guard</u> statement, and the actions that are protected by the statement are said to be <u>guarded</u>.</i></P>
+
+<P>Thus, OOM-2 introduces a new kind of selection, or guarded statement with a syntax similar to that of CASE, but specialized to the dynamic type of an object reference. The simplest syntax is shown in the skeleton that follows:</P>
+
+<PRE><b>GUARD</b> objectDenoter <b>AS</b>
+  : className1 <b>DO</b>
+    statementSequence1 |
+  : className2 <b>DO</b>
+    statementSequence2 |
+    ....
+  <b>ELSE</b>
+    statementSequence(n+1)
+  <b>END</b>;</PRE>
+    
+  <P>Although the guarded statement sequence uses DO, there is no END, but rather, the next selection in the list is delimited from the last by the vertical bar. Thus, a prettyprinting style has been chosen that lines up the items in the list of selections and the ELSE and END.  Here, the names of the classes to which the object's dynamic class is being matched are preceded by a colon.</P>
+  <P>The first (in order of appearance) class name to which the object denoter is assignment compatible is selected and its statement sequence is executed. As with a CASE statement, execution of the GUARD statement then terminated and control goes to the next statement after the END.</P>
+ <P><b>WARNING:</b> An empty object reference selects the ELSE clause. If there is no match and no ELSE clause, an exception is generated.</P>
+ <P>The following trivial example only detects the class of the variable and prints a message. It is provided only to illustrate the syntax and semantics. <i>ClassA</i> is the superclass of the others, with classes B and D as subclasses of <i>ClassA.</i> <i>ClassC</i> is a subclass of <i>ClassB</i>.</P>
+
+<PRE><b>UNSAFEGUARDED</b> <b>MODULE</b> guardTest;
+(* to illustrate simple guard statement
+  by R. Sutcliffe 1998 09 28 
+  This example done in a StonyBrook beta version
+  in which TRACED objects had not yet been implemented. *)
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteString, ReadChar;
+<b>FROM</b> Storage <b>IMPORT</b>
+  ALLOCATE;
+<b>CLASS</b> ClassA;
+  <b>END</b> ClassA;
+<b>CLASS</b> ClassB;
+<b>INHERIT</b> ClassA;
+  <b>END</b> ClassB;
+<b>CLASS</b> ClassC;
+<b>INHERIT</b> ClassB;
+  <b>END</b> ClassC;
+<b>CLASS</b> ClassD;
+<b>INHERIT</b> ClassA;
+  <b>END</b> ClassD;
+
+<b>VAR</b>
+  ch : <b>CHAR</b>;
+  a : ClassA;
+  b : ClassB;
+  c : ClassC;
+  d : ClassD;
+<b>BEGIN</b>
+  <b>CREATE</b> (a);
+  <b>CREATE</b> (b);
+  <b>CREATE</b> (c);
+  <b>CREATE</b> (d);
+  a := d;
+  <b>GUARD</b> a <b>AS</b>
+   : ClassA <b>DO</b>
+      WriteString ("Class a found ");|
+   : ClassB <b>DO</b>
+       WriteString ("Class b found ");|
+   : ClassC <b>DO</b>
+       WriteString ("Class c found ");|
+   : ClassD <b>DO</b>
+       WriteString ("Class d found ");
+   <b>ELSE</b>
+     WriteString ("none found ");
+   <b>END</b>; (* guard *)
+  ReadChar (ch);
+<b>END</b> guardTest.</PRE>
+
+<P>Look at the above code carefully in the light of the semantics given. It will always output the message for <i>ClassA.</i> Since the object a is of that class, ant it comes first in the list, it will always be selected. What if the order of the list is reversed to be D-C-B-A? <i>ClassD</i> would then be selected, because the object a is of the dynamic type <i>ClassD</i> and it comes first in the list. If <i>ClassD</i> were not present as a selection, <i>ClassA</i> would eventually be chosen.  If we changed the reversed code and wrote:</P>
+
+<PRE>  b := c;
+  <b>GUARD</b> b <b>AS</b>
+   : ClassD <b>DO</b>
+      WriteString ("Class d found ");|
+   : ClassC <b>DO</b>
+       WriteString ("Class c found ");|
+   : ClassB <b>DO</b>
+       WriteString ("Class b found ");|
+   : ClassA <b>DO</b>
+       WriteString ("Class a found ");
+   <b>ELSE</b>
+     WriteString ("none found ");
+   <b>END</b>; (* guard *)</PRE>
+
+<P>we would select and get the message for <i>ClassC,</i> the first one to which <i>b</i> is assignment compatible (because <i>ClassC</i> is the dynamic type of <i>b</i> at that point.) Care must therefore be taken when writing a GUARD statement that the list is in an appropriate order for what the programmer wants the code to do.</P>
+<P>There is more to the GUARD statement than this, however. The components of the selector can be accessed by GUARDing it AS a specific entity of the given class type. To do this, an object denoter is placed before the colon for that item in the list, and this effectively opens up a scope for that name, which reference is assigned the original selector. Via the new reference denoter, the components of the original object are now accessible. Here is a simple illustration, this time with only two classes. The object reference <i>a</i> is passed to a procedure parameter of the base class type (which can also accept any reference to a subclassed object). Depending on the dynamic type of the actual parameter, the procedure selects and prints information correctly. Observe that the denoters <i>itema</i> and <i>itemb</i> do not need to be declared; they are generated (and are only visible) locally to the statement sequence. These denoters become local aliases within the portion of the GUARD statement where they are in scope, and this prevents inappropriate use of attribute or method components of a class by ensuring that they are only referred to in a dynamic context where they make sense.</P>
+<P><b>WARNING:</b> The denoters indicated at the beginning of each list item (where used) are not only local to their own statement sequence, they are immutable there (they cannot be reassigned.)</P>
+
+<PRE><b>MODULE</b> GuardTest2;
+(* to illustrate guard statement with new denoter access
+  by R. Sutcliffe 1998 09 28 *)
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteString, WriteLn;
+<b>FROM</b> SWholeIO <b>IMPORT</b>
+  WriteCard, WriteInt;
+<b>TRACED CLASS</b> ClassA;
+  <b>REVEAL</b> card;
+  <b>VAR</b>
+    card : CARDINAL;
+  <b>END</b> ClassA;
+<b>TRACED CLASS</b> ClassB;
+<b>INHERIT</b> ClassA;
+  <b>REVEAL</b> int;
+  <b>VAR</b>
+    int : INTEGER;
+  <b>END</b> ClassB;
+<b>
+PROCEDURE</b> Check (item : ClassA);
+<b>BEGIN</b>
+  <b>GUARD</b> item <b>AS</b>
+    itemb : ClassB <b>DO</b>
+       WriteInt (itemb.int, 10);
+       WriteLn; |
+    itema : ClassA <b>DO</b>
+       WriteCard (itema.card, 10);
+       WriteLn; |
+    <b>ELSE</b>
+      WriteString ("none found ");
+    <b>END</b>; (* guard *)
+<b>END</b> Check;
+
+<b>VAR</b>
+  a : ClassA;
+  b : ClassB;
+<b>BEGIN</b>
+  <b>CREATE</b> (a);
+  <b>CREATE</b> (b);
+  a.card := 12;
+  b.int := -15;
+  Check (a); (* should print value of a.card *)
+  Check (b); (* should print value of b.int *)
+  a := b;    (* change dynamic type of a *)
+  Check (a); (* should print value of b.int *)
+<b>END</b> GuardTest2.</PRE>
+
+<P>The output from this program was, as expected:</P>
+<PRE>        12
+       -15
+       -15</PRE>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

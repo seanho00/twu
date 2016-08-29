@@ -1,0 +1,241 @@
+<HTML>
+<HEAD>
+<TITLE>11.5 Efficiency in Large Programs<</TITLE>
+<meta NAME="keywords" CONTENT="efficiency, efficient, large, program, programs, range-checking, range, checking, check, code, pragma, pragmas, compile, compiling, specified, specify, environment, environments, coprocessor, 80387, fine, tune, tuning, loop, loops, machine, language, languages, link, linking, library, libraries, speed, optimizing, optimising, optimize, optimise, linker, linkers, important, correctness, correct">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>11.5 Efficiency in Large Programs</B></H2>
+<P>Students who try running the knight's tour in the last section on some machines with a full eight by eight board will discover that a program does not have to be large to be slow.  On the other hand, a program does not have to be slow just because it is large.  There may be substantial speed improvements available to the programmer if some careful attention to detail is undertaken. This section contains some observations about the running speed of programs that are a little more advanced than those mentioned in passing in chapter 3.  Not all the solutions suggested in this section are possible in all implementations.</P>
+<H3><B><A NAME="11.5.1">11.5.1</A> Controlling Run-Time Checking</B></H3>
+<P>When any assignment to a variable is made, a Modula-2 program must check at run time to ensure that the proposed value is within the legitimate range for that particular entity.  If not, a <!--"-->&quot;range error<!--"-->&quot; exception is reported and the program terminates.</P>
+<P>By this time, the student should be sophisticated enough to be trapping all keyboard and other input and checking it for the appropriate range before assigning it to variables.  This and other methods help to produce idiot-proofed programs, so that <!--"-->&quot;range errors<!--"-->&quot; simply cannot occur in the final running versions and when they do anyway, they are gracefully handled in an EXCEPT clause.</P>
+<P>Once this is done, the range-checking code built into the program by the compiler may not be necessary, and indeed slows things down considerably, as far more checks are being done than are required.</P>
+<P>Most systems will therefore allow this generation of range checking code by the compiler to be turned off.  When permitted, this is commonly done in one of two ways:</P>
+<P>1. At the outermost level of the system, when invoking the compiler, there may be an option one can choose that disables the generation of range checking code for all compilations done while this setting is in effect.  This could be via an-easy-to-set menu choice, or it could require some cryptic code like <!--"-->&quot;\r<!--"-->&quot; or <!--"-->&quot;-norange<!--"-->&quot; or <!--"-->&quot;check off<!--"-->&quot; to be given on the same line as the command to compile the target file.  This method has the advantage of simplicity, but the disadvantage that it applies to all the code compiled; it does not permit the generation of checking routines to be turned off only for selected portions or only for selected situations.</P>
+<P>2. Compiler options (pragmas) may be present that allow range or other checking to be turned off and on for just those speed-sensitive areas of the program where performance is being adversely affected.  Such an option takes the form used in the last section.  Options could include the means to turn index checking, range checking (for subranges) and overflow checking on and off for selected portions of the code.  Some implementations allow conditions to be entered in a pragma and then acted upon in another pragma.</P>
+<H3><B>Example:</B></H3>
+<PRE>
+<B>MODULE</B> Versatile;
+
+<!--<-->&lt;* dangerous := <B>TRUE</B> *<!-->&gt; (* at top where easy to change *)
+
+(* code to obtain and check value against range *);
+
+<!--<-->&lt;* RangeCheck := <B>FALSE</B> *<!-->&gt;
+(* code in which a range error cannot occur *)
+<!--<-->&lt;* RangeCheck := <B>TRUE</B> *<!-->&gt;
+
+<!--<-->&lt;* <B>PUSH</B> IndexCheck *<!-->&gt;  (* save current value *)
+
+(* code to obtain and check index *);
+
+<!--<-->&lt;* <B>IF</B> dangerous
+  <B>THEN</B>
+    IndexCheck := <B>FALSE</B>
+  <B>END</B> *<!-->&gt;
+
+(* code in which an index error cannot occur *)
+
+<!--<-->&lt;* <B>PULL</B> IndexCheck *<!-->&gt; (* restore old value *)
+
+<B>END</B> Versatile.</PRE>
+<H3><B><A NAME="11.5.2">11.5.2</A> Compiling For Specified Environments</B></H3>
+<P>Some implementations also allow the compiler to generate code for special circumstances.  For instance, a given operating system may run on one of several different kinds of machine.  Activities such as numerical computations may be done with generic calls to a common software module that is present on all varieties of machine being compiled for.  If the specific target machine being compiled for is known to have a numeric co-processor, the compiler may be able to produce specialized code for that machine.  The advantage is that the specialized code will run much faster on the target machine.  The disadvantage is that it might not run at all on other machines in the same generic group.</P>
+<P>Special cases like these may be handled with either command line directives such as <!--"-->&quot;\80387<!--"-->&quot; or <!--"-->&quot;-coprocessor.<!--"-->&quot;  They may also be handled with pragmas similar to:</P>
+<PRE>
+<!--<-->&lt;* coprocessor := <B>TRUE</B> *<!-->&gt;
+<!--<-->&lt;* powerPC := <B>TRUE</B> *<!-->&gt;</PRE>
+<P>The programmer must decide whether the speed gain is worth the extra trouble and the specialization of the code to only certain models or situations.</P>
+<H3><B><A NAME="11.5.3">11.5.3</A> Fine Tuning Loops</B></H3>
+<P>As observed in chapter 3, much of a program's time is generally spent on the execution of loops.  If a programmer knows how to do it, such sections of code may be speeded up in one or more ways:</P>
+<P>(i) by replacing loops with closed forms where possible</P>
+<P>This possibility was discussed in section 3.8, and the material there should be reviewed.</P>
+<P>(ii) by reducing the number of iterations through the loop</P>
+<P>For instance, consider the simple problem of raising a real number <I>r</I> to a CARDINAL power <I>e</I>.  This could be programmed as:</P>
+<PRE>
+<B>PROCEDURE</B> Power (r: <B>REAL</B>; e: <B>CARDINAL</B>): <B>REAL</B>;
+<B>VAR</B>
+  ans: <B>REAL</B>;
+<B>BEGIN</B>
+  ans := 1.0;
+  <B>WHILE</B> e <!-->&gt; 0 
+    <B>DO</B>
+      ans := ans * r;
+      <B>DEC</B> (e)
+    <B>END</B>;
+  <B>RETURN</B> ans
+<B>END</B> Power;</PRE>
+<P>This perfectly sensible solution steps through the loop <I>e</I> times to produce the answer, but one could do much better.  Observe that once one has r<sup>2</sup>, one can find r<sup>4</sup> by r<sup>2</sup> <!--¥-->* r<sup>2</sup> in one less step than by finding r<sup>3</sup> first.  Then r<sup>8</sup> is  r<sup>4</sup> <!--¥-->* r<sup>4</sup> in one step rather than four.  The key is that <I>e</I> is reduced in powers of two, rather than by one each time, thus causing less time to be spent in the loop.  Here is a more efficient alternative:</P>
+<PRE>
+<B>PROCEDURE</B> Pwr (r: <B>REAL</B>; e: <B>CARDINAL</B>): <B>REAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> e = 0
+    <B>THEN</B> 
+      <B>RETURN</B> 1.0
+    <B>ELSIF</B> e = 1 <B>THEN</B>
+      <B>RETURN</B> r
+    <B>ELSIF</B> <B>ODD</B> (e) <B>THEN</B>
+      <B>RETURN</B> r * Pwr (r, e - 1)
+    <B>ELSE</B>
+      <B>RETURN</B> Pwr (r * r, e <B>DIV</B> 2)
+    <B>END</B>
+<B>END</B> Pwr;</PRE>
+<P>Notice that this is formulated recursively.  To trace the operation of the procedure Pwr, note what happens on each entry to and exit from <I>Pwr</I>, starting, say with</P>
+<P>r = 2.0, e =11</P>
+<i><PRE>Level#	        on entry e =	returns</i>
+	 1		11		2.0 * Pwr (2.0, 10)
+	 2		10		Pwr (4.0, 5)
+	 3		5		4.0 * Pwr (4.0, 4)
+	 4		4		Pwr (16.0, 2)
+	 5		2		Pwr (256.0, 1)
+	 6		1		256.0</PRE>
+<P>The returns, reading back up from the bottom are: 256.0, 256.0, 1024.0, 1024.0 and 2048.0  The code is executed six times instead of the ten times a straightforward loop would take.  Consider a second example, say</P>
+<P>r = 2.0 and e = 17</P>
+<PRE><i>Level #	        on entry e =	returns r =</i>
+	 1		17		2.0 * Pwr (2.0, 16)
+	 2		16		Pwr (4.0, 8)
+	 3		8		Pwr (16.0, 4)
+	 4		4		Pwr (256.0, 2)
+	 5		2		Pwr (65536.0, 1)
+	 6		1		65536.0</PRE>
+<P>Here, the last entry produces 65536.0 which is passed back up the chain to the first step where it is doubled and 131072.0 is returned as the final result.  The savings (6 steps instead of 16) are rather more dramatic, and the difference become larger as e increases.  For instance, for e equal to 1000, the successive values of e on entry are 1000, 500, 250, 125, 124, 62, 31, 30, 15, 14, 7, 6, 3, 2, and 1 for a total of 15 steps, instead of 999.</P>
+<P>(iii) by replacing loops written in Modula-2 with machine language instructions.</P>
+<P>This solution is not encouraged in many versions of Modula-2, as the language is designed with enough low level facilities to make machine language intervention unnecessary (supposedly) in most cases.  Neither is there any standard way to incorporate machine language instructions to an assembler directly in a Modula-2 program, though a non-standard extension might be available.  Usually this comes in the form of a CODE procedure, or other in-line native code generating methods.  Some programming environments will have such facilities, but their use will vary from machine to machine, and those who believe they can code machine language more efficiently than can the compiler they are using will have to consult the implementation manuals because the ISO committe declined to standardize any particular such facility.</P>
+<P>(iv) by moving code that repeats an identical calculation outside the loop</P>
+<P>This was discussed briefly in Chapter 3 as well, but deserves a more extended treatment, as this kind of problem is not often caused by a simple statement misplacement, but is usually more subtle.</P>
+<P>If code contains a line such as </P>
+<PRE>
+<B>FOR</B> row := 1 <B>TO</B> <B>HIGH</B> (array)
+  <B>DO</B>
+    some stuff
+  <B>END</B>;</PRE>
+<P>the calculation of the value of HIGH (array) is only done once, at the beginning of the loop, and the current value of count is compared to the previously computed value of HIGH (array) on each iteration.  Thus, there is no advantage to computing HIGH (array) and saving it in a variable before entering the loop.  However, it is easy to neglect that there is such an advantage if this loop is nested inside another one.  Thus:</P>
+<PRE>
+<B>FOR</B> row := 1 <B>TO</B> <B>HIGH</B> (array)
+  <B>DO</B>
+    <B>FOR</B> col := 1 <B>TO</B> <B>HIGH</B> (array [0])
+      <B>DO</B>
+       some stuff
+      <B>END</B>;
+  <B>END</B>;</PRE>
+<P>is not efficient, because the calculation of HIGH (array [0]) for the inner loop is done on each iteration of the outer loop.  This code should be replaced by:</P>
+<PRE>
+colMax := <B>HIGH</B> (array [0]);
+<B>FOR</B> row := 1 <B>TO</B> <B>HIGH</B> (array)
+  <B>DO</B>
+    <B>FOR</B> col := 1 <B>TO</B> colMax
+      <B>DO</B>
+       some stuff
+      <B>END</B>;
+  <B>END</B>;</PRE>
+<P>Similarly, code such as</P>
+<PRE>
+<B>FOR</B> count := min <B>TO</B> max
+  <B>DO</B>
+    <B>IF</B> num := <B>LENGTH</B> (str)
+      <B>THEN</B>
+        do something
+      <B>END</B>;
+  <B>END</B>;</PRE>
+<P>causes the (possibly lengthy) computation of LENGTH (str) on each pass and should be replaced by:</P>
+<PRE>
+len := <B>LENGTH</B> (str);
+<B>FOR</B> count := min <B>TO</B> max
+  <B>DO</B>
+    <B>IF</B> num := len
+      <B>THEN</B>
+        do something
+      <B>END</B>;
+  <B>END</B>;</PRE>
+<P>Similar considerations may apply to the results of any procedure call (whether a pervasive procedure or one defined by the user) contained inside a loop.  Moving the call to a point prior to the loop may save a great deal of unnecessary machine time.</P>
+<P>(v) Use the most efficient language construction available</P>
+<H3><B>Examples:</B> (most of these noted previously)</H3>
+<UL><!--€--><LI> INC(n, d) is usually faster than n := n + d (unless the compiler optimizes the latter)</LI>
+<!--€--><LI> a CASE statement (where applicable) can be expected to be faster than an equivalent IF statement.</LI>
+<!--€--><LI> Logical operations such as comparisons are faster than arithmetic operations</LI>
+<!--€--><LI> aliasing data with variable parameters is faster (but more error prone) than copying them using value parameters.</LI></UL>
+<P>While not usually recommended, this might be the best approach when the parameter is a large array, for the copying needed to use value parameters might consume an excessive amount of running time.</P>
+<P>(vi) Try <i>unrolling</i> some loops such as</P>
+<PRE>
+<b>WHILE</b> count < 1000
+  <b>DO</b>
+    statement sequence;
+    <b>INC</b> (count)
+  <b>END;</b></PRE>
+<P><i>may</i> in some cases run much faster if the loop is unrolled somewhat by putting two steps inside the loop:</P>
+<PRE>
+<b>WHILE</b> count < 1000
+  <b>DO</b>
+    statement sequence;
+    <b>INC</b> (count);
+    <b>IF</b> count < 1000
+      <b>THEN</b>
+        statement sequence (* same one as above *)
+        <b>INC</b> (count)
+      <b>END</b>
+  <b>END;</b></PRE>
+<P>because the IF inside the loop may execute more efficiently than the code for re-entering the loop itself, particularly if the statement sequence is long, the number of iterations high, or the loop condition complex.  Whether this is so or not is highly implementation dependent, but it is worth trying when it is necessary to squeeze out every drop of speed.</P>
+<P>(vii) buy an optimizing compiler</P>
+<P>Some compilers are capable of examining code for ways to improve the efficiency of what the programmer has written and code it more efficiently.  While this approach can produce some gains, the programmer should not rely on this method to turn bad code into good for the results are likely to be mixed.  (One may get fast code that is still bad.)</P>
+<H3><B><A NAME="11.5.4">11.5.4</A> Linking, Program Libraries and Speed</B></H3>
+<P>Implementations follow a variety of strategies when it comes to preparing the final running executable code.  Usually, a file containing only the code from the program module is generated when the compiler is run.  In some systems, there is an option to run this code at this point, and when this is done, all the segments of code from the various libraries that have been imported from must be loaded before the program is run.  This may be rather slow.  If the programmer is prepared to take a little more time initially to link those code segments into a single file (called an executable file,) each run may proceed more quickly.  In some systems, no execution is possible until this linking step is performed.</P>
+<P>However, there may be also a facility called a library manager that will allow separate library modules to be collected into a single file known as a library.  Implementations vary greatly, but where library managers exist, they often allow the linking step to be performed more quickly than otherwise, because only one file needs to be searched for the various modules needed for a program rather than several.</P>
+<BLOCKQUOTE><I><A NAME="Library">A</A> collection of the code of two or more modules into a single file for the use by one or more programs is called a <U>program library</U>.</I></BLOCKQUOTE>
+<P>Sometimes the concept is included to incorporate the program module itself into the program library, and in that case the library manager essentially serves the role of linker, and the finished program library is the executable file.</P>
+<P>If an option is available, it may be wise not to link until necessary, for linking duplicates the code from the various libraries into the executable file.  However, the final program needs these libraries, and if it is to be distributed to others who may not have them, it will probably be necessary to link it eventually.</P>
+<P>Also, note that some linkers are better than others.  The least efficient will incorporate all the code from each imported library into the final product, whether it is all used or not.  The more efficient can not only decline to copy unnecessary code, but can even arrange the various parts it does use for optimal efficiency.  The best of such tools are known as <I>optimizing linkers</I>.</P>
+<H3><B><A NAME="11.5.5">11.5.5</A> Efficiency<!--</B>‹<B>-->--A Summary</B></H3>
+<P>A budding programmer, might object that some of these considerations and techniques are too abstract and rather full of trickery.  The only reasonable response to such an objection would be to point out that the programmer is supposed to be smarter than the machine<!--‹-->--if short cuts exist, it is the more intelligent of the two partners who is going to discover them.</P>
+<P>While on the subject of efficiency, one should note the following rather useful maxim:</P>
+<BLOCKQUOTE><I>Do not become <U>overly</U> concerned with efficiency because correctness is more important than speed.</I></BLOCKQUOTE>
+<P><!--‹-->--a special case of the more general law:</P>
+<BLOCKQUOTE><I>If it works, don't fix it.</I></BLOCKQUOTE>
+<P>The illustrations provided here show that a little innovation can go a long way, if speed is a problem.  A minimal amount of effort may improve program speed by 50% or more.  However, at some point there will be a diminishing return<!--‹-->--a further doubling of programming time may produce no more than a 10% gain in efficiency.  So, a programmer needs to be somewhat concerned with efficiency, but also aware of the trade-off between programming time and running time. Some effort may produce very large gains, but much additional effort only a small gain.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

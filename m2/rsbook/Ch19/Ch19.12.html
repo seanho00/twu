@@ -1,0 +1,160 @@
+<HTML><HEAD><TITLE>19.12 Example Outline--Personnel Records</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Personnel Records">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.12 Example Outline<!--‹-->--Personnel Records</b></H2>
+
+<P>One of the things computers spend most of their time doing is keeping track of various types of business records. These come in a wide variety of different forms, but often have many elements in common. For instance, in a university environment, every member of the community comes attached to  such information as their name, birthdate, address, and sex. Students major or minor in a discipline, take courses, and generate a variety of other data exclusive to them. Others are employees, with certain data common to all of them, but falling into the two broad categories of staff and faculty, each with data not shared by the others. A sketch of a partial design for the data structures is shown in figure 19.3.</P>
+
+<CENTER><IMG SRC="Figure/figure19.3.GIF" BORDER="1"></CENTER><!---->
+<P>The base class for personnel data does not inherit from such classes as address, but it does make use of them in its own structures. When doing so, a class has to create the instances it needs of any other classes when it initializes. If the class were unsafeguarded, it should dispose of the subsidiary objects in its destructor. What follows is an outline of some of the code. It is far from complete, (no methods have been included), and is intended to show only some of the relationships among the classes and types of data needed. In addition, the class <i>CommonInfo</i> illustrates the correct positioning of an exception handler for a class body.</P>
+
+<PRE><b>MODULE</b> URecords;
+
+(* a rough sketch of some University record keeping classes
+  to demonstrate class design 
+  by R. Sutcliffe 1998 10 05 *)
+  
+<b>FROM</b> Dates <b>IMPORT</b> Date;
+
+<b>TRACED</b> <b>CLASS</b> Address;
+  <b>REVEAL</b> SetAddress, WriteAddress;
+  <b>VAR</b>
+    street1, street2, town, country : <b>ARRAY</b> [0..20] <b>OF</b> <b>CHAR</b>;
+    code : <b>ARRAY</b> [0..10] <b>OF</b> <b>CHAR</b>;
+  <b>PROCEDURE</b> SetAddress;
+  (* code to do so *)
+  <b>END</b> SetAddress;
+
+  <b>PROCEDURE</b> WriteAddress;
+  (* code to do so *)
+  <b>END</b> WriteAddress;
+
+  <b>END</b> Address;
+  
+(* the base information class common to everybody *)
+<b>TRACED</b> <b>CLASS</b> CommonInfo;
+  <b>REVEAL</b> birthDate, adr, sin, sex;
+  <b>VAR</b>
+    birthDate : Date;
+    adr : Address;
+    sin : <b>CARDINAL</b>;
+    sex : <b>BOOLEAN</b>;
+    (* methods *)
+  <b>BEGIN</b>
+    <b>CREATE</b> (birthDate);
+    <b>CREATE</b> (adr);
+    (* if untraced, these have to be destroyed in finally clause *)
+  <b>EXCEPT</b>
+  (* exception handling goes here if necessary *)
+  <b>END</b> CommonInfo;
+
+(* the base class for all employees *)
+<b>TRACED</b> <b>CLASS</b> Employee;
+  <b>INHERIT</b> CommonInfo;
+  <b>REVEAL</b> department; (* and whatever *)
+  <b>VAR</b>
+    department : <b>ARRAY</b> [0..20] <b>OF</b> <b>CHAR</b>;
+    startDate : Date;
+    salary : <b>REAL</b>;
+    bankName : <b>ARRAY</b> [0..15] <b>OF</b> <b>CHAR</b>;
+    fullTime : <b>BOOLEAN</b>;
+    (* methods *)
+  <b>BEGIN</b>
+    <b>CREATE</b> (startDate);
+    (* if untraced, has to be destroyed in finally clause *)
+  <b>END</b> Employee;
+  
+(* specialized employee classes *)
+<b>TRACED</b> <b>CLASS</b> FacultyMember;
+  <b>INHERIT</b> Employee;
+  <b>REVEAL</b> rank; (* and whatever *)
+  <b>VAR</b>
+    rank, faculty : <b>ARRAY</b> [0..20] <b>OF</b> <b>CHAR</b>;
+    (* methods *)
+  <b>END</b> FacultyMember;
+
+<b>TRACED</b> <b>CLASS</b> StaffMember;
+  <b>INHERIT</b> Employee;
+  <b>REVEAL</b> jobTitle; (* and whatever *)
+  <b>VAR</b>
+    jobTitle : <b>ARRAY</b> [0..20] <b>OF</b> <b>CHAR</b>;
+    supervisor : StaffMember;
+    (* methods *)
+  <b>END</b> StaffMember;
+
+(* data types for courses and schedules *)
+<b>TYPE</b>
+  DayAbbrev = (M, T, W, R, F, S); (* no sunday classes *)
+  DaySet = <b>SET</b> <b>OF</b> DayAbbrev;
+  
+<b>TRACED</b> <b>CLASS</b> Course;
+  <b>VAR</b>
+    dept : <b>ARRAY</b> [0..3] <b>OF</b> <b>CHAR</b>;
+    courseNum : [1..999];
+    credits : [0..3]; (* needs a fix if half credits allowed *)
+    startDate, endDate : Date;
+    daysOffered : DaySet;
+    (* need times too *)
+    
+  <b>BEGIN</b>    
+    <b>CREATE</b> (startDate);
+    <b>CREATE</b> (endDate);
+
+  <b>END</b> Course;
+
+<b>TRACED</b> <b>CLASS</b> Schedule;
+  <b>VAR</b>
+    indivSchedule : <b>ARRAY</b> [0..10] <b>OF</b> Course;
+  (* methods *)
+  <b>END</b> Schedule;
+
+<b>TRACED</b> <b>CLASS</b> Student;
+  <b>INHERIT</b> CommonInfo;
+  <b>REVEAL</b> major; (* and more *)
+  <b>VAR</b>
+    major : <b>ARRAY</b> [0..20] <b>OF</b> <b>CHAR</b>;
+    year : (freshman, sophomore, junior, senior);
+    sched : Schedule;
+    (* info and methods *)
+  
+  <b>END</b> Student;
+
+<b>END</b> URecords.</PRE>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

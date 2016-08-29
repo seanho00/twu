@@ -1,0 +1,693 @@
+<HTML><HEAD><TITLE>14.8 An Extended Example--A Binary Search Tree</TITLE>
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Binary Search Tree">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>14.8 An Extended Example<!--</B>‹<B>-->--A Binary Search Tree</B></H2>
+<P>As in previous examples, the concern here will not be with the data to be placed in the tree, but with the mechanism for implementing the tree structure itself.  This can be done in the same semi-generic fashion as in other examples in the text.  Since there is already on hand (in the form of the module <I>Countries</I>) a suitable data type, the module here is called <I>CountryBinaryTree</I>.  The usual minor renaming is needed to use any other ADT in the place of <I>Country</I>.</P>
+<P>In this version, the three kinds of traverse are distinguished via an enumeration, a parameter of which type must be passed to determine which traverse to perform with the procedure acting on the data items.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> CountryBinaryTree;
+
+(* semi-generic tree type
+by R. Sutcliffe   last modified 1995 06 07 *)
+
+<B>FROM</B> Countries <B>IMPORT</B>
+  Country, KeyType, ActionProc;
+
+<B>TYPE</B>
+  DataType = Country; (* change this line and import as needed *)
+  TreeState = (allRight, empty, entreeFailed, notFound, bad);
+  BinaryTree;  (* opaque type *)
+  TraverseOrder = (in, pre, post);
+
+<B>PROCEDURE</B> TreeStatus (t : BinaryTree) : TreeState;
+(* Pre : t is a valid initialized table
+   Post : The State of the tree is returned *)
+
+<B>PROCEDURE</B> Create (<B>VAR</B> t : BinaryTree);
+(* Pre : none
+   Post : t is a newly created empty tree.*)
+
+<B>PROCEDURE</B> Insert (t : BinaryTree; data : DataType);
+(* Pre : t is a valid initialized tree
+   Post : memory is obtained and data has been entreed in the proper place for a binary tree using the <B>ADT</B> compare procedure and the state of the tree is allRight or the entreeing failed and the state is entreeFailed. *)
+
+<B>PROCEDURE</B> Fetch (t : BinaryTree; key : KeyType; <B>VAR</B> data : DataType);
+(* Pre : t is a valid initialized tree
+   Post : data matching key is returned in data and the state of the tree is allRight or the fetch failed and the state is notFound. *)
+
+<B>PROCEDURE</B> Update (t : BinaryTree; data : DataType);
+(* Pre : t is a valid initialized tree
+   Post : data matching the key of the data is updated in the tree and the state of the tree is allRight or the update failed and the state is notFound. *)
+
+<B>PROCEDURE</B> Remove (t : BinaryTree; key : KeyType; <B>VAR</B> data : DataType);
+(* Pre : t is a valid initialized tree
+   Post : data matching key has been removed and returned in data (not disposed of) and the state of the tree is allRight or the removal failed and the state is notFound. *)
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> t : BinaryTree);
+(* Pre : t is a valid initialized tree
+   Post : the tree memory is returned and the variable is invalid 
+   and the memory associated with the items in the tree is removed by calling the <B>ADT</B> module dispose procedure. *)
+
+
+<B>PROCEDURE</B> Traverse (t : BinaryTree; Proc : ActionProc; order : TraverseOrder);
+(* Pre : t is a valid initialized tree
+   Post : the table items are traversed in the order given and Proc is performed on each one. *)
+
+<B>END</B> CountryBinaryTree.</PRE>
+<P>When this was implemented, a number of local procedures were developed, most of which act on nodes rather than on the data in the nodes.  Such actions need to be hidden from the outside world, and separating them even from the abstract (and somewhat generic) procedures that handle data is recommended.  The reader should note that insertion of new items always takes place at a leaf, but deletion at other than a leaf position is rather complex.  If the node to be deleted has only one subtree hanging from it, then that subtree can be drawn up to take its place, as shown in figure 14.6.</P>
+<P><CENTER><IMG SRC="Figure/Figure_14.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>If the deletion is at an interior node (a position with two children), one first finds the predecessor node (in the in order sense, not in the tree structure sense).  This node will always be a leaf (why?), and can be found by looking at the left child of the starting node, then going right as far as possible.  This predecessor node has its data swapped with the target node, and then the predecessor leaf node is deleted.  (This is not the only possible strategy.)  For instance, if in the tree on the left of figure 14.6 the node with the data 4 (happens to be the root) were to be deleted, its in order predecessor (go left, then take as many rights as possible) is 3, which is swapped with the 4, and its node deleted, resulting in the structure shown in figure 14.7.</P>
+<P><CENTER><IMG SRC="Figure/Figure_14.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>Here is the implementation of the binary tree, with the specific imports for this same data type.  To change the implementation, just change the name of this module and of the ADT module being imported from (write it first) appropriately; nothing else needs to be altered.</P>
+<PRE>
+<A NAME="CountryBinaryTree"></A><B>IMPLEMENTATION</B> <B>MODULE</B> CountryBinaryTree;
+
+(* semi-generic tree type
+by R. Sutcliffe   last modified 1995 06 07 *)
+
+<B>FROM</B> Countries <B>IMPORT</B>
+  Country, KeyType, ActionProc, Compare, GetKey, Assign, New, Valid, Dispose;
+<B>FROM</B> Storage <B>IMPORT</B>
+  <B>ALLOCATE</B>, <B>DEALLOCATE</B>;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar;
+<B>FROM</B> Strings <B>IMPORT</B>
+  CompareResults;
+
+<B>TYPE</B>
+  NodePointer = <B>POINTER</B> <B>TO</B> TreeNode;
+  TreeNode =
+    <B>RECORD</B>
+      item : DataType;
+    leftPoint, rightPoint, parent : NodePointer;
+    <B>END</B>;
+  BinaryTree = <B>POINTER</B> <B>TO</B> TreeData;
+  TreeData =
+    <B>RECORD</B>
+    root : NodePointer;
+    state : TreeState;
+  <B>END</B>;
+  NodeProc = <B>PROCEDURE</B> (NodePointer);
+  
+  (* TreeState = (allRight, empty, entableFailed, notFound, bad); *)
+
+(* Here is a collection of local procs used in this module *)
+
+<B>PROCEDURE</B> MakeNode () : NodePointer;
+<B>VAR</B>
+  temp : NodePointer;
+<B>BEGIN</B>
+  <B>NEW</B> (temp); (* get node memory *)
+  <B>IF</B> temp # <B>NIL</B>
+    <B>THEN</B>
+      New (temp^.item);  (* node <B>OK</B> so get data value memory *)
+      <B>IF</B> <B>NOT</B> Valid (temp^.item)
+        <B>THEN</B> (* failed so return <B>NIL</B> *)
+          <B>DISPOSE</B> (temp);
+        <B>END</B>;
+    <B>END</B>;
+  <B>RETURN</B> temp;
+<B>END</B> MakeNode;
+
+<B>PROCEDURE</B> InsertNode (<B>VAR</B> root : NodePointer; newNode : NodePointer);
+<B>VAR</B>
+  point : NodePointer;
+  done : <B>BOOLEAN</B>;
+<B>BEGIN</B>
+  <B>IF</B> root = <B>NIL</B>
+  <B>THEN</B> (* first item *)
+    root := newNode;
+    newNode^.parent := <B>NIL</B>;
+  <B>ELSE</B>
+    point := root;
+    done := <B>FALSE</B>;
+    <B>REPEAT</B>
+      <B>IF</B> Compare(GetKey(newNode^.item),GetKey (point^.item)) = greater
+        <B>THEN</B>
+          <B>IF</B> point^.rightPoint = <B>NIL</B> (* at end *)
+            <B>THEN</B>
+              point^.rightPoint := newNode;
+              done := <B>TRUE</B>;
+            <B>ELSE</B>
+              point := point^.rightPoint
+            <B>END</B>; (* if point *)
+        <B>ELSE</B> (* less or equal *)
+          <B>IF</B> point^.leftPoint = <B>NIL</B> (* at end *)
+            <B>THEN</B>
+              point^.leftPoint := newNode;
+              done := <B>TRUE</B>;
+            <B>ELSE</B>
+              point := point^.leftPoint
+            <B>END</B>; (* if point *)
+        <B>END</B>; (* if compare *)
+    <B>UNTIL</B> done;
+    newNode^.parent := point;
+  <B>END</B>; (* if root *)
+<B>END</B> InsertNode;
+
+<B>PROCEDURE</B> Find (root : NodePointer; key : KeyType; <B>VAR</B> point : NodePointer);
+(* get a pointer to the node belonging to the key. Returns <B>NIL</B> if not found *)
+<B>BEGIN</B>
+  <B>IF</B> (root = <B>NIL</B>) (* recursion trapdoor *)
+      <B>OR</B>  (Compare (key, GetKey (root^.item)) = equal) (* got it *)
+    <B>THEN</B>
+      point := root;
+      <B>RETURN</B>;
+    <B>END</B>; (* if root *)
+  Find (root^.leftPoint, key, point);
+  (* if we get it, we don't want to look to the right at all *)
+  <B>IF</B> point = <B>NIL</B> (* not found yet *)
+    <B>THEN</B>
+      Find (root^.rightPoint, key, point);
+    <B>END</B>; (* if point *)
+<B>END</B> Find;
+
+<B>PROCEDURE</B> InOrderPredPoint (node: NodePointer) : NodePointer;
+  (* Find pointer to Inorder predecessor, i.e. to the rightmost node in left subtree 
+  Pre: the node has a left child 
+  Post: a pointer to its in order predecessor leaf is returned *)
+<B>VAR</B>
+  pred : NodePointer;
+<B>BEGIN</B>
+  pred := node^.leftPoint; (* one left *)
+  <B>WHILE</B> pred^.rightPoint # <B>NIL</B>
+    <B>DO</B>  (* go as far right as possible *)
+      pred := pred^.rightPoint;
+    <B>END</B>; (* while *)
+  <B>RETURN</B> pred;
+<B>END</B> InOrderPredPoint;
+
+<B>PROCEDURE</B> SwapNodeVal (<B>VAR</B> a, b : NodePointer);
+<B>VAR</B> 
+  temp : DataType;
+<B>BEGIN</B>
+  temp := a^.item;
+  a^.item := b^.item;
+  b^.item := temp
+<B>END</B> SwapNodeVal;
+
+<B>PROCEDURE</B> Delete (t : BinaryTree; node : NodePointer);
+(* delete a node *)
+<B>VAR</B>
+  temp : NodePointer;
+<B>BEGIN</B>
+  temp := node;
+  <B>IF</B> temp^.leftPoint = <B>NIL</B>
+    <B>THEN</B> (* empty left branch *)
+      <B>IF</B> temp^.rightPoint = <B>NIL</B> (* I am a leaf *)
+        <B>THEN</B>
+          <B>IF</B> temp^.parent = <B>NIL</B> (* I am root too *)
+            <B>THEN</B>
+              t^.root := <B>NIL</B>;
+            <B>ELSE</B> (* just leaf *)
+              <B>IF</B> temp^.parent^.leftPoint = temp
+                <B>THEN</B>
+                  temp^.parent^.leftPoint := <B>NIL</B>
+                <B>ELSE</B>
+                  temp^.parent^.rightPoint := <B>NIL</B>
+                <B>END</B>; 
+            <B>END</B>;
+          KillNode (temp);
+          <B>RETURN</B>;
+        <B>ELSE</B> (* not a leaf so pull up right subtree *)
+          node := node^.rightPoint;
+          KillNode (temp);
+          <B>RETURN</B>;
+        <B>END</B>;
+    <B>ELSIF</B> temp^.rightPoint = <B>NIL</B> <B>THEN</B> (* empty right branch *)
+      node := node^.leftPoint; (* so pull up left subtree *)
+      KillNode (temp);
+      <B>RETURN</B>;
+    <B>ELSE</B> (* no branch empty, find inorder predecessor *)
+      temp := InOrderPredPoint (node);
+      SwapNodeVal (node, temp);
+      Delete (t, temp);   (* recursively remove node swapped *)   
+  <B>END</B>; (* if *)
+<B>END</B> Delete;
+
+<B>PROCEDURE</B> KillNode (<B>VAR</B> node : NodePointer);
+(* give back all memory associated with node *)
+<B>BEGIN</B>
+  <B>IF</B> node # <B>NIL</B>
+    <B>THEN</B>
+      Dispose (node^.item);
+      <B>DISPOSE</B> (node);
+    <B>END</B>;
+<B>END</B> KillNode;
+
+<B>PROCEDURE</B> Erase (<B>VAR</B> r : NodePointer);
+(* Pre: r is the root of a subtree
+   Post: recursive post traverse killing all nodes *)
+<B>BEGIN</B>
+  <B>IF</B> r # <B>NIL</B>
+    <B>THEN</B> 
+       Erase (r^.leftPoint);
+       Erase (r^.rightPoint);
+      KillNode (r);
+    <B>END</B>;
+<B>END</B> Erase;
+
+(* end local procs *)
+
+<B>PROCEDURE</B> TreeStatus (t : BinaryTree) : TreeState;
+<B>BEGIN</B>
+  <B>IF</B> t # <B>NIL</B>
+    <B>THEN</B>
+      <B>RETURN</B> t^.state;
+    <B>ELSE</B>
+      <B>RETURN</B> bad;
+    <B>END</B>;
+<B>END</B> TreeStatus;
+
+<B>PROCEDURE</B> Create (<B>VAR</B> t : BinaryTree);
+<B>BEGIN</B>
+  <B>NEW</B> (t);
+  t^.root := <B>NIL</B>;
+  t^.state := empty; 
+<B>END</B> Create;
+
+<B>PROCEDURE</B> Insert (t : BinaryTree; data : DataType);
+<B>VAR</B>
+  temp : NodePointer;
+  state : TreeState;
+<B>BEGIN</B>
+  state := TreeStatus (t);
+  <B>IF</B> (state = bad) <B>OR</B> (state = entreeFailed)
+    <B>THEN</B>
+      t^.state := entreeFailed;
+      <B>RETURN</B>
+    <B>END</B>;
+  temp := MakeNode ();  (* status ok so get node memory *)
+  <B>IF</B> temp = <B>NIL</B>
+    <B>THEN</B>
+      t^.state := entreeFailed;
+      <B>RETURN</B>
+    <B>END</B>;
+   (* all <B>OK</B> so put it together *)
+  Assign (data, temp^.item); (* move data value in *)
+  temp^.leftPoint := <B>NIL</B>;  (* always adding a leaf *)
+  temp^.rightPoint := <B>NIL</B>;
+  InsertNode (t^.root, temp);
+  t^.state := allRight;
+<B>END</B> Insert;
+
+<B>PROCEDURE</B> Fetch (t : BinaryTree; key : KeyType; <B>VAR</B> data : DataType);
+<B>VAR</B>
+  point : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> t = <B>NIL</B>
+    <B>THEN</B>
+      t^.state := bad;
+      <B>RETURN</B>
+    <B>ELSE</B>
+      Find (t^.root, key, point);
+      <B>IF</B> point = <B>NIL</B>
+        <B>THEN</B>
+          t^.state := notFound;
+        <B>ELSE</B>
+          t^.state := allRight;
+          data := point^.item;
+        <B>END</B>; (* if point *)
+    <B>END</B>; (* if t *)
+<B>END</B> Fetch;
+  
+<B>PROCEDURE</B> Update (t : BinaryTree; data : DataType);
+<B>VAR</B>
+  point : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> t = <B>NIL</B>
+    <B>THEN</B>
+      t^.state := notFound;
+      <B>RETURN</B>
+    <B>ELSE</B>
+      Find (t^.root, GetKey (data), point);
+      <B>IF</B> point # <B>NIL</B>
+        <B>THEN</B>
+          t^.state := allRight;
+          point^.item := data;
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> Update;
+
+<B>PROCEDURE</B> Remove (t : BinaryTree; key : KeyType; <B>VAR</B> data : DataType);
+<B>VAR</B>
+  point : NodePointer;
+<B>BEGIN</B>
+  <B>IF</B> t = <B>NIL</B>
+    <B>THEN</B>
+      t^.state := bad;
+      <B>RETURN</B>
+    <B>ELSE</B>
+      Find (t^.root, key, point);
+      <B>IF</B> point = <B>NIL</B>
+        <B>THEN</B>
+          t^.state := notFound;
+        <B>ELSE</B>
+          t^.state := allRight;
+          data := point^.item;
+          Delete (t, point);
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> Remove;
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> t : BinaryTree);
+<B>BEGIN</B>
+  Erase (t^.root);  (* all nodes *)
+  <B>DISPOSE</B> (t); (* tree data *)
+<B>END</B> Destroy;
+
+(* local procs: three ways to traverse a sub-tree *)
+
+<B>PROCEDURE</B> InTraverse (r : NodePointer; Proc : ActionProc);
+<B>BEGIN</B>
+  <B>IF</B> r = <B>NIL</B>  (* recursion trap door *)
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  InTraverse (r^.leftPoint, Proc);
+  Proc (r^.item);
+  InTraverse (r^.rightPoint, Proc);
+<B>END</B> InTraverse;
+
+<B>PROCEDURE</B> PreTraverse (r : NodePointer; Proc : ActionProc);
+<B>BEGIN</B>
+  <B>IF</B> r = <B>NIL</B>  (* recursion trap door *)
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  Proc (r^.item);
+  PreTraverse (r^.leftPoint, Proc);
+  PreTraverse (r^.rightPoint, Proc);
+<B>END</B> PreTraverse;
+
+<B>PROCEDURE</B> PostTraverse (r : NodePointer; Proc : ActionProc);
+<B>BEGIN</B>
+  <B>IF</B> r = <B>NIL</B>  (* recursion trap door *)
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  PostTraverse (r^.leftPoint, Proc);
+  PostTraverse (r^.rightPoint, Proc);
+  Proc (r^.item);
+<B>END</B> PostTraverse;
+
+(* end local procs *)
+
+<B>PROCEDURE</B> Traverse (t : BinaryTree; Proc : ActionProc; order : TraverseOrder);
+<B>BEGIN</B>
+  <B>IF</B> t = <B>NIL</B>
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  <B>CASE</B> order <B>OF</B>
+    in:
+    InTraverse (t^.root, Proc) |
+    pre:
+    PreTraverse (t^.root, Proc) |
+    post:
+    PostTraverse (t^.root, Proc) 
+  <B>END</B>;    
+<B>END</B> Traverse;
+
+<B>END</B> CountryBinaryTree.</PRE>
+<P>As before, a simple test harness is provided.  In order to ensure that all aspects of the library were tested, it contains (in, pre, and post) procedures to traverse the tree and to write out enough of the data from the items being entreed to ensure that the structure is correctly maintained.</P>
+<P>This module is in the style favoured by some that employs only unqualified import.  As can readily be seen, such a style tends to become cumbersome as the module names grow.</P>
+<PRE>
+<B>MODULE</B> TestCountryBinaryTree;
+
+(* program to test the logic of the Tree library with countries and their gnp 
+by R. Sutcliffe   modified 1995 06 01 *)
+
+<B>IMPORT</B>
+  Countries, CountryBinaryTree, STextIO, SWholeIO;
+  
+<B>VAR</B>
+  Tree : CountryBinaryTree.BinaryTree;
+  country, fetched : Countries.Country;
+  str : Countries.KeyType;
+  num : Countries.FieldType;
+  gotIt : <B>BOOLEAN</B>;
+
+<B>PROCEDURE</B> WriteCountryName (c : Countries.Country);
+<B>BEGIN</B>
+  STextIO.WriteString (Countries.GetKey (c));
+  STextIO.WriteChar (<!--"-->&quot; <!--"-->&quot;);
+<B>END</B> WriteCountryName;
+
+<B>PROCEDURE</B> WriteTree;  (* all data *)
+<B>BEGIN</B>
+  CountryBinaryTree.Traverse (Tree, Countries.WriteCountryData, CountryBinaryTree.in);
+<B>END</B> WriteTree;
+
+(* these three just write the names *)
+
+<B>PROCEDURE</B> WriteTreeIn;
+<B>BEGIN</B>
+  CountryBinaryTree.Traverse (Tree, WriteCountryName, CountryBinaryTree.in);
+<B>END</B> WriteTreeIn;
+
+<B>PROCEDURE</B> WriteTreePre;
+<B>BEGIN</B>
+  CountryBinaryTree.Traverse (Tree, WriteCountryName, CountryBinaryTree.pre);
+<B>END</B> WriteTreePre;
+
+<B>PROCEDURE</B> WriteTreePost;
+<B>BEGIN</B>
+  CountryBinaryTree.Traverse (Tree, WriteCountryName, CountryBinaryTree.post);
+<B>END</B> WriteTreePost;
+
+<B>PROCEDURE</B> WriteTreeAll;
+<B>BEGIN</B>
+  STextIO.WriteString (<!--"-->&quot;InOrder  : <!--"-->&quot;);WriteTreeIn; STextIO.WriteLn;
+  STextIO.WriteString (<!--"-->&quot;PreOrder : <!--"-->&quot;);WriteTreePre; STextIO.WriteLn;
+  STextIO.WriteString (<!--"-->&quot;PostOrder: <!--"-->&quot;);WriteTreePost; STextIO.WriteLn;
+<B>END</B> WriteTreeAll;
+
+<B>PROCEDURE</B> TestFetch (name : Countries.KeyType);
+<B>BEGIN</B>
+  CountryBinaryTree.Fetch (Tree, name, fetched);
+  gotIt := (CountryBinaryTree.TreeStatus (Tree) # CountryBinaryTree.notFound);
+  <B>IF</B> gotIt
+    <B>THEN</B>
+      str := Countries.GetKey (fetched);
+      STextIO.WriteString (<!--"-->&quot;Got  <!--"-->&quot;);
+      STextIO.WriteString (str);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;no got <!--"-->&quot;);
+    STextIO.WriteString (name);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+<B>END</B> TestFetch;
+
+<B>BEGIN</B>
+  Countries.New (country);  (* do only once *)
+  CountryBinaryTree.Create (Tree);
+
+     (* test Fetch; should fail *)
+  CountryBinaryTree.Fetch (Tree, <!--"-->&quot;Xanadu<!--"-->&quot;, fetched);
+  gotIt :=
+   (CountryBinaryTree.TreeStatus (Tree) # CountryBinaryTree.notFound);
+  <B>IF</B> gotIt
+    <B>THEN</B>
+      str := Countries.GetKey (fetched);
+      STextIO.WriteString (<!--"-->&quot;Got  <!--"-->&quot;);
+      STextIO.WriteString (str);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;no got Xanadu<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+      (* now get the Tree filled up *)
+  Countries.SetKey (country, <!--"-->&quot;Samovia<!--"-->&quot;);
+  Countries.SetField (country, 13000000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Xanadu<!--"-->&quot;);
+  Countries.SetField (country, 3000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Lundy<!--"-->&quot;);
+  Countries.SetField (country, 42000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Pompey<!--"-->&quot;);
+  Countries.SetField (country, 13000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Alberta<!--"-->&quot;);
+  Countries.SetField (country, 43000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Yesterday<!--"-->&quot;);
+  Countries.SetField (country, 11000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Yahk<!--"-->&quot;);
+  Countries.SetField (country, 3000);
+  CountryBinaryTree.Insert (Tree, country);
+  Countries.SetKey (country, <!--"-->&quot;Toronto<!--"-->&quot;);
+  Countries.SetField (country, 0);
+  CountryBinaryTree.Insert (Tree, country);
+  WriteTreeAll;
+
+     (* test Fetchs *) 
+  TestFetch (<!--"-->&quot;Xanadu<!--"-->&quot;); (* should be ok *)
+  TestFetch (<!--"-->&quot;Pompey<!--"-->&quot;); (* should be ok *)
+  TestFetch (<!--"-->&quot;Canada<!--"-->&quot;); (* should Not be ok *)
+  TestFetch (<!--"-->&quot;Toronto<!--"-->&quot;); (* should be ok *)
+ 
+    (* test update *)
+  STextIO.WriteString (<!--"-->&quot;Before Update<!--"-->&quot;);
+  STextIO.WriteLn;
+  WriteTree;
+  STextIO.WriteLn;
+  Countries.SetField (country, 10);  (* should still be on Toronto *)
+  CountryBinaryTree.Update (Tree, country);
+  STextIO.WriteString (<!--"-->&quot;After Update<!--"-->&quot;);
+  STextIO.WriteLn;
+  WriteTree;
+  STextIO.WriteLn;
+  
+     (* test removes *)
+  CountryBinaryTree.Remove (Tree, <!--"-->&quot;Pompey<!--"-->&quot;, fetched);
+  <B>IF</B> CountryBinaryTree.TreeStatus (Tree) = CountryBinaryTree.allRight
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;removed  Pompey<!--"-->&quot;);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;could not remove Pompey<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+     (* now check to ensure its really gone *)
+  TestFetch (<!--"-->&quot;Pompey<!--"-->&quot;); (* should Not be ok *)
+  STextIO.WriteString (<!--"-->&quot;after Pompey removal:<!--"-->&quot;);
+  STextIO.WriteLn;
+  WriteTreeIn;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+     (* now try to remove something not there *)
+  CountryBinaryTree.Remove (Tree, <!--"-->&quot;Canada<!--"-->&quot;, fetched);
+  <B>IF</B> CountryBinaryTree.TreeStatus (Tree) = CountryBinaryTree.allRight
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;removed  Canada<!--"-->&quot;);
+    <B>ELSE</B>
+     STextIO.WriteString (<!--"-->&quot;could not remove Canada<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+     (* now remove one at an interior node *)
+  CountryBinaryTree.Remove (Tree, <!--"-->&quot;Xanadu<!--"-->&quot;, fetched);
+  <B>IF</B> CountryBinaryTree.TreeStatus (Tree) = CountryBinaryTree.allRight
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;removed  Xanadu<!--"-->&quot;);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;could not remove Xanadu<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+  STextIO.WriteString (<!--"-->&quot;after Xanadu removal <!--"-->&quot;);
+  STextIO.WriteLn;
+  WriteTreeIn;
+  STextIO.WriteLn; STextIO.WriteLn;
+  
+       (* now see if destroy seems to work *)
+  CountryBinaryTree.Destroy (Tree);
+  <B>IF</B> CountryBinaryTree.TreeStatus (Tree) = CountryBinaryTree.bad
+    <B>THEN</B>
+      STextIO.WriteString (<!--"-->&quot;Tree deleted<!--"-->&quot;);
+    <B>ELSE</B>
+      STextIO.WriteString (<!--"-->&quot;could not destroy<!--"-->&quot;);
+    <B>END</B>;
+  STextIO.WriteLn; STextIO.WriteLn;
+
+<B>END</B> TestCountryBinaryTree.</PRE>
+<P>A run of the above test harness yielded the following results.  The reader should check these results against the expected ones.</P>
+<PRE>
+** Run log starts here **
+no got Xanadu
+
+InOrder  : Alberta Lundy Pompey Samovia Toronto Xanadu Yahk Yesterday 
+PreOrder : Samovia Lundy Alberta Pompey Xanadu Toronto Yesterday Yahk 
+PostOrder: Alberta Pompey Lundy Toronto Yahk Yesterday Xanadu Samovia 
+Got  Xanadu
+
+Got  Pompey
+
+no got Canada
+
+Got  Toronto
+
+Before Update
+Alberta                                43000
+Lundy                                  42000
+Pompey                                 13000
+Samovia                             13000000
+Toronto                                    0
+Xanadu                                  3000
+Yahk                                    3000
+Yesterday                              11000
+
+After Update
+Alberta                                43000
+Lundy                                  42000
+Pompey                                 13000
+Samovia                             13000000
+Toronto                                   10
+Xanadu                                  3000
+Yahk                                    3000
+Yesterday                              11000
+
+removed  Pompey
+
+no got Pompey
+
+after Pompey removal:
+Alberta Lundy Samovia Toronto Xanadu Yahk Yesterday 
+
+could not remove Canada
+
+removed  Xanadu
+
+after Xanadu removal 
+Alberta Lundy Samovia Toronto Yahk Yesterday 
+
+Tree deleted</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

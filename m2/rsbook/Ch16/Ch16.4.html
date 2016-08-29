@@ -1,0 +1,156 @@
+<HTML><HEAD><TITLE>16.4 Refining Within a Program Module</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Refining Within a Program Module">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><b>16.4 Refining Within a Program Module</b></H2>
+<P>Besides refining a generic separate module as a refined separate module, it is also possible to refine as a local module. A refining local module is similar to a local module in the sense of the base language, and the rules for local modules given in the base standard apply, with the following change.</P>
+<P>The syntax of a refining local module is even simpler than that of a refining separate module. It consists of the word <i>MODULE</i> followed by the name to be given to the resulting (refined) module, then an equal sign, and then the formal parameter list. To be consistent with the rest of Modula-2, it concludes with an END and a repetition of the name of the module.  This is shown in figure 16.5.</P>
+<P><CENTER><IMG SRC="Figure/Figure_16.5.GIF" WIDTH=504 HEIGHT=198 BORDER="1"></CENTER></P><!---->
+<P>NOTE : The identifier of the generic separate module named in the refining local module declaration must be visible in the scope of the refining local module. This means that it will have to be named in an import statement in the enclosing module</P>
+<P>Refinement of generic separate modules as local modules is similar to refinement as separate modules in that:</P>
+<UL><LI>The parameters of the refining local module must match the parameters of the generic separate module of which it is a refiner.</LI>
+<LI>The export list of a refined local module is the export list specified in the refining local module by which it is refined. The syntax and semantics are those of the base standard.</LI></UL>
+<P>However, there are some differences.  A local module has only one part (not a separate definition and implementation). Thus, the result of refining locally has to be some combination of the results of refining as separate modules. The interpretation of the refinement of a generic separate module as a local module is that:</P>
+<OL><LI><!--1. -->The refinement is the merger of the refinements of the library definition and implementation module pair of the generic separate module (the name of which must be visible at the place of the refinement.)</LI>
+<LI><!--2. -->The list of exports of the refined local module into its surrounding scope is specified in the refining local module. Because these exports may be qualified, two refinements (under different names) of the same generic separate module could both be made in one scope without causing a name clash.</LI>
+<LI><!--3. -->Such a merger only makes sense if the parameter lists of the definition and implementation parts of the generic separate module are the same, and this is one of the reasons why the standards committee adopted this rule.</LI>
+<LI><!--4. -->If the implementation part of a generic separate module contains a refining local module, that refining local module cannot refine from the same generic separate module in which it is contained‹whether directly or indirectly. That is, recursive refinement is not permitted.</LI>
+<LI><!--5. -->The translator shall be able to detect a new syntax error, for it is not possible to use (apart from refinement) items from  a generic separate module directly in another module. For instance, if one were to import for the purpose of local refinement the module Sorts, a use of  Sorts.Quick is invalid.</LI>
+<LI><!--6. -->In such a case, the name Sorts does have to be imported into the scope of the refinement, however. This import provides only the name of the module, not the names of any items in it. The latter must be refined to be used.</LI></OL>
+
+<P><b>Example</B> <B>1</b>: What follows is a sketch of a program client containing two local refinements of the <A HREF="Ch16.2.html#16.2.1Example1">first example</A> in section 16.2.1</P>
+
+<PRE><b>MODULE</b> StackClient;
+<b>IMPORT</b> Stacks; (* the generic name has to be imported *)
+
+<b>TYPE</b>  
+  RecDef =
+    <b>RECORD</b>
+     c : <b>CHAR</b>;
+     i : <b>INTEGER</b>
+    <b>END</b> (* record *);
+            
+<b>MODULE</b> CardStack = Stacks (<b>CARDINAL</b>);
+<b>EXPORT</B> <B>QUALIFIED</b> StackSize, Push, Pop, Empty;
+<b>END</b> CardStack;
+
+<b>MODULE</b> RecStack = Stacks (RecDef);
+<b>EXPORT</b> StackSize, Push, Pop, Empty;
+<b>END</b> RecStack;
+  
+<b>VAR</b>
+  c : <b>CARDINAL</b>;
+  r : RecDef;  
+
+<b>BEGIN</b> (* main *)
+  CardStack.Push (c);
+  Push (r);
+<b>END</b> StackClient.</PRE>
+
+<P>On the one hand, the refinement of the local modules of this module has to export according to the export list in the refiner, and on the other hand it must consist of the merger of the corresponding definition and implementation parts of the generic separate modules. This means, for instance, that the refiner can only export items that are in the definition module of the generic separate module from which it is refining.  However, it can export those items either qualified or unqualified, and it need not export them all.</P>
+
+<P><b>Example</B> <B>2</b>: The generic matrices defined in <A HREF="Ch16.2.html#16.2.1Example2">example 2</A> of section 16.2.1 may be refined locally using literal or constant data established in the main module.</P>
+
+<PRE><b>MODULE</b> Client;
+
+<b>IMPORT</b> Matrix;
+
+  <b>MODULE</b> Mat10x20 = Matrix (10, 20, <b>CARDINAL</b>);
+  <b>EXPORT</B> <B>QUALIFIED</b> TMatrix, Invert;
+  <b>END</b> Mat10x20;
+
+<b>CONST</b>
+  row = 4;
+  col = 6;
+
+  <b>MODULE</b> MatRowXCol = Matrix (row, col, <b>CARDINAL</b>);
+  <b>EXPORT</B> <B>QUALIFIED</b> TMatrix, Invert;
+  <b>END</b> MatRowXCol;
+
+<b>VAR</b>
+  m : Mat10x20.TMatrix;
+  n : MatRowXCol.TMatrix;
+
+<b>BEGIN</b>
+  (*.
+    .
+    .*)
+  Mat10x20.Invert (m);
+  MatRowXCol.Invert (n);
+<b>END</b> Client.</PRE>
+
+<P><b>Example</B> <B>3</b>: Two independent local refinements of the module counter in <A HREF="Ch16.2.html#16.2.1Example5">example 5</A> of section 16.2.1 may be performed, in effect creating two ADT <i>counters</i> both of which are hidden from the program and modifiable only through the refined procedures.</P>
+
+<PRE><b>MODULE</b> NeedsACounter;
+
+<b>IMPORT</b> Counter;
+
+<b>VAR</b>
+  countingCondition1, countingCondition2 : <b>BOOLEAN</b>;
+  
+<b>MODULE</b> Duke = Counter;
+<b>EXPORT</B> <B>QUALIFIED</b> Inc, Reset, Count;
+<b>END</b> Duke;
+
+<b>MODULE</b> Baron = Counter;
+<b>EXPORT</B> <B>QUALIFIED</b> Inc, Reset, Count;
+<b>END</b> Baron;
+
+<b>BEGIN</b> (* main program module *)
+
+<b>IF</b> countingCondition1 
+  <b>THEN</b>
+    Duke.Inc;
+  <b>ELSIF</b> countingCondition2 <b>THEN</b>
+    Baron.Inc;
+  <b>END</b>;
+
+<b>END</b> NeedsACounter.<PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,259 @@
+<HTML>
+<HEAD>
+<TITLE>4.2 Writing and Calling Procedures</TITLE>
+<meta NAME="keywords" CONTENT="Writing, calling, invoke, invoking, procedure, procedures, formal, actual, parameter, list, declare, scope, visibility, entity, entities">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Procedures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>4.2 Writing and Calling Procedures</B></H2>
+<P>A procedure is a miniature of a program in that it may have its own constants, variables and procedures.  In fact, almost anything that can be part of a program module except imports can also be included in a procedure.  Here is the general form:</P>
+<PRE>
+  <B>PROCEDURE</B> NameOfProcedure  ( <!--<-->&lt;parameter list with types <!-->&gt; );
+  <!--<-->&lt; local declarations including local procedures go here <!-->&gt;
+  <B>BEGIN</B>
+    (* statement sequence goes here *);
+  <B>END</B> NameOfprocedure;</PRE>
+
+<P>This is also shown in figure 4.2.  When the procedure is invoked, one writes:</P>
+<PRE>
+  NameOfProcedure ( <!--<-->&lt;parameter list<!-->&gt; ).  (* no types *)</PRE>
+
+<P><CENTER><IMG SRC="Figure/Figure_4.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>The full definition of the parameter list can be found in figure 4.5. Here are some partial declarations with only the procedure headings:</P>
+<PRE>
+  <B>PROCEDURE</B> Power (base : <B>REAL</B>; exponent : <B>CARDINAL</B>; <B>VAR</B> ans : <B>REAL</B>);
+  <B>PROCEDURE</B> Max (num1, num2, num3 : <B>INTEGER</B>; <B>VAR</B> result : <B>INTEGER</B>);
+  <B>PROCEDURE</B> WriteReal (realNum : <B>REAL</B>; fieldLength : <B>CARDINAL</B>);</PRE>
+
+<P>with some corresponding calls in a program:</P>
+<PRE>
+  Power (theBase, theExp, theAns);
+  Power (15.0, 6, theAns);
+  Max (first, second, third, answer);
+  Max (3, -2, 18, answer);
+  WriteReal (2.75, 15);
+
+</PRE><P>Here is another complete, if somewhat short example.  This procedure accepts for its parameters two numbers and calculates and prints the percentage that the first is of the second.</P>
+<PRE>
+  <B>PROCEDURE</B> PrintPercent (firstNumber, secondNumber: <B>REAL</B>);
+  <B>BEGIN</B>
+    WriteReal (firstNumber, 10);
+    WriteString (<!--"-->&quot; is <!--"-->&quot;);
+    WriteReal (100.0 * firstNumber/secondNumber, 10);
+    WriteString (<!--"-->&quot; percent of <!--"-->&quot;);
+    WriteReal (secondNumber, 10);
+    WriteLn;
+  <B>END</B> PrintPercent;</PRE>
+
+<P>Two calls to this procedure are:</P>
+<PRE>
+  PrintPercent (mark, total);
+  PrintPercent (15.0, 74.3);</PRE>
+
+<P>As can be seen from these brief examples, when a procedure is declared, the names and the types of all the parameters employed by the procedure must be stated as part of that declaration.  When the procedures are actually called, the parameters must be stated, but the types of those parameters are not given again.  Here are two definitions:</P>
+<BLOCKQUOTE><I><A NAME="List">The</A> list of parameters provided in the declaration of a procedure is known as a <U>formal parameter list</U>.  The list employed when the procedure is invoked is the <U>actual parameter list</U>. </I></BLOCKQUOTE>
+<P><B>WARNING</B>: The actual parameters used when a procedure is called must match the formal parameters both in the order in which they are given and in their type.</P>
+<P>For instance, given the declaration above, one could not use either of the following calls:</P>
+<PRE>
+  Power (15, 6, theAns);  (* tries to pass cardinal to real *)
+  Power (15.0, 6.2, theAns); (* tries to pass real to cardinal *)
+  Power (15, theAns);  (* missing a parameter *)</PRE>
+
+<P>It is also worth pointing out that: </P>
+<PRE>
+  <B>PROCEDURE</B> Max (num1, num2, num3 : <B>INTEGER</B>; <B>VAR</B> result : <B>INTEGER</B>);</PRE>
+
+<P>is equivalent to</P>
+<PRE>
+  <B>PROCEDURE</B> Max (num1: <B>INTEGER</B>; num2: <B>INTEGER</B>; num3 : <B>INTEGER</B>; <B>VAR</B> result : <B>INTEGER</B>);</PRE>
+
+<P>Here is an example of a module to calculate and print the area and perimeter of either a square or a circle given the side length or radius as the case may be.  It is formulated with separate procedures for the two calculations, and for obtaining the data.</P>
+<PRE>
+<B>MODULE</B> <A NAME="Areas">Areas</A>;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate procedures *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 25 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadChar, WriteLn, SkipLine;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal, ReadReal;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>VAR</B>
+  dimension, mArea, mPerim : <B>REAL</B>;
+  which, ans : <B>CHAR</B>;
+  again : <B>BOOLEAN</B>;
+
+(*********************************************)
+<B>PROCEDURE</B> GetNum (<B>VAR</B> theNum : <B>REAL</B>);
+<B>VAR</B>
+  readOK : <B>BOOLEAN</B>;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Type the number here ==<!-->&gt; <!--"-->&quot;);
+    ReadReal (theNum);
+    readOK := (ReadResult() = allRight);
+    <B>IF</B> <B>NOT</B> readOK
+      <B>THEN</B>
+        WriteLn;
+        WriteString (<!--"-->&quot;error in input number; try again.<!--"-->&quot;);
+        WriteLn;
+      <B>END</B>;
+    SkipLine;
+  <B>UNTIL</B> readOK;
+<B>END</B> GetNum;
+
+<B>PROCEDURE</B> CalcSquare (side : <B>REAL</B>; <B>VAR</B> area, perim: <B>REAL</B>);
+
+<B>BEGIN</B>
+  area := side * side;
+  perim := 4.0 * side;
+<B>END</B> CalcSquare;
+
+<B>PROCEDURE</B> CalcCircle (radius : <B>REAL</B>; <B>VAR</B> area, perim: <B>REAL</B>);
+
+<B>CONST</B>
+  pi = 3.141592653;
+  twopi = 2.0 * pi;
+
+<B>BEGIN</B>
+  area :=pi * radius * radius;
+  perim := twopi * radius;
+<B>END</B> CalcCircle;
+(*************************************************)
+
+<B>BEGIN</B>    (* main program *)
+  WriteString (<!--"-->&quot;This program calculates areas and perimeters of<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;squares from a side length <!--"-->&quot;);
+  WriteString (<!--"-->&quot;or circles from the radius.<!--"-->&quot;);
+  <B>REPEAT</B>
+    WriteLn;
+    (* Present menu, give user the choice. *)
+    WriteString (<!--"-->&quot;Do you want to work with <!--"-->&quot;);
+    WriteString (<!--"-->&quot;a circle or a square? <!--"-->&quot;);
+    WriteLn;
+    WriteString ('Type a <!--"-->&quot;C<!--"-->&quot; or an <!--"-->&quot;S<!--"-->&quot; here ===<!-->&gt; ');
+    ReadChar (which);
+    SkipLine;
+    which := <B>CAP</B> ( which);
+    WriteLn;
+
+    (* now obtain a set of data *)
+    WriteString (<!--"-->&quot;What is the dimension of the figure ?<!--"-->&quot;);
+    WriteLn;
+    GetNum (dimension);
+    
+    <B>IF</B> which = 'C' 
+      <B>THEN</B>    (* Now go do one. <!--"-->&quot;S<!--"-->&quot; is the default *)
+        CalcCircle (dimension, mArea, mPerim);
+      <B>ELSE</B>
+        CalcSquare (dimension, mArea, mPerim);
+      <B>END</B>;    (* if *)
+
+    WriteString (<!--"-->&quot;The area is <!--"-->&quot;);
+    WriteReal (mArea, 0);
+    WriteString (<!--"-->&quot; square units and <!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;the perimeter is <!--"-->&quot;);
+    WriteReal (mPerim, 10);
+    WriteString (<!--"-->&quot; units.<!--"-->&quot;);
+    WriteLn;
+    WriteLn;
+    
+    WriteString (<!--"-->&quot;Do another (Y/N) ==<!-->&gt;<!--"-->&quot;);
+    ReadChar (ans);
+    SkipLine;
+    again := (<B>CAP</B> (ans) = <!--"-->&quot;Y<!--"-->&quot;);
+  <B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> Areas. </PRE>
+
+<P>Here is a run from this module:</P>
+<PRE>
+This program calculates areas and perimeters of
+squares from a side length or circles from the radius.
+Do you want to work with a circle or a square? 
+Type a <!--"-->&quot;C<!--"-->&quot; or an <!--"-->&quot;S<!--"-->&quot; here ===<!-->&gt; <B>s</B>
+What is the dimension of the figure ?
+Type the number here ==<!-->&gt; <B>zz</B>
+error in input number; try again.
+Type the number here ==<!-->&gt; <B>3.4</B>
+The area is  1.1560000E+1 square units and 
+the perimeter is 13.60000000 units.
+
+Do another (Y/N) ==<!-->&gt;<B>y</B>
+Do you want to work with a circle or a square? 
+Type a <!--"-->&quot;C<!--"-->&quot; or an <!--"-->&quot;S<!--"-->&quot; here ===<!-->&gt; <B>s</B>
+What is the dimension of the figure ?
+Type the number here ==<!-->&gt; <B>2.7</B>
+The area is  7.2900004 square units and 
+the perimeter is 10.80000000 units.
+
+Do another (Y/N) ==<!-->&gt;<B>y</B>
+Do you want to work with a circle or a square? 
+Type a <!--"-->&quot;C<!--"-->&quot; or an <!--"-->&quot;S<!--"-->&quot; here ===<!-->&gt; <B>c</B>
+What is the dimension of the figure ?
+Type the number here ==<!-->&gt; <B>5.0</B>
+The area is  7.8539818E+1 square units and 
+the perimeter is 31.41593000 units.
+
+Do another (Y/N) ==<!-->-->&gt;<B>n</B></PRE>
+
+<P>Note that the necessary imports <I>WriteReal</I>, <I>WriteLn</I>, <I>WriteString</I> are all done in the main program module.  These entities, and any others defined in the main Module (but not ones hidden away inside another procedure) are all visible to and available for the use of any procedure in the program.  Likewise, anything defined inside a procedure (including its own parameters) is visible and usable within the procedure itself, and within any procedures defined inside it.</P>
+<BLOCKQUOTE><I><A NAME="Scope">A</A> program module and a procedure both define a <U>scope of visibility</U> for the entities they define.  Such entities are usable inside all other procedures defined within that scope, but not outside it.</I></BLOCKQUOTE>
+<P>That is, procedures exist in a kind of hierarchy of scopes.  This text will not have much occasion to make use of this fact until later, and a detailed examination of scope, visibility, and their consequences will be undertaken in chapter ten.</P>
+<P>Also note that, while in theory a procedure may have any number of parameters; in practice, it is wise to write procedures with, say, no more than four<!--‹-->--or to use more procedures.  Otherwise code becomes cumbersome, confusing and hard to maintain.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

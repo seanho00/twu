@@ -1,0 +1,181 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>Lab Assignments :: CMPT166 11SP :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/11spr/cmpt166/">
+    CMPT 166 Spring 2011</a> Lab Assignments</h1>
+
+<div>All labs must include a lab write-up and will be marked
+  according to <a href="lab_req.html">the lab requirements</a>.</div>
+
+<h2><a name="1">Lab 1: Flow of Control (due Thu 20 Jan) (40pts)</a></h2>
+
+Java text (Savitch), p.162-164: choose one of #2, #5, or #8.
+(#8: also generate or come up with your own cryparithmetic puzzle)
+
+<h2><a name="2">Lab 2: Classes (due Tue  1 Feb) (40pts)</a></h2>
+
+Java text (Savitch), p.247-248: choose one of #2 (Fraction), #3
+(Odometer), #4 (BlogEntry), or #6 (StudentGrades).
+<ul>
+<li>In each case, you should have at least two classes: one which is
+your solution to the lab, including attributes, constructor, and other
+methods (e.g., Fraction), and another class which tests your main class
+(e.g., FractionTest).  The testbed class can have several methods in it;
+you may use this for unit-testing each method in your main class.
+<li>Your class should have at least: attributes (made private as appropriate),
+constructors, set/get methods (including a toString() method), 
+plus whatever other methods are needed to meet the requirements.
+<li>Provide constructors that take various different arguments to initialize
+attributes, plus a constructor that doesn't need any arguments (choose default
+values), plus a "copy constructor" that takes another object of the same type.
+</ul>
+
+<h2><a name="3">Lab 3: Inheritance (due Thu 10 Feb) (40pts)</a></h2>
+
+Java text (Savitch), p.469-472: choose one of #3 (Alien), #6 (Truck),
+#7 (Patient), or p.509 #4 (predator-prey).
+
+The last option (p.509 #4) is worth up to 5 pts extra credit (45 total)
+if done correctly and completely.
+
+<ul>
+  <li> For all options (this lab only),
+  provide detailed JUnit4 <b>unit-tests</b> for all classes
+  and all public methods (You do not need to do unit tests for private/protected
+  methods.)  For example, unit tests for Truck and Vehicle would go in
+  TruckTest and VehicleTest.
+  <li> Write your test cases based on the pre-conditions and post-conditions for
+  your methods.  Think about valid and invalid values for parameters.
+  <li> Try to be exhaustive in your test cases -- if any bugs creep into the 
+  code for the main classes, then the unit tests ought to be able to catch them!
+  You can have multiple assertions within each test case.
+  <li> Files to upload: <ul>
+    <li> Parent.java, Parent.class (or whatever you've called your superclass)
+    <li> Child.java, Child.class (or whatever you've called your subclass)
+    <li> ParentTest.java, ParentTest.class
+    <li> ChildTest.java, ChildTest.class
+    <li> Write-up (doc, odt, pdf, html, txt, etc.)
+  </ul>
+</ul>
+
+<h2><a name="4">Lab 4: CRUD Database (due Tue  1 Mar) (40pts)</a></h2>
+
+Create a simple database!  ch10 p.637 #10 or #11, or a similar project of
+your own design.<ul>
+  <li> Your program should provide
+  <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">"CRUD"</a>
+  functionality -- this means that (at a minimum) the user should be able to: <ul>
+    <li> <b>(C)reate</b> new records,
+    <li> <b>(R)ead</b> (display) existing records,
+    <li> <b>(U)pdate</b> (modify) an existing record, and
+    <li> <b>(D)elete</b> an existing record.
+  </ul>
+  <li> This also means you need to provide a way for the user to <b>search</b>
+  the database in various ways (e.g., by first name, by phone#, by title) so 
+  the user can select which entry to read/update/delete.
+  <li> You should also allow the user to create an <b>empty</b> database,
+  <b>save</b> the database to file,
+  and <b>load</b> a previously-saved database from file.
+  <li> What is stored in the database is up to you -- list of people, list of
+  songs, list of ski resorts, list of creatures, etc.
+  <li> Define a <b>class</b> to represent a single record -- e.g., Person,
+  Song, SkiResort, Creature, etc.  Make this class serializable and
+  use <b>object-based I/O</b> for the loading/saving of the database.
+  <li> To store the list of records in memory, you may use either an
+  <b>array</b> (but then you have to worry about the size of the array)
+  or an <b>ArrayList</b> (see ch14 for details).
+  <li> You do not need exhaustive JUnit unit-tests, but provide a simple
+  <b>testbed</b> program that clearly shows off all the functionality you
+  worked so hard to put in your program.
+</ul>
+
+<h2><a name="5">Lab 5: Swing (due Tue 22 Mar) (40pts)</a></h2>
+
+Develop your own <b>GUI</b> program using Java Swing!  Here are the requirements:
+<ul>
+  <li> It must be a <b>cohesive</b> program with a clear <b>purpose</b>
+  (i.e., not just a technology demo of Swing widgets).
+  <li> It must make extensive use of Java <b>Swing</b> for the GUI: this
+  includes <b>widgets</b> (buttons, menus, and/or text boxes) 
+  and use of a <b>layout manager</b>.
+  <li> It must be <b>interactive</b>: you may use ActionListener or another
+  EventListener interface (e.g., MouseListener, MouseMotionListener).
+  <li> The design of the UI should be <b>user-friendly</b>, easy to use, and
+  not unbearably ugly.  An average non-programmer computer user should be
+  able to figure out the controls even without help text.
+  <li> Have <b>fun</b> and make it cool!
+</ul>
+
+Suggestions for possible project ideas: <ul>
+  <li> "Memory game": click on cards to turn them over; match pairs of cards to
+  clear them from the board.
+  <li> Calculator: either RPN or build an expression.
+  <li> Fast food ordering kiosk: select meals, options; get a total bill.
+  <li> GUI for your Lab4 database.
+</ul>
+
+<h2><a name="6">Lab 6: Android or TCP/IP (due Tue 12 Apr, with
+    in-class presentations) (40+10pts)</a></h2>
+
+<ul>
+  <li> Choose one of the following two options, either Android or TCP/IP client-server.
+  <li> On Tue 12 Apr, you will demonstrate one of your projects in-class, in the senior lab!
+  You may demonstrate any one of your labs, but you want to choose something cool to show.
+  If you don't want to use the lab computers, you may demonstrate it on your own laptop.
+  The presentation counts for the last 10pts of the project.
+  <li> Be creative and make it interesting!  (That's part of the assignment!)
+</ul>
+
+<h3>Android</h3>
+
+Write a cool Android application!  You may demonstrate it on the software emulator.
+If you like, you may also demonstrate it running on an Android phone (either my
+phone, or your own)!
+
+<p>
+We might not have time in-class to get very far on Android, but there are many
+resources to help you learn Android on <a href="http://d.android.com/">the
+  Android developer site</a>:<ul>
+  <li> Start with <a href="http://d.android.com/guide/developing/eclipse-adt.html">
+    how to get+use the Android Developer Kit with Eclipse</a> (this is not provided
+  in the senior lab; you have to install it on your own computer).
+  <li> You may then want to try the 
+  <a href="http://d.android.com/resources/tutorials/hello-world.html">Hello World</a>
+  tutorial just to see what a running Android program looks like.
+  <li> The complete "book" on developing for Android is 
+  <a href="http://d.android.com/guide/">the Developer's Guide</a>.
+  <li> To supplement the book, you may enjoy watching 
+  <a href="http://d.android.com/videos/index.html#v=QBGfUs9mQYY">the Androidology
+    series of videos</a> giving an overview of the Android software architecture.
+  <li> If you've seen 
+  <a href="http://appinventor.googlelabs.com/about/">Android App Inventor</a>,
+  you may also use that to build a cool Android app.  However, it does not 
+  produce editable Java code!  The programming environment is a visual one 
+  called <a href="http://scratched.media.mit.edu/">Scratch</a>, designed to be 
+  easy for high-schoolers to learn.
+  If you elect to use App Inventor for this lab, you are responsible for
+  figuring out how to install and use it on your own computer.
+</ul>
+
+<h3>TCP/IP Client-Server</h3>
+
+Come up with your own cool client-server network application (e.g., chat/IM,
+stock-ticker, sending pictures, web server)!
+
+<ul>
+<li> Your application should have
+(at least) two running programs, one for the server and one for the client.
+<li> Both should have Swing GUIs that use multithreading to keep the GUI
+responsive (non-blocking).
+<li> Your server should use multithreading to handle multiple clients simultaneously (demonstrate this).
+<li> The messages you send over the network may be either plain-text or serialized objects.
+<li> To facilitate running the demo, please make it easy to change the server and port,
+on both the client and server (e.g., without recompiling).
+<li> You may try your applications on two different computers in the lab!
+Use ports 4410 and/or 4411.
+
+</ul>
+
+</body></html>

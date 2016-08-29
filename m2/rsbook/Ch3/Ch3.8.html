@@ -1,0 +1,189 @@
+<HTML>
+<HEAD>
+<TITLE>3.8 Replacing Loops With Closed Forms</TITLE>
+<meta NAME="keywords" CONTENT="loop, loops, replace, replacng, closed, form, forms, sequence, arithmetic">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.8 Replacing Loops With Closed Forms</B></H2>
+<P>Sometimes, the solution to a problem appears to call for a loop, but closer analysis reveals that the loop can be replaced by a single formula.  When this can be done, the code is much more efficient, for just the one formula is evaluated with just a few calculations, rather than many passes through a loop, with one or more computations each time.  This situation is common when the repeated computations follow a pattern of some kind.  An initial example (and others will be pointed out later in the text) comes from the study of sequences and series, which arise naturally in a variety of applications of mathematics, especially in business</P>
+<H3><A NAME="Arithseq"></A><B>Problem:</B></H3>
+<P>Find the sum of the first 1000 positive integers.</P>
+<H3><B>Discussion:</B></H3>
+<P>The simplest approach, and one that might be hoped for by a primary teacher trying to keep a bright student out of his way for a while, would be to perform 999 additions, using the pseudocode:</P>
+<PRE>
+  set the sum to zero
+  set the current number to one
+  while the current number is less than 1000
+    add the current number to the sum
+    increase the current number
+  print the result</PRE>
+
+<P>A more enterprising student might notice that if the numbers are written down twice, the second underneath the first and backward, the result can be obtained much more quickly:</P>
+<PRE>
+Sum   =    1 +    2 +    3 +    4 + ...
+Sum   = 1000 +  999 +  998 +  997 + ...
+2*Sum = 1001 + 1001 + 1001 + 1001 + ...  (1000 times)
+</PRE><P>Thus twice the desired sum is 1000 <!--¥-->* 1001, so the actual sum is half this amount.  In general therefore, the sum of the first n positive integers can be found by evaluating the formula </P>
+
+<P><IMG SRC="Figure/Eq3.8.1.GIF"><!----></P>
+<P>More generally still, one can observe that the sequence 1, 2, 3, 4, 5, ... is just a particular instance of a class of such sequences with a defined starting point and specific amount by which each term is incremented to get the next.  Others include:</P>
+<PRE>
+2, 4, 6, 8, 10, ...
+23, 31, 39, 47, ...
+100, 201, 302, 403, ...</PRE>
+
+<BLOCKQUOTE><I><A NAME="Arithmetic">A</A> sequence a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>, a<sub>4</sub>, ... of terms in which there is a fixed common difference d between successive terms is called an <U>arithmetic sequence</U>.</I></BLOCKQUOTE>
+<P>Such a sequence can be expressed as:</P>
+<P>a<SUB>1</SUB>, a<SUB>1</SUB> + d, a<SUB>1</SUB> + 2d, a<SUB>1</SUB> + 3d, a<SUB>1</SUB> + 4d, ...</P>
+<P>and the pattern makes it clear that a formula for the nth term is</P>
+<P>a<SUB>n</SUB> = a<SUB>1</SUB> + (n - 1)d</P>
+<P>By following the example of the consecutive integers, the sum of the first n terms is:</P>
+<P><IMG SRC="Figure/Eq3.8.4.GIF"><!----></P>
+<P>Thus the sum is given by:</P>
+<P><IMG SRC="Figure/Eq3.8.2.GIF"><!----></P>
+<P>Or, since a<SUB>n</SUB> = a<SUB>1</SUB> + (n - 1)d, this can be expressed as:</P>
+<P><IMG SRC="Figure/Eq3.8.3.GIF"><!----></P>
+<P>It is now a simple matter to write a module to find the nth term, and the sum of the first n terms of an arithmetic sequence, without using any loops at all.</P>
+<PRE>
+<B>MODULE</B> ArithSeq;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate replacing loops with formulas *)
+(* using P1 Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 16 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadInt, WriteInt;
+
+<B>VAR</B>
+  termnum, first, last, difference, sum : <B>INTEGER</B>;
+  answer : <B>CHAR</B>;
+  again : <B>BOOLEAN</B>;
+
+<B>BEGIN</B>
+  (* information on program *)
+  WriteString (<!--"-->&quot;ArithSeq was written by R.J. Sutcliffe<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;to illustrate replacing loops with formulas<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;This program computes the specified term <!--"-->&quot;);
+  WriteString (<!--"-->&quot;and partial sum<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot; of the terms of an arithmetic sequence <!--"-->&quot;);
+  WriteString (<!--"-->&quot; of integers that you specify. <!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+ 
+  <B>REPEAT</B>
+  (* Gather the information from the user *)
+    WriteString (<!--"-->&quot;Please enter the first term ==<!-->&gt;<!--"-->&quot;);
+    ReadInt (first);
+    SkipLine;
+    WriteString (<!--"-->&quot;What is the difference between terms? ==<!-->&gt;<!--"-->&quot;);
+    ReadInt (difference);
+    SkipLine;
+    WriteString (<!--"-->&quot;What is the number of the term you want ==<!-->&gt;<!--"-->&quot;);
+    ReadInt (termnum);
+    SkipLine;
+  (* computation -- no loops *)
+    last := first + (termnum - 1) * difference;
+    sum := termnum * (first + last) / 2;
+  (* output *)
+    WriteString (<!--"-->&quot;Term number <!--"-->&quot;);
+    WriteInt (termnum, 0);
+    WriteString (<!--"-->&quot; of the sequence is <!--"-->&quot;);
+    WriteInt (last, 0);
+    WriteString (<!--"-->&quot;, and the partial sum to that point is <!--"-->&quot;);
+    WriteInt (sum, 0);
+  (* recycle? *)
+    WriteLn;
+    WriteLn;
+    WriteString ( <!--"-->&quot;Do another sequence? Y or N ==<!-->&gt; <!--"-->&quot;);
+    ReadChar (answer);
+    again := <B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;;
+    SkipLine;
+    WriteLn;
+  <B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> ArithSeq.</PRE>
+
+<P>One run produced the results:</P>
+<PRE>
+ArithSeq was written by R.J. Sutcliffe
+to illustrate replacing loops with formulas
+
+This program computes the specified term and partial sum
+ of the terms of an arithmetic sequence  of integers that you specify. 
+
+Please enter the first term ==<!-->&gt;<B>1</B>
+What is the difference between terms? ==<!-->&gt;<B>1</B>
+What is the number of the term you want ==<!-->&gt;<B>100</B>
+Term number  100 of the sequence is  100, and the partial sum to that point is  5050
+
+Do another sequence? Y or N ==<!-->&gt; <B>y</B>
+
+Please enter the first term ==<!-->&gt;<B>2</B>
+What is the difference between terms? ==<!-->&gt;<B>5</B>
+What is the number of the term you want ==<!-->&gt;<B>80</B>
+Term number  80 of the sequence is  397, and the partial sum to that point is  15960
+
+Do another sequence? Y or N ==<!-->&gt; <B>y</B>
+
+Please enter the first term ==<!-->&gt;<B>-56</B>
+What is the difference between terms? ==<!-->&gt;<B>2</B>
+What is the number of the term you want ==<!-->&gt;<B>34</B>
+Term number  34 of the sequence is  10, and the partial sum to that point is  -782
+
+Do another sequence? Y or N ==<!-->&gt; <B>n</B></PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

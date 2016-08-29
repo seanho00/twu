@@ -1,0 +1,335 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Final Exam :: MATH250 10SP :: TWU</title>
+</head><body>
+
+<!-- first real done at 2hr15min -->
+
+<div><a href="#" onClick="toggleAnswers()">(answers in web view)</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________</td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Please show all your work!  Total points: 100
+
+<ol class="main">
+
+  <li> For all values of <em>a</em>, find all solutions of the system
+  below: <u>[8]</u><br>
+  <em>x + ay - z = 1</em><br>
+  <em>-x + (a-2)y + z = -1</em><br>
+  <em>2x + 2y + (a-2)z = 1</em><br>
+  <i>For a=0: no solutions.<br>
+    For a=1: infinitely many solutions along a line (-t, t, -1).<br>
+    All other a: one solution, (1 - 1/a, 0, -1/a).
+  </i>
+
+  <li> Find the equation of the plane containing the lines<br>
+  (x,y,z) = (1,-1,2) + (1,0,1)t and (x,y,z) = (0,0,2) + (1,-1,0)t. <u>[6]</u>
+  <br><i>
+    x + y - z + 2 = 0
+  </i>
+
+  <li> Let X be an arbitrary 2x2 matrix.
+  Let W<sub>X</sub> &sube; M<sub>22</sub> be the set of all 2x2 matrices
+  A such that AX = 0.  Is W<sub>X</sub> a subspace of M<sub>22</sub>?
+  Why or why not? <u>[6]</u>
+  <br><i>
+    Closure under addition: If AX=0 and BX=0, then (A+B)X = 0.<br>
+    Closure under scalar mult: If AX=0, then (kA)X = 0.<br>
+    Yes, W<sub>X</sub> is a subspace of M<sub>22</sub>.
+  </i>
+
+  <li> We learned two methods of polynomial interpolation: Vandermonde
+  and Newton.  A third method uses <b>Lagrange polynomials</b>:
+  Given a set of points (x<sub>0</sub>,y<sub>0</sub>), ...,
+  (x<sub>n</sub>,y<sub>n</sub>) with distinct x-values,
+  define n+1 Lagrange polynomials as:<br>
+  L<sub>i</sub>(x) = (x-x<sub>0</sub>)(x-x<sub>1</sub>) ...
+    (x-x<sub>i-1</sub>)(x-x<sub>i+1</sub>) ... (x-x<sub>n</sub>) / 
+    (x<sub>i</sub>-x<sub>0</sub>)(x<sub>i</sub>-x<sub>1</sub>) ...
+    (x<sub>i</sub>-x<sub>i-1</sub>)(x<sub>i</sub>-x<sub>i+1</sub>) ...
+    (x<sub>i</sub>-x<sub>n</sub>).<br>
+  (Note that the numerator is a polynomial of degree n, and the
+  denominator is a scalar.)
+  Observe that L<sub>i</sub>(x<sub>j</sub>) equals 0 if i&ne;j and
+  equals 1 if i=j.  Hence the polynomial p(x) that interpolates through
+  the points can be built as<br>
+  p(x) = y<sub>0</sub>L<sub>0</sub>(x) +
+  ... + y<sub>n</sub>L<sub>n</sub>(x).<br>
+  Consider a dataset (0,-1), (1, 1), (2, 0), (3, 2).
+  <ol class="subparts">
+
+    <li> Calculate the four Lagrange polynomials 
+    and derive the interpolating polynomial (and simplify).
+    Double-check that the polynomial interpolates the points. <u>[6]</u>
+    <br><i>
+      L<sub>0</sub>(x) = (-1/6)(x-1)(x-2)(x-3)<br>
+      L<sub>1</sub>(x) = (1/2)x(x-2)(x-3)<br>
+      L<sub>2</sub>(x) = (-1/2)x(x-1)(x-3)<br>
+      L<sub>3</sub>(x) = (1/6)x(x-1)(x-2)<br>
+      p(x) = (1/6)(x-1)(x-2)(x-3) + (1/2)x(x-2)(x-3) + (1/3)x(x-1)(x-2)<br>
+      = x<sup>3</sup> - (9/2)x<sup>2</sup> + (11/2)x - 1.
+    </i>
+
+    <li> Re-derive the interpolating polynomial using either the 
+    Vandermonde or Newton method and verify that the result is the same. <u>[6]</u>
+    <br><i>
+      Vandermonde matrix is <table border="1" cellpadding="5">
+	<tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+	<tr><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+	<tr><td>1</td><td>2</td><td>4</td><td>8</td></tr>
+	<tr><td>1</td><td>3</td><td>9</td><td>27</td></tr>
+      </table>
+      Newton matrix is <table border="1" cellpadding="5">
+	<tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+	<tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+	<tr><td>1</td><td>2</td><td>2</td><td>0</td></tr>
+	<tr><td>1</td><td>3</td><td>6</td><td>6</td></tr>
+      </table>
+    </i>
+
+    <li> Compare the computational efficiency of these three methods 
+    for interpolating polynomials: Vandermonde, Newton, and Lagrange.  
+    Which is most efficient for finding a closed-form expression of
+    the interpolating polynomial?  Which is most efficient for
+    evaluating the interpolant somewhere between data points? <u>[4]</u>
+    <br><i>
+      Lagrange is quick and easy for getting a closed-form result -- although
+      it takes some more work to simplify the expression.  It is equivalent
+      in efficiency to the Newton method -- relatively easy to compute a result,
+      but requires additional work to simplify into standard form.
+    </i>
+
+    <li> Find the line which best fits these points using least-squares 
+    approximation. <u>[4]</u>
+    <br><i>
+      The A matrix is <table border="1" cellpadding="5">
+	<tr><td>1</td><td>0</td></tr>
+	<tr><td>1</td><td>1</td></tr>
+	<tr><td>1</td><td>2</td></tr>
+	<tr><td>1</td><td>3</td></tr>
+      </table>
+      Finding the normal system, A<sup>T</sup>A is the 2x2 matrix
+      [ [ 4, 6 ] [ 6, 14 ] ].  Similarly, A<sup>T</sup>b is (2, 7).
+      Solving the normal system, (c<sub>0</sub>, c<sub>1</sub>) = (-7/10, 4/5).
+      The line is y = (4/5)x - (7/10).
+    </i>
+
+    <li> What is the error in this approximation?  (i.e., ||Ax-b||). <u>[2]</u>
+    <br><i>
+      Ax = (3/10, -9/10, 9/10, -3/10), so ||Ax-b|| = 3&radic;5/5
+      &asymp; 1.34
+    </i>
+
+    <li> Find the quadratic (parabola) which best fits these points using
+    least-squares approximation. <u>[6]</u>
+    <br><i>
+      The A matrix is <table border="1" cellpadding="5">
+	<tr><td>1</td><td>0</td><td>0</td></tr>
+	<tr><td>1</td><td>1</td><td>1</td></tr>
+	<tr><td>1</td><td>2</td><td>4</td></tr>
+	<tr><td>1</td><td>3</td><td>9</td></tr>
+      </table>
+      Finding the normal system, A<sup>T</sup>A is the 3x3 matrix
+      <table border="1" cellpadding="5">
+	<tr><td> 4</td><td> 6</td><td>14</td>
+	<tr><td> 6</td><td>14</td><td>36</td>
+	<tr><td>14</td><td>36</td><td>98</td>
+      </table>
+      Similarly, A<sup>T</sup>b is (2, 7, 19).
+      Solving the normal system, (c<sub>0</sub>, c<sub>1</sub>, c<sub>2</sub>)
+      = (-7/10, 4/5, 0).
+      The parabola is y = (4/5)x - (7/10); i.e., in this case, 
+      adding the x<sup>2</sup> term does not change the approximation.
+    </i>
+
+    <li> What is the error in this approximation?  <u>[2]</u>
+    <br><i> Same as before</i>
+
+  </ol>
+
+  <li class="break"> Consider the linear transform from &real;<sup>5</sup> to
+  &real;<sup>4</sup> whose standard matrix A is given below:
+  <table border="1" cellpadding="5">
+    <tr><td> 3</td><td> 5</td><td> 5</td><td> 2</td><td> 0</td></tr>
+    <tr><td> 1</td><td> 0</td><td> 2</td><td> 2</td><td> 1</td></tr>
+    <tr><td> 1</td><td> 1</td><td> 1</td><td>-2</td><td>-2</td></tr>
+    <tr><td>-2</td><td> 0</td><td>-4</td><td>-4</td><td>-2</td></tr>
+  </table>
+  <ol class="subparts">
+
+    <li> Compute the rank of the matrix A. <u>[4]</u>
+    <br><i>
+      Reduce to: <table border="1">
+	<tr><td> 1</td><td> 0</td><td> 0</td><td>-6</td><td>-5</td></tr>
+	<tr><td> 0</td><td> 1</td><td> 0</td><td> 0</td><td> 0</td></tr>
+	<tr><td> 0</td><td> 0</td><td> 1</td><td> 4</td><td> 3</td></tr>
+	<tr><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td></tr>
+      </table>
+      Rank = 3.
+    </i>
+
+    <li> Are the rows of A linearly independent?  If not, find a subset
+    which is linearly independent, and express the other rows as
+    linear combinations of that subset. <u>[4]</u>
+    <br><i> Rowspace: rows 1, 2, 3 are linearly independent. </i>
+
+    <li> The transform maps a whole subspace of &real;<sup>5</sup> onto
+    0.  Find a basis for that subspace. <u>[4]</u>
+    <br><i>
+      Nullspace: (6,0,-4,1,0) and (5,0,-3,0,1).
+    </i>
+
+  </ol>
+
+  <li> <img src="ellipse.gif" width="30%" style="float:right;margin:0 0 0 5px;">
+  Define an inner product on &real;<sup>2</sup> such that the
+  unit circle under your inner product is an ellipse with major
+  axis of half-length r=10 and minor axis of half-length q=6, tilted
+  at an angle of &theta;=&pi;/6: <u>[6]</u>
+  <br><i>
+    Without the rotation, the inner product
+    &lt;(x<sub>1</sub>, y<sub>1</sub>), (x<sub>2</sub>, y<sub>2</sub>)&gt;
+    = (1/100)x<sub>1</sub>x<sub>2</sub> + (1/36)y<sub>1</sub>y<sub>2</sub>
+    would produce the right ellipse.  This is the inner product generated
+    by the transform matrix corresponding to contraction by 1/10 in x and
+    1/6 in y; i.e., shrinking the ellipse back down to the regular 
+    Euclidean unit circle.<br>
+    Extending this idea, the inner product we want is generated by the
+    matrix which transforms the given ellipse back down to the Euclidean
+    unit circle: first rotation clockwise by &pi;/6, then contraction by
+    1/10 in x and 1/6 in y.  We can assemble this matrix as the product:<br>
+    <table border="1" cellpadding="5">
+      <tr><td>1/10</td><td>0</td></tr>
+      <tr><td>0</td><td>1/6</td></tr>
+    </table> * 
+    <table border="1" cellpadding="5">
+      <tr><td>&radic;3/2</td><td>1/2</td></tr>
+      <tr><td>1/2</td><td>&radic;3/2</td></tr>
+    </table> =
+    <table border="1" cellpadding="5">
+      <tr><td>&radic;3/20</td><td>1/20</td></tr>
+      <tr><td>-1/12</td><td>&radic;3/12</td></tr>
+    </table><br>
+    This matrix takes (x,y) and transforms it to
+    ( (&radic;3/20)x + (1/20)y, -(1/12)x + (&radic;3/12)y ).<br>
+    The corresponding inner product is
+    &lt;(x<sub>1</sub>, y<sub>1</sub>), (x<sub>2</sub>, y<sub>2</sub>)&gt;
+    = (3/400 + 1/144)x<sub>1</sub>x<sub>2</sub>
+    + (&radic;3/400 - &radic;3/144)
+      ( x<sub>1</sub>y<sub>2</sub> + x<sub>2</sub>y<sub>1</sub> ) 
+    + (1/400 + 3/144)y<sub>1</sub>y<sub>2</sub>.
+  </i>
+  <br clear="all">
+
+  <li> Consider C[0,2&pi;] with the inner product 
+  &lt;f,g&gt; = &int;<sub>0</sub><sup>2&pi;</sup> f(x)g(x)dx.<br>
+  Let u<sub>0</sub>(x)=1, u<sub>1</sub>(x)=cos(x), u<sub>2</sub>(x)=cos(2x),
+  ..., u<sub>n</sub>(x)=cos(nx), <br> and u<sub>n+1</sub>(x)=sin(x),
+  u<sub>n+2</sub>(x)=sin(2x), ..., u<sub>2n</sub>(x)=sin(nx).<br>
+  The subspace of C[0,2&pi;] spanned by all the u<sub>i</sub> is called
+  the set of <b>trigonometric polynomials</b> of order n.
+  <ol class="subparts">
+
+    <li> Show that {u<sub>0</sub>, u<sub>1</sub>, u<sub>2</sub>}
+    are linearly independent. <u>[4]</u>
+    <br><i>
+      Wronskian:
+      <table border="1" cellpadding="5">
+	<tr><td>1</td><td>cos(x)</td><td>cos(2x)</td></tr>
+	<tr><td>0</td><td>-sin(x)</td><td>-2sin(2x)</td></tr>
+	<tr><td>0</td><td>-cos(x)</td><td>-4cos(2x)</td></tr>
+      </table>
+      The determinant is 4sin(x)cos(2x) - 2sin(2x)cos(x), which is
+      not identically zero, so the three functions are linearly independent.
+    </i>
+
+    <li> It can be shown (you may assume) that indeed all the u<sub>i</sub> 
+    are linearly independent, and hence form a basis for the trigonometric 
+    polynomials of order n.  Convert them into an orthonormal basis. <u>[10]</u><br>
+    Some trig identities you may find helpful:<br>
+    cos(&alpha;)cos(&beta;) 
+    = (1/2)cos(&alpha;-&beta;) + (1/2)cos(&alpha;+&beta;)<br>
+    &rArr; cos<sup>2</sup>(&alpha;) = (1/2) + (1/2)cos(2&alpha;), and<br>
+    sin(&alpha;)sin(&beta;) 
+    = (1/2)cos(&alpha;-&beta;) - (1/2)cos(&alpha;+&beta;)<br>
+    &rArr; sin<sup>2</sup>(&alpha;) = (1/2) - (1/2)cos(2&alpha;).<br>
+    Also, sin(&alpha;)cos(&beta;)
+    = (1/2)sin(&alpha;-&beta;) - (1/2)sin(&alpha;+&beta;).
+    <br><i>
+      It turns out that the u<sub>i</sub> are already orthogonal, so we just
+      need to normalize them.  ||u<sub>0</sub>|| = &radic;(2&pi;), and the
+      rest all have norm &radic;&pi;.<br>
+      The textbook covers Fourier series in more detail; see section 9.4, p.474.
+    </i>
+
+    <li> The function f(x) = x is not a trigonometric polynomial.
+    Find the trigonometric polynomial of order n that best approximates f(x)
+    (least squares).  (This is the <b>Fourier series</b> of f(x).) <u>[6]</u>
+    <br><i>
+      Approximate solution is the projection onto the space of trig polys,
+      which can be obtained via inner products with the orthonormal basis.
+      The inner product with u<sub>0</sub>=1/&radic;(2&pi;) is &pi;&radic;(2&pi;).
+      The others can be obtained via ntegration by parts: 
+      all the inner products with cos are zero,
+      and the inner product with (1/&radic;&pi;)sin(kx) is -2&radic;&pi;/k.<br>
+      So the approximate solution is
+      f(x) = x &asymp; &pi; - 2( sin(x) + sin(2x)/2 + sin(3x)/3 + ... + sin(nx)/n ).
+    </i>
+
+  </ol>
+
+  <li> For the matrix A given below, find A<sup>n</sup> for any positive
+  integer <em>n</em>: <u>[12]</u>
+  <table border="1" cellpadding="5">
+    <tr><td> 8</td><td> 7</td><td> 7</td></tr>
+    <tr><td>-5</td><td>-6</td><td>-9</td></tr>
+    <tr><td> 5</td><td> 7</td><td>10</td></tr>
+  </table>
+  <br><i>
+    &lambda;=1: (1,-2,1)<br>
+    &lambda;=3: (0,1,-1)<br>
+    &lambda;=8: (1,-1,1)<br>
+    A<sup>n</sup> = PD<sup>n</sup>P<sup>-1</sup>:<br>
+    <table border="1" cellpadding="5">
+      <tr><td> 1</td><td> 0</td><td> 1</td></tr>
+      <tr><td>-2</td><td> 1</td><td>-1</td></tr>
+      <tr><td> 1</td><td>-1</td><td> 1</td></tr>
+    </table>*
+    <table border="1" cellpadding="5">
+      <tr><td> 1</td><td>	     0</td><td>		   0</td></tr>
+      <tr><td> 0</td><td>3<sup>n</sup></td><td>		   0</td></tr>
+      <tr><td> 0</td><td>	     0</td><td>8<sup>n</sup></td></tr>
+    </table>*
+    <table border="1" cellpadding="5">
+      <tr><td> 0</td><td>-1</td><td>-1</td></tr>
+      <tr><td> 1</td><td> 0</td><td>-1</td></tr>
+      <tr><td> 1</td><td> 1</td><td> 1</td></tr>
+    </table><br>
+    The final closed-form solution for A<sup>n</sup> is<br>
+    <table border="1" cellpadding="5"><tr>
+	<td>			8<sup>n</sup></td>
+	<td>-1 +		8<sup>n</sup></td>
+	<td>-1 +		8<sup>n</sup></td>
+	</tr><tr>
+	<td>	3<sup>n</sup> -	8<sup>n</sup></td>
+	<td> 2 +		8<sup>n</sup></td>
+	<td>2 -	3<sup>n</sup> -	8<sup>n</sup></td>
+	</tr><tr>
+	<td>  -	3<sup>n</sup> +	8<sup>n</sup></td>
+	<td>-1 +		8<sup>n</sup></td>
+	<td>-1 +3<sup>n</sup> +	8<sup>n</sup></td>
+    </tr></table>
+  </i>
+
+</ol>
+</body></html>
+

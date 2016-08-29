@@ -1,0 +1,280 @@
+<HTML>
+<HEAD>
+<TITLE>4.3 Value and Variable Parameters (Introduction)</TITLE>
+<meta NAME="keywords" CONTENT="value, variable, parameter, parameters, decouple, decoupled, couple, coupled, tightly, identical">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Procedures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>4.3 Value and Variable Parameters (Introduction)</B></H2>
+<P>There have been two kinds of parameters used thus far in the examples of procedures.  One kind is used to input data into the procedure only.  When the procedure is called, the value represented by the actual parameter is copied into the memory location set aside for the formal parameter.  At this point, there are two copies of the information in memory.  If any changes are made to the local copy owned by the procedure (with the formal parameter name), the actual object copied by the calling routine is unaffected. Figure 4.3 illustrates.</P>
+<BLOCKQUOTE><I><A NAME="Value">A</A> <U>value parameter</U> is a formal parameter naming a memory location that is set aside while the procedure is active, and into which the contents of an actual parameter will be copied at the time the procedure is called.  The two copies of the information are <U>decoupled</U> (independent of one another).</I></BLOCKQUOTE>
+<H3><B>The Action of a Call Using a Value Parameter:</B></H3>
+<PRE>
+  <B>PROCEDURE</B> Write (ch: <B>CHAR</B>); (* actual declaration *)
+. . .
+  character := <!--"-->&quot;A<!--"-->&quot;;
+  Write (character); (*call to this in a program *)</PRE>
+
+<P><CENTER><IMG SRC="Figure/Figure_4.3.GIF" BORDER="1"></CENTER><!----></P>
+<P>In some situations, one prefers to get things (often numbers) back from procedures, rather than have the procedure just take an action.  To do this, one employs the second kind, a formal parameter whose name is simply attached to the same memory location that is already being used by the actual parameter.  Any changes made to the formal parameter within the procedure body are automatically reflected in the actual parameter, because the two are simply different names for the same memory location.  They are <!--"-->&quot;tightly coupled<!--"-->&quot;.  This action is illustrated in figure 4.4.</P>
+<BLOCKQUOTE><I><A NAME="Variable">A</A> <U>variable parameter</U> is a formal parameter whose name is attached to the same memory location as that named by the actual parameter at the time the call is made.  The two names are <U>coupled</U>.  These are distinguished from value parameters in the formal parameter list of the procedure heading by preceding them with the reserved word VAR. </I></BLOCKQUOTE>
+<H3><B>The Action of a Call Using a Variable Parameter:</B></H3>
+<PRE>
+  <B>PROCEDURE</B> Read (<B>VAR</B> ch: <B>CHAR</B>); 	 (* declaration *) 
+. . .
+  WriteString (<!--"-->&quot;Do you want to do this again?<!--"-->&quot;);
+  Read (answer); 	 (* call to Read in a program *)</PRE>
+
+<P><CENTER><IMG SRC="Figure/Figure_4.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>Here are some more examples:</P>
+<PRE>
+  <B>PROCEDURE</B> GetNextDay (<B>VAR</B> day : <B>CARDINAL</B>);
+  <B>PROCEDURE</B> Discrim (a, b, c : <B>REAL</B>;
+				<B>VAR</B> d : <B>REAL</B>; <B>VAR</B> ok : <B>BOOLEAN</B>);</PRE>
+
+<P>The procedure <I>GetNextDay</I> can (and presumably does) directly modify whatever variable is aliased to <I>day</I> by assigning a new value to <I>day</I>.  Since both the actual parameter and the formal parameter name the same memory location, both names get new values at once.</P>
+<P>The procedure <I>Discrim</I> is capable of directly modifying whatever is assigned to <I>d</I> and <I>ok</I>, but it can only use whatever data is copied to <I>a</I>, <I>b</I>, and <I>c</I> when it is invoked.  Any changes it might make to these inside the procedure are not reflected in changes to the original entities owned by the calling routine that were copied to them.</P>
+<P>Assuming that <I>numberOfDay</I> is a CARDINAL, <I>w</I>, <I>x</I>, <I>y</I>, and <I>z</I> are REAL and <I>done</I> is of type BOOLEAN, here are some legitimate calls to these two procedures:</P>
+<PRE>
+GetNextDay (numberOfDay);
+Discrim (w, x, y, z, done);
+Discrim (3.0, x, 2.5, z, done);</PRE>
+
+<P>Here are some that are not correct, with the reasons:</P>
+<PRE>
+GetNextDay (3)   (* 3  is not a variable *)
+GetNextDay (x)   (* x is not a cardinal *)
+Discrim (5, x, y, z, done);   (* 5 is not real *) 
+Discrim (w, x, y, 3.9, done);  (* 3.9 is not a variable *)
+Discrim (w, x, y, done, z); (* wrong order of parameters *)</PRE>
+
+<P>As the first and fourth of these incorrect examples illustrate, one must assign a variable to a variable parameter.  After all, one cannot expect that a literal value will be somehow changed. (Can a <I>3</I> become not a <I>3</I>?)</P>
+<P>It is now possible ( figure 4.5) to diagram the parameter list completely.</P>
+<P><CENTER><IMG SRC="Figure/Figure_4.5.GIF" BORDER="1"></CENTER><!----></P>
+<P>Here is something else that might seem to be permitted, but that is not.  Suppose <I>cardNum</I> is a CARDINAL, and in fact <I>cardNum</I> happens to equal 5, and that one has:</P>
+<PRE>
+  <B>PROCEDURE</B> Fetch (<B>VAR</B> intNum : <B>INTEGER</B>)</PRE>
+
+<P>Then a call Fetch (cardNum) produces a compiler error, because the types of an actual and formal <B>VAR</B> parameter must be <I>identical</I>, not merely assignment compatible, as are CARDINAL and INTEGER. Value parameters on the other hand, need only be assignment compatible. </P>
+<P>To further illustrate the use of variable parameters, here is  a procedure that swaps the values of two variables that are passed to it.</P>
+<PRE>
+  <B>PROCEDURE</B> Swap (<B>VAR</B> firstNum, secondNum : <B>REAL</B>);
+
+  <B>VAR</B>
+    temp : <B>REAL</B>;
+
+  <B>BEGIN</B>
+    temp := firstNum;
+    firstNum := secondNum;
+    secondNum := temp;
+  <B>END</B> Swap;</PRE>
+
+<P>Notice the use of the local variable <I>temp</I> to hold the value of <I>firstNum</I> while the value of <I>secondNum</I> is assigned the name <I>firstNum</I>.  The procedure <I>Swap</I> would be called by naming, as parameters, the two real variables whose values one wanted interchanged.  The following sequence in the main program:</P>
+<PRE>
+  rVar1 := 2.5;
+  rVar2 := 7.8; 
+  Swap (rVar1, rVar2);
+  WriteReal (rVar1, 0);</PRE>
+
+<P>would output 7.8 as the value of <I>rVar1</I>.</P>
+<H3><B><A NAME="SortThree"></A>Example:</B></H3>
+<P>Write a program module that will sort and print in ascending order three reals input from the keyboard.</P>
+<H3><B>Restatement:</B></H3>
+<UL><!--€--><LI> Ask for and accept three numbers from keyboard, reading them into REAL variables.</LI>
+<LI><!--€--> Sort them into ascending order.</LI>
+<LI><!--€--> Print them out in the order in which they now are.</LI></UL>
+<H3><B>Refinement:</B></H3>
+<PRE>Ask for a number
+Read it and assign to first variable
+Ask for a number
+Read it and assign to second variable
+Ask for a number
+Read it and assign to third variable
+
+Sort the numbers
+  if first is greater than second then
+    swap the two
+  if second is greater than third then
+    swap the two
+  if first is now greater than second then
+    swap the two
+
+Print the numbers out in order</PRE>
+
+<P>As one looks this refinement over, it is apparent that reading and assigning are done three times with three different numbers and that there are potentially three swaps.  Both subtasks (reading/assigning, and swapping) should therefore be procedures, so one makes this:</P>
+<H3><B>Further Refinement:</B></H3>
+<PRE>procedure 1
+  Read a number
+  Assign it to a variable parameter
+procedure 2
+  Swap two variable parameters
+Main Program
+  Call procedure 1 for the three numbers in turn.
+  continue as outlined in the first refinement, but the swap is a procedure invocation.</PRE>
+
+<H3><B>Data Table: </B></H3>
+<PRE>Variables Required:
+  procedure 1: only the single VAR parameter, and a boolean for recycling.
+  procedure 2: two VAR parameters, and a temporary real.
+  Main Program: three reals, and a character variable for carriage returns.
+
+Imports Needed:
+  ReadReal, WriteFixed, Done
+  WriteString, WriteLn, ReadChar, SkipLine
+  ReadResult, ReadResults</PRE>
+
+<P>Here is the code:</P>
+<PRE>
+<B>MODULE</B> SortThree;
+
+(* Written by R.J. Sutcliffe *)
+(* using P1 <B>MPW</B> Modula-2 for the Macintosh computer *)
+(* last revision 1993 02 26 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, ReadChar, SkipLine; 
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  ReadReal, WriteFixed;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+
+<B>VAR</B>
+  num1, num2, num3 : <B>REAL</B>;
+  key : <B>CHAR</B>;
+
+<B>PROCEDURE</B> GetNum (<B>VAR</B> theNum : <B>REAL</B>);
+
+<B>VAR</B>
+  ok : <B>BOOLEAN</B>;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;Type the number here ==<!-->&gt; <!--"-->&quot;);
+    ReadReal (theNum);
+    ok := (ReadResult() = allRight);
+    SkipLine;
+    <B>IF</B> <B>NOT</B> ok (* use saved value for testing *)
+      <B>THEN</B>
+        WriteLn;
+        WriteString (<!--"-->&quot;error in input number; try again.<!--"-->&quot;);
+        WriteLn;
+      <B>END</B>;
+  <B>UNTIL</B> ok;
+<B>END</B> GetNum;
+
+<B>PROCEDURE</B> Swap (<B>VAR</B> firstNum, secondNum : <B>REAL</B>);
+
+<B>VAR</B>
+  temp : <B>REAL</B>;
+
+<B>BEGIN</B>
+  temp := firstNum;
+  firstNum := secondNum;
+  secondNum := temp;
+<B>END</B> Swap;
+
+<B>BEGIN</B>    (* main program *)
+  WriteString (<!--"-->&quot;This program sorts three numbers <!--"-->&quot;);
+  WriteString (<!--"-->&quot;into ascending order.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  (* obtain the three numbers *)
+  WriteString (<!--"-->&quot;First number: <!--"-->&quot;);
+  GetNum (num1);
+  WriteString (<!--"-->&quot;Second number: <!--"-->&quot;);
+  GetNum (num2);
+  WriteString (<!--"-->&quot;Third number: <!--"-->&quot;);
+  GetNum (num3);
+
+  (* now sort the numbers. *)
+  <B>IF</B> num1 <!-->&gt; num2    (* check first two *)
+    <B>THEN</B>   
+      Swap (num1, num2);   (* trade if necessary *)
+    <B>END</B>;
+
+  <B>IF</B> num2 <!-->&gt; num3    (* if second, third out of order *)
+    <B>THEN</B>
+      Swap (num2, num3);   (* trade them *)
+
+      <B>IF</B> num1 <!-->&gt; num2   (* and re-check new #1 <!--& -->&amp; 2 *)
+        <B>THEN</B>
+          Swap (num1, num2);   (* trading if necessary *)
+        <B>END</B>;     (* inner if *)
+
+    <B>END</B>;    (* outer if *)
+
+  (* numbers are sorted, so do print out *)
+
+  WriteString (<!--"-->&quot;In ascending order, the numbers are: <!--"-->&quot;);
+  WriteLn;
+  WriteFixed (num1, 5,0);
+  WriteLn;
+  WriteFixed (num2, 5,0);
+  WriteLn;
+  WriteFixed (num3, 5,0);
+  WriteLn;
+  WriteString (<!--"-->&quot;Press a key to continue ==<!-->&gt;<!--"-->&quot;);
+  ReadChar (key);
+  
+<B>END</B> SortThree. </PRE>
+
+<P>A run follows:</P>
+<PRE>
+This program sorts three numbers into ascending order.
+
+First number: Type the number here ===<!-->&gt; <B>13.9</B>
+Second number: Type the number here ===<!-->&gt; <B>11.98</B>
+Third number: Type the number here ===<!-->&gt; <B>16.756</B>
+In ascending order, the numbers are: 
+11.98000
+13.90000
+16.75600
+Press a key to continue ==<!-->&gt; q</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

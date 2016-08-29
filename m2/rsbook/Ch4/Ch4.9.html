@@ -1,0 +1,752 @@
+<HTML>
+<HEAD>
+<TITLE>4.9 An Extended Example (Compound Amounts)</TITLE>
+<meta NAME="keywords" CONTENT="related, recursive, example, examples, mortgage, amortization, amortizations, compound, interest, formula, geometric, common, ratio, sequence, factor, sinking, fund, funds, preset, worth, present, value, capital, recovery, error-handling, error, handling">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Program Orginization and Procedures">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>4.9 An Extended Example (Compound Amounts)</B></H2>
+<P>This section consists not of a single example, but of a number of related ones.  It culminates in a program to compute mortgage amortizations, but includes discussions of a number of  topics closely related to that kind of problem.</P>
+<H3><B>Example 1:</B></H3>
+<P>Find the amount owing on $1000 at 6% compounded annually for 10 years.</P>
+<H3><B>Discussion:</B></H3>
+<P>Since at each step of the computation the current amount owed can be computed as A = 1.06A, this could be solved in Modula-2 with a loop:</P>
+<PRE>
+  amount := 1000.0;
+  numYears := 10;
+  year := 1;
+  <B>WHILE</B> year <!--<-->&lt;= numYears
+    <B>DO</B>
+      amount := amount * (1.0 + intRate)
+    <B>END</B>;</PRE>
+
+<P>Note, however, that this loop can be replaced with a closed formula, for what has been computed by it is just A(1 + rate)<sup>years</sup>.  Using a function developed earlier, the Modula-2 code becomes:</P>
+<P>The compound interest formula is A<sub>t</sub>=A<sub>0</sub>(1+r)<sup>t</sup> where At is the amount after t years, A<sub>0</sub> is the original principal, r is the annual rate and t is the number of years.  If interest is compounding more often than annually, let n be the number of times per year and replace r by r/n and t by n*t to get A<sub>t</sub>=A<sub>0</sub>(1+r/n)<sup>nt</sup></P>
+<PRE>
+  amount :=  amount * APowerB (1.0 + intRate, numYears);</PRE>
+
+<P>Alternately, the function procedure power could be imported from <I>RealMath</I> (or a similar procedure from a non-standard library) and this line written:</P>
+<PRE>
+  amount :=  amount * power (1.0 + intRate, numYears);</PRE>
+
+<H3><B>Answer:</B></H3>
+<P>For the figures given in the original question, this yields $1790.85</P>
+<H3><B>Example 2:</B></H3>
+<P>Suppose a fixed amount is deposited into a compound interest bearing account each year.  How much will there be in the account after a number of years?</P>
+<H3><B>Discussion:</B></H3>
+<P>Since at each step of the computation the current amount on deposit can be computed as amount = amount(1 + rate) + payment, this could be solved in Modula-2 with the loop:</P>
+<PRE>
+  year := 1;
+  amount := payment;
+  <B>WHILE</B> year <!--<-->&lt;= numYears
+    <B>DO</B>
+      amount := payment + amount * (1.0 + intRate)
+      <B>INC </B>(year);
+    <B>END</B>;</PRE>
+
+<P>This is a little harder to express in a closed form.  It is a sum with two parts<!--‹-->--the periodic interest, and the periodic addition to the account.  The individual  sum can be thought of as a sequence of partial sums: (R = payment, i = rate)</P>
+
+R<BR>
+R + R (1 + i)<BR>
+R + R (1 + i) + R (1 + i)<sup>2</sup><BR>
+R + R (1 + i) + R (1 + i)<sup>2</sup> + R (1 + i)<sup>3</sup><BR>
+R + R (1 + i) + R (1 + i)<sup>2</sup> + R (1 + i)<sup>3</sup> + R (1 + i)<sup>4</sup>, and so on.<BR>
+
+<P>The discussion on replacing loops with closed forms in section 3.8 included ways of finding partial sums of <I>arithmetic</I> sequences, but the one here is of a different kind.  It has the form:</P>
+<P>a<sub>1</sub>, a<sub>1</sub>r, a<sub>1</sub>r<sup>2</sup>, a<sub>1</sub>r<sup>3</sup>, ... , a<sub>1</sub>r<sup>n-1</sup></P>
+<P>which is called a <I>geometric</I> sequence.  (Each term is a fixed multiple of the one before.)  In this particular instance, the first term of the sequence is the payment and each subsequent term that is added to this is (payment(1 + intRate)<sup>n-1</sup>).</P>
+<BLOCKQUOTE><I><A NAME="Geometric">A</A> sequence a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>, ... is called <U>geometric</U> provided that each term is a fixed multiple of the preceding term.  The fixed multiplier so used is called the <U>common ratio</U> of the sequence.</I></BLOCKQUOTE>
+<P>The partial sums of geometric sequences can be found in a manner similar to that employed for arithmetic sequences.  One writes down the product of the partial sum with r, then writes down the partial sum underneath, and subtracts.</P>
+<TABLE><TR><TD>rS<sub>n</sub></TD>	<TD>=</TD>	<TD>a<sub>1</sub>r + a<sub>1</sub>r<sup>2</sup> + a<sub>1</sub>r<sup>3</sup> + ... + a<sub>1</sub>r<sup>n-2</sup> + a<sub>1</sub>r<sup>n-1</sup></TD>	<TD> + a<sub>1</sub>r<sup>n</sup></TD></TR>
+<TR><TD><!--­-->&#45;S<sub>n</sub></TD>	<TD>= a<sub>1</sub> +</TD>	<TD>a<sub>1</sub>r + a<sub>1</sub>r<sup>2</sup> + a<sub>1</sub>r<sup>3</sup> + ... + a<sub>1</sub>r<sup>n-2</sup> + a<sub>1</sub>r<sup>n-1</sup></TD></TR><TR><TD COLSPAN=4><HR></TD></TR>
+<TR><TD>(r-1)S<sub>n</sub></TD>	<TD>= -a<sub>1</sub></TD>	<TD></TD>	<TD> + a<sub>1</sub>r<sup>n</sup></TD></TR></TABLE>
+<P>which is to say that, for geometric sequences in general:</P>
+<P><IMG SRC="Figure/Eq4.9.1.GIF"><!----></P>
+<P>Applying this with the payment R and the common ratio r set to 1 + i as it is in the problem under discussion produces:</P>
+<P><!----><IMG SRC="Figure/Eq4.9.2.GIF"></P>
+<P>or,</P>
+<P><!----><IMG SRC="Figure/Eq4.9.3.GIF"></P>
+<P>This bracketed factor is called the <i>series compound interest factor</i>, and provides a closed formula for the amount of money on deposit at a given time.  The amount A calculated by this formula is also known as the <I>future value</I> of the deposit.  In Modula-2:</P>
+<PRE>
+  futureValue := payment * (power (rate + 1.0, numYears) - 1.0) / rate</PRE>
+
+<H3><B>Example 3:</B></H3>
+<P>What amount must be deposited into a compound interest bearing account each year in order to accumulate a fixed amount in the account after a number of years?</P>
+<H3><B>Discussion:</B></H3>
+<P>The last formula above can also be solved for R to learn how much must be deposited at each time period to obtain a certain fixed total amount.  The part of the formula in brackets is called the <I>sinking fund factor</I> and is just the reciprocal of the series compound interest factor.  The amount computed is called the <i>size</i> of the annuity.</P>
+<P><!----><IMG SRC="Figure/Eq4.9.4.GIF"></P>
+<H3><B>Example 4:</B></H3>
+<P>Compute the monthly payments that can be made out of an interest bearing account that starts with a fixed sum and is to be emptied.</P>
+<H3><B>Discussion:</B></H3>
+<P>This is also called the <I>present value</I> of an annuity, and is the amount equal to a series of future payments.  The most common use of such funds is to provide retirement fixed monthly payment out of a fund generated from contributions before retirement.  However, this process also describes the way in which mortgage or other loan amounts are paid off.  At each time period, interest is applied, and a payment is subtracted from the balance until nothing is left owing on the loan.</P>
+<P>Suppose the principal amount of the loan or annuity is P.  If this money were placed at compound interest for <I>n</I> years, it would become an amount A = P(1 + i)<sup>n</sup>.  Thus, P = A(1 + i)<sup>-n</sup> can be thought of as the present value of some amount A.  If this present value P is accumulated by regular payments (either paid in or paid out,) it is a sum of the kind mentioned above, so that:</P>
+<P>P = S<sub>n</sub>(1 + i)<sup>-n</sup></P>
+<P>or, substituting the compound interest factor from above for the accumulation S<sub>n</sub></P>
+<P><!----><IMG SRC="Figure/Eq4.9.5.GIF"></P>
+<P>and then simplifying, one obtains:</P>
+<P><!----><IMG SRC="Figure/Eq4.9.6.GIF"></P>
+<P>The expression in brackets is called the <i>series present worth factor</i> and the amount calculated here is the <i>present worth</i> or <i>present value</i> of the series of payments.  This in turn means that the payments required to empty the annuity account (or to pay off the loan, as the case may be) can be computed by solving this last formula for R, obtaining:</P>
+<P><!----><IMG SRC="Figure/Eq4.9.7.GIF"></P>
+<P>The part in brackets, which is the reciprocal of the series present worth factor, is called the <i>capital recovery factor</i>.  This last formula may be used to compute mortgage payments and then print an amortization table as in the following:</P>
+<H3><B>Problem:</B></H3>
+<P>Write a program to print loan amortization tables.</P>
+<H3><B>Comment:</B></H3>
+<P>The material presented here was originally written by a student.  It was then edited and reorganized to fit the problem solving outline used in this text.  In the process, it was shortened by about 25%.</P>
+<H3><B>Suitability:</B></H3>
+<P>See the discussion above.  The problem requires that complex and repetitive computations be performed and is ideal for computer solution.</P>
+<H3><B>Restatement:</B></H3>
+<P>Given a principal, annual interest rate, and number of months for payback on a loan, calculate the monthly payment required to pay off the loan within the designated time.  The user will be able to specify the month and the year in which the first payment will be made.  Print out a payment schedule showing, month by month, the payment, the amount applied to the interest, the amount applied to the principal, and the new balance.  Upon completion of printing, the user will be able to run the program again or terminate.</P>
+<H3><B>Refinement:</B></H3>
+<P>The opening credits, waiting for a keypress, request and validation of the starting month and year, the computation of the monthly payment required, the rounding off of dollar amounts to the nearest cent, and the printing of the amortization table can all be factored out as subtasks.  Some of these are further refined as follows:</P>
+<H3><B>Refinement of Amortize: (Main Program)</B></H3>
+<PRE>1. Amortize will print an informative heading and instructions.
+2. Amortize will obtain from the user the following data:
+     a.  The principal of the loan
+     b.  The annual interest rate of the loan
+     c.  The number of months for payback on the loan
+     d.  The month in which the first payment on the loan will be made
+     e.  The year in which the first payment on the loan will be made
+3. Amortize will compute the monthly payment necessary using:</PRE>
+
+<P>      <!----><IMG SRC="Figure/Eq4.9.7.GIF"></P>
+<PRE>4. Amortize will print a schedule listing, month by month:
+     a. the payment
+     b. the amount applied to the interest
+     c. the amount applied to the principal, and
+     d. the new balance.
+4.1 In order to do this, the month and (possibly) the year must be incremented accordingly.  The amount applied to the interest is based on a percentage (the monthly interest rate) of the current balance.  The amount applied to the principal, therefore, is the payment minus the amount applied to the interest.  The balance is the current value of the balance minus the amount applied to the principal.
+4.2. The final payment on the loan has to be adjusted so that the balance is $0.00.  Therefore, the amount applied to the interest must be calculated first, and then added to the monthly payment.
+4.3 All amounts will be rounded to the nearest cent in an effort to avoid an accumulation of round-off errors.
+5. When Amortize has finished listing the payment schedule, it gives the user the option of running another calculation again or terminating.</PRE>
+
+<H3><B>Refinement of the procedure RoundToCent:</B></H3>
+<PRE>1. Split the real number provided into two parts - dollars and cents.
+2. Round off the cents by multiplying by 100 and truncating.
+3. Recombine the two parts and return the result.
+NOTE: Rounding is done this way so as to avoid multiplying the entire number by 100 before truncating it, thus severely limiting the size range of numbers that can be rounded off correctly.</PRE>
+
+<H3><B>Refinement of the information procedures: GetPrincipal, GetRate, GetNumMonths, GetStartMonth, and GetStartYear:</B></H3>
+<PRE>1. Each of these prints a prompt asking for the required information about the loan.
+2. If the amount is outside reasonable limits, an error message is printed and the user is prompted for the information again.
+3. The valid amount is returned.</PRE>
+
+<H3><B>Refinement of the procedure CalcPayment:</B></H3>
+<PRE>1. The parameters principal, intRate, and numMonths are passed, and the formula in 3 above is used to do the calculation.</PRE>
+
+<H3><B>Refinement of procedure PrintOut:</B></H3>
+<PRE>1. PrintOut is passed: firstMonth, firstYear, numOfMonths, payment, intRate, and principal.)</PRE>
+
+<H3><B>Pseudocode:</B></H3>
+<PRE>  curMonth = startMonth
+  curYear = startYear
+  count = 1;
+  while curMonth <!--<-->&lt;= numOfMonths
+    Print out curMonth and curYear
+    If month is December then
+      Increment curYear
+      curMonth = January
+    Otherwise
+      Increment curMonth
+    end the if
+    amountAppliedToInterest = (intRate * principal)
+    If curMonth = numOfMonths then
+      payment = principal + amountAppliedToInterest 
+    Print the payment
+    Print amountAppliedToInterest
+    amountAppliedToPrincipal = (payment - amountAppliedToInterest)
+    Print amountAppliedToPrincipal
+    principal = principal - amountAppliedToPrincipal
+    Print principal in a right-justified column
+  end the while</PRE>
+
+<H3><B>Data Table:</B></H3>
+<PRE>the main program Amortize:
+	principal, intRate, payment : reals
+	numOfMonths, firstMonth, firstYear : cardinals
+	response, cr : chars
+the procedures HoldScreen, PrintAuthor, PrintOpeningMessage, APowerB
+	none
+the procedure RoundToCent:
+	dollars, cents : real
+	roundcents : integer
+the procedure GetPrincipal:
+	princOk : a boolean
+	thePrinc : a real
+the procedure GetRate:
+	RateOk : a boolean
+	theRate : a real
+the procedure GetNumMonths:
+	MonthsOk : a boolean
+	theNum : a cardinal
+the procedure GetStartMonth:
+	month : a cardinal
+	monthOk : a boolean
+the procedure GetStartYear:
+	year : a cardinal
+	yearOk : a boolean
+the procedure CalcPayment:
+	payment : a real
+the procedure PrintOut:
+	lineNumber, count, curMonth, curYear : cardinals
+	interestPaidOff, principalPaidOff : reals</PRE>
+
+<H3><B>Library Use:</B></H3>
+<P><B>NOTE</B>:   For the benefit of students who have traditional versions of Modula-2, this example has been left with the library use employed when it was submitted.  One of the exercises will be to convert it into standard Modula-2.</P>
+<PRE>From InOut:
+	WriteLn, WriteString, ReadCard, Done, WriteCard, Write, ReadString
+From RealIO:
+	WriteReal, ReadReal, Done
+From MathLib:
+	Exp, Ln</PRE>
+
+<H3><B>Sample I/O:</B></H3>
+<P>For an input principal of $100.00, an interest rate of 10%, repayment of one month starting September 1991, Amortize will print a chart such as:</P>
+<PRE>
+                                Amount       Amount
+                              Applied to   Applied to
+Month               Payment    Interest     Principal   Balance
+September 1991      $100.83       $ .83      $100.00     $ 0.00
+</PRE>
+<H3><B>User's Manual:</B></H3>
+<P>When you first start up the program Amortize, a screen will appear that gives information about Amortize's author and the class for which Amortize was written.  Continue by pressing any key.</P>
+<P>New information will appear giving basic information about the required input and functions of Amortize.  Read this over carefully so you are fully aware of all your options in Amortize.  When you have finished reading the text on this screen, press any key.</P>
+<P>You now need to type in the principal, annual interest rate, and number of months for payback on your loan.  Once you have entered this information, you will then need to specify the month and the year in which the first payment will be made.  (Amortize can then print the date and the month of each payment in your schedule).  Press any key to continue.</P>
+<P>Now you will be presented with a numbered list of the twelve months of the year.  Select the number corresponding to the month in which the first payment will be made.  Then specify the year in which the first payment will be made.</P>
+<P>Amortize will then display, month by month, the payment, the amount applied to the interest, the amount applied to the principal, and the new balance.  If there are too many months to fit on one screen, Amortize will pause so you can view each screen at your own leisure.  Press any key to continue the listing.</P>
+<P>Once Amortize has finished printing your payment schedule, you can run Amortize again or you can quit.  Press <!--"-->&quot;y<!--"-->&quot; to run the program again, or hit any other key to terminate Amortize.</P>
+<H3><B>Error-handling Messages And Procedures:</B></H3>
+<P>Amortize allows principals of up to $500000.00.  Specifying a principal that is greater than $500000.00 (or less than $0.01, for obvious reasons) will cause Amortize to print the following error message:</P>
+<PRE>
+Sorry, but that is an invalid principal.
+Please specify a principal between $0.01 and $500000.00.
+Try again here ==<!-->&gt;</PRE>
+
+<P>Amortize will continue to print this error message until a valid principal (between $0.01 and $500000.00 is entered).</P>
+<P>Amortize will ask you to enter the ANNUAL INTEREST RATE (not the monthly interest rate) on your loan.  You will be required to enter this annual interest rate in decimal form (i.e.  entering 6% as 0.06).  Specifying the annual interest rate to be less than or equal to 0 or greater than or equal to 1 will cause Amortize to print the following error message:</P>
+<PRE>
+Sorry, but that is an invalid interest rate.
+Please specify an interest rate between 0 and 1.
+Try again here ==<!-->&gt;
+</PRE><P>Amortize will continue to print this error message until a valid annual interest rate (between 0 and 1) is entered.</P>
+<P>Amortize assumes 1,000 to be the maximum number of months for payback on a loan.  (Since there are 12 months in a year and a person lives an average of 70 years, 1,000 months for payback on a loan is an ample amount of time).  Specifying the number of months to be greater than 1,000 (or less than 1, for obvious reasons) will cause Amortize to print the following error message:</P>
+<PRE>
+Sorry, but that is an invalid number of months.
+Please specify the number of months to be between 1 and 1,000.
+Try again here ==<!-->&gt;</PRE>
+
+<P>Amortize will continue to print this error message until a valid number of months (between 1 and 1,000) is entered.</P>
+<P>When Amortize asks you to enter the number corresponding to the month in which the first payment will be made, do not type in the <I>name</I> of the month.  Failure to specify a number between 1 and 12 will cause the list of months to reappear, and it will continue to do so until a valid selection is made.</P>
+<P>Amortize expects you to enter a year between 1985 and 2050.  Specifying the year of the first payment to be less than 1985 or greater than 2050 will cause Amortize to print the following error message:</P>
+<PRE>
+Please specify a year between 1985 and 2050.
+Try again here ==<!-->&gt;</PRE>
+
+<P>Amortize will continue to print this error message until a valid year (between 1985 and 2050) is entered.</P>
+<H3><A NAME="Amortize"></A><B>Code:</B></H3>
+
+<PRE>(* Name : Stephanie L. McLeod *)
+(* Student Number : 880664 *)
+(* Cmpt 360 Programming Languages Fall 1990 *)
+(* Assignment #2 : <!--"-->&quot;Amortize<!--"-->&quot; *)
+(* Printing Out Payments on a Loan *)
+(* edited and revised by R. Sutcliffe 1991 03 28 *)
+
+<B>MODULE</B> Amortize;
+
+<B>IMPORT</B> InOut; (* to use Done from both InOut and RealInOut*)
+<B>FROM</B> InOut <B>IMPORT</B>
+  WriteLn, WriteString, ReadCard, Done, WriteCard, Write, Read;
+<B>FROM</B> RealIO <B>IMPORT</B>
+  WriteReal, ReadReal; 
+<B>FROM</B> MathLib <B>IMPORT</B>
+  Exp, Ln;
+
+<B>VAR</B>
+  principal, intRate, payment : <B>REAL</B>;
+  numMonths, firstMonth, firstYear : <B>CARDINAL</B>;
+  response, cr : <B>CHAR</B>;
+
+<B>PROCEDURE</B> HoldScreen; (* called whenever one wants to wait for a keypress *)
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Press carriage return to continue ==<!-->&gt; <!--"-->&quot;);
+  Read (cr);
+  WriteLn;
+<B>END</B> HoldScreen;
+
+<B>PROCEDURE</B> PrintAuthor; (* Prints out information about the author *)
+       
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;                      *************************************<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                                     Amortize<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                                  Was Created By<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                      Stephanie L. McLeod, Student # 880664<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                                       For<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                               Cmpt 360, Fall 1990<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                                  Assignment #2<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                         Printing Out Payments on a Loan<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                      *************************************<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+<B>END</B> PrintAuthor;
+
+<B>PROCEDURE</B> PrintOpeningMessage;
+(* Informs the user of the input required for Amortize and describes the functions of Amortize*)
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;Amortize has been designed to print a schedule of <!--"-->&quot;);
+  WriteString (<!--"-->&quot;monthly payments<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;for your loan.  When Amortize first begins, you <!--"-->&quot;);
+  WriteString (<!--"-->&quot;will be required to<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;enter the principal, the annual rate of interest, <!--"-->&quot;);
+  WriteString (<!--"-->&quot;and the number <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;of months for payback on the loan.  You will also <!--"-->&quot;);
+  WriteString (<!--"-->&quot;specify the <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;month and the year in which the first payment <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;will be made.<!--"-->&quot;);
+  WriteLn;
+  WriteLn;
+  WriteString (<!--"-->&quot;Then Amortize will print a schedule showing, <!--"-->&quot;);
+  WriteString (<!--"-->&quot;month by month,<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;the payment, the amount applied to the interest, <!--"-->&quot;);
+  WriteString (<!--"-->&quot;the amount <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;applied to the principal, and the new balance.<!--"-->&quot;);
+  WriteLn;
+  HoldScreen;
+<B>END</B> PrintOpeningMessage;
+
+<B>PROCEDURE</B> APowerB (a, b : <B>REAL</B>) : <B>REAL</B>;
+(* pre: a raised to the b is not greater than <B>MAX</B> (<B>REAL</B>)
+  post: a raised to the b is returned *)
+
+<B>BEGIN</B>
+  <B>RETURN</B> Exp (b * Ln (a) )
+<B>END</B> APowerB;
+
+<B>PROCEDURE</B> RoundToCent (theAmount : <B>REAL</B>) : <B>REAL</B>;
+(* can be used to round off any real number to two decimal places 
+Pre : theAmount is less than the maximum integer
+Post : the number returned is theAmount rounded to two decimal places *)
+
+<B>VAR</B>
+  dollars, cents : <B>REAL</B>;
+  roundCents : <B>INTEGER</B>;
+
+<B>BEGIN</B>
+  dollars := <B>FLOAT</B> (<B>TRUNC</B> (theAmount));
+  cents := theAmount -  dollars;
+  roundCents := <B>TRUNC</B> (100.0 * (cents + 0.005));
+  <B>RETURN</B> dollars + (<B>FLOAT</B> (roundCents) / 100.0);
+<B>END</B> RoundToCent;
+
+<B>PROCEDURE</B> GetPrincipal (): <B>REAL</B>;
+
+<B>VAR</B>
+  princOk : <B>BOOLEAN</B>;
+  thePrinc : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;What is the principal (or amount) of your loan? ==<!-->&gt; $ <!--"-->&quot;);
+    ReadReal (thePrinc);
+    Read (cr); (* consume line feed *)
+    princOk := Done <B>AND</B> (thePrinc <!-->&gt; 0.00) <B>AND</B> (thePrinc <!--<-->&lt; 500000.00);
+    <B>IF</B> <B>NOT</B> princOk
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Sorry, but that is an invalid principal.<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;Please specify a principal between $0.01 and <!--"-->&quot;);
+        WriteString (<!--"-->&quot;$500000.00.  Try again here ==<!-->&gt; <!--"-->&quot;);
+       <B>END</B>;
+   <B>UNTIL</B> princOk;
+   WriteLn;
+   <B>RETURN</B> thePrinc;
+ <B>END</B> GetPrincipal;
+ 
+<B>PROCEDURE</B> GetRate (): <B>REAL</B>;
+
+<B>VAR</B>
+  rateOk : <B>BOOLEAN</B>;
+  theRate : <B>REAL</B>;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;What is the annual interest rate on your loan?<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;For example, type in 6% as 0.06 ==<!-->&gt; <!--"-->&quot;);
+    ReadReal (theRate);
+    Read (cr); (* consume line feed *)
+    rateOk := Done <B>AND</B> (theRate <!-->&gt; 0.0) <B>AND</B> (theRate <!--<-->&lt; 1.0);
+    <B>IF</B> <B>NOT</B> rateOk
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Sorry, but that is an invalid interest rate.<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;Please specify an interest rate between 0 and 1.<!--"-->&quot;);
+        WriteLn;
+       <B>END</B>;
+   <B>UNTIL</B> rateOk;
+   WriteLn;
+   <B>RETURN</B> theRate;
+ <B>END</B> GetRate;
+
+<B>PROCEDURE</B> GetNumMonths (): <B>CARDINAL</B>;
+
+<B>VAR</B>
+  monthsOk : <B>BOOLEAN</B>;
+  theNum : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;How many months do you have to pay back the loan?<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;Type in the number of months here ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (theNum);
+    Read (cr); (* skip linefeed *)
+    monthsOk := InOut.Done <B>AND</B> (theNum <!-->&gt; 0 ) <B>AND</B> (theNum <!--<-->&lt; 1000);
+    <B>IF</B> <B>NOT</B> monthsOk
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Sorry, but that is an invalid number of months.<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;Please specify the number of months to be <!--"-->&quot;);
+        WriteString (<!--"-->&quot;between 1 and 1000.<!--"-->&quot;);
+        WriteLn;
+       <B>END</B>;
+   <B>UNTIL</B> monthsOk;
+   WriteLn;
+   <B>RETURN</B> theNum;
+ <B>END</B> GetNumMonths;     
+
+<B>PROCEDURE</B> GetStartMonth (): <B>CARDINAL</B>;
+(* Pre  -  None
+   Post -  Returns the number of the month for the first payment. *)
+
+<B>VAR</B>
+  month : <B>CARDINAL</B>;
+  monthOk : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>  (* checks for valid input *)
+    WriteString (<!--"-->&quot;In which month will the first payment be made? 1 - 12<!--"-->&quot;);
+    WriteLn;
+    WriteString (<!--"-->&quot;Type in the number of the month here ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (month);
+    Read (cr); (* skip linefeed *)
+    monthOk := InOut.Done <B>AND</B> (month <!-->&gt;= 1) <B>AND</B> (month <!--<-->&lt;= 12);
+    <B>IF</B> <B>NOT</B> monthOk
+      <B>THEN</B>
+        WriteLn;
+        WriteString (<!--"-->&quot;     1.  January<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     2.  February<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     3.  March<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     4.  April<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     5.  May<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     6.  June<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     7.  July<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     8.  August<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;     9.  September<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;    10.  October<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;    11.  November<!--"-->&quot;);
+        WriteLn;
+        WriteString (<!--"-->&quot;    12.  December<!--"-->&quot;);
+        WriteLn;
+        WriteLn;
+      <B>END</B>; (* if *)
+  <B>UNTIL</B> monthOk;
+  WriteLn;
+  <B>RETURN</B> month
+<B>END</B> GetStartMonth;
+
+<B>PROCEDURE</B> GetStartYear (): <B>CARDINAL</B>;
+(* Pre  -  None
+   Post -  Returns the year in which the first payment is made *)
+
+<B>VAR</B>
+  year : <B>CARDINAL</B>;
+  yearOk : <B>BOOLEAN</B>;
+  
+<B>BEGIN</B>
+  <B>REPEAT</B>
+    WriteString (<!--"-->&quot;In what year will the first payment be made? ==<!-->&gt; <!--"-->&quot;);
+    ReadCard (year);
+    Read (cr); (* skip linefeed *)
+    yearOk := InOut.Done <B>AND</B> (year <!-->&gt; 1985) <B>AND</B> (year <!--<-->&lt; 2050);
+    <B>IF</B> <B>NOT</B> yearOk
+      <B>THEN</B>
+        WriteString (<!--"-->&quot;Please specify a year between 1985 and 2050.  <!--"-->&quot;);
+      <B>END</B>;
+    WriteLn;
+  <B>UNTIL</B> yearOk;
+  <B>RETURN</B> year
+<B>END</B> GetStartYear;
+
+<B>PROCEDURE</B> CalcPayment (princ, rate : <B>REAL</B>; 
+          numPayments : <B>CARDINAL</B>): <B>REAL</B>;
+
+(* Pre  -  princ is the principal amount, rate is the monthly interest, numPayments is the number of monthly payments
+   Post -  Returns the monthly payment necessary to pay off the loan rounded to the nearest cent *)
+
+<B>VAR</B>
+  payment : <B>REAL</B>;
+  
+<B>BEGIN</B>
+  payment := (princ * rate) / (1.0 - (1.0 / APowerB (1.0 + rate, <B>FLOAT</B>(numPayments)) ) );
+  <B>RETURN</B> RoundToCent (payment);
+<B>END</B> CalcPayment;
+
+<B>PROCEDURE</B> PrintOut (startMonth, startYear, numPayments : <B>CARDINAL</B>;
+          monthlyPay, percentage, princ : <B>REAL</B>);
+
+(* Prints a schedule showing, month by month, the payment, the amount applied to the interest, the amount applied to the principal, and the new balance.
+Pre  - startMonth, startYear, numPayments, monthlyPay, percentage and princ have all been set up in the main program
+Post -  none *)
+       
+<B>VAR</B>
+  lineNumber, count, curMonth, curYear : <B>CARDINAL</B>;
+  interestPaidOff, principalPaidOff : <B>REAL</B>;
+  
+<B>BEGIN</B>  (* print a title and column headings for the schedule *)
+  WriteString (<!--"-->&quot;                                Amount        Amount<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;                              Applied to    Applied to<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Month            Payment       Interest      Principal<!--"-->&quot;);
+  WriteString (<!--"-->&quot;    Balance<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;-----            -------       --------     ---------<!--"-->&quot;);
+  WriteString (<!--"-->&quot;    -------<!--"-->&quot;);
+  WriteLn;
+  lineNumber := 12; (* print a year at a time *)
+
+  (* print the data for each month with appropriate spacing*)
+  curMonth := startMonth;
+  curYear := startYear;
+  count := 1;
+  <B>WHILE</B> count <!--<-->&lt;= numPayments
+    <B>DO</B>
+      <B>IF</B> curMonth = 1
+        <B>THEN</B>
+          WriteString (<!--"-->&quot;January   <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 2 <B>THEN</B>
+          WriteString (<!--"-->&quot;February  <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 3 <B>THEN</B>
+          WriteString (<!--"-->&quot;March     <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 4 <B>THEN</B>
+          WriteString (<!--"-->&quot;April     <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 5 <B>THEN</B>
+          WriteString (<!--"-->&quot;May       <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 6 <B>THEN</B>
+          WriteString (<!--"-->&quot;June      <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 7 <B>THEN</B>
+          WriteString (<!--"-->&quot;July      <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 8 <B>THEN</B>
+          WriteString (<!--"-->&quot;August    <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 9 <B>THEN</B>
+          WriteString (<!--"-->&quot;September <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 10 <B>THEN</B>
+          WriteString (<!--"-->&quot;October   <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 11 <B>THEN</B>
+          WriteString (<!--"-->&quot;November  <!--"-->&quot;);
+        <B>ELSIF</B> curMonth = 12 <B>THEN</B>
+          WriteString (<!--"-->&quot;December  <!--"-->&quot;);
+        <B>END</B>;  (* if *)
+
+      WriteCard (curYear, 0);
+      WriteString (<!--"-->&quot;  $ <!--"-->&quot;);
+      interestPaidOff := RoundToCent (princ * percentage);
+      (* calculate the various amounts for the printout *)
+      <B>IF</B> count = numPayments (* is final payment? *)
+        <B>THEN</B> (* adjust last payment for rounding off *)
+          monthlyPay := RoundToCent (princ + interestPaidOff);
+        <B>END</B>;
+      principalPaidOff := RoundToCent (monthlyPay - interestPaidOff);
+      princ := RoundToCent (princ - principalPaidOff);
+      (* now do the printout for this month *)
+      WriteReal (monthlyPay, 7, 2);
+      WriteString (<!--"-->&quot;    $ <!--"-->&quot;);
+      WriteReal (interestPaidOff, 7, 2);
+      WriteString (<!--"-->&quot;    $ <!--"-->&quot;);
+      WriteReal (principalPaidOff, 7, 2);
+      WriteString (<!--"-->&quot;    $ <!--"-->&quot;);
+      WriteReal (princ, 7, 2);
+      WriteLn; (* done one line *)
+      
+      <B>IF</B> count = lineNumber  (* up to number of lines set? *)
+        <B>THEN</B> (* yes, so let the person have a look first *)
+          WriteLn;
+          HoldScreen;
+          <B>INC</B> (lineNumber, 12);  (* then print another year *)
+        <B>END</B>;  (* if *)
+
+(* now reset the counters for the next round *)
+      <B>IF</B> curMonth = 12 (* was december this time? *)
+        <B>THEN</B>
+          <B>INC</B> (curYear); (* yes, reset to January of next year *)
+          curMonth := 1
+        <B>ELSE</B>
+          <B>INC</B> (curMonth) (* no, so increment month, leave year alone *)
+        <B>END</B>;  (* if *)
+      <B>INC</B> (count);
+
+    <B>END</B>  (* while *)
+    
+<B>END</B> PrintOut;
+
+<B>BEGIN</B>  (*main program *)
+  PrintAuthor;
+  PrintOpeningMessage;
+  <B>REPEAT</B> (* main repeat loop around whole thing *)
+    principal := GetPrincipal ();
+    intRate := GetRate()/12.0;  (* Obtain <!--& -->&amp; convert to monthly interest rate *)
+    numMonths := GetNumMonths ();
+    firstMonth := GetStartMonth ();
+    firstYear := GetStartYear ();
+    payment := CalcPayment (principal, intRate, numMonths);
+    PrintOut (firstMonth, firstYear, numMonths, payment, intRate, principal);
+
+    WriteLn;
+    WriteString (<!--"-->&quot;Would you like to run Amortize again?  If so, <!--"-->&quot;);
+    WriteString ('then type <!--"-->&quot;y<!--"-->&quot;.');
+    WriteLn;
+    WriteString (<!--"-->&quot;If not, then press any other key to quit ==<!-->&gt; <!--"-->&quot;);
+    Read (response);
+    Read (cr); (* skip linefeed *)
+  <B>UNTIL</B> (<B>CAP</B> (response) # <!--"-->&quot;Y<!--"-->&quot;)
+
+<B>END</B> Amortize.</PRE>
+
+<H3><B>Sample Run:</B></H3>
+<PRE>
+                      *************************************
+                                     Amortize
+                                  Was Created By
+                      Stephanie L. McLeod, Student # 880664
+                                       For
+                               Cmpt 360, Fall 1990
+                                  Assignment #2
+                         Printing Out Payments on a Loan
+                      *************************************
+
+Amortize has been designed to print a schedule of monthly payments
+for your loan. When Amortize first begins, you will be required to
+enter the principal, the annual rate of interest, and the number of months for payback on the loan.  You will also specify the month and the year in which the first payment will be made.
+
+Then Amortize will print a schedule showing, month by month,
+the payment, the amount applied to the interest, the amount applied to the principal, and the new balance.
+Press carriage return to continue ==<!-->&gt; 
+
+What is the principal (or amount) of your loan? ==<!-->&gt; $ 10000.00
+
+What is the annual interest rate on your loan?
+For example, type in 6% as 0.06 ==<!-->&gt; .085
+
+How many months do you have to pay back the loan?
+Type in the number of months here ==<!-->&gt; 20
+
+In which month will the first payment be made? 1 - 12
+Type in the number of the month here ==<!-->&gt; 9
+
+In what year will the first payment be made? ==<!-->&gt; 1991
+
+                                Amount        Amount
+                              Applied to    Applied to
+Month            Payment       Interest      Principal    Balance
+-----            -------       --------     ---------    -------
+September 1991  $  538.02    $   70.83    $  467.19    $ 9532.81
+October   1991  $  538.02    $   67.52    $  470.50    $ 9062.31
+November  1991  $  538.02    $   64.19    $  473.83    $ 8588.48
+December  1991  $  538.02    $   60.84    $  477.18    $ 8111.30
+January   1992  $  538.02    $   57.46    $  480.56    $ 7630.74
+February  1992  $  538.02    $   54.05    $  483.97    $ 7146.77
+March     1992  $  538.02    $   50.62    $  487.40    $ 6659.37
+April     1992  $  538.02    $   47.17    $  490.85    $ 6168.52
+May       1992  $  538.02    $   43.69    $  494.33    $ 5674.19
+June      1992  $  538.02    $   40.19    $  497.83    $ 5176.36
+July      1992  $  538.02    $   36.67    $  501.35    $ 4675.01
+August    1992  $  538.02    $   33.11    $  504.91    $ 4170.10
+
+Press carriage return to continue ==<!-->&gt; 
+
+September 1992  $  538.02    $   29.54    $  508.48    $ 3661.62
+October   1992  $  538.02    $   25.94    $  512.08    $ 3149.54
+November  1992  $  538.02    $   22.31    $  515.71    $ 2633.83
+December  1992  $  538.02    $   18.66    $  519.36    $ 2114.47
+January   1993  $  538.02    $   14.98    $  523.04    $ 1591.43
+February  1993  $  538.02    $   11.27    $  526.75    $ 1064.68
+March     1993  $  538.02    $    7.54    $  530.48    $  534.20
+April     1993  $  537.98    $    3.78    $  534.20    $     .00
+
+Would you like to run Amortize again?  If so, then type <!--"-->&quot;y<!--"-->&quot;.
+If not, then press any other key to quit ==<!-->&gt; n</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,271 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<meta name="generator" content="Adobe GoLive 4">
+		<title>Practical UML</title>
+		<meta name="keywords" content="UML, TogetherSoft">
+		<csactions>
+			<csaction name="B590C0CA3" class="Open Window" type="ONEVENT" val0="q2frame.html" val1 val2="550" val3="500" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B590C1FA4" class="Open Window" type="ONEVENT" val0="q1frame.html" val1 val2="550" val3="400" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B590DEF85" class="Open Window" type="ONEVENT" val0="q3frame.html" val1 val2="550" val3="500" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B590F9B86" class="Open Window" type="ONEVENT" val0="q4frame.html" val1 val2="550" val3="600" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B590FE267" class="Open Window" type="ONEVENT" val0="q5frame.html" val1 val2="550" val3="400" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B591ED380" class="Open Window" type="ONEVENT" val0="q6frame.html" val1 val2="550" val3="500" val4="true" val5="true" val6="false" val7="true" val8="false" val9="true" val10="true">
+			<csaction name="B5920B081" class="Open Window" type="ONEVENT" val0="q7frame.html" val1 val2="550" val3="550" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B592148E2" class="Open Window" type="ONEVENT" val0="q8frame.html" val1 val2="550" val3="500" val4="true" val5="true" val6="false" val7="false" val8="false" val9="false" val10="false">
+			<csaction name="B5C2D3120" class="Open Window" type="ONEVENT" val0="usecase.html" val1 val2="0" val3="0" val4="true" val5="true" val6="true" val7="true" val8="false" val9="true" val10="true">
+			<csaction name="B5C2D6B40" class="Open Window" type="ONEVENT" val0="classdiagram.html" val1 val2="0" val3="0" val4="true" val5="true" val6="true" val7="true" val8="false" val9="true" val10="true">
+			<csaction name="B5C2D70B2" class="Open Window" type="ONEVENT" val0="state.html#State" val1 val2="0" val3="0" val4="true" val5="true" val6="true" val7="true" val8="false" val9="true" val10="true">
+			<csaction name="B5C2DE2E3" class="Open Window" type="ONEVENT" val0="state.html" val1 val2="0" val3="0" val4="true" val5="true" val6="true" val7="true" val8="false" val9="true" val10="true">
+		</csactions>
+		<csscriptdict>
+			<script><!--
+function CSClickReturn () {
+	var bAgent = window.navigator.userAgent; 
+	var bAppName = window.navigator.appName;
+	if ((bAppName.indexOf("Explorer") >= 0) && (bAgent.indexOf("Mozilla/3") >= 0) && (bAgent.indexOf("Mac") >= 0))
+		return true; // dont follow link
+	else return false; // dont follow link
+}
+CSStopExecution = false;
+
+function CSAction(array) { 
+	return CSAction2(CSAct, array);
+}
+function CSAction2(fct, array) { 
+	var result;
+	for (var i=0;i<array.length;i++) {
+		if(CSStopExecution) return false; 
+		var actArray = fct[array[i]];
+		var tempArray = new Array;
+		for(var j=1;j<actArray.length;j++) {
+			if((actArray[j] != null) && (typeof(actArray[j]) == "object") && (actArray[j].length == 2)) {
+				if(actArray[j][0] == "VAR") {
+					tempArray[j] = CSStateArray[actArray[j][1]];
+				}
+				else {
+					if(actArray[j][0] == "ACT") {
+						tempArray[j] = CSAction(new Array(new String(actArray[j][1])));
+					}
+				else
+					tempArray[j] = actArray[j];
+				}
+			}
+			else
+				tempArray[j] = actArray[j];
+		}			
+		result = actArray[0](tempArray);
+	}
+	return result;
+}
+CSAct = new Object;
+function CSOpenWindow(action) {
+	var wf = "";	
+	wf = wf + "width=" + action[3];
+	wf = wf + ",height=" + action[4];
+	wf = wf + ",resizable=" + (action[5] ? "yes" : "no");
+	wf = wf + ",scrollbars=" + (action[6] ? "yes" : "no");
+	wf = wf + ",menubar=" + (action[7] ? "yes" : "no");
+	wf = wf + ",toolbar=" + (action[8] ? "yes" : "no");
+	wf = wf + ",directories=" + (action[9] ? "yes" : "no");
+	wf = wf + ",location=" + (action[10] ? "yes" : "no");
+	wf = wf + ",status=" + (action[11] ? "yes" : "no");		
+	window.open(action[1],action[2],wf);
+}
+// --></script>
+		</csscriptdict>
+		<csactiondict>
+		<script><!--
+CSAct[/*CMP*/ 'B590C0CA3'] = new Array(CSOpenWindow,/*URL*/ 'q2frame.html','',550,500,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B590C1FA4'] = new Array(CSOpenWindow,/*URL*/ 'q1frame.html','',550,400,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B590DEF85'] = new Array(CSOpenWindow,/*URL*/ 'q3frame.html','',550,500,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B590F9B86'] = new Array(CSOpenWindow,/*URL*/ 'q4frame.html','',550,600,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B590FE267'] = new Array(CSOpenWindow,/*URL*/ 'q5frame.html','',550,400,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B591ED380'] = new Array(CSOpenWindow,/*URL*/ 'q6frame.html','',550,500,true,true,false,true,false,true,true);
+CSAct[/*CMP*/ 'B5920B081'] = new Array(CSOpenWindow,/*URL*/ 'q7frame.html','',550,550,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B592148E2'] = new Array(CSOpenWindow,/*URL*/ 'q8frame.html','',550,500,true,true,false,false,false,false,false);
+CSAct[/*CMP*/ 'B5C2D3120'] = new Array(CSOpenWindow,/*URL*/ 'usecase.html','',0,0,true,true,true,true,false,true,true);
+CSAct[/*CMP*/ 'B5C2D6B40'] = new Array(CSOpenWindow,/*URL*/ 'classdiagram.html','',0,0,true,true,true,true,false,true,true);
+CSAct[/*CMP*/ 'B5C2D70B2'] = new Array(CSOpenWindow,/*URL*/ 'state.html#State','',0,0,true,true,true,true,false,true,true);
+CSAct[/*CMP*/ 'B5C2DE2E3'] = new Array(CSOpenWindow,/*URL*/ 'state.html','',0,0,true,true,true,true,false,true,true);
+
+// --></script>
+		</csactiondict>
+	</head>
+
+	<body bgcolor="white" link="#003399" alink="#999999" vlink="#000066">
+		<center>
+			<font size="6">Practical UML:<br>
+			A Hands-On Introduction for Developers</font></center>
+		<p>The heart of object-oriented problem solving is the construction of a model. The model abstracts the essential details of the underlying problem from its usually complicated real world. Several modeling tools are wrapped under the heading of the <font color="#990000"><b>UML</b></font>, which stands for Unified Modeling Language. The purpose of this course is to present important highlights of the UML.</p>
+		<p>At the center of the UML are its nine different kinds of modeling diagrams, which we describe here.</p>
+		<ul>
+			<li><a href="#use-case-diagram">Use case diagrams</a>
+			<li><a href="#classdiagrams">Class diagrams</a>
+			<li><a href="#object-diagrams">Object diagrams</a>
+			<li><a href="#sequence-diagrams">Sequence diagrams</a>
+			<li><a href="#collaboration-diagrams">Collaboration diagrams</a>
+			<li><a href="#statechart-diagrams">Statechart diagrams</a>
+			<li><a href="#activity-diagrams">Activity diagrams</a>
+			<li><a href="#component-and-deployment-diagrans">Component diagrams</a>
+			<li><a href="#component-and-deployment-diagrans">Deployment diagrams</a>
+		</ul>
+		<p>Some of the sections of this course contain links to pages with more detailed information. And every section has short questions. Use them to test your understanding of the section topic.</p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><font size="5">Why is UML important?</font></p>
+		<p>Let's look at this question from the point of view of the construction trade. Architects design buildings. Builders use the designs to create buildings. The more complicated the building, the more critical the communication between architect and builder. Blueprints are the standard graphical language that both architects and builders must learn as part of their trade.</p>
+		<p>Writing software is not unlike constructing a building. The more complicated the underlying system, the more critical the communication among everyone involved in creating and deploying the software. In the past decade, the UML has emerged as the software blueprint language for analysts, designers, and programmers alike. It is now part of the software trade. The UML gives everyone from business analyst to designer to programmer a common vocabulary to talk about software design.</p>
+		<p>The UML is applicable to object-oriented problem solving. Anyone interested in learning UML must be familiar with the underlying tenet of object-oriented problem solving -- it all begins with the construction of a model. A <font color="#990000"><b>model</b></font> is an abstraction of the underlying problem. The <font color="#990000"><b>domain</b></font> is the actual world from which the problem comes.</p>
+		<p>Models consist of <font color="#990000"><b>objects</b></font> that interact by sending each other <font color="#990000"><b>messages</b></font>. Think of an object as &quot;alive.&quot; Objects have things they know (<font color="#990000"><b>attributes</b></font>) and things they can do (<font color="#990000"><b>behaviors</b></font> or <font color="#990000"><b>operations</b></font>). The values of an object's attributes determine its <font color="#990000"><b>state</b></font>.</p>
+		<p><font color="#990000"><b>Classes</b></font> are the &quot;blueprints&quot; for objects. A class wraps attributes (data) and behaviors (methods or functions) into a single distinct entity. Objects are <font color="#990000"><b>instances</b></font> of classes.</p>
+		<p></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="use-case-diagram"></a><font size="5">Use case diagrams</font></p>
+		<p><font color="#990000"><b><a name="usecasediagrams"></a>Use case diagrams</b></font> describe what a system does from the standpoint of an external observer. The emphasis is on <i>what</i> a system does rather than <i>how.</i></p>
+		<p>Use case diagrams are closely connected to scenarios. A <a name="scenario"></a><font color="#990000"><b>scenario</b></font> is an example of what happens when someone interacts with the system. Here is a scenario for a medical clinic.</p>
+		<div align="left">
+			<ul>
+				<p>&quot;A patient calls the clinic to make an appointment for a yearly checkup. The receptionist finds the nearest empty time slot in the appointment book and schedules the appointment for that time slot. &quot;</p>
+			</ul>
+		</div>
+		<p>A <a name="usecase"></a><font color="#990000"><b>use case</b></font> is a summary of scenarios for a single task or goal. An <a name="actor"></a><font color="#990000"><b>actor</b></font> is who or what initiates the events involved in that task. Actors are simply roles that people or objects play. The picture below is a <b>Make Appointment</b> use case for the medical clinic. The actor is a <b>Patient</b>. The connection between actor and use case is a <font color="#990000"><b>communication association</b></font> (or <font color="#990000"><b>communication</b></font> for short).</p>
+		
+<p><img height="92" width="338" src="usecase.gif" hspace="10" vspace="15" alt="Use case"></p>
+		<p>Actors are stick figures. Use cases are ovals. Communications are lines that link actors to use cases.</p>
+		<p>A use case diagram is a collection of actors, use cases, and their communications. We've put <b>Make Appointment</b> as part of a diagram with four actors and four use cases. Notice that a single use case can have multiple actors.</p>
+		<p><img height="237" width="404" src="usecasesimple.gif" hspace="10" vspace="15" alt="Use case diagram"></p>
+		<p>Use case diagrams are helpful in three areas.</p>
+		<ul>
+			<li><b>determining features (requirements)</b>. New use cases often generate new requirements as the system is analyzed and the design takes shape.
+			<li><b>communicating with clients</b>. Their notational simplicity makes use case diagrams a good way for developers to communicate with clients.
+			<li><b>generating test cases</b>. The collection of scenarios for a use case may suggest a suite of test cases for those scenarios.
+		</ul>
+		<p><a href="usecase.html"><img height="20" width="91" src="more.gif" alt="More details" border="0"></a></p>
+		<p><a href="#" csclick="B590C1FA4" onclick="CSAction(new Array(/*CMP*/'B590C1FA4'));return CSClickReturn();"><img height="20" width="64" src="test.gif" alt="Self test" border="0"><br>
+		</a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="classdiagrams"></a><font size="5">Class diagrams</font></p>
+		<p><font color="#990000"><b><a name="classdiagram"></a>A Class diagram</b></font> gives an overview of a system by showing its classes and the relationships among them. Class diagrams are static -- they display what interacts but not what happens when they do interact.</p>
+		<p>The class diagram below models a customer order from a retail catalog. The central class is the <b>Order</b>. Associated with it are the <b>Customer</b> making the purchase and the <b>Payment</b>. A <b>Payment</b> is one of three kinds: <b>Cash</b>, <b>Check</b>, or <b>Credit</b>. The order contains <b>OrderDetails</b> (line items), each with its associated <b>Item</b>.</p>
+		<p><img height="310" width="730" src="classdiagram.gif" hspace="5" vspace="15" alt="Class diagram"></p>
+		<p>UML class notation is a rectangle divided into three parts: class name, attributes, and operations. Names of abstract classes, such as <i><b>Payment</b>,</i> are in italics. Relationships between classes are the connecting links.</p>
+		<p>Our class diagram has three kinds of relationships.</p>
+		<ul>
+			<li><font color="#990000"><b><a name="association"></a>association</b></font> -- a relationship between instances of the two classes. There is an association between two classes if an instance of one class must know about the other in order to perform its work. In a diagram, an association is a link connecting two classes.
+			<li><font color="#990000"><b><a name="aggregation"></a>aggregation</b></font> -- an association in which one class belongs to a collection. An aggregation has a diamond end pointing to the part containing the whole. In our diagram, <b>Order</b> has a collection of <b>OrderDetails</b>.
+			<li><font color="#990000"><b><a name="generalization"></a>generalization</b></font> -- an inheritance link indicating one class is a superclass of the other. A generalization has a triangle pointing to the superclass. <i><b>Payment</b></i> is a superclass of <b>Cash</b>, <b>Check</b>, and <b>Credit</b>.
+		</ul>
+		<p>An association has two ends. An end may have a <a name="rolename"></a><font color="#990000"><b>role name</b></font> to clarify the nature of the association. For example, an <b>OrderDetail</b> is a line item of each <b>Order</b>.</p>
+		<p>A <a name="navigable"></a><font color="#990000"><b>navigability</b></font> arrow on an association shows which direction the association can be traversed or queried. An <b>OrderDetail</b> can be queried about its <b>Item</b>, but not the other way around. The arrow also lets you know who &quot;owns&quot; the association's implementation; in this case, <b>OrderDetail</b> has an <b>Item</b>. Associations with no navigability arrows are bi-directional.</p>
+		<p>The <a name="multiplicity"></a><font color="#990000"><b>multiplicity</b></font> of an association end is the number of possible instances of the class associated with a single instance of the other end. Multiplicities are single numbers or ranges of numbers. In our example, there can be only one <b>Customer</b> for each <b>Order</b>, but a <b>Customer</b> can have any number of <b>Orders</b>.</p>
+		<p>This table gives the most common multiplicities.</p>
+		<ul>
+			<p>
+			<table border="1" cellpadding="0" cellspacing="2">
+				<tr>
+					<th bgcolor="#ffffcc">Multiplicities</th>
+					<th bgcolor="#ffffcc">Meaning</th>
+				</tr>
+				<tr>
+					<td><b>0..1</b></td>
+					<td>zero or one instance. The notation <i><b>n . . m</b></i> indicates <i><b>n</b></i> to<i> <b>m</b></i> instances.</td>
+				</tr>
+				<tr>
+					<td><b>0..*</b><i> &nbsp;or&nbsp; </i><b>*</b></td>
+					<td>no limit on the number of instances (including none).</td>
+				</tr>
+				<tr>
+					<td><b>1</b></td>
+					<td>exactly one instance</td>
+				</tr>
+				<tr>
+					<td><b>1..*</b></td>
+					<td>at least one instance</td>
+				</tr>
+			</table>
+			<p></p>
+		</ul>
+		<p>Every class diagram has classes, associations, and multiplicities. Navigability and roles are optional items placed in a diagram to provide clarity.</p>
+		<p><a href="classdiagram.html"><img height="20" width="91" src="more.gif" alt="More details" border="0"></a></p>
+		<p><a href="#" csclick="B590C0CA3" onclick="CSAction(new Array(/*CMP*/'B590C0CA3'));return CSClickReturn();"><img height="20" width="64" src="test.gif" alt="Self test" border="0"><br>
+		</a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="object-diagrams"></a><font size="5">Packages and object diagrams</font></p>
+		<p>To simplify complex class diagrams, you can group classes into <a name="packages"></a><font color="#990000"><b>packages</b></font>. A package is a collection of logically related UML elements. The diagram below is a business model in which the classes are grouped into packages.</p>
+		<p><img height="256" width="446" src="packagediagram.gif" hspace="10" vspace="15" alt="Package diagram"></p>
+		<p>Packages appear as rectangles with small tabs at the top. The package name is on the tab or inside the rectangle. The dotted arrows are <a name="dependency"></a><font color="#990000"><b>dependencies</b></font>. One package depends on another if changes in the other could possibly force changes in the first.</p>
+		<p><font color="#990000"><b><a name="Objectdiagrams"></a>Object diagrams</b></font> show instances instead of classes. They are useful for explaining small pieces with complicated relationships, especially recursive relationships.</p>
+		<p>This small class diagram shows that a university <b>Department</b> can contain lots of other <b>Departments</b>.</p>
+		<p><img height="103" width="294" src="department.gif" hspace="10" vspace="15" alt="Recursive class diagram"></p>
+		<p>The object diagram below instantiates the class diagram, replacing it by a concrete example.</p>
+		<p><img height="224" width="476" src="objdiag.gif" hspace="10" vspace="15" alt="Object diagram"></p>
+		<p>Each rectangle in the object diagram corresponds to a single instance. Instance names are underlined in UML diagrams. Class or instance names may be omitted from object diagrams as long as the diagram meaning is still clear.</p>
+		<p><a href="#" csclick="B590DEF85" onclick="CSAction(new Array(/*CMP*/'B590DEF85'));return CSClickReturn();"><img height="20" width="64" src="test.gif" alt="Self test" border="0"><br>
+		</a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="sequence-diagrams"></a><font size="5">Sequence diagrams</font></p>
+		<p>Class and object diagrams are static model views. <font color="#990000"><b><a name="Interactiondiagrams"></a>Interaction diagrams</b></font> are dynamic. They describe how objects collaborate.</p>
+		<p>A <a name="sequence"></a><font color="#990000"><b>sequence diagram</b></font> is an interaction diagram that details how operations are carried out -- what messages are sent and when. Sequence diagrams are organized according to time. The time progresses as you go down the page. The objects involved in the operation are listed from left to right according to when they take part in the message sequence.</p>
+		<p>Below is a sequence diagram for making a hotel reservation. The object initiating the sequence of messages is <b>a Reservation window</b>.</p>
+		<p><img height="477" width="611" src="sequencediag.gif" hspace="5" vspace="15" alt="Sequence diagram"></p>
+		<p>The <b>Reservation window</b> sends a <font size="4"><tt>makeReservation()</tt></font> message to a <b>HotelChain</b>. The <b>HotelChain</b> then sends a <font size="4"><tt>makeReservation()</tt></font> message to a <b>Hotel</b>. If the <b>Hotel</b> has available rooms, then it makes a <b>Reservation</b> and a <b>Confirmation</b>.</p>
+		<p>Each vertical dotted line is a <a name="lifelines"></a><font color="#990000"><b>lifeline</b></font>, representing the time that an object exists. Each arrow is a message call. An arrow goes from the sender to the top of the <a name="activation"></a><font color="#990000"><b>activation bar</b></font> of the message on the receiver's lifeline. The activation bar represents the duration of execution of the message.</p>
+		<p>In our diagram, the <b>Hotel</b> issues a <a name="self call"></a><font color="#990000"><b>self call</b></font> to determine if a room is available. If so, then the <b>Hotel</b> creates a <b>Reservation</b> and a <b>Confirmation</b>. The asterisk on the self call means <font color="#990000"><b>iteration</b></font> (to make sure there is available room for each day of the stay in the hotel). The expression in square brackets, [ ], is a <font color="#990000"><b>condition</b></font>.</p>
+		<p>The diagram has a clarifying <a name="note"></a><font color="#990000"><b>note</b></font>, which is text inside a dog-eared rectangle. Notes can be put into any kind of UML diagram.</p>
+		<p><a href="state.html"><img height="20" width="91" src="more.gif" alt="More details" border="0"></a></p>
+		<p><a href="#" csclick="B590F9B86" onclick="CSAction(new Array(/*CMP*/'B590F9B86'));return CSClickReturn();"><img height="20" width="64" src="test.gif" alt="Self test" border="0"><br>
+		</a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="collaboration-diagrams"></a><font size="5">Collaboration diagrams</font></p>
+		<p><font color="#990000"><b><a name="Collaboration"></a>Collaboration diagrams</b></font> are also interaction diagrams. They convey the same information as sequence diagrams, but they focus on object roles instead of the times that messages are sent. In a sequence diagram, object roles are the vertices and messages are the connecting links.</p>
+		<p><img height="310" width="397" src="collabdiag.gif" hspace="10" vspace="15" alt="Collaboration diagram"></p>
+		<p>The object-role rectangles are labeled with either class or object names (or both). Class names are preceded by colons ( : ).</p>
+		<p>Each message in a collaboration diagram has a <a name="sequencenumber"></a><font color="#990000"><b>sequence number</b></font>. The top-level message is numbered 1. Messages at the same level (sent during the same call) have the same decimal prefix but suffixes of 1, 2, etc. according to when they occur.</p>
+		<p><a href="#" csclick="B590FE267" onclick="CSAction(new Array(/*CMP*/'B590FE267'));return CSClickReturn();"><img height="20" width="64" src="test.gif" alt="Self test" border="0"><br>
+		</a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="statechart-diagrams"></a><font size="5">Statechart diagrams</font></p>
+		<p>Objects have behaviors and state. The state of an object depends on its current activity or condition. A <font color="#990000"><b><a name="Statediagrams"></a>statechart diagram</b></font> shows the possible states of the object and the transitions that cause a change in state.</p>
+		<p>Our example diagram models the login part of an online banking system. Logging in consists of entering a valid social security number and personal id number, then submitting the information for validation.</p>
+		<p>Logging in can be factored into four non-overlapping states: <b>Getting SSN</b>, <b>Getting PIN</b>, <b>Validating</b>, and <b>Rejecting</b>. From each state comes a complete set of <a name="transitions"></a><font color="#990000"><b>transitions</b></font> that determine the subsequent state.</p>
+		<p><img height="421" width="620" src="statediag.gif" hspace="10" vspace="15" alt="State diagram"></p>
+		<p>States are rounded rectangles. Transitions are arrows from one state to another. Events or conditions that trigger transitions are written beside the arrows. Our diagram has two self-transition, one on <b>Getting SSN</b> and another on <b>Getting PIN</b>.</p>
+		<p>The initial state (black circle) is a dummy to start the action. Final states are also dummy states that terminate the action.</p>
+		<p>The action that occurs as a result of an event or condition is expressed in the form <font size="4"><tt>/action</tt></font>. While in its <b>Validating</b> state, the object does not wait for an outside event to trigger a transition. Instead, it performs an activity. The result of that activity determines its subsequent state.</p>
+		<p><a href="state.html#State"><img height="20" width="91" src="more.gif" alt="More details" border="0"></a></p>
+		<p><a href="#" csclick="B591ED380" onclick="CSAction(new Array(/*CMP*/'B591ED380'));return CSClickReturn();"><img height="20" width="64" src="test.gif" border="0" alt="Self test"><br>
+		</a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="activity-diagrams"></a><font size="5">Activity diagrams</font></p>
+		<p>An <font color="#990000"><b><a name="Activitydiagrams"></a>activity diagram</b></font> is essentially a fancy flowchart. Activity diagrams and statechart diagrams are related. While a statechart diagram focuses attention on an object undergoing a process (or on a process as an object), an activity diagram focuses on the flow of activities involved in a single process. The activity diagram shows the how those activities depend on one another.</p>
+		<p>For our example, we used the following process.</p>
+		<ul>
+			<p>&quot;Withdraw money from a bank account through an ATM.&quot;</p>
+		</ul>
+		<p>The three involved classes (people, etc.) of the activity are <b>Customer</b>, <b>ATM</b>, and <b>Bank</b>. The process begins at the black start circle at the top and ends at the concentric white/black stop circles at the bottom. The activities are rounded rectangles.</p>
+		<p><img height="731" width="555" src="activitydiag.gif" hspace="10" vspace="5" alt="Activity diagram"></p>
+		<p>Activity diagrams can be divided into object <a name="swimlane"></a><font color="#990000"><b>swimlanes</b></font> that determine which object is responsible for which activity. A single <a name="activitytransition"></a><font color="#990000"><b>transition</b></font> comes out of each activity, connecting it to the next activity.</p>
+		<p>A transition may <a name="branch"></a><font color="#990000"><b>branch</b></font> into two or more mutually exclusive transitions. <font color="#990000"><b>Guard expressions</b></font> (inside<nobr> [ ])</nobr> label the transitions coming out of a branch. A branch and its subsequent <a name="merge"></a><font color="#990000"><b>merge</b></font> marking the end of the branch appear in the diagram as hollow diamonds.</p>
+		<p>A transition may <a name="fork"></a><font color="#990000"><b>fork</b></font> into two or more parallel activities. The fork and the subsequent <a name="join"></a><font color="#990000"><b>join</b></font> of the threads coming out of the fork appear in the diagram as solid bars.</p>
+		<p><a href="#" csclick="B5920B081" onclick="CSAction(new Array(/*CMP*/'B5920B081'));return CSClickReturn();"><img height="20" width="64" src="test.gif" border="0" alt="Self test"></a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><a name="component-and-deployment-diagrans"></a><font size="5">Component and deployment diagrams</font></p>
+		<p>A <font color="#990000"><b>component</b></font> is a code module. Component diagrams are physical analogs of class diagram. <font color="#990000"><b>Deployment diagrams</b></font> show the physical configurations of software and hardware.</p>
+		<p>The following deployment diagram shows the relationships among software and hardware components involved in real estate transactions.<font color="#cc0000"> </font></p>
+		<p><img height="333" width="619" src="deploymentdiag.gif" hspace="10" vspace="15" alt="Deployment diagram"></p>
+		<p>The physical hardware is made up of <font color="#990000"><b>nodes</b></font>. Each component belongs on a node.</p>
+		<p>Most components are shown as rectangles with tabs. The database components, <b>CustomerDB</b> and <b>MultipleListings</b>, use barrel-shaped <font color="#990000"><b>icons</b></font>. The <b>Listing</b> and <b>Mortgage</b> components have interfaces for the buyer.</p>
+		<p><a href="#" csclick="B592148E2" onclick="CSAction(new Array(/*CMP*/'B592148E2'));return CSClickReturn();"><img height="20" width="64" src="test.gif" border="0" alt="Self test"></a></p>
+		<p><img height="2" width="800" src="rainbow2.gif" alt="Divider line"></p>
+		<p><font size="5">UML Tools</font></p>
+		<p>Creating and modifying UML diagrams can be labor and time intensive. But in constructing the diagrams for this short course, we cut our efforts far short by starting with Together Control Center, which is the<i> </i>premier UML modeling tool. We were able to use Together Control Center to develop the original diagrams, modifying those diagrams as our ideas matured. (We then used an illustration program to redraw the diagrams for tutorial presentation -- change fonts, make commentary and notations, etc.)</p>
+		<p>Together Control Center is available from TogetherSoft<font size="2"><sup>TM</sup></font> Corporation at <a href="http://www.togethersoft.com">www.togethersoft.com</a>.</p>
+		<p>Together Control Center always keeps diagrams and code in sync. But it's much more than a mere modeling tool. Together Control Center accelerates development for teams using Java and leading application servers (from BEA, IBM, Sun, IONA, Gemstone, Inprise, Secant, and others) to build e-business and enterprise applications. Together Control Center also supports teams using C++ and IDL, delivering wider coverage and support for large development organizations. TogetherSoft's &quot;platform and building blocks<font size="2"><sup>TM</sup></font>&quot; architecture delivers deep integration across all aspects of software development: model-pattern-edit-compile-debug-version-doc-metric-audit-provision-assemble-deploy-run, leading to a &quot;gentle euphoria&quot; in which business experts, modelers, and developers find they can work more productively, increasing the competitive value of what they build and reducing time to market.</p>
+		<p>
+		<hr>
+		<font size="2">Copyright &copy; 2000 TogetherSoft, Inc. All rights reserved.</font><p></p>
+		<p><font size="1" color="#666666">Last Revised: <csobj w="75" h="10" t="DateTime" format="MedDate" region="0">Mon, Oct 16, 2000</csobj></font>
+	</body>
+
+</html>

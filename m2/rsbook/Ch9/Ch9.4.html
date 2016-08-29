@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<TITLE>9.4 Sets and the I/O Library</TITLE>
+<meta NAME="keywords" CONTENT="set, sets, i/o, library, libraries, read, write, raw, text, old, flag, flags, chanconsts, chan, const, consts, chanflags, flag, chanflag, flagset, interactive, stream, streamfile, chanid, iochan">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.4 Sets and the I/O Library</B></H2>
+<P>It was remarked in passing that the I/O library flags <I>read</I>, <I>write</I>, <I>raw</I>, <I>text</I>, <I>old</I>, and <I>echo</I> are all in fact sets.  It is instructive to see how this is done.  Part of the module <I>ChanConsts</I> first defines the enumerated type <I>ChanFlags</I> and the set type <I>FlagSet</I> as follows:</P>
+<PRE>
+<B>TYPE</B>
+  ChanFlags =      (* Request flags possibly given when a channel is opened *)
+  ( readFlag,      (* input operations are requested/available *)
+    writeFlag,     (* output operations are requested/available 
+    oldFlag,       (* a file may/must/did exist before the channel is opened *)
+    textFlag,      (* text operations are requested/available *)
+    rawFlag,       (* raw operations are requested/available *)
+    interactiveFlag;(* interactive use is requested/applies *)
+    echoFlag       (* echoing by interactive device on removal of characters from input stream requested/applies *)
+  );
+ 
+  FlagSet = <B>SET</B> <B>OF</B> ChanFlags;</PRE>
+<P>Observe the appropriate prettyprinting when the meaning of each value in the enumerated type is documented.  Because values of type <I>FlagSet</I> are to be passed to a variety of I/O operations, and because each flag often has to be referred to as a singleton, <I>ChanConsts</I> then defines the following convenience singleton sets:</P>
+<PRE>
+<B>CONST</B>
+  read = FlagSet{readFlag};
+  write = FlagSet{writeFlag};
+  old = FlagSet{oldFlag};
+  text = FlagSet{textFlag};
+  raw = FlagSet{rawFlag};
+  interactive = FlagSet{interactiveFlag};
+  echo = FlagSet{echoFlag};</PRE>
+<P>Of these, the only one not already used in the last chapter is <I>interactive</I>.  It is available for vendors to establish device drivers employing the concept of an interactive terminal in some implementation defined fashion, but is not actually employed by any device driver in the standard library itself.</P>
+<P>For further convenience, device driver definition modules such as <I>StreamFile</I> import the constants and then redefine them as their own:</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> StreamFile;
+
+<B>IMPORT</B> IOChan, ChanConsts;
+ 
+<B>TYPE</B>
+  ChanId = IOChan.ChanId;
+  FlagSet = ChanConsts.FlagSet;
+  OpenResults = ChanConsts.OpenResults;
+ 
+  (* Accepted singleton values of FlagSet *)
+ 
+<B>CONST</B>
+  read = FlagSet{ChanConsts.readFlag};
+  (* input operations are requested/available *)
+  write = FlagSet{ChanConsts.writeFlag};
+  (* output operations are requested/available *)
+  old = FlagSet{ChanConsts.oldFlag};
+  (* a file may/must/did exist before the channel is opened *)
+  text = FlagSet{ChanConsts.textFlag};
+  (* text operations are requested/available *)
+  raw = FlagSet{ChanConsts.rawFlag};
+  (* raw operations are requested/available *)</PRE>
+<P>In this manner, only the flags that are useful for that particular device driver are given a specific meaning by for it and are made available by it.  When <I>StreamFile</I> then defines items using the type <I>FlagSet</I> (that is, its own version of the type), such as:</P>
+<PRE>
+<B>PROCEDURE</B> Open (<B>VAR</B> cid: ChanId;
+                      name: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>;
+                      flags: FlagSet; <B>VAR</B> res: OpenResults);</PRE>
+<P>it becomes possible to call these in the convenient fashion already used in the last chapter, and employing the set union operator to indicate more than one flag:</P>
+<PRE>
+  Open (theChan, theName, read+old, res);</PRE>
+<P>Observe that <I>StreamFile</I>, in common with other device drivers, also imports and redefines as its own the type <i>ChanId</i>.  Thus, a person writing software employing such a device driver need not import directly from the lower level where reside <I>ChanConsts</I> and <I>IOChan</I>.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

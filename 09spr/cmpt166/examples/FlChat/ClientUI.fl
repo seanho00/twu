@@ -1,0 +1,92 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cpp}
+decl {\#include "Client.h"} {} 
+
+decl {\#include "fl_threads.h"} {} 
+
+decl {\#include <cstdlib> // atoi} {} 
+
+decl {Client *theClient;} {} 
+
+decl {Fl_Text_Buffer *outputBuffer;} {} 
+
+Function {clientListen(void *cli)} {open private return_type {void *}
+} {
+  code {((Client*) cli)->listenLoop();} {}
+} 
+
+Function {} {open selected return_type int
+} {
+  Fl_Window {} {
+    label Client open
+    xywh {431 455 300 305} type Double hide resizable
+  } {
+    Fl_Input input {
+      label {Type a message to the server:}
+      callback {theClient->sendMsg(o->value(), o->size());}
+      private xywh {15 230 275 25} labelfont 1 align 5 when 8 deactivate resizable
+    }
+    Fl_Input serverName {
+      label {Server:}
+      private xywh {15 277 125 23} labelfont 1 align 5
+      code0 {o->value("localhost");}
+    }
+    Fl_Input portNum {
+      label {Port:}
+      private xywh {140 277 55 23} type Int labelfont 1 align 5
+      code0 {o->value("4410");}
+    }
+    Fl_Button connectButton {
+      label {Connect!}
+      callback {connectToggle();}
+      private xywh {200 275 89 25} labelfont 1
+    }
+    Fl_Text_Display output {
+      label {Messages from server:}
+      private xywh {15 20 275 185} labelfont 1 align 5
+    }
+  }
+  code {Fl::lock(); // enable multithreading
+outputBuffer = new Fl_Text_Buffer();
+output->buffer(outputBuffer);
+theClient = new Client();} {}
+} 
+
+Function {appendOutput(const char* txt)} {open return_type void
+} {
+  code {Fl::lock();
+outputBuffer->append(txt);
+outputBuffer->append("\\n");
+updateConnectStatus();
+Fl::unlock();
+Fl::awake((void*) 0);} {}
+} 
+
+Function {updateConnectStatus()} {open return_type void
+} {
+  code {if (theClient->isConnected()) {
+  connectButton->label("Disconnect!");
+  input->activate();
+  serverName->deactivate();
+  portNum->deactivate();
+} else {
+  connectButton->label("Connect!");
+  input->deactivate();
+  serverName->activate();
+  portNum->activate();
+}} {}
+} 
+
+Function {connectToggle()} {open return_type int
+} {
+  code {if (theClient->isConnected()) {
+  theClient->disconnect();
+} else {
+  theClient->callServer(serverName->value(), atoi(portNum->value()));
+  Fl_Thread listenerThread;
+  fl_create_thread( listenerThread, clientListen, theClient );
+}
+updateConnectStatus();} {}
+} 

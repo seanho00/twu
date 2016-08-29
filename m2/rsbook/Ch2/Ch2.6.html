@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<TITLE>2.6 Literals and Constants</TITLE>
+<meta NAME="keywords" CONTENT="literal, literals, constant, constants, numeral, const, var, number">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.6 Literals and Constants</B></H2>
+<H3><B><A NAME="2.6.1">2.6.1</A> Literals</B></H3>
+<P>Sample programs thus far have contained a number of instances where some value was typed literally.  This has been true of all the items written out by WriteString statements thus far.  In</P>
+<PRE>
+  WriteString (<!--"-->&quot;Hi there.<!--"-->&quot;)</PRE>
+
+<P>the quoted string <I>Hi there</I> is called a string literal.  Likewise in the assignment</P>
+<PRE>
+  counter := 1;</PRE>
+
+<P>the value <I>1</I> on the right hand side of the assignment statement is a cardinal literal.</P>
+
+<BLOCKQUOTE><I><A NAME="Literal1">An</A> entity specified by its value, rather than by a pre-declared name, is called a <U>literal</U>.</I></BLOCKQUOTE>
+
+<P>More accurately, the symbols in the string <I>Hi there</I> and the digit in the numeral <I>1</I> are not values themselves, but symbolic encodings of those values.  (The values themselves are mental abstractions, and <I>1</I> is a symbol or <U>numeral</U> for the idea, not the idea itself.)  Technically that is, literals are also names.  This observation prompts the following more accurate (if perhaps harder to follow) definition:</P>
+<BLOCKQUOTE><I><A NAME="Literal2">A</A> <U>literal</U> is any entity whose name is an encoding of its value.</I></BLOCKQUOTE>
+<H3><B>Examples:</B></H3>
+<PRE>
+  firstInt := 5;
+  secondInt := firstInt + 7;
+  character := 'C';</PRE>
+
+<P>In these examples, the symbols <I>5</I>, <I>7</I>, and <I>'C'</I> are all literals.  The compiler convert such literals into the correct form necessary to do the assignment in each case.  Note that there is a type implied in a literal, even if the type is ambiguous.  Thus, some literal assignments can be made more than one way; others cannot be done at all.  If <I>card</I> is of type cardinal, and <I>int</I> is of type integer, then:</P>
+<PRE>
+  card := 7;
+  int := 7;</PRE>
+
+<P>are both correct, as the literal 7 can be interpreted as either type.  However,</P>
+<PRE>
+  card := -7;</PRE>
+
+<P>is clearly incorrect, and the compiler can catch this error without having to postpone checking until the program is run.</P>
+<H3><B><A NAME="2.6.2">2.6.2</A> Constants</B></H3>
+<P>These were discussed in general terms in <A HREF="../Ch1/Ch1.6.html#1.6.5">section 1.6.5</A> along with variables.  Suppose that in the course of the sample program, <I>Powers</I> the exponent was always equal to five.  Rather than read this number in from the keyboard every time, or even write the variable assignment</P>
+<PRE>
+exponent := 5;</PRE>
+
+<P>in the program, it may be desirable to name it as a constant.</P>
+<BLOCKQUOTE><I><A NAME="M2Constant">A</A> <U>Modula-2 constant</U> is an identified value that remains the same throughout a program; that is, it is not subject to later re-assignment.</I></BLOCKQUOTE>
+<P>Constants are declared in a manner similar to variables.  Unlike variables, they simultaneously receive a (fixed) value.  For instance, to use the above number as a constant, the identifier exponent would be removed from under the VAR declaration and placed under a CONST declaration instead.  The syntax for CONST declarations is shown in Figure 2.8.</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.8.GIF" BORDER="1"></CENTER><!----></P>
+<PRE>
+<B>CONST</B>  (* Another reserved word *)
+  exponent = 5;
+
+<B>VAR</B>
+  base, counter, result: <B>CARDINAL</B>;</PRE>
+
+<P>This has two potential advantages: the constant is changed into the correct internal form for the computer's use only once rather than several times.  This may gain some speed but, more important, if it is later decided that the number in question should be <I>six</I> rather than <I>five</I>, it need be changed only once up at the beginning of the program, rather than several times throughout, with the possibility of missing one or two instances.</P>
+<P>Once constants have been declared, they can be used wherever the original literal could be used because the type of the constant is checked before making an assignment.  If it is not compatible, an error is generated.  Moreover, the type does not need to be explicitly declared in the CONST statement because it will be assigned automatically.  One cannot therefore get away with writing <I>character := 'C' + amount</I> where <I>character</I> is of type CHAR and <I>amount</I> equals 5 (a constant), because the compiler records that <I>amount</I> can only be of type INTEGER or CARDINAL.  The compiler also will automatically treat all negative whole number constants as being of type INTEGER. Thus,</P>
+<PRE>
+<B>CONST</B>
+  number = -4;
+  ten = 10;
+  space = <!--"-->&quot; <!--"-->&quot;;</PRE>
+
+<P>creates the INTEGER constant <I>number</I>, the CARDINAL/INTEGER (whole number type) constant <I>ten</I>, and the CHAR constant <I>space</I>.</P>
+<P><B>NOTE</B>:	The identifiers of constants, unlike those of variables, are <I>equated</I> to their values rather than being assigned to them.  This might not seem like much of a difference, especially when the same kinds of names can be given to both, but Modula-2 forces the distinction to be made by requiring the <!--"-->&quot;=<!--"-->&quot; symbol instead of the <!--"-->&quot;:=<!--"-->&quot; operator.  Confusing these two is a common beginners' error.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

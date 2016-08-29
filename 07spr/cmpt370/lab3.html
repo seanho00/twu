@@ -1,0 +1,78 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>CMPT 370 Spring 2007 Lab3, Trinity Western University</title>
+<style type="text/css"><!--
+body, p, td, th, li { font-size: 12pt; }
+li { margin-top: 0.5em; }
+--></style>
+</head><body>
+
+<h1><a href=".">CMPT 370 Spring 2007</a>
+Lab3 (30 pts): OpenGL Viewer</h1>
+
+In this lab you will develop an interactive OpenGL viewer for 3D models using
+FLTK's Fl_Gl_Window.  After completing this lab, you may use this as a base for
+subsequent labs.
+
+<ul>
+<h2>Basic requirements</h2>
+
+<li> Create a basic 3D viewer application that displays multiple objects.  Use
+orthographic (parallel) projection and smooth-shading by default.
+You may use <a href="fltk/CubeView/">CubeView</a> as a starting point.
+
+<li> Allow the user to toggle between wireframe, flat-shading, and
+smooth-shading.
+
+<li> Allow the window to be resized, but preserve the aspect ratio of the image.
+
+<li> Allow the user to translate, rotate, and (uniformly) scale the model using
+the mouse in the Fl_Gl_Window.  See
+<a href="http://www.fltk.org/doc-1.1/opengl.html">the FLTK OpenGL docs</a>
+and the <tt>handle()</tt> method in Fl_Gl_Window.  
+The user should be able to place and orient the model in any way desired.
+Also, allow the user to reset the model to its original state.
+
+<li> Display the current rendering speed of your program in polygons per
+second.
+
+<li> Use a model with a reasonably large number of polygons, for better
+precision in measuring rendering speed.  The model data may be programmatically
+generated, hard-coded in your program, or read in from a file.
+You can be creative with your model!
+
+<li> Feel free to add on fancier options, user-interface, etc.!
+
+<h2>Questions for your write-up</h2>
+
+<li> How many polygons per second can your render unfilled and filled?
+
+<li> What is the effect on performance of using quadstrips or triangle strips
+versus quads or triangles?
+
+<li> What is the effect on performance of putting multiple primitives between a
+glBegin/glEnd versus using a separate glBegin/glEnd for each one?
+
+<h2>Lab write-up</h2>
+
+<li> Somewhere in your write-up, answer each of the questions in the preceding
+section.
+
+<li> Follow <a href="lab_template.html">the template lab write-up</a>
+to document your program.  Name your write-up:
+<br><tt>your_name_lab3_writeup.doc</tt> (or .txt, etc.)
+<br>Put it in the same project directory as your code so that it will be
+included in the tarball.
+
+<h2>Electronic turn-in</h2>
+
+<li> Put everything (C++ code, header files, executable, lab
+write-up) into a tarball/ZIP and upload it to eCourses under "Lab3":
+<br><tt>your_name_lab3.tar.gz</tt>
+
+<li> For this lab only, the late penalty will be reduced to one point per
+calendar day, up to two weeks.  Lab3 cannot be submitted more than two weeks late.
+
+</ul>
+
+</body></html>

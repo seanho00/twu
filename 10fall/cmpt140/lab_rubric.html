@@ -1,0 +1,160 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<title>Lab Rubric :: CMPT140 :: TWU</title>
+</head><body>
+
+<h1><a href="http://cmpt140.seanho.com/">CMPT140</a>
+  Programming Lab Marking Scheme</h1>
+
+<h2>Lab Write-Up</h2>
+
+For each programming lab you must submit, in addition to your source code, a
+detailed and well-written lab write-up.  The lab write-up forms part of the
+documentation of your program and is very important -- start on your write-up
+<b>before</b> you start on your code!  It should be in clear English, complete
+sentences (except pseudocode), and formatted neatly in a document such as
+Word .doc, OpenOffice .odt, HTML, PDF, etc.  It is your responsibility to ensure
+your TA is able to read your lab write-up.
+
+<p>
+<a href="lab_template.html">See the template lab write-up</a> for additional
+details.
+The write-up must include (in this order):
+<ul>
+  <li> Planning documents (prepared before writing any code):<ul>
+    <li> A brief <b>restatement</b> of the problem in your own words
+    <li> A statement on the <b>suitability</b> of solving this problem with a
+    computer
+
+    <li> A first refinement of the solution (A statement of the steps required
+    to solve the problem):<ul>
+      <li> what is given (<b>input</b>)
+      <li> what needs to be calculated, including any formulas used (<b>process</b>)
+      <li> the <b>output</b> required
+    </ul>
+
+    <li> Second <b>refinement</b> / first level of pseudocode:<ul>
+      <li> can be sketchy
+      <li> may not exactly match the final product, but illustrates first level
+      of thinking
+      <li> may be handwritten and on a separate sheet
+      <li> don't go back and change this after coding
+    </ul>
+
+    <li> Third refinement to final <b>pseudocode</b>:<ul>
+      <li> Separate pseudocode for each procedure/function, clearly showing any
+      algorithms
+      <li> should match the final product (or explain why not)
+      <li> one line of pseudocode per statement or per block as appropriate
+      <li> Examples of pseudocode: <pre>
+	print out informative headings and greeting to the user
+	compute _____ using (insert formula from first refinement)
+	obtain the density of the material from the user
+	assign the initial value 3 to the rate of decomposition
+	for each element of the array, do the following:
+		statement
+		statement
+	while the value of the month is more than June do
+		statement
+		statement
+	repeat the following steps:
+		statement
+		statement
+	until (some condition is met)</pre>
+      <li> DO NOT INCLUDE keywords or key symbols such as '<tt>\n</tt>' or
+      <tt>raw_input</tt>, although you may need to use <tt>for, while</tt>, etc.
+    </ul>
+
+    <li> If the steps in the third refinement cannot easily be implemented or
+    need further breakdown, you may need to include a <b>fourth refinement</b>
+    with more sub-steps shown. The rule of thumb is that if the implementation
+    of a line of pseudocode is obvious to you, you need not refine it any more;
+    otherwise refine to smaller steps until each one is obvious.
+
+    <li> A <b>data table</b>, listing all constants, types, and variables and
+    noting all imports:<ul>
+      <li> should be by block, including the main block and every procedure
+      <li> say what each variable is for
+    </ul>
+
+    <li> <b>Sample I/O</b> to illustrate how it is supposed to work<ul>
+      <li> NOTE: this is a statement of how it is supposed to work, not how it
+      did work. That is, you do this <b>before</b> you write the code, not
+      after you run it!
+    </ul>
+
+    <li> Documentation for a <em>user</em> to operate the program (a <b>user
+      manual</b>):<ul>
+      <li> Explanations of error handling and messages (if applicable)
+      <li> for every error that may happen, tell how you handle it or why it
+      isn't a problem
+    </ul>
+  </ul>
+
+  <li> <b>Screenshots</b> of several actual runs with real input:<ul>
+    <li> Your program should print a welcome message that includes your name or
+    other identifying information, so that we know that the screenshot is of
+    your program.
+    <li> Every feature has to be tested!
+    <li> Tests should demonstrate every single error / error message in your
+    code.
+    <li> Run it several times with a variety of data; think hard about how a
+    user might use your program in an unexpected way.
+    <li> If there are discrepancies between the predicted I/O and the actual,
+    you must explain.
+  </ul>
+</ul>
+
+<h2>Marking Rubric</h2>
+
+<center>
+<table border="1">
+  <tr><th colspan="2">Planning:</th></tr>
+  <tr><td>Problem Statement, restatement, and first refinement</td><td>5</td></tr>
+  <tr><td>Pseudocode, algorithms, etc. (as needed)</td><td>5</td></tr>
+  <tr><td>Data table and Sample I/O</td><td>5</td></tr>
+  <tr><td>User documentation, error planning</td><td>5</td></tr>
+  <tr><th colspan="2">Implementation</th></tr>
+  <tr><td>Docstring, general appearance, prettyprinting, etc.</td><td>5</td></tr>
+  <tr><td>Internal documentation, comments, identifier names</td><td>5</td></tr>
+  <tr><td>Programming style (modularity, modifiability, etc.)</td><td>5</td></tr>
+  <tr><th colspan="2">Production:</th></tr>
+  <tr><td>Correctness of outcome and thoroughness of testing</td><td>10</td></tr>
+  <tr><td>Screenshots of actual runs (with input data as appropriate)</td><td>5</td></tr>
+  <tr><th>TOTAL:</th><td>50</td></tr>
+</table>
+</center>
+
+TAs are free to adjust this rubric as needed; it is a loose guideline.
+If you have a specific question about your lab mark, first ask the TA, then
+you may ask the instructor.
+
+Alternate marking system for simplified writeup (Labs1-2 in CMPT 140):
+<center>
+<table border="1">
+  <tr><th>Design</th><td>10</td></tr>
+  <tr><td>Who are you?</td><td></td></tr>
+  <tr><td>Statement of problem</td><td></td></tr>
+  <tr><td>Discussion of strategy</td><td></td></tr>
+  <tr><th>Code</th><td>30</td></tr>
+  <tr><td>Docstring with identifying header</td><td></td></tr>
+  <tr><td>Well-commented and well-formatted code</td><td></td></tr>
+  <tr><th>Screenshots of sample runs</th><td>10</td></tr>
+  <tr><th>TOTAL:</th><td>50</td></tr>
+</table>
+</center>
+
+<center>
+<table border="1">
+  <tr><th>45 - 50</th><td>Excellent. Everything complete, explanations and all
+      planning evidence and documentation <br>clear AND IN PROPER ENGLISH,
+      efficient and readable (prettyprinted) code.</td></tr>
+  <tr><th>35 - 44</th><td>Good. Some things overlooked, but reasonable
+      explanations.</td></tr>
+  <tr><th>27 - 34</th><td>Just satisfactory. Some important omissions or errors
+      in the submitted package.</td></tr>
+  <tr><th>&lt; 27</th><td>Unsatisfactory</td></tr>
+</table>
+</center>
+
+</body></html>

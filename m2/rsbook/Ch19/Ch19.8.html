@@ -1,0 +1,209 @@
+<HTML><HEAD><TITLE>19.8 Abstract Classes</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Abstract Classes">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+
+<H2><b>19.8 Abstract Classes </b></H2>
+
+<P>Sometimes, one wishes to derive a whole family of classes from a single superclass. The interface for them all is common, but one or more components is known to be different ahead of time for each subclass. Perhaps only one method is different, but in any case there isn't a specific class that can be thought of as ancestor to all the variations, despite the commonality.</P>
+<P>In such a situation, the common ancestor class might have the method in question with only a procedure heading and no implementation, with the intention that this (vacuous) method will have to be overridden by a subclass to produce anything useful.</P>
+<P><i>A class that contains unimplemented methods intended to be overridden by implemented methods in a subclass is called an abstract class.</i></P>
+
+<P><i>A method that is intended to be overridden and so has no implementation is called a deferred method or an abstract method.</i></P>
+
+<P>In OOM-2 both the abstract class itself and any deferred method that causes the class to be abstract must be tagged by preceding them with the keyword ABSTRACT. The example that follows has some simple classes that do little more than illustrate these rules.</P>
+<P>Here, the plan is to declare a number of geometric classes, each of which will have a method to obtain its dimension(s) and methods to compute the area and perimeter. Initially, an abstract class is defined that reveals three abstract methods for these tasks.</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> GeoFigures;
+(* demo of abstract class syntax using plane figures
+  R. Sutcliffe 1998 09 25 *)
+
+<b>TRACED</b> <b>ABSTRACT</b> <b>CLASS</b> GeoFigure;
+  <b>REVEAL</b> InitSize, Area, Perim;
+  <b>ABSTRACT</b> <b>PROCEDURE</b> InitSize;
+  <b>ABSTRACT</b> <b>PROCEDURE</b> Area () : <b>REAL</b>;
+  <b>ABSTRACT</b> <b>PROCEDURE</b> Perim () : <b>REAL</b>;
+<b>END</b> GeoFigure;
+
+<b>END</b> GeoFigures.</PRE>
+
+<P><b>NOTE:</b> The keyword ABSTRACT , when used, comes immediately before CLASS (and after TRACED, where the latter is used).</P>
+
+<P>In the event that a method is marked as abstract in a definition, it must not be implemented. Indeed, if, as in this case, the declaration will not be implementing any methods at all, the class declaration still has to be present, but can be empty.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> GeoFigures;
+
+<b>TRACED</b> <b>ABSTRACT</b> <b>CLASS</b> GeoFigure;
+<b>END</b> GeoFigure;
+
+<b>END</b> GeoFigures.</PRE>
+
+<P>For simplicity, several classes have been derived from this abstract one in a single module below. Observe that each gathers the data necessary for its own version of the object and does its own version of the calculation, while maintaining a consistent interface for the whole family of classes. Moreover, the class <i>Square</i> is a subclass of the class <i>Rectangle,</i> which in turn is a specialization of the abstract class <i>GeoFigures</i> above. <i>Square</i> employs only one of the two dimensions defined in <i>Rectangle.</i></P>
+<P>One might be tempted to make the setting of the class attribute variables part of the initialization block of the class, but this is not a good idea in this case, because <i>Square</i> would then end up running both blocks, doing the one for <i>Rectangle</i> first, then its own. Thus, this code has been made a method called from the outside.</P>
+
+<PRE><b>MODULE</b> DemoGeos;
+(* demonstration of subclassing with abstract superclasses
+  by R. Sutcliffe 1998 09 25 *)
+  
+<b>IMPORT</b> GeoFigures;
+<b>FROM</b> STextIO <b>IMPORT</b>
+  WriteString, WriteLn, SkipLine;
+<b>FROM</b> SRealIO <b>IMPORT</b>
+  ReadReal, WriteReal;
+<b>FROM</b> RealMath <b>IMPORT</b>
+  pi;
+
+(* first subclass of GeoFigures *)
+<b>TRACED</b> <b>CLASS</b> Rectangle;
+  <b>INHERIT</b> GeoFigures.GeoFigure;
+  <b>VAR</b>
+    length, width : <b>REAL</b>;
+
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Area () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> length * width;
+  <b>END</b> Area;
+  
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Perim () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> 2.0 * (length + width);
+  <b>END</b> Perim;
+
+<b>  OVERRIDE</b> <b>PROCEDURE</b> InitSize;
+    <b>BEGIN</b>
+      WriteString ("enter length ==> ");
+      ReadReal (length);
+      SkipLine;
+      WriteString ("enter width ==> ");
+      ReadReal (width);
+      SkipLine;
+    <b>END</b> InitSize;
+<b>END</b> Rectangle;
+
+(* now subclass this in turn, making more overrides *)
+<b>TRACED</b> <b>CLASS</b> Square;
+  <b>INHERIT</b> Rectangle;
+
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Area () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> length * length;
+  <b>END</b> Area;
+  
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Perim () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> 4.0 * length;
+  <b>END</b> Perim;
+
+<b>  OVERRIDE</b> <b>PROCEDURE</b> InitSize;
+<b>  BEGIN</b>
+    WriteString ("enter side length ==> ");
+    ReadReal (length);
+    SkipLine;
+  <b>END</b> InitSize;
+<b>END</b> Square;
+
+(* and, a completely different subclass of the original *)
+<b>TRACED</b> <b>CLASS</b> Circle;
+  <b>INHERIT</b> GeoFigures.GeoFigure;
+  <b>VAR</b>
+    radius : <b>REAL</b>;
+
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Area () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> pi * radius * radius;
+  <b>END</b> Area;
+  
+  <b>OVERRIDE</b> <b>PROCEDURE</b> Perim () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> 2.0 * pi * radius;
+  <b>END</b> Perim;
+
+<b>  OVERRIDE</b> <b>PROCEDURE</b> InitSize;
+<b>  BEGIN</b>
+    WriteString ("enter radius ==> ");
+    ReadReal (radius);
+    SkipLine;
+  <b>END</b> InitSize;
+<b>END</b> Circle;
+
+<b>VAR</b> (* for main block to test this stuff *)
+  rect : Rectangle;
+  square : Square;
+  circ : Circle;
+
+<b>BEGIN</b> (* main module *)
+  <b>CREATE</b> (rect);
+  rect.InitSize;
+  WriteString ("The area is ");
+  WriteReal (rect.Area(), 15);  WriteLn;
+  WriteString ("The perimeter is ");
+  WriteReal (rect.Perim(), 15); WriteLn;WriteLn;
+  
+  <b>CREATE</b> (square);
+  square.InitSize;
+  WriteString ("The area is ");
+  WriteReal (square.Area(), 15);  WriteLn;
+  WriteString ("The perimeter is ");
+  WriteReal (square.Perim(), 15); WriteLn;WriteLn;
+
+  <b>CREATE</b> (circ);
+  circ.InitSize;
+  WriteString ("The area is ");
+  WriteReal (circ.Area(), 15);  WriteLn;
+  WriteString ("The perimeter is ");
+  WriteReal (circ.Perim(), 15); WriteLn;WriteLn;
+
+<b>END</b> DemoGeos.</PRE>
+
+<P>One run of this module is shown below, with the inputs in bold.</P>
+<PRE>enter length ==> <b>2</b>
+enter width ==> <b>3</b>
+The area is 6.0000000000000
+The perimeter is 10.000000000000
+
+enter side length ==> <b>5</b>
+The area is 25.000000000000
+The perimeter is 20.000000000000
+
+enter radius ==> <b>1</b>
+The area is 3.1415925025940
+The perimeter is 6.2831850051880</PRE>
+
+<P>This is very simple, and very minimal, both in form and in content. Many more figures and their associated methods could be derived, and there are more interesting methods such as displaying the figure on the screen that could be written. Also, the verbal clues in the output need work; the student who is interested may clean this code up considerably.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

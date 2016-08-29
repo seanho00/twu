@@ -1,0 +1,69 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>Quiz 5 :: CMPT140 09FA :: TWU</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 20
+
+<ol class="main">
+
+<li> Compare and contrast an <b>alias</b>, <b>shallow copy</b>, and
+<b>deep copy</b>. <u>[6]</u>
+<br><i>
+  <b>Aliases</b> are two names that refer to the same object.<br>
+  <b>Shallow copies</b> are two distinct objects that have 
+  attributes/elements that are aliases of each other.<br>
+  <b>Deep copies</b> are two distinct objects that do not share
+  any aliases of attributes/elements, no matter how deep in the tree.
+</i><br><br><br><br><br><br><br><br><br>
+
+<li> What are mutator/accessor (set/get) functions?  
+Why should we design our ADTs (abstract data types) to use them? <u>[5]</u>
+<br><i>
+  Read/write access to attributes/variables
+  Protect our internal attributes from unauthorized access
+  API stability: internals may change
+</i><br><br><br><br><br><br><br><br><br>
+
+<li> Write a line of Python code to create a Python dictionary with at 
+least 3 entries and save it in a variable.  <u>[3]</u>
+<br><i><pre>
+appleInv = { 'Fuji':15, 'Gala':3, 'Rome': 1 }
+</pre></i><br><br>
+
+<li> Let <tt>idx</tt> be a variable representing a key with which we want
+to index into the dictionary you created in the previous problem.
+But we're not sure if that key exists in your dictionary (if it doesn't,
+the KeyError exception will be raised).  Write a Python expression that
+gets the value corresponding to <tt>idx</tt> in your dictionary, or zero 
+if the key doesn't exist in the dictionary.  <u>[3]</u>
+<br><i><pre>
+  appleInv.get(idx, 0)
+</pre></i><br><br><br>
+
+<li> Describe what the <tt>.items()</tt> method does for Python dictionaries.
+What would you use it for?  <u>[3]</u>
+<br><i>
+  Returns a list of (key,value) tuples, in arbitrary order.
+  Converts from dictionary type to list type.
+  Useful, for instance if you want to iterate over both keys and values.
+</i><br><br><br><br><br>
+
+</ol>
+
+</body></html>
+
+

@@ -1,0 +1,705 @@
+<HTML><HEAD><TITLE>Appendix 6--ISO Support Modules for this Text</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 6<!--</B>‹<B>-->--ISO Support Modules For This Text</B></H2>
+
+<P><!--revised 1999 07 20--></P>
+<P>All the modules in this section are system specific modules.  They were written by the author in support of a personal trial implementation of the ISO library on the Macintosh computer.  Since some references are made to these modules in the text, their definitions are reproduced here from highest level to lowest level.</P>
+<H3><B><A NAME="A6.1">A6.1</A> RedirStdIO</B></H3>
+<PRE><A NAME="RedirStdIO"></A>  
+ <b>DEFINITION MODULE</b> RedirStdIO;
+
+(* =========================================
+  Definition and Implementation © 1993-1997
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1997 07 02
+=========================================== *)
+
+<b>IMPORT</b> ChanConsts;
+
+<b>TYPE</b>
+  OpenResults = ChanConsts.OpenResults;
+	
+<b>PROCEDURE</b> OpenResult () : OpenResults;
+(* returns the result of the last attempt to open a file for redirection *)
+
+<b>PROCEDURE</b> OpenOutput;
+(* engages the user in a dialog to obtain a file for redirection of standard Output and attempts to open the file so obtained *)
+
+<b>PROCEDURE</b> OpenOutputFile (<b>VAR</b> fileName: <b>ARRAY OF CHAR</b>);
+(* opens the file specified by fileName for redirection of output.  If the name supplied is the empty string or the file could not be opened, control passes to OpenOutput and the filename eventually used is returned in the parameter. *)
+
+<b>PROCEDURE</b> CloseOutput;
+(* returns the standard output channel to the default value *)
+
+<b>PROCEDURE</b> OpenInput;
+(* engages the user in a dialog to obtain a file for redirection of standard Input and attempts to open the file so obtained *)
+
+<b>PROCEDURE</b> OpenInputFile (<b>VAR</b> fileName: <b>ARRAY OF CHAR</b>);
+(* Opens the file specified by fileName for redirection of input.  If the name supplied is the empty string or is not found, control passes to OpenInput and the filename eventually used is returned in the parameter. *)
+
+<b>PROCEDURE</b> CloseInput;
+(* returns the standard input channel to the default value *)
+
+<b>END</b> RedirStdIO.</PRE>
+<H3><B><A NAME="A6.2">A6.2</A> Filer</B></H3>
+<P>As can be seen from the credits, this module has a long history.  With minor modifications, it has served the author for a decade of Modula-2 work, and it proved a simple matter to implement the ISO library on top of it.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Filer;
+
+(* =========================================
+  Definition and Implementation © 1985-1995
+                by R. Sutcliffe
+        Trinity Western University
+7600 Glover Rd., Langley, BC Canada V3A 6H4
+         e-mail: rsutc@twu.ca
+    Last modification date 1995 01 10
+=========================================== *)
+
+(*
+Copyright 1985  by R. Sutcliffe as "Files"
+Version 1 for Apple ][ UCSD p-system 1985 by R. Sutcliffe 
+Version 2 for MS-DOS PCollier compiler 1987 by R. Sutcliffe 
+Version 3  for Sempersoft Modula-2 compiler using MPW
+  September 1988
+  research and first design by Greg Manning
+   Implementation by R. Sutcliffe 
+Version 4 for Sun Modula-2 (UNIX) 1989 by R. Sutcliffe 
+Version 5 Redesign version3 for the MetCom compiler 1990 09 12
+  by R. Sutcliffe 
+  MPW and PSE versions implemented
+Version 6 For Metrowerks PSE 4.03 compiler
+  Renamed "Channels" for a mid-level ISO-like implementation 1993 08 01 by R. Sutcliffe
+  initial research by Gord Tischer
+  redesign and implementation as part of ISO-like I/O suite by R. Sutcliffe
+  name changed to "Filer" to avoid toolbox conflict
+  changed order of parameters in Read/Write Bytes to typical ISO order
+  length parameter in Read/Write Bytes changed to VAR and CARDINAL
+Version 6.1 last modification date 1993 10 21  read/open => var param
+Version 6.2 last modification date 1994 01 28
+     added the concept of mode to support ISO
+     changed most file parameters from VAR to value
+Version 6.2.1 last modification date 1994 05 18
+  to p1 MPW; requires LONGINT ==> INTEGER
+Version 6.2.2 last modification date 1994 10 22
+    add OpenMode to record mode of original opening for additional ISO utility 
+  added flush capability 
+  fixed close finally
+    changed open semantics so that if it fails, the memory is deallocated 
+    fixed a bug in reading by making the chrBuf and chrRead file by file 1995 01 06 
+Version 6.2.3 Added Lookup modified 1995 01 10 *)
+    
+(* This module provides basic file capabilities in a consistent interface to other modules. *)
+
+<B>FROM</B> SYSTEM <B>IMPORT</B>
+  BYTE, WORD, ADDRESS;
+<B>FROM</B> Types <B>IMPORT</B>
+  Str255;
+<B>FROM</B> MacFileTypes <B>IMPORT</B>
+  NameType;
+
+<B>TYPE</B>
+  File;
+
+  (* Each file procedure will return a result of type <!--"-->&quot;FileErr<!--"-->&quot;.
+     The meaning of each possible result is explained below. *)
+
+  FileErr = (FileOK,     (* everything worked *)
+  <B>EOF</B>,           (* an read was made past the end of a file *)
+  DiskError,     (* media is corrupted *)
+  FileExists, (* a file with that name already exists *)
+  FSErr,         (* error in external file system *)
+  FileAbsent, (* no file with that name exists *)
+  TooManyOpen,   (* tried to open too many files*)
+  BadName,       (* an illegal file name was used: perhaps too long, or contains a colon *)
+  DiskFull,      (* there is no more room on the disk *)
+  FileLocked, (* fileges can't be made to locked files *)
+  FileBusy,   (* that file is already open *)
+  NotOpen,       (* attempt to access file not open *)
+  OtherError);   (* one of the rarer errors has occurred *)
+  
+  Mode = (none, input, output, both, invalid);
+  OpenMode = (notSet, read, write, readwrite, append, other);
+
+<B>VAR</B>
+  FileDone : FileErr;
+  useDialogs  : <B>BOOLEAN</B>; (* set to <B>FALSE</B>, but if reset by user, create and open bring up standard dialog boxes *)
+
+
+<B>PROCEDURE</B> Lookup (filename : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>) : <B>BOOLEAN</B>;
+(* If the file with the given name is present returns <B>TRUE</B> and sets FileDone to FileOK
+if not, returns FALSE and sets FileDone to FileAbsent or another error *)
+
+<B>PROCEDURE</B> Create (<B>VAR</B> filename : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>; creator, type : NameType);
+  (* Creates a new, empty file in the current directory.
+     The new file will be named as specified in 'name'.
+     The new file will have a signature as specified in 'creator'.
+     The new file will have a type as specified in 'type'.
+     Latter two only in Mac version
+     NB. A newly created file must still be opened to be used.
+     The standard dialog is used if useDialogs is set to <B>TRUE</B> or
+     if the filename passed is an empty string. In that case, the actual filename opened by the user is passed back in filename. *)
+
+<B>PROCEDURE</B> Open (<B>VAR</B> file : File; <B>VAR</B> filename : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Creates the variable <!--"-->&quot;file<!--"-->&quot;
+     Opens an already existent file in the current directory.
+     The file whose name is specified in 'filename' will be opened.
+     'file' is set to refer to the opened file.
+     Any information previously stored in 'file' will be lost.
+     It is important to close all opened files before ending a program. 
+     The standard dialog is used if the filename passed is an empty string.
+     The mode is set to <!--"-->&quot;both<!--"-->&quot; as a default as this is a low level proc 
+	 The OpenMode is set to notSet
+     If the open fails, the memory for the file variable is deallocated *)
+
+
+(* The following procedures operate on files specified by name only. *)
+
+<B>PROCEDURE</B> Delete (filename : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Deletes the file specified in 'filename'.  Use with caution! *)
+  
+<B>PROCEDURE</B> Rename (oldname, newname : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Renames the file specified by 'oldname' as specified by 'newname'. *)
+
+(*================================================================
+The following procedures require that 'file' refer to a previously opened file.  Calling one of them when 'file' is invalid may produce unpredicable results.  Hopefully an error will result if 'file' was invalid, but it is possible that 'file' contains a valid value by accident. *)
+
+<B>PROCEDURE</B> GetName (file: File; <B>VAR</B> filename : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+(* Returns the name of the file that was used when it was opened *)
+
+<B>PROCEDURE</B> Eof (file : File) : <B>BOOLEAN</B>;
+  (* Returns TRUE if the file position is at or past logical EOF 
+  The return result is defined only if the error  state is FileOK *)
+  
+<B>PROCEDURE</B> GetMode (file : File) : Mode;
+  (* Returns the currently mode on this file *)
+
+<B>PROCEDURE</B> SetMode (file : File; mode : Mode);
+  (* Sets the current mode on this file *)
+
+<B>PROCEDURE</B> GetOpenMode (file : File) : OpenMode;
+  (* Returns the open mode on this file *)
+
+<B>PROCEDURE</B> SetOpenMode (file : File; mode : OpenMode);
+  (* If the OpenMode is notSet, Sets the open mode on this file;
+     If the OpenMode is anything else, does nothing, but no error condition is set should only be done just after opening *)
+
+<B>PROCEDURE</B> FileState (file : File) : FileErr;
+  (* Returns the currently set error on this file *)
+  
+<B>PROCEDURE</B> Flush (file : File);
+  (* The volume on which the file is located will be flushed.
+     There is no guarantee that any date for a file has been written to the disk until the associated volume has been flushed, either by this procedure or by closing the file. *)
+
+<B>PROCEDURE</B> Close (file : File);
+  (* The file specified in 'file' will be closed.
+     After calling this procedure, if the close was successful, the memory is deallocated and variable is set to NIL; if it is not successful, the mode becomes invalid, and the variable is retained. The file cannot be reopened with the same file record, but another attempt to close can be made. *)
+  
+<B>PROCEDURE</B> ReadByte (file : File; <B>VAR</B> input : BYTE);
+ (* Reads the next byte from the file 'file' and stores it in 'input'. *)
+
+<B>PROCEDURE</B> Look (file : File; <B>VAR</B> ch : <B>CHAR</B>);
+ (* Reads but does not remove from the input stream the next character from the file 'file' and stores it in 'ch'. *)
+
+<B>PROCEDURE</B> Skip (file : File);
+ (* Removes from the input stream the next byte from the file 'file' *)
+
+<B>PROCEDURE</B> SkipLook (file : File; <B>VAR</B> ch : <B>CHAR</B>);
+ (* Does a skip followed by a look *)
+
+<B>PROCEDURE</B> ReadChar (file : File; <B>VAR</B> ch : <B>CHAR</B>);
+ (* Reads the next character from the file 'file' and stores it in 'ch'. *)
+     
+<B>PROCEDURE</B> ReadWord (file : File; <B>VAR</B> input : WORD);
+ (* Reads the next word from the file 'file' and stores it in 'input'. *)
+
+<B>PROCEDURE</B> ReadBytes (file : File; buffer : ADDRESS; <B>VAR</B> length : <B>CARDINAL</B>);
+  (* Reads 'length' bytes from the file 'file' and stores them at 'buffer'.
+     Actual number of bytes read returned in length 
+     If the buffer is too small, data will be overwritten.
+     This is a low level procedure -- dont use unless you know what you are doing *)
+
+<B>PROCEDURE</B> ReadRec(file : File; <B>VAR</B> rec : <B>ARRAY</B> <B>OF</B> BYTE);
+  (* This is a safer high level procedure for reading records *)
+
+<B>PROCEDURE</B> WriteByte(file : File; output : BYTE);
+  (* Writes the byte in 'output' to the file 'file'. *)
+
+<B>PROCEDURE</B> WriteChar(file : File; ch : <B>CHAR</B>);
+  (* Writes the char in 'ch' to the file 'file'. *)
+
+<B>PROCEDURE</B> WriteWord(file : File; output : WORD);
+ (* Writes the word in 'output' to the file 'file'. *)
+
+<B>PROCEDURE</B> WriteBytes(file : File; buffer : ADDRESS; <B>VAR</B> length : <B>CARDINAL</B>);
+  (* Writes the 'length' bytes starting at 'buffer' to the file 'file'.
+     Actual number of bytes read returned in length 
+     If the buffer is too small, undefined bytes will be written. 
+     So don't use this unless you know what you are doing *) 
+
+<B>PROCEDURE</B> WriteRec(file : File; rec : <B>ARRAY</B> <B>OF</B> BYTE);
+  (* This is a safe high level procedure for writing records *)
+
+(* Following for random access files *)
+
+<B>PROCEDURE</B> GetPos (file : File; <B>VAR</B> pos : <B>INTEGER</B>);
+
+<B>PROCEDURE</B> GetEOF (file : File; <B>VAR</B> pos : <B>INTEGER</B>);
+
+<B>PROCEDURE</B> SetPos (file : File; pos : <B>INTEGER</B>);
+  (* sets from beginning of file *)
+
+<B>PROCEDURE</B> SetEOF (file : File; pos : <B>INTEGER</B>);
+
+<B>END</B> Filer.</PRE>
+<H3><B><A NAME="A6.3">A6.3</A> Keyboard</B></H3>
+<P>As suggested in the appendix on classical I/O modules, a keyboard reading module is a common item in many implementations.  The author's follows.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> Keyboard;
+
+(* =========================================
+  Definition and Implementation © 1993
+                by R. Sutcliffe
+=========================================== *)
+
+<B>PROCEDURE</B> BusyRead (<B>VAR</B> ch: <B>CHAR</B>);
+  (* return character if one is there, otherwise return 0C *)
+  
+<B>PROCEDURE</B> Read (<B>VAR</B> ch: <B>CHAR</B>);
+  (* return character *)
+  
+<B>END</B> Keyboard.</PRE>
+<H3><B><A NAME="A6.4">A6.4</A> CharBuffer</B></H3>
+<P>In order to implement the ISO library <I>Look</I> functionality, the author decided to employ a buffer to store text coming from the keyboard until it was <!--"-->&quot;read<!--"-->&quot; by the I/O routines.  Because this seemed like a general problem, the required functionality was included in a library.  The maximum buffer size is arbitrary.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> CharBuffer;
+
+(* =========================================
+  Definition and Implementation © 1993
+                by R. Sutcliffe
+=========================================== *)
+
+(* provides a first in first out 1024 character buffer facility *)
+
+<B>TYPE</B>
+  Buffer;
+  
+<B>PROCEDURE</B> Init (<B>VAR</B> b : Buffer);
+(* create a new empty buffer *)
+
+<B>PROCEDURE</B> Destroy (<B>VAR</B> b: Buffer);
+(* give all memory back to the system *)
+
+<B>PROCEDURE</B> Flush (b : Buffer);
+(* empty a buffer *)
+
+<B>PROCEDURE</B> Full (b: Buffer) : <B>BOOLEAN</B>;
+(* returns TRUE if the buffer cannot take any more characters
+<B>FALSE</B> if it can *)
+
+<B>PROCEDURE</B> Empty (b: Buffer) : <B>BOOLEAN</B>;
+(* returns TRUE if the buffer cannot give back any more characters
+<B>FALSE</B> if it can *)
+
+<B>PROCEDURE</B> Enter (b : Buffer; ch: <B>CHAR</B>);
+(* Enters the character.  If it was full, the first in is lost. 
+ If you don't like that way of doing it, write your own. *)
+
+<B>PROCEDURE</B> Look (b : Buffer; <B>VAR</B> ch: <B>CHAR</B>);
+(* get the first in without removing it *)
+
+<B>PROCEDURE</B> Skip (b : Buffer);
+(* remove the first in *)
+
+<B>PROCEDURE</B> Erase (b : Buffer);
+(* remove the last in *)
+
+<B>PROCEDURE</B> Fetch (b : Buffer; <B>VAR</B> ch: <B>CHAR</B>);
+(* get the first in and removes it *)
+
+<B>PROCEDURE</B> Size (b : Buffer) : <B>CARDINAL</B>;
+(* returns number of characters in the buffer *)
+
+<B>END</B> CharBuffer.</PRE>
+
+<H3><B><A NAME="A6.5">A6.5</A> STerminal</B></H3>
+<P>A student terminal package was implemented so as to allow programs to have pull down menus and require an explicit quit command to exit.  This makes it easier to copy or print material from the terminal window.</P>
+
+<PRE><b>DEFINITION MODULE</b> STerminal;
+<b>FROM</b> SYSTEM <b>IMPORT</b> ADDRESS;
+(* exported procedures *)
+<b>PROCEDURE</b> WriteChar (ch : <b>CHAR</b>);
+<b>PROCEDURE</b> WriteCharRef (adr : ADDRESS);
+<b>PROCEDURE</b> WriteString (str : <b>ARRAY OF CHAR</b>);
+<b>PROCEDURE</b> WriteStringRef (adr : ADDRESS; howMany : <b>CARDINAL</b>);
+<b>PROCEDURE</b> WriteLn;
+<b>PROCEDURE</b> BusyRead (<b>VAR</b> ch : <b>CHAR</b>);
+<b>PROCEDURE</b> ReadChar (<b>VAR</b> ch : <b>CHAR</b>);
+<b>PROCEDURE</b> ReadString (<b>VAR</b> str : <b>ARRAY OF CHAR</b>);
+<b>END</b> STerminal.
+
+</PRE>
+
+<H3><B><A NAME="A6.6">A6.6</A> ASCII</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ASCII;
+
+(* R. Sutcliffe. Last Modification 1997 10 15 *)
+
+<B>CONST</B>
+  nul = 00C; soh = 01C; stx = 02C; etx = 03C; eot = 04C; enq = 05C;
+  ack = 06C; bel = 07C; bs  = 10C; ht  = 11C; lf  = 12C; vt  = 13C;
+  ff  = 14C; cr  = 15C; so  = 16C; si  = 17C; dle = 20C; dc1 = 21C;
+  dc2 = 22C; dc3 = 23C; dc4 = 24C; nak = 25C; syn = 26C; etb = 27C;
+  can = 30C; em  = 31C; sub = 32C; esc = 33C; fs  = 34C; gs  = 35C;
+  rs  = 36C; us  = 37C; space = 40C; del = 177C; 
+
+<B>END</B> ASCII.
+
+</PRE>
+<H3><B><A NAME="A6.7">A6.7</A> SComplexIO</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 10 30
+===========================================*)
+
+  (* Input and output of complex numbers in decimal text form over the default channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a complex number is
+       realNumber, space ["+" | "-"], [space,] [realnumber, i] |
+       [realNumber, space] ["+" | "-"], [space,] realnumber, i
+     where the real numbers in each case are in the 
+     format specified for fixed or floating reals.
+  *)
+ 
+<B>PROCEDURE</B> ReadComplex (<B>VAR</B> complex: <B>COMPLEX</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a complex number.  The value of this number is assigned to complex. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteFloat (complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in floating-point real text form, with sigFigs significant figures, in a field of the given minimum width. The width for the real parts is 0 if the supplied width is 3 or less, and it is (width - 4) <B>DIV</B> 2 otherwise.  *)
+ 
+<B>PROCEDURE</B> WriteEng (complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (complex: <B>COMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in fixed-point text form, with real parts rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteComplex (complex: <B>COMPLEX</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> SComplexIO.
+
+</PRE>
+<H3><B><A NAME="A6.8">A6.8</A> SLongComplexIO</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> SLongComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 11 01
+===========================================*)
+
+  (* Input and output of longcomplex numbers in decimal text form over the default channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a LongComplex number is
+       realNumber, [space], ["+" | "-"], [space,] [realnumber, i] |
+       [realNumber, [space],] ["+" | "-"], [space,] realnumber, i
+     where the real numbers in each case are in the 
+     format specified for fixed or floating longreals.
+  *)
+ 
+<B>PROCEDURE</B> ReadComplex (<B>VAR</B> complex: <B>LONGCOMPLEX</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a complex number.  The value of this number is assigned to complex. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+ 
+<B>PROCEDURE</B> WriteFloat (complex: <B>LONGCOMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in floating-point real text form, with sigFigs significant figures, in a field of the given minimum width. The width for the real parts is 0 if the supplied width is 3 or less, and it is (width - 4) DIV 2 otherwise.  *)
+ 
+<B>PROCEDURE</B> WriteEng (complex: <B>LONGCOMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (complex: <B>LONGCOMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in fixed-point text form, with real parts rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteComplex (complex: <B>LONGCOMPLEX</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> SLongComplexIO.
+
+</PRE>
+
+<H3><B><A NAME="A6.9">A6.9</A> ComplexIO</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> ComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 10 30
+===========================================*)
+
+  (* Input and output of complex numbers in decimal text form over specified channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a complex number is
+       realNumber, [space], ["+" | "-"], [space,] [realnumber, i] |
+       [realNumber, [space],] ["+" | "-"], [space,] realnumber, i
+     where the real numbers in each case are in the 
+     format specified for fixed or floating reals.
+  *)
+   
+<B>PROCEDURE</B> ReadComplex (cid: IOChan.ChanId; <B>VAR</B> complex: <B>COMPLEX</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a complex number.  The value of this number is assigned to complex. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+ 
+(* following procedure affects all the Write procs below *)
+<B>PROCEDURE</B> SetVerbose (verbose : <B>BOOLEAN</B>);
+  (* if true prints both components even if one is zero; else prints only one if the other is zero. The default is false. *)
+
+<B>PROCEDURE</B> WriteFloat (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in floating-point real text form, with sigFigs significant figures, in a field of the given minimum width. The width for the real parts is 0 if the supplied width is 3 or less, and it is (width - 4) <B>DIV</B> 2 otherwise.  *)
+ 
+<B>PROCEDURE</B> WriteEng (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in fixed-point text form, with real parts rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteComplex (cid: IOChan.ChanId; complex: <B>COMPLEX</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> ComplexIO.
+</PRE>
+
+<H3><B><A NAME="A6.10">A6.10</A> LongComplexIO</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> LongComplexIO;
+
+(* =========================================
+          © 1996 by R. Sutcliffe
+    Last modification date 1996 11 01
+===========================================*)
+
+  (* Input and output of LongComplex numbers in decimal text form over specified channels. The read result is of the type IOConsts.ReadResults. *)
+ 
+<B>IMPORT</B> IOChan;
+ 
+  (* The text form of a LongComplex number is
+       realNumber, [space], ["+" | "-"], [space,] [realnumber, i] |
+       [realNumber, [space],] ["+" | "-"], [space,] realnumber, i
+     where the real numbers in each case are in the 
+     format specified for fixed or floating longreals.
+  *)
+   
+<B>PROCEDURE</B> ReadComplex (cid: IOChan.ChanId; <B>VAR</B> complex: <B>LONGCOMPLEX</B>);
+  (* Skips leading spaces, and removes any remaining characters from cid that form part of a complex number.  The value of this number is assigned to complex. The read result is set to the value allRight, outOfRange, wrongFormat, endOfLine, or  endOfInput. *)
+ 
+(* following procedure affects all the Write procs below *)
+<B>PROCEDURE</B> SetVerbose (verbose : <B>BOOLEAN</B>);
+  (* if true prints both components even if one is zero; else prints only one if the other is zero. The default is false. *)
+
+<B>PROCEDURE</B> WriteFloat (cid: IOChan.ChanId; complex: <B>LONGCOMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in floating-point real text form, with sigFigs significant figures, in a field of the given minimum width. The width for the real parts is 0 if the supplied width is 3 or less, and it is (width - 4) DIV 2 otherwise.  *)
+ 
+<B>PROCEDURE</B> WriteEng (cid: IOChan.ChanId; complex: <B>LONGCOMPLEX</B>; sigFigs: <B>CARDINAL</B>; width: <B>CARDINAL</B>);
+  (* As for WriteFloat, except that the number is scaled with one to three
+digits in the whole number part, and with an exponent that is a multiple of three. *)
+ 
+<B>PROCEDURE</B> WriteFixed (cid: IOChan.ChanId; complex: <B>LONGCOMPLEX</B>; place: <B>INTEGER</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid in fixed-point text form, with real parts rounded to the given place relative to the decimal point, in a field of the given minimum width. *)
+ 
+<B>PROCEDURE</B> WriteComplex (cid: IOChan.ChanId; complex: <B>LONGCOMPLEX</B>; width: <B>CARDINAL</B>);
+  (* Writes the value of complex to cid, as WriteFixed if the sign and magnitude can be shown in the given width, or otherwise as WriteFloat.  The number of places or significant digits depends on the given width.  *)
+ 
+<B>END</B> LongComplexIO.
+
+</PRE>
+
+<H3><B><A NAME="A6.11">A6.11</A> GraphPaper</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> GraphPaper;
+
+(* Original design copyright 1996 by R. Sutcliffe
+    Original implementation 1996 using p1 on the Macintosh
+    Windows implementation 1998 05 12 by Joel Schwartz
+        with use of examples written by Stony Brook
+        Last revision by RS 1998 07 11
+*)
+
+<B>TYPE</B>
+  CoordSystem = (MacWin, bearing, standard); (* default = standard *)
+(* The MacWin Coordinate system grows down and has the origin at the top
+   left hand corner with angles measured clockwise. In the bearing
+   system the home position (0,0) is the middle of the screen
+   from which angles are measured clockwise. The standard system also
+   starts in mid screen and grows up but measures from east as zero and
+   thence counterclockwise. *)
+
+  AngleType = (deg, rad, grad); (* Allows for angle type specification *)
+  LabelType = <B>ARRAY</B> [0..50] <B>OF</B> <B>CHAR</B>;  (* Standard format for labels *)
+
+<B>PROCEDURE</B> SetCoordSystem (kind : CoordSystem);
+(* Allows the user to set the system. The default is the standard system so this has to be called only if a change is desired. This procedure concludes by calling Home. Any shift in the system origin must be made after calling this procedure.  *)
+<B>PROCEDURE</B> SetAngleType (kind : AngleType);
+(* Allows the user to set the angle measurement type. The default is degrees so this has to be called only if a change is desired. This procedure concludes by calling Home. Any shift in the system origin must be made after calling this procedure.  *)
+
+<B>PROCEDURE</B> Home;
+(* moves to 0,0 and then
+     In the bearing system:
+       - sets angle to 0 (North)
+       - sets the rotational direction to clockwise
+     In the MacWin & standard system:
+       - sets the angle to 0 (East)
+       - sets the rotational direction to clockwise (MacWin)
+               or to counterclockwise (standard) *)
+
+<B>PROCEDURE</B> ShiftOrigin (deltaX, deltaY : <B>INTEGER</B>);
+(* Translate the origin by the amount specified.  The direction of the translation on the screen depends, of course, on the coordinate system being used. Drawing is now with respect to the new origin. Does not call home or change  any other settings. *)
+
+<B>PROCEDURE</B> GetDimensions (<B>VAR</B> x, y: <B>INTEGER</B>);
+  (* obtains the overall width and height of the drawing screen *)
+<B>PROCEDURE</B> GetLocation (<B>VAR</B> x, y: <B>INTEGER</B>);
+  (* get the drawing pen location in current coordinates *)
+
+(* The following three procedures work in the current coordinate
+system and on the stored pen position only but do no actual drawing. *)
+
+<B>PROCEDURE</B> MoveBy (distance: <B>INTEGER</B>);
+  (* move in the stored direction by the supplied distance *)
+<B>PROCEDURE</B> MoveTo (x, y : <B>INTEGER</B>);
+  (* move the drawing pen to the specified coordinates *)
+<B>PROCEDURE</B> Move (dx, dy : <B>INTEGER</B>);
+  (* move the drawing pen to a point (x + dx, y + dy) from the currently stored point *)
+
+(* The following three procedures work in the current coordinate system on the stored pen direction only but do no actual drawing. 
+The angle is assumed to be in the currently set units. *)
+
+<B>PROCEDURE</B> GetCurrentAngle () : <B>REAL</B>;
+  (* Return the current angle in the current units *)
+<B>PROCEDURE</B> Turn (angle : <B>REAL</B>);
+  (* change the stored pen direction by adding its angle to the one supplied *)
+<B>PROCEDURE</B> TurnTo (angle : <B>REAL</B>);
+(* change the stored pen direction by setting its angle to the one supplied *)
+
+(* The following two procedures use the pen to draw a line and change the stored position. *)
+
+<B>PROCEDURE</B> LineBy (distance: <B>INTEGER</B>);
+  (* Draws in the stored pen direction the number of units supplied. *)
+<B>PROCEDURE</B> LineTo (x, y : <B>INTEGER</B>);
+(* Draws a line from the current stored position to the supplied one without using or changing the stored direction. *)
+<B>PROCEDURE</B> Line (dx, dy : <B>INTEGER</B>);
+(* Line to a point (x + dx, y + dy) from the current point without using or changing the stored direction. *)
+
+(* The following two procedures place a dot on the screen, but do not change the pen direction. Measurement is in pixels; not scaled. *)
+
+<B>PROCEDURE</B> Dot;
+   (* places a dot at the present location *)
+<B>PROCEDURE</B> DotAt (x, y : <B>INTEGER</B>);
+   (* does a MoveTo, then a dot *)
+
+(* These procedures are for annotating the graph paper with a scale and labels for the axes. *)
+
+<B>PROCEDURE</B> SetLabels (horix, vert : LabelType);
+   (* Sets the names for the horizontal and vertical axes. *)
+<B>PROCEDURE</B> ShowLabels;
+   (* Show the labels - if no label is set then "x" and "y" are used *)
+<B>PROCEDURE</B> ShowAxes;
+   (* Show the axes for the graph *)
+
+(* The following procedures allow for a scaling of the graph paper and the plotting of points according to the scale. If the scale is 10, there is one unit every ten division marks. This will make the plotting of functions more readible. The default is one unit per division mark.
+    EXAMPLE: setting the scale to 5 using cm's as the unit means 1 cm = 5 division marks.*)
+
+<B>PROCEDURE</B> SetScale (dataPerDivision : <B>CARDINAL</B>);
+   (* Set the scale by which the graph is measured *)
+<B>PROCEDURE</B> PlotPoint( x, y : <B>REAL</B>);
+   (* Plot a scaled point on the graph *)
+<B>PROCEDURE</B> PolarPlotPoint (radius, angle : <B>REAL</B>);
+   (* Moves to a given angle and radius and places a scaled dot at that point.
+	 The angle is assumed to be in the currently set units. *)
+
+<B>END</B> GraphPaper.
+</PRE>
+
+<H3><B><A NAME="A6.12">A6.12</A> GraphWindow</B></H3>
+
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> GraphWindow;
+
+(* Design and Macintosh implementattion by R.  Sutcliffe
+   Windows implementation by Joel Schwartz
+   Last revision: 1998 07 07 *)
+   
+(* This module obtains and passes to applications that need it a simple graphics window and its dimensions. Some applications will need only to import this module, and possibly get the window dimensions, as graphing takes place in the current grafport anyway, and this module will set that port, so GetWindow may not have to be imported. *)
+
+<B>IMPORT</B> (* MacOS *) Quickdraw; (* Windows: IMPORT WIN32; *) 
+
+(* for convenience we export the type of the reference; this makes it more compatible to the 
+Windows version where we import the HDC type and define WindowRef to be an HDC. *)
+<B>
+TYPE</B> 
+  WindowRef = Quickdraw.WindowRef;  (* Windows: WindowRef = WIN32.HDC *)
+<B>
+PROCEDURE</B> GetWindow () : WindowRef;
+<B>PROCEDURE</B> GetWDimensions (<B>VAR</B> width, height : <B>INTEGER</B>);
+
+<B>END</B> GraphWindow.
+
+</PRE>
+
+<HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

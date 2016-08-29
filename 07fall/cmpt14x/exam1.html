@@ -1,0 +1,163 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT14x Fall 2007 Midterm ch1-5, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 50
+
+<ol class="main">
+
+<li>
+Describe the five <b>hardware</b> 
+abstractions mentioned in the text. <u>[5]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>_<i>Input</i>__________</td>
+<td width=20%>_<i>Storage</i>__________</td>
+<td width=20%>_<i>Processing</i>__________</td>
+<td width=20%>_<i>Control</i>__________</td>
+<td width=20%>_<i>Output</i>__________</td>
+</tr></table></center>
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<u>[5]</u><br>
+
+<center><table width=80%><tr>
+<td width=20%>_<i>Write</i>__________</td>
+<td width=20%>_<i>Apprehend</i>__________</td>
+<td width=20%>_<i>Design</i>__________</td>
+<td width=20%>_<i>Execute</i>__________</td>
+<td width=20%>_<i>Scrutinize</i>__________</td>
+</tr></table></center>
+
+<li>
+The following code is intended to print (x,y) pairs for the function
+y=x<sup>2</sup> between x=0 and x=10, in increments of 0.1.
+(It could be used to plot the function).
+What is <b>wrong</b> with the loop?
+What will happen if we <b>run</b> it as-is?
+How would you <b>fix</b> it?
+<u>[4]</u>
+<pre>
+x = 0.0
+while x != 10.0:
+	y = x*x
+	print "(%4.1f, %6.2f)" % (x, y)
+	x += 0.1
+</pre>
+<br>
+<i>Due to inaccuracies in computer floating-point arithmetic, x will
+not equal 10.0 exactly, so the loop will continue past 10.0 forever
+(infinite loop).  One quick fix is to change <tt>x != 10.0</tt> to
+<tt>x &lt;= 10.0</tt>.
+</i><br><br><br><br>
+
+<li>
+Name two operations/functions/properties that Python <b>lists</b> have that 
+M2/C arrays do not. <u>[4]</u>
+<br><i><ul>
+<li> concatenation (+) (appending two lists),
+<li> repetition (*) (e.g., "Hi" * 3 == "HiHiHi"),
+<li> slice (extracting a sublist),
+<li> insert/delete
+</ul></i>
+<br><br><br>
+
+<li>
+What is a <b>backtrace</b>? <u>[3]</u>
+<br><i>
+Shows the call stack: list of what functions are currently being evaluated
+</i>
+<br><br><br><br><br><br><br><br>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to indicate
+whether it can be used as a valid name for a user-defined Python variable.
+<u>[6]</u><br>
+
+<center><table><tr>
+<td><tt>true		</tt></td><td width=90><i>yes</i>______</td>
+<td><tt>MODULE		</tt></td><td width=90><i>yes</i>______</td>
+<td><tt>return		</tt></td><td width=90><i>no (reserved)</i>______</td>
+</tr><tr>
+<td><tt>10thAnniversary	</tt></td><td width=90><i>no (starts with digit)</i>______</td>
+<td><tt>www.twu.ca	</tt></td><td width=90><i>no (punctuation)</i>______</td>
+<td><tt>_____		</tt></td><td width=90><i>yes</i>______</td>
+</tr></table></center>
+(the last string is all underscores)
+
+
+<li>
+Use the Python <tt>range()</tt> function to create this list:
+<tt>[ 11, 8, 5, 2 ]</tt>. <u>[3]</u>
+<br><i>range(11,-1,-3)</i>
+<br><br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume the following initialization:<u>[12]</u>
+<pre>	myApple = "Braeburn"	</pre>
+  <ol class="subparts">
+<li><tt> 2.0 + 14 / 4	</tt> <i>5.0</i>
+<li><tt> 2 + 3&gt;4 and (5/0 &lt; 1)	</tt> <i>ZeroDivisionError</i>
+<li><tt> "%03d%s" % (27.95, 'apples')	</tt> <i>'027apples'</i>
+<li><tt> "%05.2f" % 3.1415926	</tt> <i>'03.14'</i>
+<li><tt> len(myApple) = 7	</tt> <i>SyntaxError: can't assign</i>
+<li><tt> range(len(myApple))	</tt> <i>[0, 1, 2, 3, 4, 5, 6, 7]</i>
+<li><tt> string.upper(myApple[1])	</tt> <i>'R'</i>
+<li><tt> myApple[2:5]	</tt> <i>'aeb'</i>
+<li><tt> myApple &lt; "Brayburn"	</tt> <i>True</i>
+<li><tt> ord('z') - ord('w') </tt> <i>3</i>
+<li><tt> 'z' - 'w' </tt> <i>TypeError: can't subtract string</i>
+<li><tt> 'z' + 'w' </tt> <i>'zw'</i>
+</ol>
+<br><br><br>
+
+<li>
+The transcendental number <em>e</em>, the base of the natural logarithm,
+is approximately 2.718281828459045... and can be written as the infinite
+sum:
+<img width="72" height="43" src="e_sum.gif">
+where k! is k-factorial, or k(k-1)(k-2)....(3)(2)(1).
+
+Write a Python <b>function</b> <tt>e_sum()</tt> to calculate the partial sum.
+A parameter should be used to tell the function the maximum value of k
+to use in the sum.  For example, <tt>e_sum(3)</tt> should add terms up to
+and including k==3.
+<u>[8]</u>
+
+<p>
+Docstrings and comments are <b>not</b> required on this 
+exam, however if your code is incorrect, your comments may earn you partial
+credit if they show good design thinking.  Little partial credit will be
+given for uncommented incorrect code.
+<br>
+<i>
+See <a href="/python/e_sum.py">separate Python file <tt>e_sum.py</tt></a>.
+</i>
+
+</ol>
+
+</body></html>
+
+

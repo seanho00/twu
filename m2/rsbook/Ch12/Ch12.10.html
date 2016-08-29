@@ -1,0 +1,262 @@
+<HTML>
+<HEAD>
+<TITLE>12.10 Pointers and Lists</TITLE>
+<meta NAME="keywords" CONTENT="pointer, poiners, list, lists, opaque, head, tail, declaration, nil, single, multi, pass, single-pass, multi-pass, singlepass, multipass, compiler, compilers, compile, iso, pointer, point, pointer to, to, link, linked, list, lists, maintenance, maintain, tailpoint, tailpointer, insert, inserting, memory, sequence, sequencially, structure, access, accessed, allocate, deallocate, storage, new, dispose">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.10 Pointers and Lists</B></H2>
+<P>All that has been said so far is still preliminary to the main event, for the data structures implemented so far, though dynamic, have not been of the kind whose number of entities could grow and shrink with the needs of the program at run time.  In each instance to date in this chapter, there were static variables related to each dynamic instance.  It is useful, but does not reach the goals set for this chapter, to declare large numbers of pointer variables (or opaque ones).  In order to have truly dynamic collections, there must be a way to free the program from any presuppositions about the number of dynamic entities.  Declaring a 500-item static array of pointers does not respond adequately to this challenge.</P>
+<H3><B><A NAME="12.10.1">12.10.1</A> Declaring The Linked List Apparatus</B></H3>
+<P>The perceptive student will respond that the solution is to make new pointer variables as the program goes along (dynamically).  In order for this to happen, the pointer type must itself be a field in the record holding the data.  Then, every time memory is allocated for a new data record, so is a new pointer variable.  Consider the declarations:</P>
+<PRE>
+<B>TYPE</B>
+  ItemPointType = <B>POINTER</B> <B>TO</B> ItemData;
+  ItemData =
+    <B>RECORD</B>
+      data : <B>INTEGER</B>; 
+        (* more data fields here *)
+      toPoint : ItemPointType;   (* Pointer field *)
+    <B>END</B>;
+<B>VAR</B>
+  itemPoint : ItemPointType;</PRE>
+<P>A call to obtain dynamic memory via</P>
+<PRE>
+<B>NEW</B> (itemPoint);</PRE>
+<P>will obtain enough memory not only for the requisite data, but also for another pointer, via the additional field at the end of the data record.  The next time a dynamic item is needed, a program variable is not necessary, for one can call</P>
+<PRE>
+<B>NEW</B> (itemPoint^.toPoint);</PRE>
+<P>and the time after that</P>
+<PRE>
+<B>NEW</B> (itemPoint^.toPoint^.toPoint);</PRE>
+<P>and so on, indefinitely.  The static program variable <I>itemPoint</I> points to the first of the dynamic records, and then each in turn points to the next one, and so on.  Everything beyond the initial pointer is dynamic.  Such a chain of records is called a linked list, and with a little work, does have  the potential to be used to hold the data in the airline reservation problem mentioned in <A HREF="Ch12.4.html#12.4.3">section 12.4.3</A>.</P>
+<BLOCKQUOTE><I><A NAME="List">A</A> <U>linked list</U> consists of a sequence of dynamically allocated data items, each element of which includes a pointer to the next item on the list.  The first item on the list is called the <U>head</U>; the last item is called the <U>tail</U>, and the program pointer that points to the head item is called the <U>head pointer</U>. </I></BLOCKQUOTE>
+<P><CENTER><IMG SRC="Figure/Figure_12.6.GIF" BORDER="1"></CENTER><!----></P>
+<P>Notice that the last item on the list cannot point anywhere.  The value of its pointer variable should be set to NIL as a terminal flag.</P>
+<P>Also, look carefully at the declarations above.  Do you notice anything unusual? Those readers who are operating with a one-pass compiler, and those who believe in <I>declare-it-before-you-use-it</I> (which should be everyone else), might object that this declaration makes use of an entity of type <I>ItemData</I> (to declare the type <I>ItemPointType</I>) before declaring it.  Of course, if one writes it the other way around one  has to use <I>ItemPointType</I> before declaring it.  This appears to violate a rule that this text has been very careful about following up to now.</P>
+<P>Indeed, even in multi-pass compilers, there is still a <I>declare-it-before-you-use-it-in-a-declaration</I> rule, and the ISO standard actually distinguishes between what are here called <I>single-pass</I> and <I>multiple-pass</I> compilers by referring to them as following either a <I>declare-before-use</I> rule or a <I>declare-before-use-in-declarations</I> rule, respectively.  Clearly the former is a greater restriction than and includes the latter.</P>
+<P>ISO Modula-2 expresses the rule that allows such circular references in this case in this manner:</P>
+<BLOCKQUOTE><I>The use of an identifier within a new pointer type follows the keywords POINTER TO and is shielded from the declare-before-use-in-declarations that normally applies.</I></BLOCKQUOTE>
+<P>This requires the declaration of the pointer to be the first of the two.  Although this rule does not strictly say how far away in the program text the declaration of the type pointed to must be located, it should be placed immediately adjacent to the declaration of the pointer type as in the example above, for the sake of clarity.  Indeed, some implementations may have an additional rule requiring either this proximity, or at least that the second declaration be under the same TYPE heading as the first.</P>
+<H3><B><A NAME="12.10.2">12.10.2</A> Maintaining The Linked List</B></H3>
+<P>Besides the beginning step of initialization, the maintenance of a linked list needs to take into consideration:</P>
+<UL><!--€--><LI> how to append items to the list </LI>
+<!--€--><LI> how to insert items into the list</LI>
+<!--€--><LI> how to remove items from the list.</LI></UL>
+<P>It is probably best to begin by considering the task of appending, that is of adding at the end of a list.  Quite apart from the fact that most lists have things added in that position from time to time, one needs to add the first item to the end of the list before one will even have a list.  Assume that, in a similar fashion to the last section, the following declarations have been made:</P>
+<PRE>
+<B>TYPE</B>
+  ItemPointType = <B>POINTER</B> <B>TO</B> ItemData;
+  ItemData =
+    <B>RECORD</B>
+      number : <B>CARDINAL</B>; 
+        (* more data fields here *)
+      toPoint : ItemPointType;   (* Pointer field *)
+    <B>END</B>;
+<B>VAR</B>
+  head, point : ItemPointType;
+  item : ItemData;</PRE>
+<P>At this stage, there is no list, just an uninitialized pointer and data item of the correct type to be a list element.  The execution of NEW (head) creates an instance of the <I>ItemData</I> type that can be the first item in the list.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.7.GIF" BORDER="1"></CENTER><!----></P>
+<P>Next assign a copy of <I>item</I> (perhaps filled in by keyboard inputs) to <I>point^</I>.  All the data fields are filled in, and so is the pointer field, but with no particular initialized value.  Give it the value NIL to begin with.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.8.GIF" BORDER="1"></CENTER><!----></P>
+<P>Here is the code:</P>
+<PRE>
+<B>PROCEDURE</B> AppendFirst (item : ItemData);
+(* Pre:the data fields of the item have been filled in 
+   Post : head now points to the first record, which points nowhere *)
+<B>BEGIN</B>
+  <B>NEW</B> (head);
+  head^ := item;  (* <!--"-->&quot;point^<!--"-->&quot; is the actual dynamic record *)
+  head^.toPoint := <B>NIL</B>;   (* this item points nowhere yet *)
+<B>END</B> AppendFirst;</PRE>
+<P>Now if one assumes that at some point the list has one or more items in it with the <I>toPoint</I> filed of the last one containing the value <I>NIL</I>, the strategy for appending an item is to search through the list until the last one is found (<I>previousItem.topoint = NIL</I>), then create space for and assign the new item, change the last <I>toPoint</I> previously present to point to the new item, and change the <I>toPoint</I> of the new one to <I>NIL</I>.  Here is the code:</P>
+<PRE>
+<B>PROCEDURE</B> Append (item : ItemData);
+(* Pre:the data fields of the item have been filled in 
+   Post : old last one now points to the item record, which points nowhere *)
+<B>VAR</B>
+  point, temp : ItemPointType ;
+<B>BEGIN</B>
+  temp := head; 
+
+<B>WHILE</B> temp^.toPoint # <B>NIL</B>
+  <B>DO</B>    (* search through the list *)
+    temp := temp^.toPoint      (* for the last item *)
+  <B>END</B>; 
+  <B>NEW</B> (point);
+  point^ := item; 
+  temp^.toPoint := point;   (* set old last one to point to new one *)      point^.toPoint := <B>NIL</B>;   (* defines new end *)
+<B>END</B> Append;</PRE>
+<P>Actually, if one were doing a lot of adding to the end of the list, it would make more sense to keep another program variable that pointed to the last item, that is, that kept the address of the last section of memory assigned by the <B>NEW</B> command.  This kind of variable is usually called a <I>tailpointer</I>.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.9.GIF" BORDER="1"></CENTER><!----></P>
+<P>Now the addition of a member to the list (even the first one, where the head and tail pointers would have both been initialized to NIL) could go like this:</P>
+<PRE>
+(* in the main program *) 
+head2 := <B>NIL</B>; 
+tail2 := <B>NIL</B>;
+
+<B>PROCEDURE</B> Append (item : ItemData);   (* pass in item to add *)
+<B>VAR</B>
+ temp : ItemPointType ;
+<B>BEGIN</B>
+  <B>NEW</B> (temp);   (* get space *)
+  temp^ := item;   (* assign it *)
+  temp^.toPoint := <B>NIL</B>;
+  <B>IF</B> head2 = <B>NIL</B>     
+    <B>THEN</B>
+      head2 := temp    (* Do this only if first one *)
+    <B>ELSE</B>
+      tail2^.toPoint := temp   (* otherwise make old tail item *)
+    <B>END</B>;              (* point to new tail *)
+  tail2 := temp    (* reset tail pointer always *)
+<B>END</B> Append;</PRE>
+<P>One advantage of working with dynamic data is that once an item is dynamically established via NEW and the assignment of data, it need not be moved around in memory.  This contrasts with an earlier situation where if one had, say, 100 Records in an array and wished to insert a new one at position [3], then everything from position [3] to the last active one would have to be moved to the next higher index number to make room.  This may involve a very large amount of memory reassignment.</P>
+<PRE>
+<B>FOR</B> count := last <B>TO</B> 3 <B>BY</B> -1   (* up to 97 steps to make one place *)
+  <B>DO</B>
+    list [count + 1] := list [count]
+  <B>END</B>; list [3] := item;</PRE>
+<P>For very large arrays, and records that have several fields, the amount of time consumed in such a loop is unacceptable.  One solution to this problem was given earlier in the chapter, and involved employing an array of pointers to save space and assignment time.  Another solution involves implementing the collection as a linked list.  Here too, the insertion of a new item just before a position <I>k</I> is much easier.</P>
+<PRE>
+insert =
+  set traverse pointer point to head
+  move along list k-1 steps (point points to item k-1)
+  get new dynamic memory for item with pointer temp
+  assign the passed item to temp^
+  link the new item in
+    copy toPoint from item k-1 to temp^.toPoint
+    copy temp to the toPoint from item k-1</PRE>
+<P>Here is a diagram showing the old link that is discarded and the new links that are filled in:</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.10.GIF" BORDER="1"></CENTER><!----></P>
+<P>Note that the code given below also handles the special cases of inserting before item 0 or 1 (both taken as inserting at the head) and <!--"-->&quot;before<!--"-->&quot; an index that is beyond the tail (interpreted as appending.) </P>
+<PRE>
+<B>PROCEDURE</B> InsertBeforeIndex (item: ItemData; index: <B>CARDINAL</B>);
+   (* pass in item to insert and place to put it 
+   Post: if index is 0 or 1 insert at head;
+         else, insert before given index or at end if given index too high *)
+<B>VAR</B>
+  point, temp : ItemPointType;
+  count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+  point := head;
+  count := 2;
+  <B>WHILE</B> (count <!--<-->&lt; index) <B>AND</B> (point^.toPoint # <B>NIL</B>)
+    <B>DO</B>
+      point := point^.toPoint;
+      <B>INC</B> (count);
+    <B>END</B>;      (* point now points to item # index-1 *)
+  <B>NEW</B> (temp);    (* get space for item *)
+  temp^ := item;     (* assign it *)
+  <B>IF</B> point = head    (* i.e. 2 <!-->&gt;= index, loop didn't execute *)
+   <B>THEN</B>          (* goes before item [1] *)
+     temp^.toPoint := head;
+     head := temp;
+   <B>ELSIF</B> count <!--<-->&lt; index <B>THEN</B> (* index past tail *)
+     point^.toPoint := temp; (* so do an append *)
+     temp^.toPoint := <B>NIL</B>;
+   <B>ELSE</B>  (* typical insert in between *)
+    temp^.toPoint := point^.toPoint; (* new item points to index *)
+    point^.toPoint := temp;    (* item# index - 1 points to new one *)
+   <B>END</B>;   (* if *)
+<B>END</B> InsertBeforeIndex;</PRE>
+<P>Rather than move a large amount of data around in memory as would have to be done with array insertion, one just makes item# (index - 1) point to the new item, and the new item point to the old item# index.  Changing two pointer values suffices to link in the new item.</P>
+<P>With this code done, it should be easy to see how an item can be removed from the list by breaking a link, establishing a new one, and disposing of the memory associated with the item removed.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.11.GIF" BORDER="1"></CENTER><!----></P>
+<PRE>
+<B>PROCEDURE</B> Delete (index : <B>CARDINAL</B>);
+<B>VAR</B>
+  point, temp: ItemPointType;
+  (* temp will hold one to dispose of *)
+  count: <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> head = <B>NIL</B> (* nothing in list *)
+    <B>THEN</B>
+      <B>RETURN</B>
+    <B>END</B>;
+  point := head;
+  count := 2;
+  <B>WHILE</B> (count <!--<-->&lt; index) <B>AND</B> (point^.toPoint # <B>NIL</B>)
+    <B>DO</B>
+      point := point^.toPoint;
+      <B>INC</B> (count);
+    <B>END</B>;      (* p now points to item # index-1 *)
+  <B>IF</B> point = head 
+    <B>THEN</B>
+      temp := head; (* get one to dispose *)
+      head := point^.toPoint (* repoint head *)
+    <B>ELSIF</B> count <!--<-->&lt; index <B>THEN</B> (* index past tail *)
+      <B>RETURN</B>  (* cannot delete what isnt there *)
+    <B>ELSE</B>
+      temp := point^.toPoint; (* pointer to the one that goes *)
+      point^.toPoint := temp^.toPoint (* re-link to next one *)
+    <B>END</B>;    (* if *)
+    <B>DISPOSE</B> (temp);     (* reclaim its memory *)
+<B>END</B> Delete;</PRE>
+<P>With these simple procedures, it is now possible to maintain a linked list and to have it contain as many items as the memory will allow.</P>
+<P>Of course, there are also disadvantages to using linked lists.  Although it may be a simple matter to put items into a list in a particular order (do comparisons first before inserting, or include code to maintain the list sorted as each item is inserted) it would be very tedious indeed to rearrange the list after it was in place.  Just swapping two list items would not be a trivial exercise, and moving items around in the manner needed for a sort is not to be thought of.  Arrays are much better for the kind of data access that requires frequent reference to items in the same amount of time by their index number in the structure (random access).  Note, on the other hand that:</P>
+<BLOCKQUOTE><I>A linked list is by its very nature a sequentially accessed structure.</I></BLOCKQUOTE>
+<P>Nor is it possible to get around the sequential nature of the access by calculating an address based on the starting point and the size and index of an item as was done earlier in this chapter for a dynamic array.  The latter was assigned its memory in a single block, and the computation of an address in order within this block made sense.  The linked list is not assigned memory in a continuous block at all.  Indeed, the assumption is that the locations of successive items in the list could be anywhere in memory, and that the only glue that holds the whole structure together is the pointers that chain one to the next.</P>
+<P>The student is invited to build a test harness for the routines above, or, better yet, to incorporate them (with some minor changes) into a library module encapsulating a list ADT for a favourite data item and then test this with an application module.  Such a library module would have to contain an implementation of a list type, perhaps</P>
+<PRE>
+<B>TYPE</B>
+  ItemPoint = <B>POINTER</B> <B>TO</B> Item;
+  Item =
+    <B>RECORD</B>
+      (* all the data fields *)
+      toPoint : ItemPoint
+    <B>END</B>;
+  List = <B>POINTER</B> <B>TO</B> ListData; (* opaque redefinition *)
+  ListData =
+    <B>RECORD</B>
+      head, tail : ItemPoint;
+    <B>END</B>;</PRE>
+<P>Procedures would have to be included to create one of these lists (set up a data record for it,) dispose of one (delete all items and dispose of the list data record,) and to fetch and update data at some node.</P>
+<P><B>REMINDER</B>:  Do not forget to import both ALLOCATE and DEALLOCATE from the module Storage before making use of NEW and DISPOSE.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

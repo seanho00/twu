@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+<TITLE>9.6 An Extended Example</TITLE>
+<meta NAME="keywords" CONTENT="extend, extended, example, string, strings, set, sets, char, chars, consonent, consonents, letter, letters, vowel, vowels, bitset, bitsets">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Structured Data - Intermediate Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>9.6 An Extended Example</B></H2>
+<H3><B>Problem:</B></H3>
+<P>Write a program module that takes an input line of text and computes and prints the average number of consonants per syllable and the average number of syllables per word.  Count every occurrence of one or more consecutive vowels as one syllable.  (Note that this was posed as a problem in the exercise set of chapter 5, but could not be done there using sets.)</P>
+<H3><B>Problem suitability:</B></H3>
+<P>This can be viewed as an elaboration of the vowel counter problem in <A HREF="Ch9.1.html">section 9.1</A>.  Provided that an appropriate rule for counting syllables is used, text of any size and from any source can be automatically examined.</P>
+<H3><B>Problem restatement:</B></H3>
+<P>Given<BR>
+	a line of text<BR>
+To Compute<BR>
+	the number of consonants<BR>
+	the number of syllables<BR>
+	the number of words<BR>
+Output Desired<BR>
+	the number of consonants per syllable<BR>
+	the number of syllables per word</P>
+<H3><B>Refinement:</B></H3>
+<PRE>Print an informative header.
+Initialize counting variables to track consonants, syllables, and words.
+Ask for a line of text to analyze.
+
+Input the text line.
+Examine each character:
+  check for end of string
+    if so, add one to word count and we're done
+  check for blank
+    if so, and previous one not a blank, add one to word count
+  check for consonant
+    if so, add one to consonant count
+  check for vowel
+    if so, and previous one not a vowel, add one to syllable count
+    otherwise, go on to next character
+
+Compute consonants per syllable and output it.
+Compute syllables per word and output that, too.</PRE>
+<H3><B>Variables Needed:</B></H3>
+<P>To hold input characters - next, last : CHAR <BR>
+As counters - cons, syll, word : CARDINAL<BR>
+For output - consPerSyll, syllPerWord<BR>
+Sets - Letters, Vowels, Consonants<BR>
+Imports Needed: WriteString, WriteLn, SkipLine, WriteReal</P>
+<P><B>NOTE</B>:	As in most extended examples by this point in the book, the user documentation has been omitted in order to save space.  This cannot be done in student programs or in commercial ones.</P>
+<A NAME="syllable"></A><H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> TextLineStats;
+
+(* Written by R.J. Sutcliffe *)
+(* using ISO Modula-2  *)
+(* last revision 1994 03 02 *)
+
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteReal;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  ReadString, WriteString, WriteLn, SkipLine;
+
+<B>TYPE</B>
+  CharSet = <B>SET</B> <B>OF</B> <B>CHAR</B>;
+  String = <B>ARRAY</B> [0 .. 255] <B>OF</B> <B>CHAR</B>;
+  
+<B>CONST</B>
+  blank = <!--"-->&quot; <!--"-->&quot;;
+  
+<B>VAR</B>
+  next, last : <B>CHAR</B>;
+  replyStr, theString : String;
+  count, numChars, numOfCons, numOfSyll, numOfWords : <B>CARDINAL</B>;
+  consPerSyll, syllPerWord : <B>REAL</B>;
+  yesChars, Letters, Vowels, Consonants : CharSet;
+  again : <B>BOOLEAN</B>;
+
+<B>BEGIN</B>
+ (* First print out header information. *)
+  WriteString (<!--"-->&quot;This program analyzes a line of text for<!--"-->&quot;);
+  WriteString (<!--"-->&quot; statistical information.<!--"-->&quot;);
+  WriteLn;
+
+  (* Next initialize the sets and other variables *)
+  yesChars := CharSet {<!--"-->&quot;Y<!--"-->&quot;, <!--"-->&quot;y<!--"-->&quot;};
+  Letters := CharSet {'A' .. 'Z', 'a' .. 'z'};
+  Vowels := CharSet
+     {'A', 'E', 'I', 'O', 'U', 'Y', 'a', 'e', 'i', 'o', 'u', 'y'};
+  Consonants := Letters - Vowels;
+
+  <B>REPEAT</B>
+    (* Now tell user to type the input. *)
+    <B>REPEAT</B>
+      WriteString (<!--"-->&quot;Please provide line of text for analysis. <!--"-->&quot;);
+      WriteLn;
+      ReadString (theString);
+      SkipLine; (* gobble end of line state *)
+      numChars := <B>LENGTH</B> (theString);
+      <B>IF</B> numChars = 0
+        <B>THEN</B>
+          WriteString (<!--"-->&quot;Type a proper string.  Try again.<!--"-->&quot;);
+          WriteLn;
+        <B>END</B>;
+    <B>UNTIL</B> numChars <!-->&gt; 0;
+
+    (* initialize totals here, so can re-use *)
+    numOfCons := 0;
+    last := blank; (* ensure <B>OK</B> vowel count. *)
+    numOfSyll := 0;
+    numOfWords := 0;
+    count := 0;
+  
+    <B>REPEAT</B>     (* loop back to here if not at end of text *)
+      next := theString [count];
+      <B>IF</B> (next = blank) <B>AND</B> (last # blank)
+         (* check for word end *)
+        <B>THEN</B>
+          <B>INC</B> (numOfWords)
+        <B>ELSIF</B> (next <B>IN</B> Consonants) <B>THEN</B>(* check for consonants *)
+          <B>INC</B> (numOfCons)
+        <B>ELSIF</B> (next <B>IN</B> Vowels) <B>AND</B> <B>NOT</B> (last <B>IN</B> Vowels) <B>THEN</B>
+          (* check for vowel *)  (* no syll if 2 vowels *)
+            <B>INC</B> (numOfSyll)
+        <B>END</B>;     (* otherwise must be special char *)
+  
+      last := next;      (* reset last for next time around *)
+      <B>INC</B> (count);
+    <B>UNTIL</B> count <!-->&gt; numChars;    (* actual check for end is here *)
+  
+           (* Now do processing for output *)
+  
+    <B>INC</B> (numOfWords); (* count last word; not followed by blank *)
+    <B>IF</B> numOfSyll <!-->&gt; 0
+      <B>THEN</B>
+        consPerSyll := <B>FLOAT</B> (numOfCons)/<B>FLOAT</B> (numOfSyll);
+      <B>END</B>;
+    syllPerWord := <B>FLOAT</B> (numOfSyll)/<B>FLOAT</B> (numOfWords);
+    WriteLn;
+    WriteString (<!--"-->&quot;Number of consonants: <!--"-->&quot;);
+    WriteCard (numOfCons, 6);
+    WriteLn;
+    WriteString (<!--"-->&quot;Number of syllables: <!--"-->&quot;);
+    WriteCard (numOfSyll, 6);
+    WriteLn;
+    WriteString (<!--"-->&quot;Number of words: <!--"-->&quot;);
+    WriteCard (numOfWords, 6);
+    WriteLn;
+    WriteString (<!--"-->&quot;Number of consonants per syllable: <!--"-->&quot;);
+    <B>IF</B> numOfSyll <!-->&gt; 0
+      <B>THEN</B>
+        WriteReal (consPerSyll, 6);
+      <B>ELSE</B>
+        WriteString (<!--"-->&quot;undefined.<!--"-->&quot;);
+      <B>END</B>;
+    WriteLn;
+    WriteString (<!--"-->&quot;Average number of syllables per word: <!--"-->&quot;);
+    WriteReal (syllPerWord, 6);
+    WriteLn;
+       (* get ready to loop around again or quit *)
+    WriteString (<!--"-->&quot;Do you wish to do another? (Y/N) ==<!-->&gt; <!--"-->&quot;);
+    ReadString (replyStr);
+    SkipLine;
+    again := replyStr [0] <B>IN</B> yesChars; (* reply starts with 'y' *)
+  <B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> TextLineStats.</PRE>
+<H3><B>Sample output:</B></H3>
+<PRE>
+This program analyzes a line of text for statistical information.
+Please provide line of text for analysis. 
+<B>Now is the time for all good parties to come to the aid of women</B>.
+
+Number of consonants:     28
+Number of syllables:     19
+Number of words:     15
+Number of consonants per syllable: 1.4737
+Average number of syllables per word: 1.2667
+Do you wish to do another? (Y/N) ==<!-->&gt; <B>n</B></PRE>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

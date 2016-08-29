@@ -1,0 +1,254 @@
+<HTML>
+<HEAD>
+<TITLE>2.8 Simple Output Methods</TITLE>
+<meta NAME="keywords" CONTENT="expression, operator, operators, operand, operands, integer, cardinal, div, division, arithmetic, overflow, underflow, variable, rem, mod, simple, term, precedence, mixed">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.8 Simple Output Methods</B></H2>
+<P>Once the programmer has the means to deal with numbers within programs, it also becomes necessary to print the answers to the screen where they can be seen by the program operator.  The sample program module <I>powers</I> in section 2.3 contained the statement</P>
+<PRE>
+  WriteCard (exponent, 0);</PRE>
+
+<P>for writing out the value of CARDINAL to the screen.  There is also a <I>WriteInt</I> statement and both are, like <I>ReadCard</I> and <I>ReadInt</I>, imported from <I>SWholeIO</I> (Or, in non ISO Modula-2, from <I>InOut</I>).  The second number in the <I>WriteInt</I> and <I>WriteCard</I> statements gives the size of the space to write in.  Any extra spaces not needed for the number itself are placed to the left of the number.  If not enough spaces are provided for, exactly the correct number will be taken.  We say that the numbers are <I>right justified</I> in the specified field.  That is,</P>
+<PRE>
+  WriteString (<!--"-->&quot;the number is<!--"-->&quot;);
+  WriteCard (6, 0);</PRE>
+
+<P>produces the output</P>
+<PRE>
+the number is 6</PRE>
+
+<P>with one space before the 6. (Zero room provided is handled as a special case in ISO standard Modula-2 and a single space is prefixed.  In non ISO standard versions, there may be no space at all written in this situation.) The statements</P>
+<PRE>
+  WriteString (<!--"-->&quot;the number is<!--"-->&quot;);
+  WriteCard (6, 3);</PRE>
+
+<P>produce the output</P>
+<PRE>
+the number is  6</PRE>
+
+<P>with two spaces before the six, and the statements</P>
+<PRE>
+  int := -13;
+  WriteString (<!--"-->&quot;the number is<!--"-->&quot;);
+  WriteInt (int, 4);</PRE>
+
+<P>produce the output</P>
+<PRE>
+the number is -13</PRE>
+
+<P>with a single space, because one of the four spaces allowed for is needed for the negative sign.  Thus, the second number in <I>WriteCard</I> and <I>WriteInt</I> allow for some formatting of the output number.  On the other hand, if one does not care how many spaces are used, the second number in <I>WriteInt</I> or <I>WriteCard</I> should be zero.  This was done in the <I>powers</I> example, where the space between the strings and the numerals was created by putting spaces into the strings, rather than having them written by <I>WriteCard</I>.  This method is preferred when the number of digits in the answer may vary and works in both ISO and non-ISO libraries.</P>
+<PRE>
+  (* display the result *)
+  WriteCard (base, 0);
+  WriteString ( <!--"-->&quot; raised to the power <!--"-->&quot;);
+  WriteCard (exponent, 0);
+  WriteString (<!--"-->&quot; equals <!--"-->&quot;);
+  WriteCard (result, 0);
+  WriteLn;</PRE>
+
+<P>To illustrate, consider a program designed to print out a small table of cardinals (1 through 10) with their squares and cubes.  The planning will not be given in detail, but the algorithm used can be expressed in pseudocode as:</P>
+<PRE>
+  print table headings
+  set base to 1
+  while base <!--<-->&lt;= 10
+    print base
+    print square of base
+    print cube of base
+    increase base by one
+  end while
+</PRE><P>If this algorithm is implemented as:</P>
+<PRE>
+<B>MODULE</B> SquareCube;
+(* by R. Sutcliffe *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>VAR</B>
+  base: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* Write column headings *)
+  WriteString (<!--"-->&quot;Number <!--"-->&quot;);
+  WriteString (<!--"-->&quot;Square <!--"-->&quot;);
+  WriteString (<!--"-->&quot;Cube<!--"-->&quot;);
+  WriteLn;
+  base := 1;
+  (*on each line print first, second, and third powers of the base*)
+  <B>WHILE</B> base <!--<-->&lt;= 10
+    <B>DO</B>
+      WriteCard (base, 0);
+      WriteCard (base * base, 0);
+      WriteCard (base * base * base, 0);
+      base := base + 1;
+      WriteLn;
+    <B>END</B>;
+
+<B>END</B> SquareCube.</PRE>
+
+<P>the output will look like this:</P>
+<PRE>
+Number Square Cube
+ 1 1 1
+ 2 4 8
+ 3 9 27
+ 4 16 64
+ 5 25 125
+ 6 36 216
+ 7 49 343
+ 8 64 512
+ 9 81 729
+ 10 100 1000</PRE>
+
+<P>because no spacing has been included.  (In many non ISO versions, the numbers will be jammed together with no spaces at all, but the ISO standard requires one space to be output before the number in the special case that the room allowed is zero.)  Putting one extra space into the WriteCard statements is not sufficient, for only the one digit numbers will then be properly separated.  Instead, the program should lay out a well-spaced table.  Moreover, this is a good place to use a constant, for the upper limit of the table may well be subject to change.  If it is re-written as:</P>
+<PRE>
+<B>MODULE</B> <A NAME="SquareCubeFormatted">SquareCubeFormatted</A>;
+(* by R. Sutcliffe *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>CONST</B>
+  maxToDo = 10;
+
+<B>VAR</B>
+  base: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* write column headings *)
+  WriteString (<!--"-->&quot;         Number<!--"-->&quot;);  (* allow 15 spaces for each *)
+  WriteString (<!--"-->&quot;         Square<!--"-->&quot;);
+  WriteString (<!--"-->&quot;           Cube<!--"-->&quot;);
+  WriteLn;
+  base := 1;
+  (* on each line print first, second, and third power of base *)
+  <B>WHILE</B> base <!--<-->&lt;= maxToDo
+    <B>DO</B>
+      WriteCard (base, 15);
+      WriteCard (base * base, 15);
+      WriteCard (base * base * base, 15);
+      base := base + 1;
+      WriteLn;
+    <B>END</B>;
+
+<B>END</B> SquareCubeFormatted.</PRE>
+
+<P>the output is</P>
+<PRE>
+         Number         Square           Cube
+              1              1              1
+              2              4              8
+              3              9             27
+              4             16             64
+              5             25            125
+              6             36            216
+              7             49            343
+              8             64            512
+              9             81            729
+             10            100           1000</PRE>
+
+<P>There is also a procedure in <I>STextIO</I> (or in <I>InOut</I>) to output CHAR variables.  This is the <I>WriteChar</I> statement (called <I>Write</I> when found in <I>InOut</I>,) and it too can output either literal characters, or those designated by constant or variable names.  Here is a brief example:</P>
+<PRE>
+<B>VAR</B>
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  ch := 'R';
+  WriteChar (ch);
+  WriteChar ('.');
+  WriteChar ('S');
+  WriteChar ('.');  (* outputs my initials *)</PRE>
+
+<P>and, another:</P>
+<PRE>
+<B>MODULE</B> GetIt;
+(* by R. Sutcliffe *)
+(* prints out a little joke *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, WriteChar;
+
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>CONST</B>
+  wye = <!--"-->&quot;Y<!--"-->&quot;; (* Character constants are allowed. *)
+  four = 4;
+
+<B>BEGIN</B>
+  WriteChar (wye);
+  WriteChar (wye);
+  WriteString (<!--"-->&quot;UR <!--"-->&quot;);
+  WriteChar (wye);
+  WriteChar (wye);
+  WriteString (<!--"-->&quot;UB <!--"-->&quot;);
+  WriteChar (<!--"-->&quot;I<!--"-->&quot;);
+  WriteChar (<!--"-->&quot;C<!--"-->&quot;);
+  WriteString (<!--"-->&quot; UR <!--"-->&quot;);
+  WriteChar (wye);
+  WriteChar (wye);
+  WriteCard (four, 2);
+  WriteString (<!--"-->&quot; ME!<!--"-->&quot;);
+  WriteLn;
+<B>END</B> GetIt.</PRE>
+
+<P>the output of which is</P>
+<PRE>
+YYUR YYUB IC UR YY 4 ME!</PRE>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

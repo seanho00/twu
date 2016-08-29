@@ -1,0 +1,580 @@
+<HTML><HEAD><TITLE>Appendix 13--Object Oriented Modula-2 Syntax</TITLE><STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>Appendix 13<!--</B>‹<B>-->--Object Oriented Modula-2 Syntax</B></H2>
+
+<P>The term Object Oriented Modula-2 refers to a set of extensions to the base language that allow for programmers to create classes and instantiate objects of those classes. Material in this section is adapted from ISO/IEC 10514-3, the official standard for the object extensions to Modula-2.
+<H3><B><A NAME="A13.1">A13.1</A>  Keywords and Pervasive Identifiers</B></H3>
+<P>The following are added to the list of keywords for the base language.</P>
+<pre>
+AS         ABSTRACT       CLASS      GUARD      INHERIT
+OVERRIDE   READONLY       REVEAL     TRACED     UNSAFEGUARDED
+</pre>
+<P>The following are added to the list of pervasive identifiers for the base language.</P>
+<pre>
+CREATE     DESTROY        EMPTY      ISMEMBER    SELF
+ </pre>
+<H3><B><A NAME="A13.2">A13.2</A>  Diagrams of Changes to Base Language Syntax</B></H3>
+<P>program module (see <A HREF="Ap2real.html#A2.2.1.2">A.2.2.1.2</A>)</P>
+<IMG SRC="Figure/oo_program_module.GIF" WIDTH="449" HEIGHT="193"><!---->
+
+<P>definition module (see <A HREF="Ap2real.html#A2.2.1.3">A.2.2.1.3</A>)</P>
+<IMG SRC="Figure/oo_definition_module.GIF" WIDTH="445" HEIGHT="198"><!---->
+
+<P>implementation module (see <A HREF="Ap2real.html#A2.2.1.4">A.2.2.1.4</A>)</P>
+<IMG SRC="Figure/oo_implementation_module.GIF" WIDTH="448" HEIGHT="190"><!---->
+
+<P>definition (see <A HREF="Ap2real.html#A2.2.2.2">A.2.2.2.2</A>)</P>
+<IMG SRC="Figure/oo_definition.GIF" WIDTH="453" HEIGHT="297"><!---->
+
+<P>declaration (see <A HREF="Ap2real.html#A2.2.2.3">A.2.2.2.3</A>)</P>
+<IMG SRC="Figure/oo_declaration.GIF" WIDTH="453" HEIGHT="332"><!---->
+
+<P>qualified identifier (see <A HREF="Ap2real.html#A2.2.2.1">A.2.2.2.1</A>)</P>
+<IMG SRC="Figure/oo_qualified_identifier.GIF" WIDTH="484" HEIGHT="68"><!---->
+
+<P>variable designator (see <A HREF="Ap2real.html#A2.2.6">A.2.2.6</A>)</P>
+<IMG SRC="Figure/oo_variable_designator.GIF" WIDTH="258" HEIGHT="170"><!---->
+
+<P>value designator (see <A HREF="Ap2real.html#A2.2.7.2">A.2.2.7.2</A>)</P>
+<IMG SRC="Figure/oo_value_designator.GIF" WIDTH="258" HEIGHT="173"><!---->
+
+<P>statement (see <A HREF="Ap2real.html#A2.2.5">A.2.2.5</A>)</P>
+
+<IMG SRC="Figure/oo_statement.GIF" WIDTH="254" HEIGHT="441"><!---->
+
+<H3><B><A NAME="A13.3">A13.3</A>  Object Oriented Modula-2 Syntax Diagrams</B></H3>
+
+<h3><b>A13.3.1 Class Definition</b></h3>
+
+<P>class definition</P>
+<IMG SRC="Figure/oo_class_definition.GIF" WIDTH="260" HEIGHT="61"><!---->
+
+<P>untraced class definition</P>
+<IMG SRC="Figure/oo_untraced_class_definitio.GIF" WIDTH="260" HEIGHT="61"><!---->
+
+<P>traced class definition</P>
+<IMG SRC="Figure/oo_traced_class_definition.GIF" WIDTH="366" HEIGHT="60"><!---->
+
+<P>normal class definition</P>
+<IMG SRC="Figure/oo_normal_class_definition.GIF" WIDTH="436" HEIGHT="61"><!---->
+
+<P>normal class header</P>
+<IMG SRC="Figure/oo_normal_class_header.GIF" WIDTH="306" HEIGHT="27"><!---->
+
+<P>normal class definition body</P>
+<IMG SRC="Figure/oo_normal_class_dfntn_body.GIF" WIDTH="493" HEIGHT="113"><!---->
+
+<P>abstract class definition</P>
+<IMG SRC="Figure/oo_abstract_class_definitio.GIF" WIDTH="453" HEIGHT="61"><!---->
+
+<P>abstract class header</P>
+<IMG SRC="Figure/oo_abstract_class_header.GIF" WIDTH="419" HEIGHT="27"><!---->
+
+<P>abstract class definition body</P>
+<IMG SRC="Figure/oo_abstract_class_dfntn_bod.GIF" WIDTH="506" HEIGHT="112"><!---->
+
+<P>class identifier</P>
+<IMG SRC="Figure/oo_class_identifier.GIF" WIDTH="146" HEIGHT="26"><!---->
+
+<P>normal class component definitions</P>
+<IMG SRC="Figure/oo_normal_class_cmpnnt_def.GIF" WIDTH="275" HEIGHT="42"><!---->
+
+<P>normal component definition</P>
+<IMG SRC="Figure/oo_normal_component_definit.GIF" WIDTH="453" HEIGHT="262"><!---->
+
+<P>abstract class component definitions</P>
+<IMG SRC="Figure/oo_abstract_class_cmpnt_def.GIF" WIDTH="289" HEIGHT="42"><!---->
+
+<P>abstract component definition</P>
+<IMG SRC="Figure/oo_abstract_component_def.GIF" WIDTH="453" HEIGHT="300"><!---->
+
+<P>class variable declaration</P>
+<IMG SRC="Figure/oo_class_variable_declarat.GIF" WIDTH="342" HEIGHT="27"><!---->
+
+<P>normal method definition</P>
+<IMG SRC="Figure/oo_normal_method_definition.GIF" WIDTH="249" HEIGHT="26"><!---->
+
+<P>overriding method definition</P>
+<IMG SRC="Figure/oo_overriding_method_defini.GIF" WIDTH="344" HEIGHT="26"><!---->
+
+<P>abstract method definition</P>
+<IMG SRC="Figure/oo_abstract_method_definiti.GIF" WIDTH="343" HEIGHT="26"><!---->
+
+<h3><b>A13.3.2 Class Declaration</b></h3>
+<P>class declaration</P>
+<IMG SRC="Figure/oo_class_declaration.GIF" WIDTH="275" HEIGHT="60"><!---->
+
+<P>untraced class declaration</P>
+<IMG SRC="Figure/oo_untraced_class_declarati.GIF" WIDTH="272" HEIGHT="61"><!---->
+
+<P>normal class declaration</P>
+<IMG SRC="Figure/oo_normal_class_declaration.GIF" WIDTH="445" HEIGHT="61"><!---->
+
+<P>normal class header</P>
+<IMG SRC="Figure/oo_normal_class_header.GIF" WIDTH="306" HEIGHT="27"><!---->
+
+<P>normal class declaration body</P>
+<IMG SRC="Figure/oo_normal_class_dclrtn_body.GIF" WIDTH="511" HEIGHT="120"><!---->
+
+<P>abstract class declaration</P>
+<IMG SRC="Figure/oo_abstract_class_declarati.GIF" WIDTH="454" HEIGHT="61"><!---->
+
+<P>abstract class header</P>
+<IMG SRC="Figure/oo_abstract_class_header.GIF" WIDTH="419" HEIGHT="27"><!---->
+
+<P>abstract class declaration body</P>
+<IMG SRC="Figure/oo_abstract_class_dclrtn_bo.GIF" WIDTH="519" HEIGHT="113"><!---->
+
+
+<P>class body</P>
+<IMG SRC="Figure/oo_class_body.GIF" WIDTH="166" HEIGHT="32"><!---->
+
+<P>normal class component declarations</P>
+<IMG SRC="Figure/oo_normal_class_cmpnnt_decl.GIF" WIDTH="275" HEIGHT="42"><!---->
+
+<P>normal component declaration</P>
+<IMG SRC="Figure/normal_cmpnnt_declaration.GIF" WIDTH="453" HEIGHT="218"><!---->
+
+<P>abstract class component declarations</P>
+<IMG SRC="Figure/oo_abstract_class_cmpnt_dcs.GIF" WIDTH="299" HEIGHT="42"><!---->
+
+<P>abstract component declaration</P>
+<IMG SRC="Figure/oo_abstract_component_decla.GIF" WIDTH="453" HEIGHT="216"><!---->
+
+<P>normal method declarations</P>
+<IMG SRC="Figure/oo_normal_method_declaratns.GIF" WIDTH="299" HEIGHT="61"><!---->
+
+<P>normal method declaration</P>
+<IMG SRC="Figure/oo_normal_method_declaratio.GIF" WIDTH="240" HEIGHT="27"><!---->
+
+<P>overriding method declaration</P>
+<IMG SRC="Figure/oo_overriding_method_declar.GIF" WIDTH="337" HEIGHT="26"><!---->
+
+<P>abstract method declarations</P>
+<IMG SRC="Figure/oo_abstract_method_dclrtns.GIF" WIDTH="337" HEIGHT="108"><!---->
+
+<P>traced class declaration</P>
+<IMG SRC="Figure/oo_traced_class_declaration.GIF" WIDTH="312" HEIGHT="61"><!---->
+
+<P>normal traced class declaration</P>
+<IMG SRC="Figure/oo_normal_traced_class_decl.GIF" WIDTH="538" HEIGHT="61"><!---->
+
+<P>normal traced class header</P>
+<IMG SRC="Figure/oo_normal_traced_class_head.GIF" WIDTH="414" HEIGHT="28"><!---->
+
+<P>normal traced class declaration body</P>
+<IMG SRC="Figure/oo_nrml_trcd_class_decl_bod.GIF" WIDTH="511" HEIGHT="111"><!---->
+
+<P>abstract traced class declaration</P>
+<IMG SRC="Figure/oo_abstract_trcd_class_decl.GIF" WIDTH="544" HEIGHT="63"><!---->
+
+<P>abstract traced class header</P>
+<IMG SRC="Figure/oo_abstract_trcd_class_head.GIF" WIDTH="521" HEIGHT="31"><!---->
+
+<P>abstract traced class declaration body</P>
+<IMG SRC="Figure/oo_abstrct_trc_clss_dcl_bod.GIF" WIDTH="518" HEIGHT="113"><!---->
+
+<P>traced class body</P>
+<IMG SRC="Figure/oo_traced_class_body.GIF" WIDTH="274" HEIGHT="26"><!---->
+
+<h3><b>A13.3.3 Reveal List</b></h3>
+
+<P>reveal list</P>
+<IMG SRC="Figure/oo_reveal_list.GIF" WIDTH="382" HEIGHT="26"><!---->
+
+<P>revealed component list</P>
+<IMG SRC="Figure/oo_revealed_component_list.GIF" WIDTH="237" HEIGHT="54"><!---->
+
+<P>revealed component</P>
+<IMG SRC="Figure/oo_revealed_component.GIF" WIDTH="420" HEIGHT="62"><!---->
+
+<P>class variable identifier</P>
+<IMG SRC="Figure/oo_class_variable_identifie.GIF" WIDTH="172" HEIGHT="26"><!---->
+
+<h3><b>A13.3.4 Inherit Clause</b></h3>
+
+<P>inherit clause</P>
+<IMG SRC="Figure/oo_inherit_clause.GIF" WIDTH="386" HEIGHT="26"><!---->
+
+<P>class type identifier</P>
+<IMG SRC="Figure/oo_class_type_identifier.GIF" WIDTH="172" HEIGHT="26"><!---->
+
+<h3><b>A13.3.5 Designators</b></h3>
+
+<P>object selected designator</P>
+<IMG SRC="Figure/oo_object_selected_designat.GIF" WIDTH="451" HEIGHT="107"><!---->
+
+<P>object variable designator</P>
+<IMG SRC="Figure/oo_object_variable_designat.GIF" WIDTH="203" HEIGHT="26"><!---->
+
+<P>object selected value</P>
+<IMG SRC="Figure/oo_object_selected_value.GIF" WIDTH="429" HEIGHT="106"><!---->
+
+<P>object value designator</P>
+<IMG SRC="Figure/oo_object_value_designator.GIF" WIDTH="194" HEIGHT="26"><!---->
+
+<P>entity identifier</P>
+<IMG SRC="Figure/oo_entity_identifier.GIF" WIDTH="194" HEIGHT="26"><!----><h3><b>
+
+A13.3.6 Guard Statement</b></h3>
+
+<P>guard statement</P>
+<IMG SRC="Figure/oo_guard_statement.GIF" WIDTH="429" HEIGHT="94"><!---->
+
+<P>guard selector</P>
+<IMG SRC="Figure/oo_guard_selector.GIF" WIDTH="146" HEIGHT="26"><!---->
+
+<P>guarded list</P>
+<IMG SRC="Figure/oo_guarded_list.GIF" WIDTH="267" HEIGHT="54"><!---->
+
+<P>guarded statement sequence</P>
+<IMG SRC="Figure/oo_guarded_statement_sequen.GIF" WIDTH="492" HEIGHT="114"><!---->
+
+<P>guarded class type</P>
+<IMG SRC="Figure/oo_guarded_class_type.GIF" WIDTH="210" HEIGHT="27"><!---->
+
+<P>object denoter</P>
+<IMG SRC="Figure/oo_object_denoter.GIF" WIDTH="146" HEIGHT="26"><!---->
+
+<H3><B><A NAME="A13.4">A13.4</A> Changes To the Syntax of the Base Language in EBNF</B></H3>
+
+
+See <A HREF="Ap3.html#A3.3"> Appendix 3.3</A> for the originals.
+
+<pre><B>program module</B> =
+   [<!--"-->&quot;UNSAFEGUARDED<!--"-->&quot;]<!--"-->&quot;MODULE<!--"-->&quot;,module identifier, [protection], semicolon, 
+   import lists, module block, module identifier, period ;
+<B>definition module</B> =
+   [<!--"-->&quot;UNSAFEGUARDED<!--"-->&quot;]<!--"-->&quot;DEFINITION<!--"-->&quot;, <!--"-->&quot;MODULE<!--"-->&quot;, module identifier, semicolon, 
+   import lists, definitions, <!--"-->&quot;END<!--"-->&quot;, module identifier, period ;
+<B>implementation module</B> =
+   [<!--"-->&quot;UNSAFEGUARDED<!--"-->&quot;]<!--"-->&quot;IMPLEMENTATION<!--"-->&quot;, <!--"-->&quot;MODULE<!--"-->&quot;, module identifier,
+   [protection], semicolon, import lists, module block, 
+   module identifier, period ;
+<B>definition</B> =
+   <!--"-->&quot;CONST<!--"-->&quot;, {constant declaration, semicolon} |
+   <!--"-->&quot;TYPE<!--"-->&quot;, {type definition, semicolon} |
+   <!--"-->&quot;VAR<!--"-->&quot;, {variable declaration, semicolon} |
+   procedure heading, semicolon ;| 
+   class definition, semicolon ;
+<B>declaration</B> =
+   <!--"-->&quot;CONST<!--"-->&quot;, {constant declaration, semicolon} |
+   <!--"-->&quot;TYPE<!--"-->&quot;, {type declaration, semicolon} |
+   <!--"-->&quot;VAR<!--"-->&quot;, {variable declaration, semicolon} |
+   procedure declaration, semicolon |
+   class declaration, semicolon |
+   local module declaration, semicolon ;
+<B>qualified identifier</B> =
+   {module identifier, period}, [class identifier, period], 
+   identifier ;
+<B>variable designator</B> =
+   entire designator | indexed designator |
+   selected designator | dereferenced designator | 
+   object selected designator;
+<B>value designator</B> =
+   entire value | indexed value | selected value | 
+   dereferenced value | object selected value;
+<B>statement</B> =
+   empty statement | assignment statement | procedure call |
+   return statement |retry statement | with statement |
+   if statement | case statement |while statement |
+   repeat statement | loop statement |exit statement |
+   for statement | guard statement;
+</pre>
+<H3><B><A NAME="A13.5">A13.5</A> The Syntax of Object Oriented Modula-2 in EBNF</B></H3>
+
+<P>The concrete syntax in this section is taken from ISO/IEC IS 10514-3, the international standard for the object oriented extensions to Modula-2.</P>
+
+<h3><b>A13.5.1 Class Definition</b></h3>
+<pre>
+<b>class definition</b> =
+   ( traced class definition | untraced class definition ) ;
+<b>untraced class definition</b> =
+   ( normal class definition | abstract class definition ) ;
+<b>traced class definition</b> =
+   "TRACED", ( normal class definition | abstract class definition ) ;
+
+<b>normal class definition</b> =
+   normal class header, ( normal class definition body | "FORWARD" ) ;
+<b>normal class header</b> =
+   "CLASS", class identifier, semicolon ;
+<b>normal class definition body</b> =
+   [ inherit clause ], [ reveal list ],
+   normal class component definitions, "END", class identifier ;
+
+<b>abstract class definition</b> =
+   abstract class header, ( abstract class definition body | "FORWARD" ) ;
+<b>abstract class header</b>=
+   "ABSTRACT", "CLASS", class identifier, semicolon ;
+<b>abstract class definition body</b> =
+   [ inherit clause ], [ reveal list ],
+   abstract class component definitions, "END", class identifier ;
+
+<b>class identifier</b> = identifier ;
+
+<b>normal class component definitions</b> = { normal component definition } ;
+<b>normal component definition</b> =
+   "CONST", { constant declaration, semicolon }     |
+   "TYPE", { type definition, semicolon }           |
+   "VAR", { class variable declaration, semicolon }  |
+   (normal method definition | overriding method definition),
+   semicolon ;
+
+<b>abstract class component definitions</b> =
+   {abstract component definition } ;
+<b>abstract component definition</b> =
+   "CONST", { constant declaration, semicolon }     |
+   "TYPE", { type definition, semicolon }           |
+   "VAR", { class variable declaration, semicolon }  |
+   (normal method definition | abstract method definition |
+    overriding method definition), semicolon ;
+
+<b>class variable declaration</b> = identifier list, colon, type denoter ;
+
+<b>normal method definition</b> = procedure heading ;
+<b>overriding method definition</b> = "OVERRIDE", procedure heading ;
+<b>abstract method definition</b> = "ABSTRACT", procedure heading ;
+</pre>
+
+<h3><b>A13.5.2 Class Declaration</b></h3>
+
+<pre>
+<b>class declaration</b> =
+   ( traced class declaration | untraced class declaration ) ;
+<b>untraced class declaration</b> =
+   ( normal class declaration | abstract class declaration ) ;
+
+<b>normal class declaration</b> =
+   normal class header, ( normal class declaration body | "FORWARD" ) ;
+<b>normal class header</b> =
+   "CLASS", class identifier, semicolon ;
+<b>normal class declaration body</b> =
+   [ inherit clause ], [ reveal list ],
+   normal class component declarations,
+   [ class body ], "END", class identifier ;
+
+<b>abstract class declaration</b> =
+   abstract class header,
+   ( abstract class declaration body | "FORWARD" ) ;
+<b>abstract class header</b> =
+   "ABSTRACT", "CLASS", class identifier, semicolon ;
+<b>abstract class declaration body</b> =
+   [ inherit clause ], [ reveal list ],
+   abstract class component declarations,
+   [ class body ], "END", class identifier ;
+
+<b>class body</b> = module body;
+
+<b>normal class component declarations</b> =
+   { normal component declaration } ;
+<b>normal component declaration</b> =
+   "CONST", { constant declaration, semicolon }     |
+   "TYPE", { type declaration, semicolon }          |
+   "VAR", { class variable declaration, semicolon }  |
+   normal method declarations , semicolon ;
+
+<b>abstract class component declarations</b> =
+   {abstract component declaration } ;
+<b>abstract component declaration</b> =
+   "CONST", { constant declaration, semicolon }     |
+   "TYPE", { type declaration, semicolon }          |
+   "VAR", { class variable declaration, semicolon }  |
+   abstract method declarations , semicolon ;
+
+<b>normal method declarations</b> =
+   normal method declaration | overriding method declaration ;
+<b>normal method declaration</b> = procedure declaration ;
+<b>overriding method declaration</b> = "OVERRIDE", procedure declaration ;
+
+<b>abstract method declarations</b> =
+   normal method declaration | abstract method definition |
+   overriding method declaration ;
+
+<b>traced class declaration</b> =
+   ( normal traced class declaration | abstract traced class declaration ) ;
+
+<b>normal traced class declaration</b> =
+   normal traced class header,
+   ( normal traced class declaration body | "FORWARD" ) ;
+<b>normal traced class header</b> =
+   "TRACED", "CLASS", class identifier, semicolon ;
+<b>normal traced class declaration body</b> =
+   [ inherit clause ], [ reveal list ],
+   normal class component declarations,
+   [ traced class body ], "END", class identifier ;
+
+<b>abstract traced class declaration</b> =
+   abstract traced class header,
+   ( abstract traced class declaration body | "FORWARD" ) ;
+<b>abstract traced class header</b>=
+   "TRACED", "ABSTRACT", "CLASS", class identifier, semicolon ;
+<b>abstract traced class declaration body</b> =
+   [ inherit clause ], [ reveal list ],
+   abstract class component declarations,
+   [ traced class body ], "END", class identifier ;
+
+<b>traced class body</b> = "BEGIN", block body ;
+</pre>
+
+<h3><b>A13.5.3 Reveal List</b></h3>
+
+<b>reveal list</b> = "REVEAL" revealed component list, semicolon ;
+
+<pre><b>revealed component list</b> =
+   revealed component, { comma, revealed component } ;
+<b>revealed component</b> = identifier | "READONLY" class variable identifier ;
+<b>class variable identifier</b> = identifier ;
+</pre>
+
+<h3><b>A13.5.4 Inherit Clause</b></h3>
+
+<pre><b>inherit clause</b> = "INHERIT", class type identifier, semicolon ;
+<b>class type identifier</b> = type identifier ;
+</pre>
+<h3><b>A13.5.5 Designators</b></h3>
+
+<pre><b>object selected designator</b> =
+   object variable designator, period,
+   [ class identifier, period ], class variable identifier ;
+<b>object variable designator</b> = variable designator ;
+
+<b>object selected value</b> =
+   object value designator, period, [ class identifier, period ], entity identifier ;
+<b>object value designator</b> = value designator ;
+<b>entity identifier</b> = identifier ;
+</pre>
+<h3><b>A13.5.6 Guard Statement</b></h3>
+
+<pre><b>guard statement</b> = 
+   "GUARD", guard selector, "AS", guarded list, 
+   ["ELSE" statement sequence],
+   "END" ;
+
+<b>guard selector</b> = expression ;
+
+<b>guarded list</b> = 
+   guarded statement sequence {vertical bar, guarded statement sequence} ;
+<b>guarded statement sequence</b> =
+   [[object denoter], colon, guarded class type, "DO", statement sequence] ;
+<b>guarded class type</b> = class type identifier ;
+<b>object denoter</b> = identifier ;
+
+</pre>
+
+<H3><B><A NAME="A13.6">A13.6</A> Other Changes to the Base Language</B></H3>
+<p>Unless a program module or an implementation module is tagged as unsafeguarded in its header, it shall not contain:</p>
+<ul>
+<li><!--€ -->an import that directly or indirectly causes the import of an untraced class type,</li> 
+<li><!--€ -->a declaration of an untraced class type,</li> 
+<li><!--€ -->a call of SYSTEM.CAST with a variable of a traced class type or a structured type that contains a component of a traced class type as the second actual parameter,</li> 
+<li><!--€ -->a call that passes a variable of a traced class type as a value actual parameter to an open or fixed ARRAY OF LOC,</li> 
+<li><!--€ -->a call of SYSTEM.ADR with a class variable (attribute) as the actual parameter,</li> 
+<li><!--€ -->a call that passes a class variable (attribute) as an actual variable parameter to an open or fixed ARRAY OF LOC.</li> </ul>
+
+<p>Unless a definition module is tagged as unsafeguarded in its header, it shall not contain:</p>
+<ul>
+<li><!--€ -->an import that directly or indirectly causes the import of an untraced class type,</li> 
+<li><!--€ -->a definition of an untraced class type,</li> 
+</ul>
+<p>It shall be an error to declare a pointer type or a variable of a pointer type with a bound type that is or contains a record with a varient of a traced class type. It shall be an error to declare a type or a variable that is or contains a record with a varient of a traced class type.</p>
+
+<P>OOM-2 extensions to the base language define four new exceptions. Detection of the first three is mandatory, but detection of the last one is optional. They are:</P>
+<P>1. emptyException<BR>
+raised whenever an attempt is made to access an object via an empty reference</P>
+<P>2. abstractException<BR>
+raised whenever an attempt is made to call an abstract method</P>
+<P>3. guardException<BR>
+raised if there is no match on the list of selections (possibly due to an empty reference) and no ELSE</P>
+<P>4. immutableException<BR>
+an implementation may choose to raise this if  there is an attempt to change an immutable entity.</P>
+
+<H3><B><A NAME="A13.7">A13.7</A> ISO Libraries Supporting Object Oriented Modula-2</B></H3>
+
+<h3><b>A13.7.1 Modifications to Coroutines</b></h3>
+<P>The module COROUTINES in the base standard has one procedure added to provide support for OOM-2. It is</P>
+
+<PRE><b>PROCEDURE</b> DISPOSECOROUTINE (VAR cr: COROUTINE);
+  (* Declare that the coroutine identified by cr has reached the end of its lifetime. *)</PRE>
+
+<h3><b>A13.7.2 The Pseudo-Module M2OOEXCEPTION</b></h3>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> M2OOEXCEPTION;
+
+(* Provides facilities for identifying exceptions of the extended language *)
+
+<b>TYPE</b>
+  M2OOExceptions =
+    (emptyException, abstractException, immutableException, guardException);
+
+<b>PROCEDURE</b> M2OOException (): M2OOExceptions;
+  (* If the current coroutine is in the exceptional execution state because
+     of the raising of an exception of the language extensions, returns the
+     corresponding enumeration value, and otherwise raises an exception. *)
+
+<b>PROCEDURE</b> IsM2OOException (): <b>BOOLEAN</b>;
+  (* If the current coroutine is in the exceptional execution state because
+     of the raising of an exception of the language extensions, returns
+     TRUE, and otherwise returns FALSE. *)
+
+<b>END</b> M2OOEXCEPTION.</PRE>
+
+
+<h3><b>A13.7.2 GARBAGECOLLECTION</b></h3>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> GARBAGECOLLECTION;
+
+(* Provides facilities for controlling the garbage collector. *)
+
+<b>PROCEDURE</b> IsCollectionEnabled (): <b>BOOLEAN</b>;
+  (* If garbage collection is enabled then returns TRUE and otherwise returns FALSE. *)
+
+<b>PROCEDURE</b> CollectionEnable (on: <b>BOOLEAN</b>);
+  (* If on is TRUE then enable garbage collection; otherwise if on is FALSE and garbage 
+     collection can be disabled then disable garbage collection. *)
+
+<b>PROCEDURE</b> ForceCollection;
+  (* If garbage collection can be forced then force it else do nothing. *)
+
+<b>END</b> GARBAGECOLLECTION.</PRE>
+
+<HR><CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

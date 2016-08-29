@@ -1,0 +1,112 @@
+Are teen smokers predominantly male?  To probe this question, a sample of 200
+teenagers who regularly smoke was gathered, and the ratio of male to female
+examined.
+* What is the population in question? (1)
+[teen smokers]
+* What variable(s) are being measured?  What level of measurement are the
+variables? (2)
+[gender, categorical]
+* Phrase the null and alternative hypotheses, both in words and in symbols.
+What is the appropriate statistical test to conduct? (4)
+[ H0: not predominantly male, P(M) <= 1/2.
+  HA: predominantly male, P(M) > 1/2.  Chi-squared. ]
+* Is the test 1-tailed, or 2-tailed, or omnibus ("all directions", 
+an extension of 2-tailed)? Why? (1)
+[ 1-tailed; the research question asks if there are more males than females,
+a directional question. ]
+* The data are that 113 of the teenagers were male; 87 were female.
+Calculate the test statistic and bracket the p-value. (6)
+[ chi-squared = (113-100)^2/100 + (87-100)^2/100 = 3.38, 
+2-tailed: 0.05 < p < 0.10 (p=0.0659), so 1-tailed: 0.025 < p < 0.05 
+(exact p=0.033).
+* State your conclusion and interpret it in the context of the original
+research question. (2)
+[ Reject H0: Yes, teen smokers are predominantly male. ]
+
+Are hospital emergency rooms in BC busier than those in Ontario?
+The average number of ER visits per day was measured for a small number of
+hospitals from both provinces.
+* What is the population in question? (1)
+[ hospitals in Canada ]
+* What is the predictor (IV: independent variable) in this study?
+What is the outcome (DV: dependent variable)?
+What are their levels of measurement? (3)
+[ IV: province (categorical).  DV: average number of ER visits per day
+(continuous). ]
+* Phrase the null and alternative hypotheses, both in words and in symbols.
+What is the appropriate statistical test to conduct? (4)
+[ H0: ERs in BC are no busier than in ON, mu_BC <= mu_ON.
+  HA: ERs in BC are busier than in ON, mu_BC > mu_ON.
+  t-test on two independent groups. ]
+* The data: we examined five hospitals from BC, with daily ER visits of
+  189, 194, 142, 183, 137.  The data for ON: 260, 126, 135, 71, 141, 71.
+  (These are actual data I collected, albeit from a biased sampling!)
+  Use an appropriate parametric test and bracket a p-value. (6)
+[ 1-tailed p=0.16 ]
+* State your conclusion and interpret it in the context of the original
+research question. (2)
+[ Fail to reject H0: insufficient evidence to show BC ERs are busier. ]
+* Now try an appropriate non-parametric test and bracket a p-value. (4)
+[ WMW: K_BC=25, K_ON=5, n=6,5, 1-tailed: .025 < p < .05 ]
+* State your conclusion and interpret it in the context of the original
+research question. (2)
+[ Reject H0: BC ERs are busier ]
+* In your opinion, which test is more applicable to this data?  Why?
+Do the data meet the assumptions of parametricity? (3)
+[ WMW is better; the data do not look normal -- small sample size and
+strong outlier in ON (260). [ that's Scarborough Hospital in east Toronto,
+with over 95,000 ER visits per year ] ]
+
+Do prospective surgery patients feel less anxious after a doctor has 
+explained the surgery procedure to them?  Nine patients were asked 
+how anxious they felt both before and after the doctor's explanation; 
+they used a 5-point scale with 1="not anxious at all" to 5="very anxious"
+(this is a "Likert" scale).
+* What is the population in question? (1)
+[ prospective surgery patients ]
+* What is the predictor (IV: independent variable) in this study?
+What is the outcome (DV: dependent variable)?
+What are their levels of measurement? (3)
+[ IV: time (pre/post) (categorical). DV: anxiety level (ordinal). ]
+* Phrase the null and alternative hypotheses, both in words and in symbols.
+What is the appropriate statistical test to conduct? (4)
+[ H0: anxiety level does not decrease (mu_d >= 0, using post-pre).
+  HA: anxiety level decreases (mu_d < 0).
+  Paired-samples t-test. ]
+* Data: pre : 3 3 4 2 5 3 5 4
+	post: 1 2 2 2 4 4 3 1
+  (This is made-up data.)
+  Use an appropriate parametric test and bracket a p-value. (6)
+[ p = 0.01 ]
+* State your conclusion and interpret it in the context of the original
+research question. (2)
+[ Reject H0: anxiety level does decrease after talking with doctor. ]
+* Now try an appropriate non-parametric test and bracket a p-value. (4)
+[ Sign: N- = 6, N+ = 1, B_s = 6, n_d = 7
+  1-tail: .05 < p < .10 ]
+* State your conclusion and interpret it in the context of the original
+research question. (2)
+[ Fail to reject H0: insufficient evidence to show anxiety level decreases ]
+* In your opinion, which test is more applicable to this data?  Why?
+Do the data meet the assumptions of parametricity? (3)
+[ t-test is better.
+Here the assumption of normality is on the pairwise differences;
+we don't see any obvious problems, although the sample size is small.
+Paired-sample t-test is probably more sensitive than sign test here, due
+to some pairs having a strong decrease in anxiety level. ]
+
+A research article reports that it has estimated the average BMI
+(body mass index) of Canadian women to be 24.8 +/- 1.2 (units are kg/m^2),
+with 95% confidence.  Their sample size was 25,000.
+On the basis of their data and assumptions, mark each of the 
+following statements as either true or false: (6)
+* 95% of the 25,000 women in their study have BMI within the interval. [F]
+* A random Canadian woman has a 95% chance of having BMI within the 
+interval.  [F]
+* A reasonable 99% confidence interval is 24.8 +/- 0.57. [F]
+* If they had used a sample size of 100,000 instead of 25,000, their
+95% confidence interval could have been half as wide. [T]
+* The average BMI of Canadian women cannot possibly be exactly 
+27.0 kg/m^2. [F]
+* There is a 5% chance that the average BMI of Canadian women is
+less than 23.6 or more than 26.0. [T]

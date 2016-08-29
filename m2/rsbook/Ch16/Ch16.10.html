@@ -1,0 +1,66 @@
+<HTML><HEAD><TITLE>16.10 Chapter Summary</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Chapter Summary">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<H2><b>16.10 Chapter Summary</b></H2>
+<P>This chapter covered these topics:</P>
+<UL><LI><!--€--> a review of near-generic ideas as they may be employed in the base language</LI>
+<LI><!--€--> formal generic templates as defined in Standard Generic Modula-2
+	<UL><LI><!--€--> generic separate modules</LI>
+	<LI><!--€--> refining separate modules</LI>
+	<LI><!--€--> refining local modules</LI></UL></LI>
+<LI><!--€--> the use of generics for parameterizing both techniques and abstract data types</LI>
+<LI><!--€--> the use of refinement in local modules to scale software on a modular basis</LI></UL>
+
+<TABLE WIDTH=350><TR><TH ALIGN= LEFT>Reserved Words</TH>	<TH ALIGN= LEFT>Standard Identifier</TH></TR>
+
+<TR><TD>GENERIC</TD>		<TD>TYPE (new context)</TD></TR></TABLE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

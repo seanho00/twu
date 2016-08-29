@@ -1,0 +1,298 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Midterm 2 (B) :: MATH108 10FA :: TWU</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<p>MATH108 10FA Midterm ch7-11 B<br>
+<small><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a>
+  Total points: 70</small></p>
+
+<div class="inspiration">
+  Let the words of my mouth and the meditation of my heart<br>
+  Be acceptable in Your sight, O LORD, my Rock and my Redeemer.<br>
+  -- Psalm 19:14
+</div>
+
+<ul class="instructions">
+  <li> Please show all your work!  No partial credit will be given for
+  incorrect answers with no work shown.
+  <li> Please draw a box around your final answer.
+  <li> You are only permitted to use your own calculator and writing implements.
+  Cell phones should be muted and left in your pocket or bag.
+  <li> All relevant tables are attached to the back.  You may detach them for your
+  reference.
+  <li> Assume &alpha; = 0.05 everywhere unless indicated otherwise.
+  <li> For t-tests on two groups, if the df is not given, you may use the
+  conservative estimate of df = min(n<sub>1</sub>, n<sub>2</sub>) - 1.
+</ul>
+
+<ol class="main">
+
+<li>
+Do wives wash hands more frequently than their husbands do?
+Six couples were asked how many times per day they wash their hands;
+the results are in the table below.
+<table class="data">
+  <tr><td colspan="7"></td><th>Mean</th><th>SD</th></tr>
+  <tr><th>Wife:</th>
+    <td> 3</td><td> 7</td><td> 8</td>
+    <td> 7</td><td> 8</td><td> 9</td>
+    <td> 7</td><td> 2.098</td></tr>
+  <tr><th>Husband:</th>
+    <td> 7</td><td> 3</td><td> 3</td>
+    <td> 3</td><td> 3</td><td> 5</td>
+    <td> 4</td><td> 1.673</td></tr>
+</table><br>
+<ol class="subparts">
+
+  <li> What is the <b>population</b> of interest? <u>[1]</u>
+  <i><br>[ Couples ]</i>
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ Spouse (wife or husband): categorical/dichotomous (paired).
+    <br>Hand washing (times/day): discrete (or continuous). ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. Which statistical test(s) would be appropriate?
+  <u>[3]</u>
+  <i><br>[ H<sub>0</sub>: &mu;<sub>d</sub> &le; 0
+    (presuming d = wife - husband; you could also subtract in the other order),
+    wives do not wash their hands more frequently than their husbands.
+    <br> H<sub>A</sub>: &mu;<sub>d</sub> &gt; 0,
+    wives do wash their hands more frequently than their husbands.
+    <br> Paired data: t-test on pairwise differences, or sign test. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Run an appropriate <b>parametric</b> test and bracket the 
+  <em>p</em>-value. <u>[5]</u><br>
+  <i><br>[ mean diff = 3.00, SD of diffs = 3.464,
+    <br>SE<sub>d</sub> = 1.414, so t = 2.121.
+    <br> df = 5: one-tailed: 0.04 &lt; p &lt; 0.05 (real p = 0.044).  ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Reject H<sub>0</sub>,
+    wives wash their hands more frequently than their own husbands. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Using the same data, perform an appropriate <b>non-parametric</b>
+  test and bracket the <em>p</em>-value. <u>[4]</u><br>
+  <i><br>[ Sign test: N<sub>+</sub> = 5, N<sub>-</sub> = 1, n<sub>d</sub> = 6
+    <br>One-tailed: p &gt; .10.  ]</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Fail to reject H<sub>0</sub>, insufficient evidence to show
+    wives wash their hands more frequently than their own husbands. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Which test do you think is more <b>appropriate</b> for this data,
+  the parametric or the non-parametric test? Why?  <u>[2]</u>
+  <i><br>[ There is one big outlier -- the first couple.
+    Sign test might be the better option in this case, although
+    overall the sample size is too small to tell. ]</i>
+  <div class="answerbox" style="height:5em"></div>
+
+</ol>
+
+<li>
+Are nurses who work in the ER (emergency room) and nurses who don't work
+in the ER equally likely to be taking prescription anti-depressants (ATD)?
+The number of participants in each category is listed in the table below.
+<table class="data">
+  <tr><td>	</td><th>ATD	</th><th>No ATD	</th></tr>
+  <tr><th>ER	</th><td>33	</td><td>42	</td></tr>
+  <tr><th>Non-ER</th><td>20	</td><td>55	</td></tr>
+</table><br>
+<ol class="subparts">
+
+  <li> What is the <b>population</b> of interest? <u>[1]</u>
+  <i><br>[ Nurses ]</i>
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ ER vs non-ER: categorical/dichotomous.
+    <br>ATD: categorical/dichotomous. ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. Which statistical test(s) would be appropriate?
+  <u>[3]</u>
+  <i><br>[ H<sub>0</sub>: P(ATD|ER) = P(ATD|non-ER) (= P(ATD)),
+    or equivalently, P(ER|ATD) = P(ER|no ATD) (= P(ER)):
+    <br>whether a nurse is taking prescription anti-depressants is independent
+    of whether that nurse works in the ER or not.
+    <br>H<sub>A</sub>: P(ATD|ER) &ne; P(ATD|non-ER), or
+    P(ATD|ER) &ne; P(ATD), or
+    P(ER|ATD) &ne; P(ER|no ATD), or
+    P(ER|ATD) &ne; P(ER), etc.
+    <br>ER and non-ER nurses are not equally likely to be taking
+    anti-depressants.
+    <br> Use the chi-squared test.]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Run the appropriate test and bracket a <b><em>p</em>-value</b>.
+  <u>[4]</u>
+  <i><br>[ Expected frequencies: 26.5, 48.5, 26.5, 48.5.
+    <br>Chi-squared = 4.93, .025 &lt; p &lt; .05 (exact p = 0.026) ]</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Reject H<sub>0</sub>,
+    workplace (ER vs. non-ER) and anti-depressant use are not independent. ]</i>
+  <div class="answerbox" style="height:2em"></div>
+
+</ol>
+
+<li>
+Suppose we wish to determine whether the location of birth (in hospital
+or at home) has an impact on birth weight (in kg).
+<ol class="subparts">
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[Birth location: predictor, categorical/dichotomous.
+    <br>Birth weight: outcome, continuous]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. Which statistical test(s) would be appropriate?
+  <u>[3]</u>
+  <i><br>[H<sub>0</sub>: &mu;<sub>hosp</sub> = &mu;<sub>home</sub>:
+    mean birth weight for both groups is the same;
+    i.e., location does not have an effect on birth weight.
+    <br>H<sub>A</sub>: &mu;<sub>hosp</sub> &ne; &mu;<sub>home</sub>:
+    mean birth weight differs for the two groups;
+    i.e., location has an effect on weight.
+    <br>t-test on independent groups, or Wilcoxon-Mann-Whitney. ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Data for this experiment are given below.  Run an appropriate
+  <b>parametric</b> test and bracket the <em>p</em>-value. <u>[5]</u><br>
+  <table class="data">
+    <tr><td colspan="9"></td><th>Mean:</th><th>SD:</th></tr>
+    <tr><th>Hospital:</th>
+      <td> 3.7</td><td> 3.2</td><td> 4.4</td><td> 4.8</td>
+      <td> 5.1</td><td> 4.7</td><td> 2.9</td><td> 3.2</td>
+      <td> 4.0</td><td>0.8519</td></tr>
+    <tr><th>Home:</th>
+      <td> 3.6</td><td> 2.6</td><td> 3.9</td><td> 2.7</td>
+      <td> 3.1</td><td> 3.0</td><td> 2.8</td><td>    </td>
+      <td> 3.1</td><td>0.4830</td></tr>
+  </table>
+  <i><br>[ SE<sub>1</sub> = 0.3012, SE<sub>2</sub> = 0.1826, SE = 0.3522.
+    <br>mean diff = 0.90, so t = 2.555.
+    <br> estimate df = min(n<sub>1</sub>, n<sub>2</sub>) - 1 = 6
+    <br>One-tailed: 0.02 &lt; p &lt; 0.025, so
+    Two-tailed (which is what we want): 0.04 &lt; p &lt; 0.05.
+    (real p = 0.014, with a real df of 11.31).  ]</i>
+  <div class="answerbox" style="height:7em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ p &lt; &alpha;: reject H<sub>0</sub>,
+    location of birth does have an impact on birth weight. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Using the same data, perform an appropriate <b>non-parametric</b>
+  test and bracket the <em>p</em>-value. <u>[4]</u><br>
+  <i><br>[ WMW: K<sub>1</sub> = 47, K<sub>2</sub> = 9.
+    <br>n = 8, n' = 7 (two-tailed): 0.02 &lt; p &lt; 0.05.  ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ p &lt; &alpha;: reject H<sub>0</sub>,
+    location of birth does have an impact on birth weight. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Which test do you think is more <b>appropriate</b> for this data,
+  the parametric or the non-parametric test? Why?  <u>[2]</u>
+  <i><br>[ Parametric should be fine; although the data are more uniformly
+    distributed than normal, there are no obvious outliers. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+</ol>
+
+<li>
+Does workplace (defined as "hospital", "clinic", or "community")
+affect nurses' hourly wage?
+<ol class="subparts">
+
+  <li> What is the <b>population</b> of interest? <u>[1]</u>
+  <i><br>[ Nurses ]</i>
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ Workplace: predictor, categorical.
+    <br>Wage: outcome, continuous. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What is the appropriate parametric statistical <b>test</b> to run?
+  <u>[1]</u>
+  <i><br>[ ANOVA ]</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  notation. <u>[2]</u>
+  <i><br>[ H<sub>0</sub>: &mu;<sub>h</sub> = &mu;<sub>cl</sub>
+    = &mu;<sub>com</sub>,
+    <br>i.e., all the nurses have the same wage, regardless of workplace.
+    <br>H<sub>A</sub>: &mu;<sub>h</sub> &ne; &mu;<sub>cl</sub>,
+    or &mu;<sub>h</sub> &ne; &mu;<sub>com</sub>,
+    or &mu;<sub>cl</sub> &ne; &mu;<sub>com</sub>;
+    <br>i.e., at least one group of nurses has a different wage
+    from the other groups.  Workplace does have an effect on wage. ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Data for this experiment are given below.  <b>Run</b> an appropriate
+  test and bracket the <em>p</em>-value. <u>[5]</u><br>
+  <table class="data">
+    <tr><th>Hospital:	</th><td> 28</td><td> 30</td><td> 32</td></tr>
+    <tr><th>Clinic:	</th><td> 31</td><td> 37</td><td>   </td></tr>
+    <tr><th>Community:	</th><td> 24</td><td> 28</td><td>   </td></tr>
+  </table>
+  <i><br>[ Grand mean = 30, group means = 30, 34, 26.
+    <br>SSb = 64, SSw = 34, dfb = 2, dfw = 4, so MSb = 32, MSw = 8.5.
+    <br>F = 3.76, at df = (2,4), so omnibus .10 &lt; p &lt; .15
+    (actual p = 0.120).  ]</i>
+  <div class="answerbox" style="height:12em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Fail to reject H<sub>0</sub>, insufficient evidence to show
+    workplace affects hourly wage. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What are the <b>assumptions</b> of the statistical test you
+  performed? Is there evidence to suggest that any of these 
+  assumptions have been violated in this dataset?  <u>[4]</u>
+  <i><br>[ Parametricity: (1) DV is continuous or discrete (ok)
+    <br>(2) Random sample: independent observations, independent groups (ok)
+    <br>(3) Normal distribution of DV within each group (awfully small
+    sample size, so can't really tell, but no obvious outliers)
+    <br>(4) Equality (homogeneity) of variance (dispersion) amongst groups
+    (also hard to tell, but the min/max spread looks reasonably comparable) ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+</ol>
+
+</ol>
+</body></html>

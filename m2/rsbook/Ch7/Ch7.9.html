@@ -1,0 +1,321 @@
+<HTML>
+<HEAD>
+<TITLE>7.9 Longer Cardinals</TITLE>
+<meta NAME="keywords" CONTENT="longer, cardinals, long, cardinal, range, return, least, significant, digit, digits, most, overflow, overflows, error, errors">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Solving Real World Problems in Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>7.9 Longer Cardinals</B></H2>
+<P>It was noted in the last section that one could multiply two numbers in the range 0 .. 9999 and retain all the digits in two separate cardinals.  Specifically, one can modify the procedure presented there to return the entire product, rather than just some of the digits:</P>
+<PRE>
+<B>PROCEDURE</B> Multiply8 (mplier, mcand : <B>CARDINAL</B>; <B>VAR</B> ansHi, ansLo : <B>CARDINAL</B>);
+
+<B>TYPE</B>
+  parts = <B>ARRAY</B> [0 .. 1] <B>OF</B> <B>CARDINAL</B>;
+
+<B>VAR</B>
+  x, y : parts;
+  t1, t2, t3 : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  x[1] := mplier <B>DIV</B> 100;   (* break numbers into two parts *)
+  x[0] := mplier <B>MOD</B> 100;
+  y[1] := mcand <B>DIV</B> 100;
+  y[0] := mcand <B>MOD</B> 100;
+  
+(* work out all three terms in the multiplication *)
+  t1 := x[1] * y[1];
+  t2 := x[1] * y[0] + x[0] * y[1];
+  t3 := x[0] * y[0];
+
+  (* redistribute the contents of t2 to t1 and t3 *);
+  t1 := t1 + t2 <B>DIV</B> 100;
+  t3 := t3 + 100 * (t2 <B>MOD</B> 100);
+
+  (* and from this obtain the least significant digits of the answer. *)
+  ansLo := t3 <B>MOD</B> 10000;
+
+ (* and transfer any part of t3 over 10000 to the high digits *)
+  ansHi := t3 <B>DIV</B> 10000 + t1;
+
+<B>END</B> Multiply8;</PRE>
+<P>One could write out such eight digit numbers with:</P>
+<PRE>
+<B>PROCEDURE</B> Write8 (hi, lo : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  temp : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> hi # 0 (* else write only the digits of lo part *)
+    <B>THEN</B>
+      WriteCard (hi, 1);   (* first group of digits *)
+      <B>IF</B> lo # 0
+        <B>THEN</B>
+          temp := lo;
+        <B>ELSE</B>
+     (* if=0 and this not done next part prints zeros forever *)
+          temp := 1;
+        <B>END</B>;
+
+      (* now pad with zeros if needed *)
+      <B>WHILE</B> temp <!--<-->&lt; 1000 (* four digits needed in second part *)
+        <B>DO</B>
+          WriteChar (<!--"-->&quot;0<!--"-->&quot;);
+          temp := temp * 10;
+        <B>END</B>;
+      <B>END</B>;  (* if hi # 0 *)
+  WriteCard (lo, 1); (* always *)
+<B>END</B> Write8;</PRE>
+<P>All of this is possible with far less work if the type CARDINAL has a suitable range.  Expand the horizon, however.  Suppose the desire were to be able to keep track of (up to) sixteen digit numbers, and be able to add or multiply two of these and still retain up to sixteen digits in the answer.  If the range of the built in cardinal is already 8 digits, either use just two to get sixteen digits or use four to obtain thirty-two.</P>
+<P>There are several ways that this could be achieved, and some will be examined later in the text.  Here, it will be accomplished by using four cardinals, each retaining four digits.  Typically, the type is specified in a library module, as abstractly as possible for the tools available thus far.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> BigCards;
+(* By R. Sutcliffe
+  Modified 1993 05 10 *)
+
+<B>TYPE</B>
+  BigCard = <B>ARRAY</B> [0 .. 3] <B>OF</B> <B>CARDINAL</B>;
+  (* least significant digits in lowest numbered component *)
+
+<B>VAR</B>
+  bigOK : <B>BOOLEAN</B>;
+  (* will be true if last operation ok, false if overflow took place *)
+
+<B>PROCEDURE</B> Add (first, second : BigCard; <B>VAR</B> result : BigCard);
+  (* Pre: None
+  Post: the result is the sum of the two numbers.  If there is an overflow, the left digit is lost and bigOK is false. *)
+
+<B>PROCEDURE</B> Mul (mplier, mcand : BigCard; <B>VAR</B> result : BigCard);
+  (* Pre: None
+  Post: the result is the product of the two numbers.  If there is an overflow, the left digit(s) is/are lost and bigOK is false. *)
+
+<B>PROCEDURE</B> WriteBigCard (theNum : BigCard);
+  (* Pre: None
+  Post: theNum is written to the standard output. *)
+
+<B>END</B> BigCards.</PRE>
+<P>The lowest indexed cardinal in variables of type <I>BigCard</I> holds the least significant digits.  If one has two of numbers of type <I>BigCard</I>, one can begin at the rightmost side of the multiplier and multiply each component of the multiplier, carrying as needed.  This mimics the algorithm for multiplying two cardinals in decimal notation:</P>
+<PRE>
+	        2567
+	       <!--¥-->* 678	       -----
+	       20536
+	      179690
+	     1540200	     -------
+	     1740426</PRE>
+<P>except that each <!--"-->&quot;column<!--"-->&quot; contains a number in the range 0 .. 9999 rather than a digit in the range 0 .. 9.</P>
+<P><IMG SRC="Figure/Eq7.9.1.GIF"><!----></P>
+<P>Another way to think about this algorithm is that one must shift the first number (the multiplicand) to the left by a number of columns equal to the position from the right of the component of the second number (the multiplier) currently being used.  For instance, to multiply by the second multiplier component from the right, shift the multiplicand left by one component first, effectively splitting the multiplication up as:</P>
+<P>(10000 (a[1]) + a[0]) <!--¥-->* b<BR>
+(10000 (a[1] <!--¥-->* b) + (a[0] <!--¥-->* b)</P>
+<P>If one overflows the data type on the left, the result is invalid and this fact must be flagged.  With all these ideas in mind, here are some procedures that could implement this module.  Note that <I>bigOK</I> is a boolean that is global to all the procedures here but that must be checked by any client programs after calling these procedures if they are to rely on the results.  Its role is essentially the same as <I>Done</I> in <I>InOut</I>.</P>
+<PRE>
+<B>IMPLEMENTATION</B> <B>MODULE</B> BigCards;
+(* By R. Sutcliffe
+  Modified 1993 05 10 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+(* local procedures *)
+<B>PROCEDURE</B> Carry (<B>VAR</B> big : BigCard);
+
+(* Pre: none
+Post: Any excesses over 10000 in any component of the number are carried to the next component on the left *)
+
+<B>VAR</B>
+  count, temp : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 3 <B>TO</B> 1 <B>BY</B> -1
+    <B>DO</B>
+      temp := big [count];
+      big [count] := temp <B>MOD</B> 10000;   (* leave part <!--<-->&lt; 10000 *)
+      big [count - 1] := big [count - 1] + (temp <B>DIV</B> 10000);
+                (* carry excess *)
+    <B>END</B>; (* for *)
+  <B>IF</B> big [0] <!-->&gt; 10000
+      <B>THEN</B>
+        bigOK := <B>FALSE</B>
+      <B>END</B> (* if *)
+<B>END</B> Carry;
+
+<B>PROCEDURE</B> Init (<B>VAR</B> theNum : BigCard);
+(* Pre: none
+Post: theNum has all components set to zero *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>FOR</B> count := 0 <B>TO</B> 3   (* initialize result *)
+    <B>DO</B>
+      theNum [count] := 0
+    <B>END</B>; (* for count *)
+<B>END</B> Init;
+
+  (* Put the procedure Multiply8 here *)
+
+(* Now the exported ones. *)
+<B>PROCEDURE</B> Add (first, second : BigCard; <B>VAR</B> result : BigCard);
+
+<B>VAR</B>
+  count: <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  bigOK := <B>TRUE</B>;
+  <B>FOR</B> count := 0 <B>TO</B> 3
+    <B>DO</B>
+       result [count] := first [count] + second [count];
+    <B>END</B>;
+     Carry (result); (* resets bigOK if error *)
+<B>END</B> Add;
+
+<B>PROCEDURE</B> Mul (mplier, mcand : BigCard; <B>VAR</B> result : BigCard);
+
+<B>PROCEDURE</B> Shift (<B>VAR</B> big : BigCard; shift : <B>CARDINAL</B>);
+
+(* This procedure shifts a BigCard by shift components to the left where shift is the component number of the multiplicand component currently being used. *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  count := 4;
+  <B>WHILE</B> count <!-->&gt; 0
+    <B>DO</B>
+      <B>DEC</B> (count); (* start at component 3 *)
+      <B>IF</B> count + shift <!--<-->&lt;= 3 (* shift only if place to go *)
+        <B>THEN</B>
+          big [count + shift] := big [count];
+        <B>ELSIF</B> big [count] # 0 <B>THEN</B>
+         bigOK := <B>FALSE</B>; (* if were supposed to shift, is bad *)
+       <B>END</B>; (* if *)
+     <B>END</B>; (* while *)
+   <B>WHILE</B> count <!--<-->&lt; shift (* now pad the back end with zeros *)
+     <B>DO</B>
+       big [count] := 0;
+       <B>INC</B> (count);
+     <B>END</B>; (* while *)
+
+<B>END</B> Shift;
+
+(* main procedure variables declared here *)
+<B>VAR</B>
+  mulAnsHi, mulAnsLo, 
+  count, comCount : <B>CARDINAL</B>;
+  temp, prod : BigCard;
+
+<B>BEGIN</B>  (* main procedure *)
+  Init (result);
+  bigOK := <B>TRUE</B>;
+  (* may be reset to false by either shift or carry *)
+  <B>FOR</B> comCount := 0 <B>TO</B> 3   (* count on multiplier *)
+    <B>DO</B>
+      temp := mcand;   (* move multiplicand to a temporary *)
+      Shift (temp, comCount);   (* shift multiplicand if needed *)
+      <B>FOR</B> count := comCount <B>TO</B> 3   (* count in multiplier *)
+        <B>DO</B>
+          Multiply8 (temp [count], mplier [comCount],
+             mulAnsHi, mulAnsLo);
+                 (* do one component *)
+          result [count] := result [count] + mulAnsLo;
+             (* low part into result *)
+          <B>IF</B> count <!--<-->&lt; 3   (* now put high part in *)
+            <B>THEN</B>
+              result [count + 1] := result [count + 1] + mulAnsHi
+            <B>ELSIF</B> mulAnsHi # 0 <B>THEN</B>
+              (* if count = 3 and mulAnsHi <!-->&gt; 0 then overflow *)
+              bigOK := <B>FALSE</B>   (* too big *)
+            <B>END</B>;   (* if count *)
+          Carry (result)   (* cover any carries *)
+        <B>END</B>    (* for count *)
+    <B>END</B>    (* for comCount *)
+
+<B>END</B> Mul;
+
+<B>PROCEDURE</B> WriteBigCard (theNum : BigCard);
+
+<B>VAR</B>
+  temp, count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  count := 3;
+  <B>WHILE</B> count <!-->&gt; 0
+    <B>DO</B>
+      <B>IF</B> theNum [count] # 0 (* else do only digits of next part *)
+        <B>THEN</B>
+          WriteCard (theNum [count], 0);(* this group of digits *)
+          <B>IF</B> theNum [count - 1] # 0
+            <B>THEN</B>
+              temp := theNum [count - 1];
+            <B>ELSE</B>
+       (* if=0 and this not done next part prints zeros forever *)
+              temp := 1;
+            <B>END</B>;
+
+          (* now pad with zeros if needed *)
+          <B>WHILE</B> temp <!--<-->&lt; 1000 (* four digits needed in next part *)
+            <B>DO</B>
+              WriteChar (<!--"-->&quot;0<!--"-->&quot;);
+              temp := temp * 10;
+            <B>END</B>;
+          <B>END</B>;  (* theNum [count] # 0 *)
+        <B>DEC</B> (count);
+    <B>END</B>; (* while *)
+  WriteCard (theNum [0], 0); (* always *)
+
+<B>END</B> WriteBigCard;
+
+<B>END</B> BigCards.</PRE>
+<P>By means of such methods, one could implement a full range of operations on the type BigCard, and keep track of any overflows that might take place.  The student is asked to extend this module slightly in the exercises, but a fuller treatment of such a data type will be postponed until Chapter 16 when a slightly different and more abstract implementation will be considered. </P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

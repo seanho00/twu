@@ -1,0 +1,4 @@
+<IfModule mod_autoindex.c>
+  IndexIgnore *.png
+</IfModule>
+

@@ -1,0 +1,120 @@
+<HTML><HEAD><TITLE>18.5 String Art</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; String Art">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><b>18.5 String Art</b></H2>
+
+<P>A variety of interesting patterns can be achieved by the simple expedient of drawing lines from one side of a shape to the other. Such patterns are commonly known as string art, after the corresponding figures made by attaching coloured threads to nails driven into a board. If the distance between the lines relative to the size of the drawing rectangle is carefully calculated, interference effects can be obtained. The program in this section is presented with little explanation as a simple example of such patterns, and the student is invited to elaborate. The shape can be changed or the step size altered to produce somewhat different effects.</P>
+<P>Some things that are different from previous examples are:</P>
+<UL><LI><!--…--> the MacWin coordinate system is used instead of the standard one</LI>
+<LI><!--…-->the dimensions of the screen are obtained</LI>
+<LI><!--…--> the drawing area is reduced to a square for symmetry</LI></UL>
+
+<PRE><b>MODULE</b> Moire;
+(* Draw a Moire pattern in a graphic window 
+   by R. Sutcliffe
+   modified 1998 06 22 *)
+
+<b>FROM</b> GraphPaper <b>IMPORT</b>
+  CoordSystem, SetCoordSystem, GetDimensions, MoveTo, LineTo;
+  
+<b>CONST</b>
+  step = 5;  (* determines the granularity of the pattern *)
+  (* ensure space left is even number of steps *)
+  (* leave margin; make it square for easy coordinates *)
+  leftAndTop = 8 * step;
+  (* do a border within the window all around *)
+  border = 4 * step; 
+  first = leftAndTop + border; (* begin right in the corner *)
+  
+<b>VAR</b>
+  maxX, maxY, startX, startY, endX, endY,
+  bottomAndRight, last : <b>INTEGER</b>;
+
+<b>BEGIN</b>
+  SetCoordSystem (MacWin);
+  GetDimensions (maxX, maxY);
+  (* set lower right corner to maximum square that will fit on the screen *)
+  
+  bottomAndRight := maxY;
+  <b>IF</b> bottomAndRight > maxX
+    <b>THEN</b>
+      bottomAndRight := maxX;
+    <b>END</b>;
+  
+  (* ensure size is multiple of number of steps *)
+  bottomAndRight := bottomAndRight - (bottomAndRight <b>MOD</b> step);
+  
+  (* same border as at topleft *)
+   last := bottomAndRight - border;
+   startX := first;
+   endX := last;
+ 
+ (* draw edge to edge lines in both dimensions *)
+  <b>FOR</b> startY := first <b>TO</b> last <b>BY</b> step
+    <b>DO</b>
+      endY := last - startY + first;
+      MoveTo (startX, startY);
+      LineTo (endX, endY);
+    <b>END</b>; (* for *)
+  startY := first;
+  endY := last;
+  <b>FOR</b> startX := first <b>TO</b> last <b>BY</b> step
+    <b>DO</b>
+      endX := last - startX + first;
+      MoveTo (startX, startY);
+      LineTo (endX, endY);
+    <b>END</b>; (* for *)
+ 
+<b>END</b> Moire.</PRE>
+
+<P>When the program <i>Moire</i> was run with these settings, the pattern produced was as shown in figure 18.12.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure_18.12.GIF" WIDTH=503 HEIGHT=516 BORDER="1"></CENTER></P><!---->
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

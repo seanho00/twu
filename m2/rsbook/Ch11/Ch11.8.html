@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<TITLE>11.8 CASE--An Extended Example<</TITLE>
+<meta NAME="keywords" CONTENT="case, extend, extended, example, bitset, bitsets, cast, non-discriminate, non-discriminated, union, undiscriminate, undiscriminated, nondiscriminate, nondiscriminated, bitsperloc, rotate, hexadecimal, print, printing, routine, routines">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>11.8 CASE<!--</B>‹<B>-->--An Extended Example</B></H2>
+<P>In the example of <A HREF="../Ch9/Ch9.5.html">section 9.5</A>, routines were presented to print out a cardinal value as a binary numeral by interpreting it as a BITSET using a CAST.  A non-discriminated union can be employed instead, and that example re-coded as below.</P>
+<PRE>
+<B>MODULE</B> ShiftDemo2;
+
+(* Written by R.J. Sutcliffe *)
+(* to demonstrate the use of packedset *)
+(* using ISO standard Modula-2  *)
+(* last revision 1994 03 01 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard, ReadCard;
+<B>FROM</B> <B>SYSTEM</B> <B>IMPORT</B>
+  <B>BITSPERLOC</B>, <B>SHIFT</B>, <B>ROTATE</B>;
+  
+<B>CONST</B>
+  maxBitNum = <B>BITSPERLOC</B> * <B>SIZE</B>(<B>CARDINAL</B>) - 1;
+  
+<B>TYPE</B>
+  CardSet = <B>PACKEDSET</B> <B>OF</B> [0..maxBitNum];
+  Card =
+    <B>RECORD</B>
+      <B>CASE</B> : <B>BOOLEAN</B> <B>OF</B> (* undiscriminated variant *)
+        <B>TRUE</B>:
+          c : <B>CARDINAL</B> |
+        <B>FALSE</B>:
+          s : CardSet
+        <B>END</B>
+    <B>END</B>;
+  
+<B>PROCEDURE</B> WriteCardBin (num: Card);
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  <B>FOR</B> count := maxBitNum <B>TO</B> 0 <B>BY</B> -1 
+    <B>DO</B> 
+      <B>IF</B> count <B>IN</B> num.s
+        <B>THEN</B>
+          WriteCard (1,1)
+        <B>ELSE</B>
+          WriteCard (0,1)
+        <B>END</B>;
+      <B>IF</B> count <B>MOD</B> 8 = 0 (* break into groups of 8 bits *)
+        <B>THEN</B>
+          WriteChar (<!--"-->&quot; <!--"-->&quot;);
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> WriteCardBin;
+
+<B>VAR</B>
+  theNumber : Card;
+  answer : <B>CHAR</B>;
+  again : <B>BOOLEAN</B>;
+ 
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;This program illustrates bit shifting <!--"-->&quot;);
+  WriteLn;
+
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;Enter the number to be shifted <!--"-->&quot;);
+  ReadCard (theNumber.c);
+  SkipLine;
+  WriteLn;
+  WriteString (<!--"-->&quot;The cardinal <!--"-->&quot;);
+  WriteCard (theNumber.c, 0);
+  WriteString (<!--"-->&quot; binary: <!--"-->&quot;);
+  WriteCardBin (theNumber);
+  WriteLn;
+  WriteString (<!--"-->&quot;Shifted one position right yields <!--"-->&quot;);
+  theNumber.s := <B>SHIFT</B> (theNumber.s, -1);
+  WriteCard (theNumber.c, 0);
+  WriteString (<!--"-->&quot; binary: <!--"-->&quot;);
+  WriteCardBin (theNumber);
+  WriteLn;
+  WriteString (<!--"-->&quot;and, then rotated one position right yields <!--"-->&quot;);
+  theNumber.s := <B>ROTATE</B> (theNumber.s, -1);
+  WriteCard (theNumber.c, 0);
+  WriteString (<!--"-->&quot; binary: <!--"-->&quot;);
+  WriteCardBin (theNumber);
+  WriteLn;
+ 
+  WriteString (<!--"-->&quot;Do another? Y/N <!--"-->&quot;);
+  ReadChar (answer);
+  SkipLine;
+  again := (<B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;);
+<B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> ShiftDemo2.</PRE>
+<P>In addition, the binary printing routines could be altered to print in hexadecimal by putting hexadecimal digits together one at a time starting from the most significant bits in the bitset representation of a number.  Here is a short demonstration program.  Note the additional use of the case statement for the printing of each hexadecimal digit.  It must distinguish between the case of decimal digits and non-decimal digits. </P>
+<PRE>
+<B>MODULE</B> HexDemo;
+
+(* Written by R.J. Sutcliffe *)
+(* to demonstrate the use of variant records and case statements *)
+(* using ISO standard Modula-2  *)
+(* last revision 1995 03 24 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn, SkipLine, ReadChar, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard, ReadCard;
+<B>FROM</B> <B>SYSTEM</B> <B>IMPORT</B>
+  <B>BITSPERLOC</B>;
+  
+<B>CONST</B>
+  maxBitNum = <B>BITSPERLOC</B> * <B>SIZE</B> (<B>CARDINAL</B>) - 1;
+  
+<B>TYPE</B>
+(* allow interpretation of a cardinal as a set without casting *)
+  Hex = <B>CARDINAL</B> [0..15];
+  BitCount = [0..maxBitNum];
+  CardSet = <B>PACKEDSET</B> <B>OF</B> BitCount;
+  Card =
+    <B>RECORD</B>
+      <B>CASE</B> : <B>BOOLEAN</B> <B>OF</B> (* undiscriminated variant *)
+        <B>TRUE</B>:
+          c : <B>CARDINAL</B> |
+        <B>FALSE</B>:
+          s : CardSet
+        <B>END</B>
+    <B>END</B>;
+
+<B>PROCEDURE</B> WriteCardBin (num: Card);
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := maxBitNum <B>TO</B> 0 <B>BY</B> -1 
+    <B>DO</B> 
+      <B>IF</B> count <B>IN</B> num.s
+        <B>THEN</B>
+          WriteCard (1,1)
+        <B>ELSE</B>
+          WriteCard (0,1)
+        <B>END</B>;
+      <B>IF</B> count <B>MOD</B> 8 = 0 (* break into groups of 8 bits *)
+        <B>THEN</B>
+          WriteChar (<!--"-->&quot; <!--"-->&quot;);
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> WriteCardBin;
+
+<B>PROCEDURE</B> WriteHexDigit (digit : Hex);
+<B>BEGIN</B>
+  <B>CASE</B> digit <B>OF</B>
+    0..9: (* numeric hex digit *)
+      WriteChar (<B>CHR</B> (<B>ORD</B> (<!--"-->&quot;0<!--"-->&quot;) + digit));
+    <B>ELSE</B> (* 10 -- 15 or A to E digits *)
+      WriteChar (<B>CHR</B> (<B>ORD</B> (<!--"-->&quot;A<!--"-->&quot;) + digit - 10));
+    <B>END</B>;
+<B>END</B> WriteHexDigit;
+
+<B>PROCEDURE</B> WriteCardHex (num: Card);
+
+<B>VAR</B>
+  count, tcount : <B>CARDINAL</B>;
+  temp : Card;
+  
+<B>BEGIN</B>
+  temp.c := 0; (* holder for four bits at a time *)
+  tcount:= 4; (* count down from most significant bit *)
+  <B>FOR</B> count := maxBitNum <B>TO</B> 0 <B>BY</B> -1 
+    <B>DO</B> 
+      <B>DEC</B> (tcount); (* so, we actually start at three *)
+      <B>IF</B> count <B>IN</B> num.s 
+        <B>THEN</B> (* transfer four bits to the temporary item *)
+          <B>INCL</B> (temp.s, tcount)
+        <B>END</B>;
+      <B>IF</B> count <B>MOD</B> 4 = 0 (* break into nibbles *)
+        <B>THEN</B>
+          WriteHexDigit (temp.c); (* and go print one digit *)
+          temp.c := 0; (* now, reset for the next nibble *)
+          tcount:= 4; (* and reset the count too *)
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> WriteCardHex;
+
+<B>VAR</B> (* main *)
+  card : Card;
+  answer : <B>CHAR</B>;
+  again : <B>BOOLEAN</B>;
+ 
+<B>BEGIN</B>  (* main *)
+  WriteString (<!--"-->&quot;This program illustrates binary and hex output <!--"-->&quot;);
+  WriteLn;
+
+<B>REPEAT</B>
+  WriteString (<!--"-->&quot;Enter a cardinal number to be printed <!--"-->&quot;);
+  ReadCard (card.c);
+  SkipLine;
+  WriteString (<!--"-->&quot;The cardinal <!--"-->&quot;);
+  WriteCard (card.c, 0);
+  WriteString (<!--"-->&quot; in binary is: <!--"-->&quot;);
+  WriteCardBin (card);
+  WriteString (<!--"-->&quot; and in hex is: <!--"-->&quot;);
+  WriteCardHex (card);
+  WriteLn;
+ 
+  WriteString (<!--"-->&quot;Do another? Y/N <!--"-->&quot;);
+  ReadChar (answer);
+  SkipLine;
+  WriteLn;
+  again := (<B>CAP</B> (answer) = <!--"-->&quot;Y<!--"-->&quot;);
+<B>UNTIL</B> <B>NOT</B> again;
+
+<B>END</B> HexDemo.</PRE>
+<P>Selected output from a run of this program follows to illustrate its correctness.  As usual, user inputs are in bold.</P>
+<PRE>
+This program illustrates binary and hexadecimal output 
+Enter a cardinal number to be printed <B>1</B>
+The cardinal 1 in binary is: 00000000 00000000 00000000 00000001  and in hex is: 00000001
+Do another? Y/N <B>y</B>
+
+Enter a cardinal number to be printed <B>14</B>
+The cardinal 14 in binary is: 00000000 00000000 00000000 00001110  and in hex is: 0000000E
+Do another? Y/N <B>y</B>
+
+Enter a cardinal number to be printed <B>65535</B>
+The cardinal 65535 in binary is: 00000000 00000000 11111111 11111111  and in hex is: 0000FFFF
+Do another? Y/N <B>y</B>
+
+Enter a cardinal number to be printed <B>31415</B>
+The cardinal 31415 in binary is: 00000000 00000000 01111010 10110111  and in hex is: 00007AB7
+Do another? Y/N <B>y</B>
+
+Enter a cardinal number to be printed <B>4294967295</B>
+The cardinal 4294967295 in binary is: 11111111 11111111 11111111 11111111  and in hex is: FFFFFFFF
+Do another? Y/N <B>n</B></PRE>
+<P>The reader will note that the implementation employed happened to use a thirty-two bit or eight hexadecimal digit representation for its cardinals, but that the program itself should work regardless of this, because of the way it is crafted.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

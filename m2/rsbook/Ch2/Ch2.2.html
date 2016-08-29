@@ -1,0 +1,211 @@
+<HTML>
+<HEAD>
+<TITLE>2.2 The Anatomy of an Infant Program</TITLE>
+<meta NAME="keywords" CONTENT="anatomy, program, module, import, begin, end, statement, stetements, modules, module, executable, entities, entity, reserved, word, words, standard, library, tools, identifiers, identifier, item, standard, iso, wirth, railroad, diagram, loop, programming, style, upper, lower, case, string, strings, literal, carriage, return, line, feed">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: From Plan to Program">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>2.2 The Anatomy of an Infant Program</B></H2>
+<P>All Modula-2 programs must have the general form shown in the sample above.  The word MODULE comes first, followed by some descriptive name.  If there are any IMPORT commands, these come next.  The words BEGIN and END (which must be all in upper case) mark off the <I>block</I> of actual program instructions or <I>statements</I>.  They serve more or less as parentheses, even though they are spelled out as words.  There may be several such blocks opened and closed in this manner throughout a program (more on this later), but it is important to note that this main one must end with a period, and that any block that has a name such as <i>HiThere</i> as this one does must have that name mentioned again just after the corresponding END.   Note the following definition:</P>
+<BLOCKQUOTE><I><A NAME="Statement">A</A> <U>statement</U> is an instruction directing a computer to take some action.  It usually is written out in a high level notation for subsequent translation by the computer into one or more low level instructions and their corresponding actions.</I></BLOCKQUOTE>
+<P>The semicolons between statements are not optional, except before an END marker.  They separate the statements from each other, in effect telling the computer that one instruction is finished and that it is time to start another one.  As indicated, an END marker is not a statement, but punctuation, so the semicolon can be left out before it.</P>
+<P>There are far more complex programs, but this one, perhaps the simplest that actually does something, is a start.  In the short sections that follow, some aspects of this program are analyzed in detail.</P>
+<A NAME="2.2.1"></A><H3><B>2.2.1 What is a Module?</B></H3>
+<P>This section considers the first word of the sample program, a word that every program will have at or near the beginning.</P>
+<BLOCKQUOTE><I><A NAME="Module">A</A> <U>Module</U> is a container to hold  the items and information that constitute all or part of an executable program.</I></BLOCKQUOTE>
+<P>Obviously, this thing called a module is important.  It doesn't take much deep thinking to realize that the whole Modula-2 programming notation is named after it.  Unfortunately, this initial attempt at a description does not tell the whole story about modules, and a complete description must wait until later in this book.  It will have to suffice for now to say that a program is a module, and that there are other modules available in the system from which we can import things (like <I>WriteString</I>) that may be useful to us.  For instance, if all the entities mentioned below actually existed, this too would be a legitimate program:</P>
+<PRE>
+<B>MODULE</B> Lunch;
+
+<B>FROM</B> LunchBag <B>IMPORT</B>
+  sandwich, apple, Eat;
+
+<B>BEGIN</B>
+  Eat (sandwich);
+  Eat (apple);
+<B>END</B> Lunch.</PRE>
+
+<P>Here, the modules are <I>Lunch</I> and <I>LunchBag</I>, while <I>sandwich</I> and <I>apple</I> are evidently some sort of entities that can be acted upon, and <I>Eat</I> is some kind of procedure (like WriteString) that causes an action to take place.  The term <I>procedure</I> will be defined more carefully later.</P>
+<A NAME="2.2.2"></A><H3><B>2.2.2 Reserved Words</B></H3>
+<P>Certain special punctuation markers in the sample program are capitalized (and printed in bold for emphasis.)  All such special symbols were defined and reserved for a particular purpose by Niklaus Wirth when he first designed Modula-2.  Every programming notation has such symbols and uses them in much the same way as does Modula-2.</P>
+<BLOCKQUOTE><I><A NAME="ReservedWord">A</A> Modula-2 <U>reserved word</U> is a special word or marker used to outline the structure of a program.  It must be entirely written in upper case letters, and it cannot be used for any other purpose.</I></BLOCKQUOTE>
+<P>The reserved words encountered in the sample program were: MODULE, BEGIN, FROM, IMPORT, and END.  Others will be encountered later, and each one will be pointed out as a reserved word when it first occurs in an example.  A complete list can be found in <A HREF="../Appendices/Ap1.html">Appendix 1</A>.</P>
+<A NAME="2.2.3"></A><H3><B>2.2.3 Standard Library Tools</B></H3>
+<P>Other items (such as <I>WriteString</I>) are imported from a pre-existing library, and can also be thought of as being, in some sense, a standard part of every Modula-2 system.  Many modern programming notations share this concept; it is not unique to Modula-2.</P>
+<BLOCKQUOTE><I><A NAME="LibraryItem">A</A> Modula-2 <U>Standard Library Item</U> is an entity that can be found by a particular name and in a specified library in every implementation of standard Modula-2.</I></BLOCKQUOTE>
+<P>When Niklaus Wirth defined the Modula-2 notation, he included a few sample or suggested library modules along with his definition of the language proper.  Many of these, and their entire contents, have been adopted and used for a wide variety of Modula-2 versions and constitute a <I>de facto</I> standard for Modula-2 libraries.  There is also a <I>de jure</I> international standard specified by the International Organization for Standards (ISO) for Modula-2, and it also specifies certain (different) libraries that are required to accompany any implementation designated as <I>standard</I> under its terms.</P>
+<P>Most implementors follow (or at least include) material from the <I>de facto</I> standard suggested by Wirth.  Others have adopted the ISO modules for standard Modula-2 (though that is new), and still others ignore both and design libraries as they see fit.  For this reason, the name of typical imported procedures (such as <i>WriteString</i>) may vary, and so may the name of the library module from which they are imported.  In this text, the ISO standard for Modula-2 will be used for most programs, and any that use other libraries will be noted.</P>
+<P><B>NOTE</B>:	There are also <I>language</I> differences between Wirth's definition of Modula-2 and the ISO definition.  There are even some between different editions of <I>Programming in Modula-2</I>. These too will be observed in the context where they are relevant.</P>
+<A NAME="2.2.4"></A><H3><B>2.2.4 A Name for the Baby<!--</B>‹<B>-->--Identifiers</B></H3>
+<P>In the examples above, each module had a name.  This is required both in the MODULE heading and in its corresponding END.  However, not only modules have names.  In fact, there are many other entities in a typical program that also have to be identified in this manner.  (There were some in the last example.)</P>
+<P>For instance, if one wanted to write code using a formula like:</P>
+<P>a = b + c   ( in Modula-2 it is a := b + c)</P>
+<P>then <I>a</I>, <I>b</I>, and <I>c</I> must all be names for program entities (variable names.)  One could call them <I>number1</I>, <I>number2</I>, and <I>number3</I>, or any other name<!--‹-->--provided that the name is legal in Modula-2.</P>
+<P>The technical term for such names is <I>identifier</I>.  It is important to know the rules that must be followed for creating identifiers.</P>
+<BLOCKQUOTE><I><A NAME="Identifier">A</A> Modula-2 <U>identifier</U> is a sequence of non-blank letters or digits beginning with a letter.</I></BLOCKQUOTE>
+<P>This definition is illustrated in Figure 2.2 by what is sometimes termed a <I>railroad diagram</I>.  The arrows indicate the sequence of symbols or characters that define an identifier.</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.2.GIF" BORDER="1"></CENTER><!----></P>
+<P>The alternate path, or <I>loop</I> shows clearly that, after an initial letter, any sequence of letters and numbers is permitted.  Notice that the definition not only excludes blanks, but also any special symbols, such as +, -, /, $, %.  To conform with past practice in other languages, or with the requirements of other software on the system, some versions of Modula-2 may allow the dollar symbol, spaces and/or some of these other symbols that are supposed to be forbidden.  In this book, <!--"-->&quot;plain vanilla<!--"-->&quot; rules will be followed in such matters, and such compromises will be ignored.</P>
+<P><B>NOTE</B>:	In ISO standard Modula-2 the low-line (also sometimes called an underscore) is counted as a letter.  This was done to conform to the practice in Pascal.  However, it is easier to type and to read, say, <I>SideOfSquare</I> than <I>side_of_square</I>, so the former style will be used exclusively in this texts.  Programmers are urged to avoid the use of low-lines in identifiers unless these are absolutely necessary to conform to some local practices over which they have no control.</P>
+<P>Here are a few examples of identifiers:</P>
+<P>		<I>Correct</I>:</P>
+<P>	 <TABLE><TR><TD>FixItUp</TD>			<TD>FRED</TD></TR>
+	 <TR><TD>CompoundInterest</TD>			<TD>Showboat1</TD></TR>
+	 <TR><TD>Rate</TD> 				<TD>Blank25</TD></TR>
+	 <TR><TD>Time</TD>				<TD>hello</TD></TR></TABLE></P>
+
+<P>		<I>Incorrect</I>:</P>
+<P>	<TABLE><TR><TD>Compound Interest</TD>	<TD>(has a blank)</TD></TR>
+	<TR><TD>What%</TD>			<TD>(illegal symbol)</TD></TR>
+	<TR><TD>23Skidoo</TD>			<TD>(does not start with a letter)</TD></TR>
+	<TR><TD>Next-Time</TD>			(contains dash)</TD></TR></TABLE></P>
+
+<P>	<I>Permitted in ISO standard, but very poor style</I>:</P>
+<P>	this_identifier<BR>
+	this__longer___identifier	(how many low-lines are there?</P>
+<P>Although the definition itself does not make this clear, there is also a distinction made between upper case and lower case letters.  Consider the following examples:</P>
+<P><I>These are Different</I>:</P>
+<P> 	Help, help, HELP, HeLP, etc.<BR>
+ 	BEGIN, Begin  (the first is a reserved system word)<BR>
+ 	Something, SomethingIAte</P>
+<P><B>NOTE</B>:	As the second-to-last example shows, it is essential to type every identifier or command with the correct (consistent) upper case or lower case letters.  Do not type <I>Writestring</I> or <I>writestring</I> instead of <I>WriteString</I>, for example.</P>
+<P>In some implementations of Modula-2, the last two in this list of examples might not actually be interpreted as different by other parts of the system, even if they are by the language.  For instance, in dealing with file names on the disk or other external device, only the first eight or ten (or some other number) of characters may be checked.  Operating systems, and notations other than Modula-2 may recognize only upper case letters, or treat upper case and lower case versions of a letter as the same.  These peculiarities are holdovers from days when computer terminals had only upper case letters on their keyboards.  They apply only when sending such information to the operating system, not within the program.</P>
+<P><B>NOTE</B>:	1. As previously indicated, words like MODULE, BEGIN, END, FROM, and IMPORT are reserved words, and cannot be used as identifiers.</P>
+<P>	2. Other words are also already taken.  They too are entirely capitalized and are called standard identifiers.  (See <A HREF="../Ch2/Ch2.5.html#2.5.2">section 2.5.2</A> for a full discussion.) Still others may be commonly imported identifiers (such as <I>WriteString</I>.)  It would be unwise to use these as names for something else, even though you may get away with it.</P>
+<P>	3. There is a certain style or taste to the matter of appropriate capitalization of identifiers.  Specific rules shall be outlined later; for now, imitate.</P>
+<A NAME="2.2.5"></A><H3><B>2.2.5 Strings</B></H3>
+<P>The sample program contained the line:</P>
+<PRE>
+ WriteString (<!--"-->&quot;Hello Master, how may I serve you?<!--"-->&quot;)</PRE>
+
+<P>The portion between the double quotes is called a <I>literal string</I> and the effect of this particular statement will be to write out the characters between the quotes onto the computer's main output device (usually a screen, but sometimes a printer).</P>
+<BLOCKQUOTE><I><A NAME="LiteralString">A</A> <U>literal string</U> is a sequence of characters that is enclosed between either single quotes or double quotes.</I></BLOCKQUOTE>
+<P>Here are some examples of literal strings:</P>
+<PRE>
+	<!--"-->&quot;How are you doing today?<!--"-->&quot;
+	'Do you think <!--"-->&quot;hello<!--"-->&quot; is the correct word?'
+	<!--"-->&quot;Don't you like tea?<!--"-->&quot;
+	<!--"-->&quot;Your mark is 100%.<!--"-->&quot;
+	'What a nice day!'
+	<!--"-->&quot;He said 'Hi there!' to me yesterday.<!--"-->&quot;
+	'The distance between studs is 16<!--"-->&quot;.'</PRE>
+
+<P>Notice that if the string contains a single quote (apostrophe) it must be in double quotes and if it contains double quotes it must be enclosed in single quotes.  No string can contain both single and double quotes, but there are no other restrictions on the characters it contains, except that it cannot contain a carriage return.</P>
+<PRE>
+WriteString (<!--"-->&quot;This is an example of an illegal string, because it is too long to fit on one line of the original text form of the program.<!--"-->&quot;)</PRE>
+
+<P>Here is how to do this legally:</P>
+<PRE>
+WriteString (<!--"-->&quot;This one is better because it <!--"-->&quot;)
+WriteString (<!--"-->&quot;has been broken up into pieces, <!--"-->&quot;)
+WriteString (<!--"-->&quot;each of a more manageable size.<!--"-->&quot;)</PRE>
+
+<P>Notice the spaces at the end of each of the first two literals in this last example.  These are needed to ensure that the words in the successive strings will in fact be separated from one another in the output as it is printed on the screen (or elsewhere).  This does not, however, solve another problem<!--‹-->--if one writes several strings like these one after another, the computer will perform a <I>carriage return</I> of its own when it gets to the end of a line on the screen.</P>
+<BLOCKQUOTE><I><A NAME="CarriageReturn">A</A> <U>carriage return</U> is an action taken by an output device such as a screen or printer that causes the printing position for the next character to be placed at the beginning of a new line.</I></BLOCKQUOTE>
+<P>This could be right in the middle of a word.  In fact, if one had a 40 column screen, the output from this last example would be:</P>
+<PRE>
+	This one is better because it has been b
+	roken up into pieces, each of a more man
+	ageable size.</PRE>
+
+<P>To prevent this, the programmer inserts carriage returns in the correct places (between words) by using the <I>WriteLn</I> statement.  The output in the next two examples has been formatted in this way.</P>
+<P>Here's the same one again:</P>
+<PRE>
+  WriteString (<!--"-->&quot;This one is better because it <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;has been broken up into pieces, <!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;each of a more manageable size.<!--"-->&quot;);
+  WriteLn;</PRE>
+
+<P>The purpose of <I>WriteLn</I> is to reposition the cursor (the next character location) to the beginning of the next line.  Here's another example<!--‹-->--this time a complete Module.</P>
+<PRE>
+<B>MODULE</B> Notice;
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteLn;
+
+<B>BEGIN</B>
+  WriteString (<!--"-->&quot;* * * * * * * * * *<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;*  This  Program  *<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;* *  Copyright  * *<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;* * *   2005  * * *<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;* * * * by  * * * *<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;* Nellie   Hacker *<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;* * * * * * * * * *<!--"-->&quot;);
+  WriteLn;
+<B>END</B> Notice.</PRE>
+
+<P>The output from this program is:</P>
+<PRE>
+* * * * * * * * * *
+*  This  Program  *
+* *  Copyright  * *
+* * *   2005  * * *
+* * * * by  * * * *
+* Nellie   Hacker *
+* * * * * * * * * *</PRE>
+
+<P><B>NOTES</B>: 1. It is a good idea to use a <I>WriteLn</I> after the last actual output of text to ensure that the cursor is correctly positioned for the next output.</P>
+<P>	2. If <I>WriteString</I> is imported from another place than <I>STextIO</I>, say from <I>InOut</I>, then is also <I>WriteLn</I>.</P>
+<A NAME="2.2.6"></A><H3><B>2.2.6 Summary</B></H3>
+<P>The railroad diagram in figures 2.3 and 2.4 summarize the discussions of syntax (correct structure) of a module as discussed thus far.</P>
+<P><CENTER><IMG SRC="Figure/Figure_2.3.GIF" BORDER="1"></CENTER><!----></P>
+<P><CENTER><IMG SRC="Figure/Figure_2.4.GIF" BORDER="1"></CENTER><!----></P>
+<P>These diagrams are more complex than Figure 2.2, with <I>necessary</I> reserved words or symbols in circles and ovals and the parts supplied by the programmer in boxes.  Notice that the diagram places no limit on the number of import lists or statements.</P>
+<P><B>NOTE</B>:	Neither of these diagrams is complete.  More will be added to both later in the text.  Complete versions are in <A HREF="../Appendices/Ap2.html">Appendix 2</A>.</P>
+<HR>
+<CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

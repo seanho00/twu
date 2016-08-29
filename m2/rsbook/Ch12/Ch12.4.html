@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<TITLE>12.4 Dynamic and Static Memory</TITLE><meta NAME="keywords" CONTENT="static, dynamic, dynamics, memory, allocation, allocation, allocated, variable, variables, run, time, runtime, run-time, predetermine, predetermined, compile, compiler, declre, declaration, exist, exists, content, contentc, assign, assingment, assignments, statement, statements, size, loc, locs, constant, system, system.adr, code, procedure, procedures, stack, stacks, stack-automatic, automatic, activation, record, records, pointer, pointers, structure, structurally, structural, recurse, recursive, recursion, program, programs, control, controlled, heap">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.4 Dynamic and Static Memory</B></H2>
+<P>Readers who are familiar with the concepts of dynamic memory and pointers may wish to skip to the next section of this chapter.  In this one, the general concepts of static and dynamic memory is outlined.  How these issues are specifically handled in Modula-2 is not taken up again until after the rest of the preliminary discussions are complete.</P>
+<P>The distinction made in this section is based on the timing and manner for the setting aside of memory for the use of a program.  Some memory use is predetermined by the compiler and will always be set aside for the program in exactly the same manner at the beginning of every run of a given program.  Other memory is obtained by the program at various points during the time it is running.  This memory may only be used by the program temporarily and then released for other uses.</P>
+<BLOCKQUOTE><I>The <A NAME="Allocation">allocation</A> of memory for the specific fixed purposes of a program in a predetermined fashion controlled by the compiler is said to be <U>static memory allocation</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>The <A NAME="Allocation">allocation</A> of memory (and possibly its later deallocation) during the running of a program and under the control of the program is said to be <U>dynamic memory allocation</U>.</I></BLOCKQUOTE>
+<H3><B><A NAME="12.4.1">12.4.1</A> Static Memory Use</B></H3>
+<P>By the time a program begins to execute, there must be some specific blocks of memory set aside for its use that cannot be trespassed upon by any other program, by the system, or even by the program itself.  This includes, for instance, the memory containing the program's own code.  While it is possible (in machine language) to write a program that can modify its own code, this is a very dangerous practice, and should never be employed.  It is not possible to do this at all in most high level languages such as Modula-2.</P>
+<P>Moreover, any variables named in the declaration section must have specific memory set aside for their contents, and this action can not be controlled or changed in any way by the programmer, except by declaring more or fewer variables in the first place. The memory in question cannot itself be relocated to some other place or expanded or contracted.</P>
+<BLOCKQUOTE><U><I><A NAME="Static">Static</A></U> variables are those that are created in the declaration section of a program and continue to exist (whether visible or not) and to require that space until its conclusion.  Their space is allocated at the beginning of the program run.<U></I></U></BLOCKQUOTE>
+<P>To be very specific:</P>
+<P>1. The only changes that can take place to static variables are to their <I>contents</I> and this is done by assignment statements.<BR>
+2. The Modula-2 procedure SIZE can be employed to determine the number of LOCs set aside for a particular variable, but the compiler itself can do this arithmetic as it must <!--"-->&quot;know<!--"-->&quot; these amounts ahead of time.  This means, for instance, that SIZE can be employed in a constant expression.<BR>
+3. The procedure SYSTEM.ADR may be employed to determine the location of this memory, but the location cannot be changed as the code generated by the compiler for such things as assignments depends on the pre-determined location.<BR>
+4. As indicated in Chapter 8, it <I>may</I> be useful in some cases to declare a variable at a fixed address, but this too must be done ahead of time, and cannot be changed while the program is running.</P>
+<P>Items of all the data types considered so far are of the static kind<!--‹-->--once declared, they will be at a fixed location and consume a specific amount of memory during the running of the program.  Both size and location (relative to the start of the code)  are predetermined at the time the program is compiled.  The location is relative, and not absolute because there is no way for the compiler to determine ahead of time how many programs will be running and what memory will be already in use when the new program is loaded.  However, with respect to program starting address, it is fixed and cannot be changed by the program.</P>
+<P>One of the interesting consequences of this is that arrays cannot have their dimensions changed during the running of the program, and therefore can hold only the type and only the number of entities indicated when they were declared.  A Modula-2 ARRAY [0..79] OF CHAR, for instance, can never hold more than 80 characters.</P>
+<P><B>NOTE</B>:	These observations may not be true in other languages, some of which do allow arrays to be redimensioned by the program on the fly.</P>
+<P>Figure 12.2 illustrates a common method of allocating memory.  A block is of memory set aside for the program's use, and within this, the code is placed first (at the lowest address) and this is followed by the static variable space.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.2.GIF" BORDER="1"></CENTER><!----></P>
+<H3><B><A NAME="12.4.2">12.4.2</A> Procedures and the Stack<!--</B>‹<B>-->--Automatic Dynamics</B></H3>
+<P>The next step in understanding memory allocation is to observe that what has been said so far about static memory for program variable also applies to procedures in exactly the same way.  Just as whenever a program is run static memory is set aside, so also whenever a procedure is entered, memory must be set aside for its parameters and variables.  (The code for the procedure has memory within the block of memory for the code of the entire program.)  When the procedure is running, the memory it employs for its variables can be regarded as static.  Indeed, the relative positions of the memory for each variable with respect to the start of this memory block is all worked out by the compiler ahead of time so that assignments to such variables may be properly coded.</P>
+<BLOCKQUOTE><I>The <A NAME="Memory">memory</A> assigned to a procedure for its parameters and variables when it is invoked is called an <U>activation record</U> for the procedure.</I></BLOCKQUOTE>
+<H3><B>Example:</B></H3>
+<PRE>
+<B>TYPE</B>
+  Vector = <B>ARRAY</B> [1..2] <B>OF</B> <B>REAL</B>;
+  <B>PROCEDURE</B> DisplayVector (v : Vector);
+  <B>VAR</B>
+   count : <B>CARDINAL</B>;
+   (* etc *)
+  <B>END</B> DisplayVector;</PRE>
+<P>This procedure would have an activation record something like that shown in figure 12.3 below.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.3.GIF" BORDER="1"></CENTER><!----></P>
+<P>One could also think of the static variable memory for a program as its activation record in the sense that a program <I>is</I> a procedure.  However, the program's activation record is present all the time the program is active, whereas the activation record for a procedure is only present when the procedure is active.  If one procedure invokes another one (including itself) a second activation record is placed in memory.  As each one is exited, the memory employed for its activation record is given back.  Since such procedure invocations must be in a particular order, and no procedure can be exited before one that it has itself invoked, these activation records are simply stacked one on top of another above the one for the program.  The area of memory available for the use of the program will shrink and grow, depending on the amount currently set aside for activation records, which in turn depends on how deep is the current chain of procedure calls.</P>
+<BLOCKQUOTE><I><A NAME="Stack">The</A> area of memory into which procedure activation records are dynamically and automatically placed is called the <U>stack</U>.</BLOCKQUOTE>
+<BLOCKQUOTE>The marker that delimits the top end of the currently allocated stack is called the <U>stack pointer</U>.</I></BLOCKQUOTE>
+<H3><B>Example:</B></H3>
+<P>Suppose the main program calls <I>procedure1</I>, which in turn calls <I>procedure2</I>, and this is recursive, calling itself two more times.  At the most deeply nested level of procedure calls, the memory map looks like figure 12.4.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.4.GIF" WIDTH="343" HEIGHT="279" BORDER=1></CENTER><!---->
+<P>As each procedure is exited in the chain of calls, one activation record is released for later use, and the marker for the low end of the available memory is moved back down.  If another procedure call is made, its activation record is placed on top of the stack of existing ones.</P>
+<P><B>NOTE</B>:	The three copies of A.R.#2 are <I>structurally</I> the same.  That is , they have the same memory allocation for variables of the same names.  The <I>contents</I> of those memory locations depend, however, on the logic of the procedure as it runs, and may all be different.</P>
+<P>It is this behaviour that makes recursion feasible in Modula-2 (and other languages that use a procedure activation record stack), for each recursive invocation  of a procedure yields a new activation record that is specifically for the use of that entry to the procedure.  Value parameters and locally defined variables are therefore different on each new invocation, and so the procedure may work on data without affecting the variables or data of the next outermost invocation of the same procedure.  Of course, variable parameters are merely treated as aliases to a variable in an outer scope, so each invocation of a procedure with one of these will work on the same copy of the data.  If the procedure is a function procedure, then the stack is probably also used to pass back the return value to the expression from which it was invoked, though the details of this may vary from implementation to implementation.</P>
+<P>It is important to realize that although this activity is dynamic (it takes place at run time and depends on the logic of the program, and not just on the declarations) it is automatic, and cannot be controlled by the programmer.  Note also that this is only a <I>model</I> of the memory management; an actual machine might start the stack at the highest available memory location and grow it down<!--‹-->--the opposite of what is shown here.</P>
+<H3><B><A NAME="12.4.3">12.4.3</A> Dynamic Memory and the Heap<!--</B>‹<B>-->--Program Controlled Dynamics</B></H3>
+<P>The description thus far is only an explanation of what has already been done; it offers nothing new.  In particular, all the variable kinds employed thus far must have a predetermined or static memory allocation.  If the programmer decides that the maximum number of students in a class for a marks program will be 100, the program simply will not allow  entry number 101.</P>
+<P>However, real life is different.  Take airline reservations, for example.  The number of active passenger records may well grow and shrink according to the time of day, the day of the week, season of the year, and whether the attendant is wearing green or the wind is blowing from the East.  The point is that it is not always possible to predetermine the maximum number of items of a data type representing a reservation ahead of time.</P>
+<P>It is natural therefore to ask whether it is possible to create some data types that do not have a fixed number of instances, nor therefore a predetermined memory allocation, but can have instances created and the memory allocated by the running program, so that the maximum number of entities is limited only by the available memory rather than by the program.</P>
+<P>It is, and the main purpose of this chapter is to show how this is done in Modula-2.  First, the preceding discussion is formalized in the following definition:</P>
+<BLOCKQUOTE><U><I><A NAME="Dynamic">Dynamic</A></U> variables are those that can have the space allocated to them as needed at some point during the execution of a program or procedure  and that can also be disposed of and have their space given back to the system by the program.</I></BLOCKQUOTE>
+<P>The only place where such an activity can take place in the memory model under discussion here is in the stretch of memory from the top of the stack to the end of the region allocated to the program.  Within this region, some languages (including Modula-2) permit manual allocation and deallocation of memory under program control.</P>
+<BLOCKQUOTE><I><A NAME="Heap">The</A> region of memory above the stack and in which program-controlled dynamic allocation and deallocation of memory can take place is called the <U>heap</U>.</I></BLOCKQUOTE>
+<P>In order to employ the heap, a program needs to have:</P>
+<UL><!--€--><LI> one or more static pointer variables to hold the locations of dynamic variables</LI>
+<!--€--><LI> a method to obtain heap memory and to return it (allocate/deallocate)</LI>
+<!--€--><LI> a method to assign the address of such memory to the static pointer variable</LI>
+<!--€--><LI> a method to refer to the dynamic memory through the static variable</LI></UL>
+<P>The means by which the first and last points are achieved have already been covered.  Modula-2 pointer variables are used as the static variables to hold the addresses of the dynamic chunks of memory, and they are dereferenced to refer to the actual data.  The details of memory allocation and deallocation in Modula-2 are the subject of the next section.  However, at this point, the memory map in this model of memory management could look something like figure 12.4, in which it is assumed that the program has two static pointer variables to hold dynamic memory locations, and has already obtained the memory and assigned the addresses to those variables.</P>
+<P><CENTER><IMG SRC="Figure/Figure_12.5.GIF" BORDER="1"></CENTER><!----></P>
+<P>As a parting remark, it ought to be noted that the model of memory presented here is not necessarily used in this way by all systems.  It may be that the only memory allocated permanently to a program's use is that for its code and static variables, and that beyond this, additional memory is assigned for activation records and/or dynamic uses by the operating system's memory manager from a common pool it organizes.  In this more abstract model, a request for memory is dispatched by the program to the memory manager and if met, it in turn hands back the appropriate memory to the program.  Indeed, it would be best to assume that nothing can be known by the programmer ahead of time, or determined by the program at run time, about the configuration of allocated memory at any given point.  However, the model here is common, simple, and easy to understand, even if an actual system may be doing something a little different.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

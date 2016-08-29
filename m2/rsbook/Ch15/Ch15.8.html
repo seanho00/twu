@@ -1,0 +1,156 @@
+<HTML><HEAD><TITLE>15.8 Pointers and Memory Management Revisited</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Pointers and Memory Management Revisited">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.8 Pointers and Memory Management Revisited</B></H2>
+<P>The implementations of most of the data structures thus far depended heavily on the use of pointers and dynamic memory allocation and deallocation. Such techniques have the advantage that one does not have to say ahead of time how large the structure is to be (as with static types such as arrays).  However, dynamic use of memory in and of itself is not without its problems.</P>
+<B><h3><a name="15.8.1">15.8.1</a> Orphans</h3>
+</B><P>Consider a piece of code that does, in effect, the following:</P>
+
+<pre><B>NEW</B> (p);
+q := p;
+<B>DISPOSE</B> (p);</pre>
+
+<P>In practice, the offending lines will probably be too far away from each other physically or logically for the programmer to notice. The pointer <I>q</I> now points to an area of memory that the program has given up ownership on, and is therefore logically invalid.  It is not <I>NIL</I>, however, so references to it will appear to work.  However, the memory in question can be allocated for another purpose meanwhile, and a value assigned there via yet another pointer is now in direct conflict with the use as the invalid q^.  The pointer q has been logically orphaned, and the program that does this is headed for disaster.  Such errors are extremely difficult to find, and programs that use a lot of pointers are therefore very prone to errors and very hard to debug. As in most situations where the error is logical in nature, no solution can be offered except:</P>
+<P>- plan program logic carefully<BR>
+- avoid pointers except where necessary<BR>
+- encapsulate dangerous code in a separate module to make errors easier to find<BR>
+- test routines one at a time to narrow down pointer errors</P>
+<B><h3><a name="15.8.2">15.8.2</a> Garbage</h3></B>
+<P>Now, consider a slightly different piece of code.  Again, in real life, the offending lines are likely to be far apart rather than contiguous.</P>
+
+<pre><B>NEW</B> (p);
+p := q;</pre>
+
+<P>That is, the value of a pointer is reused for something else (perhaps instead of base assignment another NEW is performed on it) without first calling DISPOSE to give back the memory that was allocated.  The chunk of memory on the heap that <i>p</i> pointed to after the call to NEW (p) remains allocated, but the program has now lost the means to refer to it, because it no longer has a pointer variable with the correct value.</P>
+
+<I>	<blockquote><A NAME="Garbage"></A>Memory that a program allocates and then loses its reference to without first deallocating is called <U>garbage</U>.</blockquote></I>
+
+<P>Once again, little can be offered as a solution in such cases except to appeal to the programmer to take more care with program logic.  Some debugging environments also offer the use of tools to monitor memory allocation and determine whether or not the program is "leaking" memory and generating a garbage heap.</P>
+
+<B><h3><a name="15.8.3">15.8.3</a> Fragmentation</h3></B>
+<P>Suppose that a program has been working for some time, allocating and deallocating memory in the heap area reserved for the program.  The sizes of the allocation blocks that have been used may vary considerably, and the memory map becomes a patchwork of allocated and free blocks of varying sizes as time goes on.  It is not difficult to get to the point where one asks for a new block of, say 100 LOCs and the memory manager discovers that the largest available block is only, say 70 LOCs.  Now, there may be dozens of such blocks, for a total many times what is needed, but became the memory is not all in one place, the allocation fails.</P>
+
+<I>	<blockquote><A NAME="Fragmented"></A>If not all the memory available to a program is in a single contiguous block, the memory is said to be <U>fragmented</U>.</blockquote></I>
+
+<P>The small free blocks are sometimes loosely called <i>garbage</i>, but this is not quite correct, because the program does have access to them individually if it asks only for a small amount of memory.  Slight memory fragmentation probably has little or no effect on program performance. However, heavy use by a program of dynamic memory in blocks of varying sizes will eventually cause severe fragmentation and may mean that the program can only operate for a certain length of time, and then invariably fails.</P>
+
+<B><h3><a name="15.8.4">15.8.4</a> Defragmentation and Garbage Collection</h3></B>
+<P>Some operating systems have a means to defragment and/or do garbage collection on the dynamic memory automatically. The two tasks are sometimes grouped under a single heading as "garbage collection" though this is not quite accurate.  A defragmenter might pause when asked for memory and try to move things around so that a chunk becomes available, then allocate from that. It may try to determine what memory is no longer pointed to by a program pointer variable and mark it as available.</P>
+<P>However, such a behaviour creates a serious problem for a program that depends on knowing the values of pointer variables.  There is no way for the memory manager to know how the pointers have been used in the logic of the program.  Unless it could guarantee that <I>every</I> pointer variable that pointed to a specific location was known by the memory manager and changed at the same time, things could go seriously awry.  Consider the code:</P>
+
+<pre>              heap^.root := temp;
+              heap^.lowerLeft := temp;
+              heap^.last := temp;</pre>
+
+<P>As this code concludes, the pointer to a specific piece of memory is held in four places altogether.  What if this value changes while the assignments are being done? What if the memory manager changes one of the pointers but not all of them?  What if the pointer has been CAST into a variable of some other type to do some low level work?  What if the code calls for the pointer to be incremented using SYSTEM.ADDADR and the memory consolidator changes the value of the pointer in the middle of the loop that is doing this?</P>
+<P>The problems with garbage collection are similar.  Unless the collector routines know about all the pointer variables that point to a location and can therefore deallocate memory in a way that is guaranteed to be error free, the integrity of a program that uses pointers cannot be maintained.</P>
+
+<I>	<blockquote><A NAME="Traced"></A>Dynamically allocated memory, all the references to which are guaranteed to be known to the memory manager is said to be <U>traced</U>.  Other dynamically allocated memory is said to be <U>untraced</U>.</blockquote>
+</I>
+<P><B>NOTE:</B> In common with most procedural languages such as Pascal and C, base-standard Modula-2 does not guarantee tracing of memory allocated by NEW and referred to by pointer variables.</P>
+
+<P>Thus, at least with respect to garbage, Modula-2 offers no solutions to the programmer who creates it with ill-thought-out code.  If a programmer decides to use pointers and therefore takes on the task of memory management, then the job must be done completely. The base-standard Modula-2 rule is:</P>
+
+<P><center><B>I'm not your mother. Clean up your own garbage.</B></center></P>
+<P><B>NOTE:</B> If the programmer has the ISO standard object oriented extensions to the base language and uses them appropriately, some automatic garbage collection becomes available.  (See a later chapter for details.)</P>
+<B><h3><a name="15.8.5">15.8.5</a> Handles</h3>
+</B><P>There may in some cases be a way around the problem of memory fragmentation, however.  Provided that the system actually does have a defragmenter in the memory manager, and provided that the programmer cooperates with it, the programmer may be able to designate parts of the heap as "moveable" and allow the memory manager to defragment those sections  other parts are "locked" and no defragmentation is allowed in those sections. The details of how to do this are, of course, system dependent.  However, the way shown here for the program to maintain its integrity in the face of possible memory moves is fairly common.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.30.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>Instead of the normal scheme, a program cooperates in integrity with a defragmenting memory manager by having two pointers, one in static memory, and the other either in static memory, or at least in locked (nonrelocatable) memory.  The first pointer is actually used by the program, but only points to the second pointer.  The second pointer is never referenced directly by the program, and points to the dynamic memory.  The defragmenter is then free to move the memory about, changing the second pointer, and the value of the first will remain untouched, because the location of the second does not change just because its value does.</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.31.GIF" BORDER="1"></CENTER><!----></P>
+
+<blockquote><I><A NAME="Handle"></A>A pointer to a pointer to data is called a <U>handle</U>. </I></blockquote>
+
+<P>The declarations could look like this:</P>
+
+<pre><B>TYPE</B>
+  MyDataHandle = <B>POINTER</B> <B>TO</B> <B>POINTER</B> <B>TO</B> Node;
+  Node =
+    <B>RECORD</B>
+      fields
+    <B>END</B>;
+
+<B>VAR</B>
+  theHandle : MyDataHandle;
+  thePointer : <B>POINTER</B> <B>TO</B> Node; (* not needed if handle is a type *)
+  temp : Node;</pre>
+
+<P>In the code, references to the data are done like this:</P>
+
+<pre>  theHandle^^ := temp;</pre>
+
+<blockquote><I><A NAME="DoublyDereferenced"></A>	References via handles are said to be <U>doubly dereferenced </U>or <U>indirectly referenced</U></I>.</blockquote>
+
+<P>That is, if <I>hand</I> is a handle, then <I>hand^</I> is a pointer and <I>hand^^</I> is the data.</P>
+<P>In standard Modula-2 the variables would have to be set up in the first place, and this might be thought of as:</P>
+
+<pre> theHandle := <B>CAST</B> (MyDataHandle, <B>SYSTEM</B>.<B>ADR</B> (thePointer));
+ <B>NEW</B> (thePointer);</pre>
+
+<P>However, in order for the memory manager to actually trace the variables it needs to, there are usually some non-standard reserved words added to the language, and the code looks like this:</P>
+
+ <pre><B>NEWHANDLE</B> (theHandle);</pre>
+
+<P>If it is done this way, the handle is the only variable used in the program.  It neither declares nor directly knows about the pointer variable.</P>
+
+<P><B>WARNING:</B> The details will vary from one system to another.  There may even be a non-standard pervasive HANDLE that is used in place of POINTER TO POINTER, so that one writes HANDLE TO.  References to the data are still done with double indirection, however.</P>
+
+<P><B>WARNING:</B> The programmer must cooperate with this arrangement by carefully avoiding any single references such as <i>theHandle^</i>, as the value stored there is subject to change at any time by the defragmenter.</P>
+
+<P>While the information here is necessarily incomplete, the ideas and vocabulary ought to be sufficient to allow the programmer to find the additional material in the system documentation that is needed to make all this work.  </P>
+
+<P><B>Examples:</B> Since the size and resolution of monitors varies greatly from one computer to another, the record that comprises the information shown on the screen is usually held in a relocatable block of memory, so that it can be re-sized dynamically. Any program referring to this section of memory must do so through a handle rather than a pointer.  The same is often true of other blocks of system information such as those allocated to file records.
+
+</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

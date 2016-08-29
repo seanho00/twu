@@ -1,0 +1,549 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<title>Final Exam (A) :: MATH108 10FA :: TWU</title>
+<!-- about right length: 3hrs total; 
+first 4-5 real done @T-1hr; about half done @T-12; about 15 (1/4) left @T-0
+gave them extra 10min -->
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<p>MATH108 10FA Final A<br>
+<small><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a>
+  Total points: 150</small></p>
+
+<div class="inspiration">
+  Let the words of my mouth and the meditation of my heart<br>
+  Be acceptable in Your sight, O LORD, my Rock and my Redeemer.<br>
+  -- Psalm 19:14
+</div>
+
+<ul class="instructions">
+  <li> Please show all your work!  No partial credit will be given for
+  incorrect answers with no work shown.
+  <li> Please draw a box around your final answer.
+  <li> You are only permitted to use your own calculator and writing implements.
+  Cell phones should be muted and left in your pocket or bag.
+  <li> All relevant tables are attached to the back.  You may detach them for your
+  reference.
+  <li> Assume &alpha; = 0.05 everywhere unless indicated otherwise.
+  <li> For t-tests on two groups, if the df is not given, you may use the
+  conservative estimate of df = min(n<sub>1</sub>, n<sub>2</sub>) - 1.
+</ul>
+
+<ol class="main">
+
+<li>
+Indicate the <b>level of measurement</b> for each of the following variables
+as categorical (G), ordinal (O), discrete (D), or continuous (C).
+<u>[6]</u> <ol class="subparts">
+  <li> Location of injury: e.g., knee, lower back, shoulder, chest, etc. <i>Categorical</i>
+  <li> Number of correct answers on a multiple-choice test <i>Discrete</i>
+  <li> Number of children in a family, coded as 0, 1, 2, or "at least 3" <i>Ordinal</i>
+  <li> Blood glucose level (mg/dLi) <i>Continuous</i>
+  <li> Whether a woman is pregnant or not <i>Categorical</i>
+  <li> Strength of family bonds, rated as "Very Strong", "Somewhat Strong", "Weak", or
+  "Very Weak" <i>Ordinal</i>
+</ol>
+
+<li>
+The following is a <b>normal probability plot</b> of potassium concentration
+in a number of geologic samples.  The horizontal axis is expected normal scores
+(<em>n</em>-scores), and the vertical axis is observed potassium concentration
+(this orientation matches the textbook).
+<b>How</b> does the distribution differ from a normal distribution?
+<b>Sketch</b> the distribution, highlighting where it is non-normal. <u>[4]</u>
+<br><small>[ Data from <a href="http://pubs.usgs.gov/of/2005/1231/sumstat.htm">
+    USGS Open-File Report 2005-1231</a>. ]</small>
+<br><img src="usgs-of-2005-1231-npp.gif" width="246" height="149">
+<i><br>[ Skewed to the left ]
+  <br><img src="usgs-of-2005-1231-hist.gif" width="280" height="149"></i>
+<div class="answerbox" style="height:2em"></div>
+
+<li>
+Suppose that in a study half of the participants are <b>nurses</b> and
+80% of the participants consider their jobs to be <b>high-stress</b>.
+Consider the probability that a participant in the study is a nurse
+who considers his/her job to be high-stress.  <ol class="subparts">
+  <li> What is the <b>minimum</b> possible value for this probability?
+  Draw a <b>Venn</b> diagram illustrating this situation. <u>[3]</u>
+  <i><br>[30%.  Everybody is either a nurse or high-stress (or both).]
+    <br><table border="1"><tr style="height:4em">
+	<td style="width:12em; vertical-align:middle; text-align:center; background:#fdd">Nurse</td>
+	<td style="width: 2em; vertical-align:middle; text-align:center; background:#fdf">(30%)</td>
+	<td style="width: 8em; vertical-align:middle; text-align:center; background:#ddf">Stress</td>
+    </tr></table></i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> What is the <b>maximum</b> possible value for this probability?
+  Draw a <b>Venn</b> diagram illustrating this situation. <u>[3]</u>
+  <i><br>[50%.  Nurses are a subset of high-stress:
+    the circle representing nurses lies completely within 
+    the circle representing high-stress; all the nurses are high-stress.]</i>
+  <div class="answerbox" style="height:3em"></div>
+</ol>
+
+<li> In a study of Canadian nurses, say that 70% of the nurses work in 
+<b>hospitals</b>, and one quarter of the nurses habitually <b>smoke</b>.
+20% of all the nurses in the study are smokers who work in hospitals.
+<ol class="subparts">
+  <li> For <b>each</b> of the three probabilities given (70%, 25%, 20%),
+  express the probability in <b>notation</b> (e.g., P(smoke)) and draw a
+  <b>Venn diagram</b>, shading in the relevant region
+  (draw three separate Venn diagrams). <u>[3]</u>
+  <i><br>[P(hospital) = 70%, P(smoke) = 25%, P(hospital and smoke) = 20%.
+    The last one is the intersection.]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> In this study, what is the chance that a nurse working in a
+  hospital smokes? <u>[3]</u>
+  <i><br>[P(smoke|hospital) = P(hospital and smoke) / P(hospital) = 20%/70% = 28.6%.]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> In this study, is working in a hospital <b>independent</b>
+  of smoking?  Why or why not? <u>[3]</u>
+  <i><br>[No, P(smoke|hospital) = 28.6% &ne; 25% = P(smoke), so they
+    are not independent.  Nurses who work in hospital are more likely to smoke.]</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+<li>
+A particular FDG-PET (fludeoxyglucose positron-emission tomography) screening
+test for non-Hodgkin's lymphoma has a 15% false-positive rate (85% specificity)
+and 90% sensitivity (i.e., 90% of lymphomas are caught by the screening
+process). <ol class="subparts">
+  <li> Suppose the screening test is applied to 200 patients, of which 80 have
+  non-Hodgkin's lymphoma.  Draw an <b>event tree</b> for the outcomes of the
+  test, and <b>label</b> the tree with probabilities for each branch of the
+  tree. <u>[4]</u>
+  <i><br> P(lymph,test+) [true positive] = (80/200)(.90) = 36%
+    <br>P(lymph,test-) [false negative] = (80/200)(.10) = 4%
+    <br>P(no lymph, test+) [false positive] = (120/200)(.15) = 9%
+    <br>P(no lymph, test-) [true negative] = (120/200)(.85) = 51%</i>
+  <div class="answerbox" style="height:8em"></div>
+
+  <li> On average, how many people in this group will <b>test positive</b> for
+  non-Hodgkin's lymphoma? <u>[3]</u>
+  <i><br>[ (.36 + .09)(200) = (45%)(200) = 90 people ]</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> If a patient tests positive using this test, what is the 
+  probability that the patient <b>really</b> has non-Hodgkin's lymphoma?
+  <u>[2]</u>
+  <i><br>[ .36 / (.36 + .09) = 36% / 45% = 80% ]</i>
+  <div class="answerbox" style="height:2em"></div>
+</ol>
+
+
+<li>
+The average number of hours of exercise per week was measured for a number of
+urban dwellers and rural dwellers.
+A 95% <b>confidence interval</b> for the difference of means (urban - rural)
+is (-0.27, 1.23).  Based on this information, indicate whether each of the
+following statements is "True" or "False".
+(Please write the entire word, "True" or "False".) <u>[6]</u>
+<ol class="subparts">
+  <li> Urban dwellers exercise an average of between 0.27 hrs less
+  and 1.23 hrs more per week than rural dwellers. <i>F</i>
+  <li> 95% of urban dwellers exercise between 0.27 hrs less and 1.23 hrs more
+  per week than rural dwellers. <i>F</i>
+  <li> We are 95% certain that urban dwellers exercise between 0.27 hrs less
+  and 1.23 hrs more per week than rural dwellers. <i>T</i>
+  <li> With 95% confidence, the difference in hrs/week of exercise between
+  urban and rural dwellers in this study is between -0.27 and 1.23. <i>F</i>
+  <li> At a 5% level of significance, this study is unable to find a
+  difference in amount of exercise between urban and rural dwellers. <i>T</i>
+  <li> There is no difference in the amount of exercise for urban and rural
+  dwellers. <i>F</i>
+</ol>
+
+<li>
+Below is a <b>residual plot</b> for a linear regression model relating
+blood pressure to age 
+(data from <a href="http://www.unc.edu/~nielsen/soci709/m12/m12.htm">
+  UNC SOCI709 course</a>).  From this plot, is there evidence to indicate
+that any of the <b>assumptions</b> of regression may have been violated?
+Sketch a possible <b>scatterplot</b> of blood pressure versus age that
+would reflect this residual plot.
+<em>(Hint: generally, blood pressure increases with age.)</em> <u>[5]</u>
+<br><img src="het-resid.jpg" height="250">
+<i><br>[ heteroscedasticity (non-homogeneity of variance).]
+  <br><img src="het-scatter.jpg" height="250"></i>
+
+<li>
+In a study of BC nurses, an analysis was run to determine whether which
+nursing <b>school</b> the nurse graduated from had an impact on <b>salary</b>.
+<ol class="subparts">
+
+  <li> What are the <b>variables</b> which need to be measured for each individual?
+  For each variable, indicate its level of measurement and whether it is
+  a predictor or outcome variable.  <u>[2]</u>
+  <i><br>[ School: predictor, categorical.  Salary: outcome, continuous.  ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What is the appropriate parametric statistical <b>test</b> to run?
+  <u>[1]</u>
+  <i><br>[ ANOVA ]</i>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. <u>[3]</u>
+  <i><br>[ H<sub>0</sub>: the average salaries for all BC schools are the same,
+    &mu;<sub>1</sub> = &mu;<sub>2</sub> = &mu;<sub>3</sub> = ....
+    <br>H<sub>A</sub>: some BC schools produce average salaries that are
+    different: &mu;<sub>1</sub> &ne; &mu;<sub>2</sub> or
+    &mu;<sub>1</sub> &ne; &mu;<sub>3</sub> or ... ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> The data were collected and an appropriate analysis run, obtaining
+  a <em>p</em>-value of 0.07.   State the <b>conclusion</b> of the analysis,
+  and interpret it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Fail to reject H<sub>0</sub>; there is insufficient evidence to
+    show that the school from which a nurse graduates has an impact on
+    salary. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> The <b><em>p</em>-value</b> was 0.07.  What does this number '0.07'
+  mean, in the context of the research question?  0.07 of what? <u>[3]</u>
+  <i><br>[ There is a 7% chance of making a Type I error; i.e., 
+    if we reject H<sub>0</sub> (claiming that not all BC schools produce
+    the same salary), then there is a 7% chance that in fact all the BC
+    schools do produce the same salary. ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+</ol>
+
+<li>
+For BC nurses, is being <b>married</b> independent of working
+<b>over 60 hours/week</b>?
+The number of participants in each category is listed in the table below.
+<table class="data">
+  <tr><td>	</td><th>Married</th><th>Not Married</th></tr>
+  <tr><th>&le; 60hrs</th><td>150</td><td>80	</td></tr>
+  <tr><th>&gt; 60hrs</th><td>90	</td><td>80	</td></tr>
+</table>
+<ol class="subparts">
+
+  <li> What is the <b>population</b> of interest? <u>[1]</u>
+  <i><br>[ BC Nurses ]</i>
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ Marital status: categorical/dichotomous.
+    <br>Working hours: categorical/dichotomous. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. Which statistical test(s) would be appropriate?
+  <u>[3]</u>
+  <i><br>[ H<sub>0</sub>: P(Mar|&gt;60) = P(Mar|&le;60) (= P(Mar)),
+    or equivalently, P(&gt;60|Mar) = P(&gt;60|not Mar) (= P(&gt;60)):
+    <br>whether a nurse is married is independent
+    of whether that nurse works over 60 hrs/week.
+    <br>H<sub>A</sub>: P(Mar|&gt;60) &ne; P(Mar|&le;60), or
+    P(Mar|&gt;60) &ne; P(Mar), or
+    P(&gt;60|Mar) &ne; P(&gt;60|not Mar), or
+    P(&gt;60|Mar) &ne; P(&gt;60), etc.
+    <br>Marital status is related to working hours.
+    <br> Use the chi-squared test.]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> Run the appropriate test and bracket a <b><em>p</em>-value</b>.
+  <u>[4]</u>
+  <i><br>[ Expected frequencies: 138, 92, 102, 68.
+    <br>Chi-squared = 6.14, .01 &lt; p &lt; .02 (exact p = 0.013) ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Reject H<sub>0</sub>:
+    Marital status is not independent of working &gt;60hrs/wk. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+</ol>
+
+<li>
+Does blood vitamin <b>B12</b> level (pg/mL) have an impact on
+<b>depressive</b> symptoms (Beck Depression Inventory (BDI-II),
+on a scale from 0-63 points)?  <ol class="subparts">
+
+  <li> What is the <b>population</b> of interest? <u>[1]</u>
+  <i><br>[ All people ]</i>
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ B12 level: predictor, continuous.
+    <br>Depressive symptoms: outcome, continuous. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What is the appropriate parametric statistical <b>test</b> to run?
+  <u>[1]</u>
+  <i><br>[ Linear regression ]</i>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  notation. <u>[2]</u>
+  <i><br>[ H<sub>0</sub>: &beta; = 0 (or &rho; = 0),
+    <br>there is no linear relationship between B12 levels and depression.
+    <br>H<sub>A</sub>:  &beta; &ne; 0 (or &rho; &ne; 0),
+    <br>B12 levels are correlated with depressive symptoms. ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> A study with 60 participants results in the following data:
+  <br>SS<sub>X</sub> = 1,350,000, SS<sub>Y</sub> = 9,000, SS<sub>XY</sub> = -70,000.
+  <br>Find the <b>slope</b> of the best-fit line, indicate its <b>units</b>,
+  and <b>interpret</b> the slope in light of the model for vitamin B12 and
+  depression. (Keep at least 4 significant figures in the slope.) <u>[3]</u>
+  <i><br>[ slope = SS<sub>XY</sub> / SS<sub>X</sub> = -70,000 / 1,350,000
+    &simeq; -0.05185 pts/(pg/mL).
+    <br>For every 1 pg/mL increase in vitamin B12 level,
+    level of depressive symptoms decreases by 0.05185 points on BDI. ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> The <b>average</b> vitamin B12 level in the study was 500 pg/mL,
+  and the average BDI score in the study was 45 points.
+  Find the <b>equation</b> of the best-fit line, and interpret the
+  <b>intercept</b> of the line in light of the model. <u>[3]</u>
+  <i><br>[ BDI = -0.05185 (B12) + 70.93: when vitamin B12 levels are zero,
+    BDI score should be 70.93 (which is impossible, max is 63). ]</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> Find the <b>correlation</b> between vitamin B12 level and depressive
+  level in this study. <u>[2]</u>
+  <i><br> r = SS<sub>XY</sub> / sqrt(SS<sub>X</sub> SS<sub>Y</sub>) = -0.635.</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> What <b>fraction</b> of the variability in depressive levels in this
+  study is explained by the linear relationship with vitamin B12 levels? <u>[2]</u>
+  <i><br>[ r<sup>2</sup> = 40.33% ]</i>
+  <div class="answerbox" style="height:1em"></div>
+
+  <li> Describe the <b>distribution</b> of BDI depressive levels predicted
+  by the linear model when vitamin B12 levels are at 600 pg/mL. <u>[4]</u>
+  <i><br>[ Normally distributed, mean = -0.05185(600) + 70.93 = 50.19 (BDI)
+    <br>SS<sub>resid</sub> = (1 - 0.4033)(9000) = 5370.37, so
+    SD = s<sub>Y|X</sub> = sqrt( SS<sub>resid</sub> / (n-2) ) = sqrt( 5370.37 / 58 )
+    &simeq; 9.623 points on BDI scale. ]</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> Answer the original research question: bracket a p-value, state your
+  conclusion, and interpret it in light of the original research question. <u>[4]</u>
+  <i><br>[ SE = s<sub>Y|X</sub> / sqrt( SS<sub>X</sub> ) = 9.623 / sqrt(1,350,000)
+    &simeq; 0.0082817.
+    <br>Hence, t = slope/SE = 0.05185 / 0.0082817 &simeq; 6.26
+    <br>At df = n-2 = 58, the two-tailed p-value is p &lt; .01 (off the chart).
+    <br>Reject H<sub>0</sub>, there is a correlation between vitamin B12 level
+    and BDI level of depressive symptoms. ] </i>
+  <div class="answerbox" style="height:5em"><div>
+
+</ol>
+
+<li>
+Does <b>income</b> level (low, middle, high) have an impact on 
+<b>caloric intake</b> (calories per day)?
+<ol class="subparts">
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ Income: predictor, ordinal or categorical.
+    <br>Caloric intake: outcome, continuous. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What is the appropriate parametric statistical <b>test</b> to run?
+  <u>[1]</u>
+  <i><br>[ ANOVA ]</i>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  notation. <u>[2]</u>
+  <i><br>[ H<sub>0</sub>: &mu;<sub>L</sub> = &mu;<sub>M</sub>
+    = &mu;<sub>H</sub>,
+    <br>i.e., average caloric intake is same for all income levels.
+    <br>H<sub>A</sub>: &mu;<sub>L</sub> &ne; &mu;<sub>M</sub>,
+    or &mu;<sub>L</sub> &ne; &mu;<sub>H</sub>,
+    or &mu;<sub>M</sub> &ne; &mu;<sub>H</sub>;
+    <br>i.e., at least one income group has different caloric intake.
+    Income does have an effect on caloric intake. ]</i>
+  <div class="answerbox" style="height:5em"></div>
+
+  <li> Data for this experiment are given below.  <b>Run</b> an appropriate
+  test and bracket the <em>p</em>-value. <u>[5]</u><br>
+  <table class="data">
+    <tr><th>Low-income:		</th><td>1200</td><td>1800</td><td>2400</td></tr>
+    <tr><th>Middle-income:	</th><td>1200</td><td>1350</td><td>   </td></tr>
+    <tr><th>High-income:	</th><td>2100</td><td>2200</td><td>   </td></tr>
+  </table>
+  <i><br>[ Grand mean = 1750, group means = 1800, 1275, 2150.
+    <br>SSb = 778750, SSw = 736250, dfb = 2, dfw = 4, so MSb = 389375, MSw = 184062.5.
+    <br>F = 2.12, at df = (2,4), so omnibus p &gt; .20 (exact p = 0.236). ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Fail to reject H<sub>0</sub>,
+    insufficient evidence to show income affects caloric intake. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> What are the <b>assumptions</b> of the statistical test you
+  performed? Is there evidence to suggest that any of these 
+  assumptions have been violated in this dataset?  <u>[3]</u>
+  <i><br>[ Parametricity: (1) DV is continuous or discrete (ok)
+    <br>(2) Random sample: independent observations, independent groups (ok)
+    <br>(3) Normal distribution of DV within each group (awfully small
+    sample size, so can't really tell, but no obvious outliers)
+    <br>(4) Equality (homogeneity) of variance (dispersion) amongst groups
+    (no, spread in low-income is larger than in other groups). ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+</ol>
+
+<li>
+Human beta-endorphin (HBE) is a hormone secreted by the pituitary gland under
+conditions of stress (like exams!).  Suppose we wish to determine whether
+blood concentration of <b>HBE</b> (pg/mL) is higher for a group of men
+<b>jogging</b> as compared to a group of men <b>resting</b>.
+<ol class="subparts">
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[Jogging: predictor, categorical/dichotomous.
+    <br>HBE: outcome, continuous]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. Which statistical test(s) would be appropriate?
+  <u>[3]</u>
+  <i><br>[H<sub>0</sub>: &mu;<sub>jog</sub> &le; &mu;<sub>rest</sub>:
+    HBE levels are not higher when jogging.
+    <br>H<sub>A</sub>: &mu;<sub>jog</sub> &gt; &mu;<sub>rest</sub>:
+    HBE levels are higher when jogging.
+    <br>t-test on independent groups, or Wilcoxon-Mann-Whitney. ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> Data for this experiment are given below.  Sketch <b>boxplots</b>
+  for the data, on a common axis (number line). <u>[4]</u>
+  <table class="data">
+    <tr><td colspan="8"></td><th>Mean:</th><th>SD:</th></tr>
+    <tr><th>Jogging:</th>
+      <td> 60</td><td> 58</td><td> 62</td><td> 49</td>
+      <td> 51</td><td> 58</td><td> 54</td>
+      <td> 56</td><td>4.7958</td></tr>
+    <tr><th>Resting:</th>
+      <td> 41</td><td> 37</td><td> 51</td><td> 60</td>
+      <td> 28</td><td> 35</td><td>   </td>
+      <td> 42</td><td>11.6276</td></tr>
+  </table>
+  <i><br>[ Jog: min=49, Q1=51, med=58, Q3=60, max=62.
+    <br>Rest: min=28, Q1=35, med=39, Q3=51, max=60.  ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> Run an appropriate <b>parametric</b> test and bracket 
+  the <em>p</em>-value. <u>[5]</u><br>
+  <i><br>[ SE<sub>1</sub> = 1.8127, SE<sub>2</sub> = 4.7469, SE = 5.0812.
+    <br>mean diff = 14, so t = 2.755.
+    <br> df = min(n<sub>1</sub>, n<sub>2</sub>) - 1 = 5 (real df = 6.45).
+    <br>One-tailed: 0.02 &lt; p &lt; 0.025 (real p = 0.007).  ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ p &lt; &alpha;: reject H<sub>0</sub>,
+    HBE levels are higher for men who are jogging. ]</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> Using the same data, perform an appropriate <b>non-parametric</b>
+  test and bracket the <em>p</em>-value. <u>[4]</u><br>
+  <i><br>[ WMW: K<sub>1</sub> = 35, K<sub>2</sub> = 7.
+    <br>n = 7, n' = 6: 1-tailed .025 &lt; p &lt; .05.  ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ p &lt; &alpha;: reject H<sub>0</sub>,
+    HBE levels are higher for men who are jogging. ]</i>
+  <div class="answerbox" style="height:2em"></div>
+
+  <li> Which test do you think is more <b>appropriate</b> for this data,
+  the parametric or the non-parametric test? Why?  <u>[2]</u>
+  <i><br>[ Non-parametric: data are not normal, and SDs are not the same
+    (violates assumption of homogeneity of variance). ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+</ol>
+
+<li>
+Does HBE concentration in men increase after they exercise?
+Data from a study of 6 men are below.
+<table class="data">
+  <tr><td colspan="7"></td><th>Mean</th><th>SD</th></tr>
+  <tr><th>Before:</th>
+    <td>42</td><td>58</td><td>38</td>
+    <td>50</td><td>49</td><td>48</td>
+    <td>47.5</td><td> 6.921</td></tr>
+  <tr><th>After:</th>
+    <td>47</td><td>57</td><td>44</td>
+    <td>53</td><td>49</td><td>53</td>
+    <td>50.5</td><td> 4.722</td></tr>
+</table><br>
+<ol class="subparts">
+
+  <li> Name the <b>variable(s)</b> which need to be measured, indicate their
+  levels of measurement, and whether each is a predictor or outcome variable.
+  <u>[2]</u>
+  <i><br>[ Time (before vs. after): categorical/dichotomous (paired).
+    <br>HBE (pg/mL): continuous. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> State the null and alternate <b>hypotheses</b>, both in words and in
+  appropriate notation. Which statistical test(s) would be appropriate?
+  <u>[3]</u>
+  <i><br>[ H<sub>0</sub>: &mu;<sub>d</sub> &le; 0
+    (presuming d = after - before; you could also subtract in the other order),
+    HBE concentration does not increase after exercise.
+    <br> H<sub>A</sub>: &mu;<sub>d</sub> &gt; 0,
+    HBE concentration does increase after exercise.
+    <br> Paired data: t-test on pairwise differences, or sign test. ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> Run an appropriate <b>parametric</b> test and bracket the 
+  <em>p</em>-value. <u>[5]</u><br>
+  <i><br>[ mean diff = 3.00, SD of diffs = 2.898,
+    <br>SE<sub>d</sub> = 1.183, so t = 2.535.
+    <br> df = 5: one-tailed: 0.025 &lt; p &lt; 0.03 (real p = 0.026).  ]</i>
+  <div class="answerbox" style="height:6em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Reject H<sub>0</sub>,
+    HBE concentration rises after exercise. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Using the same data, perform an appropriate <b>non-parametric</b>
+  test and bracket the <em>p</em>-value. <u>[3]</u><br>
+  <i><br>[ Sign test: N<sub>+</sub> = 4, N<sub>-</sub> = 1, n<sub>d</sub> = 6
+    <br>1-tailed p &gt; .10.  ]</i>
+  <div class="answerbox" style="height:4em"></div>
+
+  <li> State the <b>conclusion</b> from this test, and interpret
+  it in the context of the original research question. <u>[2]</u>
+  <i><br>[ Fail to reject H<sub>0</sub>, insufficient evidence to show
+    HBE concentration rises after exercise. ]</i>
+  <div class="answerbox" style="height:3em"></div>
+
+  <li> Which test do you think is more <b>appropriate</b> for this data,
+  the parametric or the non-parametric test? Why?  <u>[2]</u>
+  <i><br>[ Pairwise differences are not very normal: skewed to left.
+    Sign test might be the safer option in this case, although
+    overall the sample size is too small to tell. ]</i>
+
+</ol>
+
+</ol>
+</body></html>

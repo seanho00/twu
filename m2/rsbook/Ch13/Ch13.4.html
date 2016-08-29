@@ -1,0 +1,704 @@
+<HTML>
+<HEAD>
+<TITLE>13.4 Inserting Methods</TITLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Searching and Sorting">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>13.4 Inserting Methods</B></H2>
+<P>The sorting methods in this section work in a different manner from those described in <A HREF="Ch13.2.html">section 13.2</A>.  Rather than compare adjacent items, or search for the largest one in some range, they operate on the premise that some portion of the array is already sorted, and some additional item must be inserted into the correct place in that portion.  The methods of finding the proper place for an item therefore become important in this discussion.  The intention of this section is to push the ideas of finding and inserting to their limits, analyze them fully, and explore every possible avenue for clever improvements.  Some of the resulting code may seem to the reader to be too complex to be worth the trouble, and if so, invitations are extended in the exercises at the end of the chapter to check on the actual performance of the code produced.</P>
+<P>To start with, consider the problem of sorting data into an array as it arrives from some source (the source could be another part of the same array, but this is not important at the moment.)  At any given step, the portion of the array into which the data is being placed is already sorted, and it is necessary to find the correct place for the new item and put it there.  If the existing array is sorted from lowest to highest, it is necessary to find the first position in the array with a value greater than that of the item being inserted.  If there are none, the correct position is after the last item being examined.  The new item will go at this place, so it is necessary to move everything from that index and beyond to the next greater index position and then copy the new value into its correct spot.</P>
+<H3><B>Example:</B></H3>
+<P>Suppose that at some point in the process the array contained:</P>
+<P>A [0] = 0, A [1] =5, A [2] = 8, A [3] = 12, A [4] = 15</P>
+<P><IMG SRC="Figure/Eq13.4.1.GIF"><!----></P>
+<P>and 7 is the value of the new item to be inserted.  The suggested algorithm searches through the items A [0 .. i] until it finds the first one with a value greater than 7 (which in this case is the value 8).  The index of that item ([2]) is the place to put the new item.  First, though, A [4], A [3], and A [2] must be moved along to the next higher indexed position, and in that order.  Do you see why?</P>
+<P><IMG SRC="Figure/Eq13.4.2.GIF"><!----></P>
+<P>When these steps are complete, the array looks like this:</P>
+<P><IMG SRC="Figure/Eq13.4.3.GIF"><!----></P>
+<P>If the number 17 were now to be inserted, an examination of the items already active would reveal that all were less than the new one, so it would go in the last array position (six) and no moves would have to be made.</P>
+<P>This informal examination of the situation then leads to a more formal expression of the problem and its solution:</P>
+<H3><B>Problem:</B></H3>
+<P>To sort a cardinal <I>new value</I> into an existing array [0 .. n].</P>
+<H3><B>Pseudocode:</B></H3>
+<PRE>
+Sort To Array
+  Find Position
+    set pos to 0
+    while (pos <!--<-->&lt; number in use) and (array item [pos] <!--<-->&lt;= new value)
+      increment pos
+    end while
+  Make Room
+    if  pos <!--<-->&lt; number in use then
+      for counter = last position used to pos by -1
+        set array item [counter + 1] to array item [counter]
+      end for
+    end if
+  Insert New Item
+    set array item [pos] to value</PRE>
+<H3><B>Discussion:</B></H3>
+<P>The insertion procedure requires a variable parameter to hold the array being altered and a value parameter to pass it the new number to insert.  It also requires the index of the highest assigned element, so that it can both stop at the right place when doing comparisons, and start at the right one when doing moves.   Because it is important to test such code carefully, the insert procedure has been enclosed in a module that serves as a test harness.</P>
+<H3><B>Code:</B></H3>
+<PRE>
+<B>MODULE</B> TestInsert;
+
+(* By R. Sutcliffe  Last Modified 1995 04 19 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn ;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>PROCEDURE</B> Insert (item : <B>CARDINAL</B>;  (* # to insert *)
+        <B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; (* array to put it in *)
+        lBound, (* position from zero to start using places *)
+        uBound : <B>CARDINAL</B>  (*  position from zero of last useable place *)  );
+
+(* inserts the item in the sorted array from internal position lBound to uBound
+Pre: the actual array sorted for the first uBound-1 positions and is large enough to insert an item and do whatever moves are required
+Post: the item is inserted at the first position where the old array item is greater, or at internal position uBound if it is larger than them all  Then, items from the insert position through to position uBound-1 are moved along along by one *)
+
+<B>VAR</B>
+  pos,    (* will contain where to put it *)
+  count : <B>CARDINAL</B>;     (* loop counter *)
+
+<B>BEGIN</B>
+  (* Find Position *)
+  pos := lBound;
+  <B>WHILE</B> (pos <!--<-->&lt; uBound) <B>AND</B> (source [pos] <!--<-->&lt;= item )
+    <B>DO</B>
+     <B>INC</B> (pos)
+  <B>END</B>;    (* while *)
+
+  (* Make Room *)
+  <B>IF</B> pos <!--<-->&lt; uBound (* otherwise goes at the end; no moves needed *)
+    <B>THEN</B> (* this loop also skipped if howMany is zero *)
+      <B>FOR</B> count := uBound - 1 <B>TO</B> pos <B>BY</B> -1 (* start at top end *)
+        <B>DO</B>
+          source [count + 1] := source [count];
+        <B>END</B>;    (* for *)
+    <B>END</B>; (* if *)
+
+  (*  Insert New Item *)
+  source [pos] := item;
+
+<B>END</B> Insert;
+
+<B>PROCEDURE</B> PrintIt (theArray : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; numToPrint : <B>CARDINAL</B>); (* print the whole array *)
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+<B>FOR</B> count := 0 <B>TO</B> numToPrint - 1
+  <B>DO</B>
+    WriteCard (theArray [count], 5);
+  <B>END</B>;
+  WriteLn;
+<B>END</B> PrintIt;
+  
+<B>VAR</B> (* for main program *)
+  theStuff : <B>ARRAY</B> [1 .. 10] <B>OF</B> <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  theStuff [1] := 34; theStuff [2] := 37; theStuff [3] := 44;
+  theStuff [4] := 134; theStuff [5] := 744; theStuff [6] := 824;
+  theStuff [7] := 937; theStuff [8] := 984; theStuff [9] := 1039;
+  PrintIt (theStuff, 9); (* the original *)
+  Insert (5, theStuff, 0, 0); (* kills first item; no moves *)
+  PrintIt (theStuff, 9);
+  Insert (3500, theStuff, 7, 9); (* appends new item at the end *)
+  PrintIt (theStuff, 10); (* so print one more to see it *)
+  Insert (0, theStuff, 0, 1); (* insert before first, move one *)
+  PrintIt (theStuff, 10);
+  Insert (400, theStuff, 0, 9); (* find place in overall list *)
+  PrintIt (theStuff, 10);
+  Insert (7, theStuff, 0, 1); (* in after first, none moved *)
+  PrintIt (theStuff, 10);
+<B>END</B> TestInsert.</PRE>
+<H3><B>Output:</B></H3>
+<PRE>
+   34   37   44  134  744  824  937  984 1039
+    5   37   44  134  744  824  937  984 1039
+    5   37   44  134  744  824  937  984 1039 3500
+    0    5   44  134  744  824  937  984 1039 3500
+    0    5   44  134  400  744  824  937  984 1039
+    0    7   44  134  400  744  824  937  984 1039</PRE>
+<P>Observe that this procedure can be used even to insert the first item in the array, because if it starts with no active items, then the value of <I>lastPosNum</I> is zero and neither loop is entered, so the only statement that would be executed is <I>source [pos] := item</I> with <I>pos</I> equalling zero, which is exactly what is desired.</P>
+<P>It should also be clear by now that the searching method presented in the above code is not the most efficient, for it is linear, requiring the examination of each element in turn until the correct location is discovered.  The insert procedure can be re-cast so that it too uses the more efficient binary search discussed in the last section.</P>
+<PRE>
+<B>PROCEDURE</B> InsertB (item : <B>CARDINAL</B>; (* # to insert *)
+       <B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;(* array to put it in *)
+        lBound, (* position from zero to start using places *)
+        uBound : <B>CARDINAL</B>  (*  position from zero of last useable place *)  );
+
+(* inserts the item in the sorted array from internal position lBound to uBound
+Pre: the actual array sorted for the first uBound-1 positions and is large enough to insert an item and do whatever moves are required
+Post: the item is inserted at the first position where the old array item is greater, or at internal position uBound if it is larger than them all  Then, items from the insert position through to position uBound-1 are moved along along by one *)
+
+<B>VAR</B>
+  pos, (* will contain where to put it *)
+  count : <B>CARDINAL</B>;     (* loop counter *)
+  bottom, top : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* Find Position *)
+  bottom := lBound;
+  <B>IF</B> uBound # lBound
+    <B>THEN</B> (* else using only one item <!--& -->&amp; also must avoid negatives *)
+      top := uBound - 1;
+      <B>WHILE</B> (bottom <!--<-->&lt; top)
+        <B>DO</B>
+          pos := (top + bottom + 1) <B>DIV</B> 2;
+          <B>IF</B> item <!--<-->&lt; source [pos]
+            <B>THEN</B>   (* ignore top half *)
+              top := pos - 1;
+          <B>ELSE</B>
+            bottom := pos    (* ignore bottom half *)
+          <B>END</B>; (* if *)
+        <B>END</B> (* while *);
+    <B>END</B>;
+  pos := bottom;
+  (* the insert position is just before, or just after this position and one comparison has yet to be made *)
+  <B>IF</B>  (item <!-->&gt;= source [pos]) <B>AND</B> (pos <!--<-->&lt; uBound)
+    <B>THEN</B> (* goes after *)
+       <B>INC</B> (pos); 
+    <B>END</B>; (* if *)
+
+  (* Make Room *)
+  <B>IF</B> pos <!--<-->&lt; uBound (* otherwise it goes at the end; no moves needed *)
+    <B>THEN</B> (* this loop also skipped if uBound is zero *)
+      <B>FOR</B> count := uBound - 1 <B>TO</B> pos <B>BY</B> -1 (* start at high end *)
+        <B>DO</B>
+          source [count + 1] := source [count];
+        <B>END</B>;    (* for *)
+    <B>END</B>; (* if *)
+
+  (*  Insert New Item *)
+  source [pos] := item;
+
+<B>END</B> InsertB;</PRE>
+<P>This code has the advantage of being much faster at execution time; it has the disadvantage of requiring somewhat more work to plan, write, and debug.  Notice the differences between this and the earlier binary find routine.  Here, the concern is to locate the position to do the insert.  There may already be items in the array with the same value as the one being inserted.  If so, this routine places the new item after the last of these.  When run as an enclosure to the same program as used to test the previous insert routine, the results were identical.</P>
+<P>Note that, as before, the procedure <I>Strings.Compare</I>, or an equivalent user-written one, could be used in conjunction with the ideas presented in this section to input and sort, say, a teacher's class list by last name.   However, since fewer than a hundred students would likely fall to a single teacher for marking in a given class, it is possible that a linear search and insert would be adequate.</P>
+<H3><B><A NAME="13.4.1">13.4.1</A> The Insert Sort</B></H3>
+<P>So far, all that has accomplished is the insertion of single items into an already sorted array.  While this is a little more than just finding out if it was already there, it is short of the goal of arriving at that sorted condition in the first place<!--‹-->--or is it? </P>
+<P>In fact, the insert method can be used to sort an array that starts out initially in random order.  The sort is planned like this:</P>
+<P>1. Assume that the first element of  the source array constitutes a sorted list.  This list one has one thing in it, so it is sorted in a trivial sense.<BR>
+2. Start with the next unsorted item <I>source [count]</I> (initially <I>count</I> would equal one.)<BR>
+3. Use the procedure above to insert this next item into the sorted part of the array (which ends at the position <I>count - 1</I>) at the correct point.<BR>
+4. The sorted portion of the array now has two items.  Repeat the above process with a sorted part that grows by one item at each step until the sorted section is the entire array.</P>
+<P>Here is what the procedure to sort the array would then look like:</P>
+<PRE>
+<B>PROCEDURE</B> InsertSort (<B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;  lBound, uBound : <B>CARDINAL</B>);
+  
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  <B>FOR</B> count := lBound <B>TO</B> uBound
+  (* count on indices from second to last for insertions *)
+    <B>DO</B>
+      InsertB (source [count], source, lBound, count);
+    <B>END</B>; 
+<B>END</B> InsertSort;</PRE>
+<P>This sort was tested with a similar test harness to that in the previous module and the data:</P>
+<PRE>
+  theStuff [1] := 113; theStuff [2] := 77; theStuff [3] := 0;
+  theStuff [4] := 50; theStuff [5] := 113; theStuff [6] := 114;
+  theStuff [7] := 900; theStuff [8] := 113; theStuff [9] := 15;
+  theStuff [10] := 300; theStuff [11] := 13; theStuff [12] := 135;
+  theStuff [13] := 1;</PRE>
+<P>The procedure was invoked by:</P>
+<PRE>
+theSort (theStuff,0,13)</PRE>
+<P>was made, and a line </P>
+<PRE>
+  PrintIt (theStuff,13);  WriteLn;</PRE>
+<P>was placed on the last line of the FOR loop in the procedure <I>InsertSort</I> to follow the progress.  The output is given below with the portion of the list that is sorted (within itself)  underlined.  The identical output was obtained using <I>Insert</I> in <I>InsertSort</I> rather than <I>InsertB</I>.</P>
+<PRE>
+  <EM><U>113</U></EM>   77    0   50  113  114  900  113   15  300   13  135    1
+   <EM><U>77  113</U></EM>    0   50  113  114  900  113   15  300   13  135    1
+    <EM><U>0   77  113</U></EM>   50  113  114  900  113   15  300   13  135    1
+    <EM><U>0   50   77  113</U></EM>  113  114  900  113   15  300   13  135    1
+    <EM><U>0   50   77  113  113</U></EM>  114  900  113   15  300   13  135    1
+    <EM><U>0   50   77  113  113  114</U></EM>  900  113   15  300   13  135    1
+    <EM><U>0   50   77  113  113  114  900</U></EM>  113   15  300   13  135    1
+    <EM><U>0   50   77  113  113  113  114  900</U></EM>   15  300   13  135    1
+    <EM><U>0   15   50   77  113  113  113  114  900</U></EM>  300   13  135    1
+    <EM><U>0   15   50   77  113  113  113  114  300  900</U></EM>   13  135    1
+    <EM><U>0   13   15   50   77  113  113  113  114  300  900</U></EM>  135    1
+    <EM><U>0   13   15   50   77  113  113  113  114  135  300  900</U></EM>    1
+    <EM><U>0    1   13   15   50   77  113  113  113  114  135  300  900</U></EM></PRE>
+<P>If one wished instead to do the entire job in a single procedure, (cutting down on the overhead of procedure calls,) the plan could be modified as follows:</P>
+<P>1. Assign the value of the item to be sorted to a temporary variable <I>temp</I>.  Its current position in the array is now expendible.<BR>
+2. Proceed through the sorted part of list, comparing <I>temp</I> to the current item at each step. (This is linear.)<BR>
+3. As this is done, move items that are greater than <I>temp</I> one position closer to the high index item, filling the space made available at the last step.<BR>
+4. Stop when the correct position for <I>temp</I> is reached.<BR>
+5. Put <I>temp</I> in this position.<BR>
+6. Continue on to the next index ( the next unsorted item).<BR>
+7. Repeat until the last indexed item is processed.</P>
+<P>Here is the code for this version:</P>
+<PRE>
+<B>PROCEDURE</B> InsertSort (<B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; lBound, uBound : <B>CARDINAL</B>);
+<B>VAR</B>
+  count, moveCount, temp : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> uBound <!-->-->&gt; lBound
+    <B>THEN</B>
+      <B>FOR</B> count := lBound <B>TO</B> uBound
+        <B>DO</B>
+          temp := source [count];   (* set aside unsorted one *)
+          moveCount := count;   (* start new counter there *)
+          <B>WHILE</B> (moveCount <!-->-->&gt; lBound) <B>AND</B> (source [moveCount - 1] <!-->-->&gt; temp)
+            <B>DO</B>
+              source [moveCount] := source [moveCount - 1];
+              (* move along to make room *)
+              <B>DEC</B> (moveCount);   (* count back through sorted part *)
+            <B>END</B>;    (* while *)
+          source [moveCount] := temp;    (* do insert *)
+        <B>END</B>;   (* for *)
+  <B>END</B>;
+
+<B>END</B> InsertSort;</PRE>
+<P>The count went backwards from higher indices in doing comparisons, starting each time just below the point at which resided the next item to insert.  The auxiliary variable <I>temp</I> was necessary, because the first position to be copied over will always be that of the one being inserted.  This insert sort, while it is simpler to code, takes longer to find the correct position at which to insert something than one based on a binary search, and it makes just as many actual moves in the array as does the previous two-procedure version.  The two-procedure version is also modularized, and may be easier to follow, because the searching and the sorting are compartmentalized into two program units instead of being intermingled.</P>
+<P>Despite the improvements in searching, however, the insert sort is still <B>O</B>(n<sup>2</sup>).  This is because the potential number of moves is <B>O</B>(n<sup>2</sup>) even though the searching has become more efficient.</P>
+<H3><B><A NAME="13.4.2">13.4.2</A> The Shell Sort</B></H3>
+<P>There are a variety of techniques that can improve on the efficiency of the inserting method of sorting.  Most of these are based on the observation that if items that are farther apart in the original array (rather than next to each other) are interchanged to achieve a move, many shorter moves may be saved.  This is especially so if interchanges of items far apart are done early in the sorting process, and interchanges of items close together are done later.</P>
+<P>One way of doing this is to sort sub-lists of the original items that are initially separated by some fixed amount, call it <I>k</I>. If one used an insert sort with every occurrence of an index step of 1 replaced by a step of <I>k</I> (and <I>count := 1</I> with <I>count := k + 1</I>), the code would arrange the array elements so that taking every k<sup>th</sup> element (starting anywhere) produces a sorted list.  That is, the sub list at indices 1, 1 + k, 1 + 2k, 1 + 3k ... is sorted, and so is the sub-list at indices 2, 2 + k, 2 + 2k, 2 + 3k, ... and so on up to the sub list at indices k - 1, 2k - 1, 3k - 1, ....  There are k of these sub lists.</P>
+<BLOCKQUOTE><I><A NAME="KSorted">A</A> list is <U>k-sorted</U> if every sub-list of elements separated by k positions In the original list is sorted. </I></BLOCKQUOTE>
+<P>Another way to look at this technique is to view the array to be sorted as if it were two-dimensional with rows of length <I>k</I>.  A k-sort can be thought of as a sort on the columns of this rearrangement.  If the number <I>k</I> does not divide the original number of items, not all the columns of the rearrangement will have the same number of items in them.</P>
+<PRE>	An array for sorting:
+23, 1, 47, 134, 89, 76, 35, 342, 987, 3, 82, 27, 15, 10, 99, 151, 121, 2, 18, 96, 753, 13, 472, 111, 58, 390, 26, 32, 100, 58, 21, 190, 56, 345, 67, 88, 32, 102
+
+	The array rearranged for 13-sorting:
+23	1	47	134	89	76	35	342	987	3	82	27	15
+10	99	151	121	2	18	96	753	13	472	111	58	390
+26	32	100	58	21	190	56	345	67	88	32	102
+
+	The array 13-sorted:
+10	1	47	58	2	18	35	342	13	3	32	27	15
+23	32	100	121	21	76	56	345	67	88	82	58	390
+26	99	151	134	89	190	96	753	987	472	111	102</PRE>
+<P>Notice that <!--"-->&quot;k-sorted<!--"-->&quot; is the same as <!--"-->&quot;sorted<!--"-->&quot; if and only if k = 1.  However, if one k-sorts an array for a large value of <I>k</I> (moving elements long distances first) and then for progressively smaller values of <I>k</I> (where the sort will become easier as fewer moves are required) and finally ending with a one-sort (which is a straight insertion pass), then fewer moves in total need to be made.</P>
+<BLOCKQUOTE><I><A NAME="Shell">A</A> sequence of <U>k-sorts</U> ending in k = 1 is called a <U>Shell sort</U>.</I></BLOCKQUOTE>
+<PRE>
+	The 13- sorted array arranged for 4-sorting:
+10	1	47	58
+2	18	35	342
+13	3	32	27
+15	23	32	100
+121	21	76	56
+345	67	88	82
+58	390	26	99
+151	134	89	190
+96	753	987	472
+111	102
+
+	The array also 4-sorted:
+
+2	1	26	27
+10	3	32	56
+13	18	32	58
+15	21	35	82
+58	23	47	99
+96	67	76	100
+111	102	88	190
+121	134	89	342
+151	390	987	472
+345	753</PRE>
+<P>Observe how the smaller items are now clustered toward the beginning, and the larger ones toward the end.  An insertion sort (a one-sort) will now have far less work to do to complete the task than if the array had not been 13-sorted and 4-sorted first.</P>
+<P>The following table illustrates how a collection of characters is sorted, also using the k-sequence 13, 4, 1.  This time, the array has not been written in rows of 13 and in rows of four, so it may be a little more difficult to verify the sort by sight.</P>
+<PRE>
+# 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+  H E R E A R E S O  M  E  L  E  T  T  E  R  S  T  O  S  O  R  T 
+  H E E E A R E S O  M  E  L  E  T  T  R  R  S  T  O  S  O  R  T
+  A E E E E M E L H  O  E  O  O  R  R  R  R  S  T  S  S  T  T  T
+  A E E E E E E H L  M  O  O  O  R  R  R  R  S  S  S  T  T  T  T</PRE>
+<P>The first pass organizes the sub-lists at positions 1 and 14, 2 and 15, 3 and 16, etc.  The second organizes the sub-lists at positions 1, 5, 9, 13, 17, and 21; at 2, 6, 10, 14, 18, and 22, and so on.  The plain insertion sort conducted at the last step does not have to move any one object very far, so there are fewer reassignments overall.</P>
+<P>Various k-sequences have been examined and used for the Shell sort, and, as might be expected, some work better than others.  For simplicity, some people generate the k-sequence by starting at <I>lastPosNum DIV 2</I> and thereafter taking k = k DIV 2.</P>
+<P>This is fairly satisfactory if <I>lastPosNum</I> equals, say, 38.  Then, the sequence of values for k is 19, 9, 4, 2, and 1.  <!--"-->&quot;So what?<!--"-->&quot; one might say.  Observe that a list that is 2-sorted is necessarily also 4-sorted as well, for if a sub-sequence of every second item is in order, the sequence of every fourth one certainly is.  Some of the comparisons are therefore wasted, because there is no need to do a 4-sort if there is later going to be a 2-sort as well.  In the worst case, if the position of the last item in the source array happens to be a power of 2, so will every number in the k-sequence, and the sort will rapidly lose efficiency.  In general, if a j-sort is to be conducted at a later stage of a Shell sort, there is no point in doing an n<!--¥-->*j-sort for any n at an earlier stage.</P>
+<P>To maximize the effectiveness of a Shell sort, it is even better if there are no factors at all common among the numbers used for the values of k in the k-sequence.  That is, the terms of the k-sequence should be relatively prime. (The greatest common divisor of any pair should equal one.)</P>
+<P>A sequence that works fairly well is the one generated by the formula k(i) = 3 <!--¥-->* k(i-1) + 1, namely 1093, 364, 121, 40, 13, 4, 1, although it does certain a subsequence of multiples of 4.  The code would now look like this:</P>
+<PRE>
+<B>PROCEDURE</B> ShellSort1 (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; lBound, uBound : <B>CARDINAL</B>);
+<B>VAR</B>
+  k, listCount, count, moveCount, temp : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  k := 1;
+  <B>REPEAT</B>   (* get first <!--"-->&quot;k<!--"-->&quot; in sequence *)
+    k := 3 * k + 1
+  <B>UNTIL</B> k <!-->-->&gt; uBound - lBound;
+  
+  <B>REPEAT</B>
+    k := k <B>DIV</B> 3;   (* work backwards on same sequence *)
+    <B>FOR</B> listCount := lBound <B>TO</B> lBound + k - 1
+      (* Start as many k-lists as possible. *)
+      <B>DO</B>
+        count := listCount + k;
+        <B>WHILE</B> count <!--<-->&lt;= uBound 
+          <B>DO</B>  (* each k-sort starts here *)
+            temp := source [count];   (* set aside unsorted one *)
+            moveCount := count;
+            <B>WHILE</B> (moveCount <!-->-->gt;= lBound + k) <B>AND</B> (source [moveCount - k] <!-->-->gt; temp)
+              <B>DO</B>
+                source [moveCount] := source [moveCount - k];
+               (*  move along to make room *)
+                <B>DEC</B> (moveCount, k)   (* count backward in k-list *)
+              <B>END</B>;
+            source [moveCount] := temp;   (* insert new item *)
+            <B>INC</B> (count, k);
+          <B>END</B>;   (* while count *)
+      <B>END</B>;   (* for listCount *) 
+  <B>UNTIL</B> k = 1
+<B>END</B> ShellSort1;</PRE>
+<P>There are two additional observations that can be made at this point, some important observations and some further refinements based on these.</P>
+<P>First, it is useful to keep the k-sequence on hand instead of generating it with a formula.  One must ensure that the sequence runs high enough to sort the largest array, but this method allows for some testing that will enable one to find an optimum k-sequence by trial and error.</P>
+<P>Second, the k-sorts in this section were accomplished by a linear search method through each of the k lists.  That can be modified to utilize a binary search, even though this is more difficult to write.  The key is formulating the search correctly.  It is easy to examine only every k<sup>th</sup> element of a list, but the computation of the middle index takes a little thought.  Suppose one has a sequence of indices in the array starting at a<sub>0</sub> and separated by k positions.  These indices themselves form an arithmetic sequence,  a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>, a<sub>4</sub>, ... a<sub>i</sub> ... whose terms are:</P>
+<P>a<sub>1</sub>, (a<sub>1</sub> + k) , (a<sub>1</sub> + 2k) , (a<sub>1</sub> + 3k) , ... (a<sub>1</sub> + (i - 1) k )</P>
+<P>Note the formula for the i<sup>th</sup> term</P>
+<P>a<sub>1</sub> = (a<sub>1</sub> + (i - 1) k)</P>
+<P>To get the index of the middle one of these, first note that the number of k's added is</P>
+<P>i - 1 = (a<sub>i</sub> - a<sub>1</sub>) DIV k,  or  i = 1 + (a<sub>i</sub> - a<sub>1</sub>) DIV k</P>
+<P>Half of this number is</P>
+<P>m = i DIV 2 = (1 + (a<sub>i</sub> - a<sub>1</sub>) DIV k ) DIV 2</P>
+<P>The actual term in the sequence of indices when a total of <I>m</I> k's have been added to the first index is:</P>
+<P>t<sub>m+1</sub> = a<sub>1</sub> + mk = a<sub>1</sub> + ((1 + (a<sub>i</sub> - a<sub>1</sub>) DIV k) DIV 2) k</P>
+<P>To illustrate, suppose one was examining the 3-list of terms starting at index 4, that is, the terms t<sub>4</sub>, t<sub>7</sub>, t<sub>10</sub>, t<sub>13</sub>, t<sub>16</sub>, t<sub>19</sub>, t<sub>22</sub>, .... This list may or may not end at an index that can be expressed in the form 4 + 3j.  Looking at the sequence of indices 4, 7, 10, 13, 16, 19, 22, ... and various ending points, the above formula gives for the middle index:</P>
+
+<PRE>top index	middle
+	22	13
+	16	10
+	21	13</PRE>
+<P>all of which are satisfactory.  In the event that k = 1 (the last k-sort done,) the formula above simplifies to:</P>
+<P>t<sub>m+1</sub> = a<sub>1</sub> + ((1 + (a<sub>i</sub> + a<sub>1</sub>) DIV 1) DIV 2) 1</P>
+<P>or</P>
+<P>t<sub>m+1</sub> = a<sub>1</sub> + 1 + (a<sub>i</sub> - a<sub>1</sub>) DIV 2 = a<sub>1</sub> + (1 + (a<sub>i</sub> - a<sub>1</sub>)) DIV 2</P>
+<P>so that </P>
+<P>2t<sub>m+1</sub> = 2a<sub>1</sub> + 1 + a<sub>i</sub> + a<sub>1</sub></P>
+<P>or</P>
+<P>t<sub>m+1</sub> = (a<sub>1</sub> + a<sub>i</sub> + 1) DIV 2</P>
+<P>which gives the same result as (a<sub>1</sub> + a<sub>i</sub>) DIV 2 for an odd number of terms.  If there are an even number of terms, there is no true middle, and either of two terms can be selected with equal effectiveness. (a<sub>1</sub> + a<sub>i</sub> + 1) DIV 2 gives the one of these two with the higher index, and (a<sub>1</sub> + a<sub>i</sub>) DIV 2 gives the one with the lower.  Since the latter also has one less calculation, using it will save time.</P>
+<P>With suitable changes in notation, these formulas can be used in the find portion of the sorting routine.</P>
+<P>With these points in mind, here is another version of the Shell sort.  This one conducts the binary search in a slightly different manner than did previous versions.</P>
+<PRE>
+<B>VAR</B>
+  kSeq : <B>ARRAY</B> [1 .. 10] <B>OF</B> <B>CARDINAL</B>;
+  (* Permits use of a predefined sequence for k-step values. *)
+
+<B>PROCEDURE</B> NewPos (low, high, step : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  <B>IF</B> step = 1
+    <B>THEN</B>
+      <B>RETURN</B> (low + high + 1) <B>DIV</B> 2
+    <B>ELSIF</B> high = low <B>THEN</B>
+      <B>RETURN</B> high
+    <B>ELSE</B>
+      <B>RETURN</B> low + ((1 + (high - low) <B>DIV</B> step) <B>DIV</B> 2) * step
+      (* calculate <!--"-->&quot;middle position<!--"-->&quot; as described above *)
+    <B>END</B>;
+<B>END</B> NewPos;
+  
+<B>PROCEDURE</B> KFindB (item : <B>CARDINAL</B>;
+    <B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+     first, last, kStep : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+
+(* This procedure is a modification of the earlier binary search.  It searches through a sub list of the supplied array considering as consecutive those positions separated by <!--"-->&quot;kStep<!--"-->&quot; using a binary method and returning the index at which the new item must be inserted. *)
+
+<B>VAR</B>
+  bottom, top, pos : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  bottom := first;
+  top := last;
+  <B>IF</B> kStep = 1
+    <B>THEN</B>
+      <B>DEC</B> (top)
+    <B>END</B>;
+  <B>WHILE</B> (bottom <!--<-->&lt; top)
+    <B>DO</B>
+      pos := NewPos (bottom, top, kStep);
+      <B>IF</B> item <!--<-->&lt; source [pos]
+        <B>THEN</B>   (* discard top half *)
+          top := pos - kStep;
+        <B>ELSE</B>
+          bottom := pos   (* discard bottom half *)
+        <B>END</B>; (* if *)
+    <B>END</B>; (* while *)
+  pos := bottom;
+(* the insert position is just before, or just after this position and one comparison has yet to be made *)
+
+  <B>IF</B>  (item <!-->-->&gt;= source [pos]) <B>AND</B> (pos <!--<-->&lt; last)
+    <B>THEN</B> (* goes after *)
+      <B>RETURN</B> (pos + kStep); 
+    <B>ELSE</B>
+      <B>RETURN</B> (pos)
+    <B>END</B>; (* if *)
+
+<B>END</B> KFindB;
+
+<B>PROCEDURE</B> KInsert (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+     toIndex, fromIndex, kStep : <B>CARDINAL</B>);
+
+(* This procedure takes source [fromIndex] and inserts it at source [atIndex] moving things along in kStep increments to fill the gap. *)
+
+<B>VAR</B>
+  temp, count : <B>CARDINAL</B>;
+  swap : <B>BOOLEAN</B>;
+
+<B>BEGIN</B>
+  temp := source [fromIndex]; 
+  count := fromIndex;
+     
+  <B>WHILE</B> count <!-->-->&gt;= (toIndex + kStep)
+    <B>DO</B>
+      source [count] := source [count - kStep];
+      <B>DEC</B> (count, kStep)
+    <B>END</B>;    
+      source [toIndex] := temp;   (* actual insert *)
+<B>END</B> KInsert;
+
+(* finally, here is the actual sort procedure that the outside world uses *)
+
+<B>PROCEDURE</B> ShellSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+        lBound, uBound : <B>CARDINAL</B>);
+<B>VAR</B>
+  kIndex, k, listCount, count, putIndex, temp : <B>CARDINAL</B>;
+
+(* compute an appropriate value of k from the sequence initialized below *)
+<B>BEGIN</B>
+  kIndex := 0;
+  <B>REPEAT</B>
+    <B>INC</B> (kIndex)
+  <B>UNTIL</B> kSeq [kIndex] <!-->-->&gt; (uBound <B>DIV</B> 2);
+
+  <B>REPEAT</B>
+    <B>DEC</B> (kIndex);
+    k := kSeq [kIndex];
+    <B>FOR</B> listCount := lBound <B>TO</B> lBound + k - 1
+      (* Start as many k-lists as possible. *)
+      <B>DO</B>
+        count := listCount + k;
+        <B>WHILE</B> count <!--<-->&lt;= uBound
+          <B>DO</B>   (* each k-sort starts here *)
+            putIndex := KFindB (source [count], source, listCount, count, k);
+            <B>IF</B> putIndex # count
+              <B>THEN</B>
+                KInsert (source, putIndex, count, k);
+              <B>END</B>;
+            <B>INC</B> (count, k)
+          <B>END</B>;   (* while count *) 
+    <B>END</B>  (* for listCount *)
+  <B>UNTIL</B> kIndex = 1
+<B>END</B> ShellSort;</PRE>
+<P>This was encapsulated in a library module, with the following initialization of the k-sequence values:</P>
+<PRE>
+<B>BEGIN</B>   (* initialization section *)
+  kSeq [1] := 1;
+  kSeq [2] := 4;
+  kSeq [3] := 11;
+  kSeq [4] := 23;
+  kSeq [5] := 53;
+  kSeq [6] := 111;
+  kSeq [7] := 223;
+  kSeq [8] := 451;
+  kSeq [9] := 1003;
+  kSeq [10] := 2029;
+
+<B>END</B> Sort.</PRE>
+<P>and the following modified version of <I>PrintIt</I>:</P>
+<PRE>
+<B>PROCEDURE</B> PrintIt (theArray : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; numToPrint, numPerLine, flen : <B>CARDINAL</B>);
+
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+<B>FOR</B> count := 0 <B>TO</B> numToPrint - 1
+  <B>DO</B>
+    WriteCard (theArray [count], flen);
+    <B>IF</B> (count + 1) <B>MOD</B> numPerLine = 0
+      <B>THEN</B>
+        WriteLn;
+      <B>END</B>;
+  <B>END</B>;
+<B>END</B> PrintIt;</PRE>
+<P>A simple test harness to check the library module follows:</P>
+<PRE>
+<B>MODULE</B> TestShellSort;
+
+(*  By R. Sutcliffe
+   To illustrate shell sorting
+   last modified 1995 05 02 *)
+
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteChar, WriteString, WriteLn;
+
+<B>FROM</B> Sorts <B>IMPORT</B>
+  PrintIt, ShellSort;
+  
+<B>VAR</B>
+  theStuff : <B>ARRAY</B> [1 .. 13] <B>OF</B> <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  theStuff [1] := 113; theStuff [2] := 77; theStuff [3] := 0;
+  theStuff [4] := 50; theStuff [5] := 113; theStuff [6] := 114;
+  theStuff [7] := 900; theStuff [8] := 113; theStuff [9] := 15;
+  theStuff [10] := 300; theStuff [11] := 13; theStuff [12] := 135;
+  theStuff [13] := 1;
+
+  PrintIt (theStuff,13,13,5);  WriteLn;
+  ShellSort (theStuff,2,2); (* sort one; does nothing *)
+  PrintIt (theStuff,13,13,5);  WriteLn;
+  ShellSort (theStuff,1,2);  (* sort two *)
+  PrintIt (theStuff,13,13,5);  WriteLn;
+  ShellSort (theStuff,2,9); (* all but first two, last three *)
+  PrintIt (theStuff,13,13,5);  WriteLn;
+  ShellSort (theStuff,0,12); (* whole thing *)
+  PrintIt (theStuff,13,13,5);  WriteLn;
+ 
+<B>END</B> TestShellSort.</PRE>
+<P>This produced the following output:</P>
+<PRE>
+  113   77    0   50  113  114  900  113   15  300   13  135   1
+  113   77    0   50  113  114  900  113   15  300   13  135   1
+  113    0   77   50  113  114  900  113   15  300   13  135   1
+  113    0   15   50   77  113  113  114  300  900   13  135   1
+    0    1   13   15   50   77  113  113  113  114  135  300 900</PRE>
+<P>At this point, the reader should at least be suspicious that the extensive modifications to the routine to achieve a binary search on the k-sequences may not be worth the trouble.  Indeed, they may introduce so much arithmetic that they actually degrade the performance of the sort.  Whether this is so, and to what extent, has been left to the exercises.</P>
+<P>The performance of a Shell sort in comparison with the other simple sorts is difficult to analyze.  It depends on the k-sequence employed, and no general solution to the problem of finding the optimum k-sequence, or analyzing performance for a given k-sequence is known.  For the k-sequence 1, 4, 13, 40, 121, ... a Shell sort never does more than N<sup>3/2</sup> comparisons, and this limit also holds for other k-sequences.  One conjecture is that a Shell sort is <B>O</B>(n (log<sub>2</sub>n)2)  Various sequences can be tested by having them stored in a separate file, and making the Shell sort obtain them from there.  The one employed above was obtained with a little trial and error and found to be reasonably effective.  Some of the literature on the Shell sort indicates that starting with the number of items and dividing by a <I>shrink factor</I> of about 1.7 for the first and each subsequent pass produces optimum results in most cases.  For instance, if there were 100 items in the array to be sorted, k would first be initialized to 100, and using</P>
+<PRE>
+k := <B>TRUNC</B> (<B>FLOAT</B> (k) / 1.7);</PRE>
+<P>or, better yet (to avoid floating point operations)</P>
+<PRE>
+k := 10 * k / 17</PRE>
+<P>thereafter, at the beginning of the sorting loop, the following k-sequence (in order of use) is obtained:</P>
+<PRE>
+58, 34, 20, 12, 7, 4, 2, 1.</PRE>
+<P>However, in view of the comments above, there are clearly inefficiencies in this sequence, and some further fine tuning perhaps ought to be done.  Again, the student is invited to experiment.  </P>
+<H3><B><A NAME="13.4.3">13.4.3</A> The Combsort</B></H3>
+<P>The Shell sort rearranges all the k-lists that it can form with a given k.  Another approach to the comparison of elements that are relatively far apart in the list is to sort only the k-list starting at position zero for each k.  One might immediately suspect that this approach would require somewhat more steps in the sequence for optimum performance, and this turns out to be the case.</P>
+<BLOCKQUOTE><I><A NAME="Comb">A</A> sequence of sorts of only the k-lists starting at position zero for k decreasing by a constant factor is called a <U>comb sort</U>.</I></BLOCKQUOTE>
+<P>The comb sort was first published by Richard Box and Stephen Lacey in the <I>April 1991</I> issue of Byte magazine.  They found that using a sequence for the gaps that decreased by a shrink factor of 1.3 gave the best results.  Trial and error produced the refinement that an eventual gap size of 11, (rather than 9 or 10) gave a more efficient sequence of gaps below that point. Their published sort was based on a modification of a bubble sort routine; here it is presented using an insert technique:</P>
+<PRE>
+<B>PROCEDURE</B> CombSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; lBound, uBound : <B>CARDINAL</B>);
+                              
+<B>VAR</B>
+  gap, count, moveCount, temp : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  gap := uBound - lBound;
+  <B>IF</B> gap = 0  (* check hostile cases outside loop *)
+    (* note: can't hit zero any other way *)	
+    <B>THEN</B>
+      <B>RETURN</B> (* nothing to sort *)
+    <B>ELSIF</B> gap = 1 <B>THEN</B> (* special case sorting two *)
+      <B>IF</B> source [lBound] <!-->-->&gt; source [uBound]
+        <B>THEN</B>
+          Swap (source [lBound], source [uBound])
+        <B>END</B>; (* if source *)
+      <B>RETURN</B> (* in either case *)
+    <B>END</B>; (* if gap *)
+
+  <B>REPEAT</B>
+    gap :=  gap * 10 / 13;
+    <B>IF</B> (gap = 9) <B>OR</B> (gap = 10)
+      <B>THEN</B>
+        gap := 11
+      <B>END</B>;
+
+    count :=  lBound + gap;
+    <B>WHILE</B> count <!--<-->&lt;= uBound 
+      <B>DO</B>  
+        temp := source [count];   (* set aside unsorted one *)
+        moveCount := count;
+        <B>WHILE</B> (moveCount <!-->-->&gt;= gap) <B>AND</B> (source [moveCount - gap] <!-->-->&gt; temp)
+          <B>DO</B>
+            source [moveCount] := source [moveCount - gap];
+           (*  move along to make room *)
+            <B>DEC</B> (moveCount, gap)   (* count backward in list *)
+          <B>END</B>;
+         source [moveCount] := temp;   (* insert new item *)
+         <B>INC</B> (count, gap);
+      <B>END</B>;   (* while count *)     
+  <B>UNTIL</B> gap = 1
+<B>END</B> CombSort;</PRE>
+<P>The difference between operation of the Shell sort and the comb sort can be illustrated by examining the following table, constructed from successive passes of the two sorts with the array printed out at each pass.  The underlined items are the ones compared and sorted.</P><PRE>
+	The Combsort
+Position  0    1    2    3    4    5    6    7    8    9   10   11
+
+Initial 234   77    0  113  404   94  900  113   15  300   13  135
+
+gap=11: <EM><U>135</U></EM>   77    0  113  404   94  900  113   15  300   13  <EM><U>234</U></EM>
+gap= 8:  <EM><U>15</U></EM>   77    0  113  404   94  900  113  135  <EM><U>300</U></EM>   13  234
+gap= 6:  <EM><U>15</U></EM>   77    0  113  404   94  900  <EM><U>113</U></EM>  135  300   13  234
+gap= 4:  <EM><U>15</U></EM>   77    0  113  135   <EM><U>94</U></EM>  900  113  404  <EM><U>300</U></EM>   13  234
+gap= 3:  <EM><U>15</U></EM>   77    0  113  <EM><U>135</U></EM>   94  300  <EM><U>113</U></EM>  404  900   <EM><U>13</U></EM>  234
+gap= 2:   <EM><U>0</U></EM>   77   <EM><U>13</U></EM>  113   <EM><U>15</U></EM>   94  <EM><U>135</U></EM>  113  <EM><U>300</U></EM>  900  <EM><U>404</U></EM>  234
+gap= 1:   <EM><U>0</U></EM>   <EM><U>13</U></EM>   <EM><U>15</U></EM>   <EM><U>77</U></EM>   <EM><U>94</U></EM>  <EM><U>113</U></EM>  <EM><U>113</U></EM>  <EM><U>135</U></EM>  <EM><U>234</U></EM>  <EM><U>300</U></EM>  <EM><U>404</U></EM>  <EM><U>900</U></EM>
+
+
+	The Shell sort
+Position  0    1    2    3    4    5    6    7    8    9   10   11
+
+Initial 234   77    0  113  404   94  900  113   15  300   13  135
+
+k = 4:   <EM><U>15</U></EM>   77    0  113  <EM><U>234</U></EM>   94  900  113  <EM><U>404</U></EM>  300   13  135
+k = 4:   15   <EM><U>77</U></EM>    0  113  234   <EM><U>94</U></EM>  900  113  404  <EM><U>300</U></EM>   13  135
+k = 4:   15   77    <EM><U>0</U></EM>  113  234   94   <EM><U>13</U></EM>  113  404  300  <EM><U>900</U></EM>  135
+k = 4:   15   77    0  <EM><U>113</U></EM>  234   94   13  <EM><U>113</U></EM>  404  300  900  <EM><U>135</U></EM>
+k = 1:    <EM><U>0</U></EM>   <EM><U>13</U></EM>   <EM><U>15</U></EM>   <EM><U>77</U></EM>   <EM><U>94</U></EM>  <EM><U>113</U></EM>  <EM><U>113</U></EM>  <EM><U>135</U></EM>  <EM><U>234</U></EM>  <EM><U>300</U></EM>  <EM><U>404</U></EM>  <EM><U>900</U></EM></PRE>
+<P>The Shell sort makes more sub-lists and does more comparisons in each one, while the comb sort makes more passes, but only constructs a single sub-list at each pass.  Box and Lacey claim that their comb sort achieved the best balance of the two between short times and predictability, as it sorts random lists and previously sorted lists with about the same efficiency.  They also claim that actual trials show the comb sort to approximate <B>O</B>(n log<sub>2</sub>n) as n gets large.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

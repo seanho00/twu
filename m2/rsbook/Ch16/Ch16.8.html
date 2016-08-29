@@ -1,0 +1,110 @@
+<HTML><HEAD><TITLE>16.8 Dependency and Order in Generic Modula-2</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Dependency and Order in Generic Modula-2">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+
+<H2><b>16.8 Dependency and Order in Generic Modula-2</b></H2>
+
+<H3><b><A NAME="16.8.1"></A>16.8.1 Module Dependencies</b></H3>
+<P>The module dependencies of Standard Generic Modula-2 are the same as those in the base language, with the following additions:</P>
+<UL><LI><!--‹--> The implementation module of a generic separate module must be translated after the corresponding definition module of that same generic separate module.</LI>
+<LI><!--‹--> The definition module of a refining separate module must be translated after the definition module of the generic separate module of which it is a refiner.</LI>
+<LI><!--‹--> The implementation module of a refining separate module must be translated after the corresponding definition module of that same refining separate module.</LI>
+<LI><!--‹--> The implementation module of a refining separate module must be translated after the implementation module of the generic separate module of which it is a refiner.</LI>
+<LI><!--‹--> A module containing one or more refining local modules mustl be translated after all the implementation modules of the generic separate modules for which it contains refining local modules.</LI>
+<LI><!--‹--> A module importing one or more refining separate modules must be translated after all the definition modules of the refining separate modules that it imports.</LI></UL>
+
+<TABLE><TR VALIGN="CENTER"><TH COLSPAN=5>Chart of dependencies:</TH></TR>
+
+<TR VALIGN="CENTER"><TD>generic definition	<IMG SRC="Figure/rightarrow.GIF" WIDTH=44 HEIGHT =11"><!----></TD>	<TD>generic implementation	<IMG SRC="Figure/rightarrow.GIF" WIDTH=44 HEIGHT =11"><!----></TD>	<TD>local refinement</TD></TR>
+<TR VALIGN="CENTER">	<TD><IMG SRC="Figure/downarrow.GIF" WIDTH=11 HEIGHT =44"><!----></TD>			<TD><IMG SRC="Figure/downarrow.GIF" WIDTH=11 HEIGHT =44"><!----></TD></TR>
+<TR VALIGN="CENTER"><TD>refining definition</TD>		<TD>refining implementation</TD></TR>
+<TR VALIGN="CENTER"><TD>	<IMG SRC="Figure/downarrow.GIF" WIDTH=11 HEIGHT =44"><!----></TD></TR>
+<TR VALIGN="CENTER"><TD>Importer of (separate) refined module</TD></TABLE></TR>
+
+
+<H3><b><A NAME="16.8.2"></A>16.8.2 Nested Module Refinement Order</b></H3>
+<P>If an implementation module of a generic separate module contains one or more refining local modules, then the order of refinement is the same as the order of initialization would be once the modules were fully refined. This means that the outer module is refined first, then the local modules in the textual order in which they appear, and then any local modules contained in the generic separate modules from which they are being refined, and so on.</P>
+<P>This process is not recursive, whether directly or indirectly. If the implementation part of a generic separate module contains refining local module, that refining local module cannot refine from the same generic separate module in which it is contained. Neither may two generic separate modules each contain a refiner to the other. That is generic separate module A cannot contain a local module refining from generic separate module <i>B</i> which in turn contains a local module refining from <i>A</i>.</P>
+
+<H3><b><A NAME="16.8.3"></A>16.8.3 Module Initialization and Termination Order</b></H3>
+<P>The module initialization order in Standard Generic Modula-2 is determined by applying the rules of the base language after the refinements of any generic separate modules have been completed. This means that if a program uses two different refinements of the same generic separate module, these are regarded as different modules in the sense of the base language. Each has its own initialization, and the two initializations are done in an order determined by the import lists of the program.</P>
+<P>The module termination order in Standard Generic Modula-2 is determined by applying the rules of the base language after the refinements of any generic separate modules have been completed. This means that if a program uses two different refinements of the same generic separate module, the two modules are terminated in an order determined by their initialization.</P>
+
+<H3><b><A NAME="16.8.4"></A>16.8.4 Import and Export Lists</b></H3>
+<P>The rules for import lists in a module in Standard Generic Modula-2 are identical to those of the base language and are applied after the refinement of any generic separate modules has taken place. In addition, the rules for imports into generic separate modules are the same as the rules for any other separate modules.</P>
+
+<P><b>NOTE</b>:  Because the names of formal parameters are in the scope of a generic separate module, and they are treated as imports, they may not clash with any identifiers named in an import list of that module.</P>
+
+<P>A refined separate module has as its qualified export list the items defined in the generic definition module of which its refining separate module is a refiner. A refined local module, on the other hand, has as its export list the items named in the (possibly qualified) export list of the refining local module. Items not in the generic separate definition module cannot be in this export list.</P>
+<P>Thus, if one had:</P>
+
+<PRE><b>GENERIC</B> <B>DEFINITION MODULE</b> SomeGenericStuff (GenType: <b>TYPE</b>; aConst : <b>CARDINAL</b>);
+<b>CONST</b>
+  aConst : <b>INTEGER</b>;  (* sorry, this is an illegal with the formal parameter name *)
+<b>END</b> SomeGenericStuff.</PRE>
+
+<P>then the definition of <i>aConst</i> here is a redefinition of an item with the same name in the same scope and so is forbidden. Moreover, if this were completed with an implementation that looked like</P>
+
+<PRE><b>GENERIC</B> <B>IMPLEMENTATION MODULE</b> SomeGenericStuff (GenType: <b>TYPE</b>; aConst : <b>CARDINAL</b>);
+<b>CONST</b>
+  bConst : <b>INTEGER</b>; (* can't be exported by a refiner *)
+<b>END</b> SomeGenericStuff.</PRE>
+
+<P>then one could not refine the implementation with an export as in the local module contained below:</P>
+
+<PRE><b>IMPLEMENTATION</B> <B>MODULE</b> DoGen;;
+
+<b>MODULE</b> Local = SomeGenericStuff (<b>CARDINAL</b>, 5);
+<b>EXPORT</b> bConst; (* this export is illegal; not in definition *)
+<b>END</b> Local;
+
+<b>END</b> DoGen.</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

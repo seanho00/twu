@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<TITLE>1.2 Problem Solving and Computing</TITLE>
+<meta NAME=²keywords² CONTENT=²problem, solving, solve, computing, compute, computers, computer, program, programming, manufacture, manufactured, machine, machines, solution, solutions, programmer, programmers, notation, notations, language, languages, computer, planning, instruction, instructions, plan, complex, solution, bottom, up, top, down, design, technique, techniques²>
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe and Arjay Enterprises">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>1.2 Problem Solving and Computing</B></H2>
+<P>Although many general things can be said about problem solving, the focus of this book is on the programming of computers so as to employ them as tools in the process.  Of course, as they are manufactured, computing machines have only very limited capabilities.  Computers do not pose problems, analyse them, or find solutions.  They only run the programs that embody the solutions discovered by some human programmer, and for this, the hardware alone is insufficient.  The addition of a programming notation (or language) such as Modula-2 produces a system capable of using the programmer's instructions to solve problems.  All the intelligent planning to take use of this system once it has been assembled is entirely a human responsibility.</P>
+<P>Computers can do only a few simple things, but they do them very quickly, so it is possible to employ them for rather sophisticated tasks.  The programmer must set the task for the computer to perform with each step carefully detailed in some such notation<!--‹-->--the complete sequence of which steps is termed a program.  All the work this requires is worthwhile because the machine can execute the steps so quickly that one is still ahead of the game<!--‹-->--despite the many hours it may take to plan and write down the necessary instructions.</P>
+<P>It cannot be over-emphasized that the key to success in such an endeavour is careful planning.  The problem to be solved or the task to be performed must be completely analyzed and fully understood by the programmer before any instructions to the machine can be written.  What is the best method for doing this?  There are two strategies for approaching the solution of a problem, however complex it may be.</P>
+<P>The first is to focus on the details, tackle each one separately, then gradually weld the partial answers into a coherent whole that provides a solution to the whole problem.  This is known as a <!--"-->&quot;bottom up<!--"-->&quot; design, and there are times when variations of this method can be quite useful.</P>
+<P>The second is to take an overview of problem as a whole, systematically break it into its parts, with a well-defined notion at each stage as to how the solution to the parts will fit into the whole.  The actual solution is built by erecting the foundation and framework first and filling in the details later.  From the general overview, one sketches what has to be done in broad terms, then refines the solution a little at a time until it is sufficiently detailed to write the steps in the chosen programming notation.</P>
+<BLOCKQUOTE><I><A NAME="TopDown">The </A>process of solving a problem by breaking it down into successively smaller steps whose interrelationship is clearly defined and then solving each of the steps, is known as the <U>top down</U> method of design.</I></BLOCKQUOTE>
+<P>Modula-2 is an excellent language for this kind of structured approach to problem solving, for its facilities can be used to achieve this designed approach in a natural way.</P>
+<P>For this technique to work, however, it is essential to clearly determine at the planning stage how the parts will fit together in the final program.  The lines of communication between the tasks that each part of the solution is to accomplish must be clearly spelled out in advance.  During the construction of the individual parts of a program, each one of them can be broken down in the same manner.  Only when the problem at hand (the whole project or a selected portion of it) has been reduced to a series of very detailed steps should the actual code-writing begin.  At this point, there is (ideally) a one-to-one correspondence between the steps of the solution and the commands available in the programming notation being used.  Rendering the solution in a correct program is then a simple matter.</P>
+<P>An even more sophisticated programmer will use the top-down method for general design purposes, but will occasionally set aside this work to tackle some small or more obvious part of the solution in bottom-up style.  It is not easy to give definite rules for when this can be done.  Professional programmers have considerably more independence to make such a decision for themselves than do apprentices, because there is more about the practice of problem solving that is obvious or intuitive to them.  Most of the problems in this text will be solved in top-down style; the places where a combination top-down/bottom-up style is used will be noted.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

@@ -1,0 +1,181 @@
+<HTML>
+<HEAD>
+<TITLE>12.7 Towards a Dynamic Array ADT</TITLE><meta NAME="keywords" CONTENT="dynamic, array, arrays, adt, abstract, data, type, static, address, allocate, deallocate, new, dispose, generic, generics, create, memory, manager">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Pointers and Dynamic Data">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2002 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>12.7 Towards A Dynamic Array ADT</B></H2>
+<P>In the discussion of static data types in <A HREF="Ch12.4.html#12.4.1">section 12.4.1</A> it was observed that because Modula-2 arrays are static, they cannot be redimensioned at run time.  In this section, the first steps are taken toward finding a way around that limitation via a user-defined dynamic array type.</P>
+<P>Here, a one-dimensional array type is defined as a record that holds the number of items (the length of a vector) and the address of the first item. The address of subsequent items is calculated using an offset from that first address worked out from the size and position number of the element in the array.</P>
+<PRE>
+      adr  := ADDADR (vector.first, ( pos - 1 ) * sizeOfElement); </PRE>
+<P>In this example, the array holds real values and <I>sizeOfElement</I> is just SIZE (REAL).  Since every creation of such a one-dimensional vector could use a different length, the location must be of type ADDRESS rather than a specific pointer type.  This in turn means that ALLOCATE and DEALLOCATE are employed directly in creating instances of the dynamic array, rather then indirectly through NEW and DISPOSE.</P>
+<PRE>
+  ALLOCATE (vector.first, sizeOfElement * numElements);</PRE>
+<P>This module contains only the beginning steps toward creating a proper dynamic array ADT.  Operations on the type still need to be defined, error handling added, and the whole code encapsulated in a library module and tested.  It could also be made more versatile (generic) by extending the record to a third field, containing the size of the elements in the array, and adding a parameter to the <I>Create</I> procedure specifying this value.  Such a module could then be used to define dynamic arrays of any type or length.  Two-dimensional versions could also be constructed.  Here is the code:</P>
+<PRE>
+<B>MODULE</B> DynVectorDemo;
+
+(* This Module implements a one-dimensional dynamic array of real
+    It is a demonstration of dynamic memory use
+    by R. Sutcliffe
+   modified 1995 05 14 *)
+
+<B>FROM</B> SYSTEM  <B>IMPORT</B>
+  ADDRESS, ADDADR;
+<B>FROM</B> Storage <B>IMPORT</B>
+  ALLOCATE, DEALLOCATE;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, WriteChar, WriteLn;
+<B>FROM</B> SRealIO <B>IMPORT</B>
+  WriteFixed;
+
+<B>CONST</B>
+  sizeOfElement = <B>SIZE</B> (<B>REAL</B>);
+
+<B>TYPE</B>
+  DynVector =
+    <B>RECORD</B>
+      size  : <B>CARDINAL</B>;       (* the size of the vector *)
+      first : <B>ADDRESS</B>;        (* the address of the first element *)
+    <B>END</B>;
+
+<B>VAR</B>
+  vector : DynVector;
+  re : <B>REAL</B>;  (* need one of the items *)
+  adr : <B>POINTER</B> <B>TO</B> <B>REAL</B>;  (* and a pointer to such *)
+  count : <B>CARDINAL</B>;
+  numElements : <B>CARDINAL</B>; (* for the demo vector *)
+
+<B>PROCEDURE</B> WriteVector;
+(* write out all the items in the vector *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B>
+   <B>FOR</B> count := 1 <B>TO</B> numElements
+    <B>DO</B>
+      WriteFixed (Fetch (count), 2, 8 );
+      WriteChar (<!--"-->&quot;,<!--"-->&quot;);
+    <B>END</B>;
+  WriteLn;
+<B>END</B> WriteVector;
+
+<B>PROCEDURE</B> Create (numElements : <B>CARDINAL</B> );
+  (* create a new dynamic array with 'length' elements *)
+<B>BEGIN</B>
+  vector.size := numElements;
+  ALLOCATE (vector.first, sizeOfElement * numElements);
+      (* get enough memory for this many items *)
+<B>END</B> Create;
+
+<B>PROCEDURE</B> Destroy (numElements : <B>CARDINAL</B> );
+  (* create a new dynamic array with 'length' elements *)
+<B>BEGIN</B>
+  vector.size := 0;
+  DEALLOCATE (vector.first, sizeOfElement * numElements);
+      (* give back the memory *)
+<B>END</B> Destroy;
+
+<B>PROCEDURE</B> Update (pos : <B>CARDINAL</B>; newValue : <B>REAL</B> );
+  (* Pre : pos <!-->&gt;= 1 and pos <!--<-->&lt;= vector.size
+       Post : if so, item #pos is updated with newValue
+                 if not, nothing happens, no error *)
+<B>BEGIN</B>
+  <B>IF</B> (pos <!-->&gt;= 1) <B>AND</B> (pos <!--<-->&lt;= vector.size)
+    <B>THEN</B>  (* compute address of this index *)
+      adr  := ADDADR (vector.first, ( pos - 1 ) * sizeOfElement); 
+      adr^ := newValue;  (* and put the value there *)
+    <B>END</B>; (* if *)
+<B>END</B> Update;
+
+<B>PROCEDURE</B> Fetch (pos :<B>CARDINAL</B>) : <B>REAL</B>;
+  (* Pre : pos <!-->&gt;= 1 and pos <!--<-->&lt;= vector.size
+       Post : if so, item #pos is returned
+                 if not, returns maximum real but no error *)
+<B>VAR</B>
+  temp : <B>REAL</B>;
+<B>BEGIN</B>
+  <B>IF</B> (pos <!-->&gt;= 1) <B>AND</B> (pos <!--<-->&lt;= vector.size)
+    <B>THEN</B>  (* compute address of this index *)
+      adr  := ADDADR (vector.first, ( pos - 1 ) * sizeOfElement); 
+      temp := adr^; (* get the value there *)
+    <B>ELSE</B>
+      temp := <B>MAX</B> (<B>REAL</B>);
+    <B>END</B>;
+  <B>RETURN</B> temp;
+<B>END</B> Fetch;
+
+<B>BEGIN</B> (* main part of demo *)
+  numElements := 7;
+  Create (numElements);
+
+   (* load any old values into the vector *)
+  re := 45.0;
+  <B>FOR</B> count := 1 <B>TO</B> numElements
+    <B>DO</B>
+      Update (count, re + <B>FLOAT</B> (count));
+    <B>END</B>;
+
+  WriteVector;   (* now read them back to see if all is ok *)
+  Destroy (numElements);  (* wipe it all out *)
+
+  numElements := 5; (* and start over *)
+  Create (numElements);
+  Update (1, 4.5);  (* leave rest uninitialized *)
+  WriteVector;   (* and see what happens *)
+  Destroy (numElements);  (* erase again before quitting *)
+
+<B>END</B> DynVectorDemo.</PRE>
+<P>Observe that in the testing harness (the main module body here) memory was allocated to a vector of length seven, given back to the system, and then a request for memory for a smaller vector was issued.  While one might expect that that a portion of the original allocation might be re-used and some of the values survive from the original use, here is the actual output when this module was run:</P>
+<PRE>
+** Run log starts here **
+   46.00,   47.00,   48.00,   49.00,   50.00,   51.00,   52.00,
+    4.50,    0.00,    0.00,1049841000000.00,266780500000000000000.00,</PRE>
+<P>If any of the first piece of memory was indeed used the second time, the starting point of the real numbers was evidently different.  In any case, this illustrates that once memory has been deallocated and returned to the system, no assumptions whatever can be made about it afterwards.  Even if the second request is for the same amount of memory, the programmer cannot know that the same piece of memory just given back will be reclaimed.  No assumptions whatever can be made about the memory manager's handling of requests for dynamic memory.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

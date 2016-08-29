@@ -1,0 +1,235 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+
+<style type="text/css"><!--
+li { font-size: 12pt; }
+/**** Name at top right of page ****/
+table.nameblock {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.main li { margin-top: 1em; }
+.subparts li { margin-top: 0.5em; } 
+ol.subparts { list-style-type: lower-alpha; }
+.break { page-break-before: always; }
+u {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+i {
+  color: blue;
+  font-style: normal;
+  font-weight: bold;
+}
+--></style>
+
+<title>CMPT140 Fall2006 FINAL ch1-8 Part1, Trinity Western.
+25 Oct 2006.</title>
+</head><body>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_________<i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>__________________</td></tr>
+</table>
+
+<br>
+<u>[total: 80pts]</u>
+
+<ol class="main">
+
+<li>
+Describe the five <b>program structure/flow</b> 
+<br>abstractions mentioned in the text. <u>[5]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>_<i>Sequence</i>__________</td>
+<td width=20%>_<i>Selection</i>__________</td>
+<td width=20%>_<i>Repetition</i>__________</td>
+<td width=20%>_<i>Composition</i>__________</td>
+<td width=20%>_<i>Parallelism</i>__________</td>
+</tr></table></center>
+
+<li>
+Describe the five <b>hardware</b> 
+abstractions mentioned in the text. <u>[5]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>_<i>Input</i>__________</td>
+<td width=20%>_<i>Storage</i>__________</td>
+<td width=20%>_<i>Processing</i>__________</td>
+<td width=20%>_<i>Control</i>__________</td>
+<td width=20%>_<i>Output</i>__________</td>
+</tr></table></center>
+
+<li> Fill in the blank: <u>[16]</u><ol class="subparts">
+<li> "Computers are <i>tools</i>, and computing scientists are <i>toolsmiths</i>."
+<li> A procedure that invokes itself is called a <i>recursive</i> procedure.
+  <li> In statically-typed languages, before we can use the value of a 
+  variable for the first time in <br> a program, we need to
+  <i>declare</i> and <i>initialize</i> it.
+  <li> <i>True</i>: The word <tt>define</tt> 
+    is a legal Python identifier.
+<li> What English part of speech should a variable generally be? <i>Noun</i>
+  <li> Assume <tt>myFile</tt> is a file handle that has already been opened 
+  for reading.  We wish to ensure that the next <tt>read()</tt> starts from
+  the beginning of the file.  What command do we use?  <i>seek(0)</i>
+  <li> The standard function that converts strings to ALL-CAPS is found in the
+  <br><i>string</i> standard library and is named <i>upper()</i>.
+  <li> The standard function that evaluates natural logarithms is found in the
+  <br><i>math</i> standard library and is named <i>log()</i>.
+  <li> The standard error I/O channel is found in the 
+  <br><i>sys</i> standard library and is named <i>stderr</i>.
+  <li> A requirement imposed by a function upon its parameters, such that
+    the correctness of the result is not guaranteed if the requirement is
+    not met, is called a <i>precondition / predicate</i>.
+  <li> A RAM module contains 32 chips, each of size 256Mb.  What is the
+  total capacity of the RAM module, in bytes/kilobytes/megabytes/gigabytes
+  (use binary units)?  <i>1GB</i>.
+</ol>
+
+<li>
+Name two operations/functions/properties that Python <b>lists</b> have that 
+M2/C arrays do not. <u>[2]</u>
+<br><i>concatenation, repetition, slice, insert/delete</i>
+
+<li class="break">
+Explain all the differences between the following, and give examples of each:
+<u>[6]</u>
+  <ol class="subparts">
+  <li> <b>reserved words</b>: <br>
+  <i>Syntactical punctuation, part of the language. e.g., def, if, while</i>
+  <li> <b>standard identifiers</b>: 
+  <i>Names builtin to the language, e.g. names of builtin types.
+  e.g., bool, float, int.</i>
+  <li> <b>standard library items</b>: 
+  <i>Names of procedures/types/variables included in the standard 
+  library modules that come with every Python installation.
+  e.g., math.pi, sys.stderr</i>
+</ol>
+
+<li>
+What is a <b>backtrace</b>? <u>[3]</u>
+<br>
+<i>Shows the call stack: list of what functions are currently being evaluated</i>
+
+<li>
+Assume that the positive integer with binary representation
+<b>1100101</b> is stored in variable <tt>x</tt>.  Evaluate as Python:
+<u>[4]</u>
+  <ol class="subparts">
+	  <li> <tt>hex(x)</tt> <i>0x65</i>
+	  <li> <tt>oct(x)</tt> <i>0145</i>
+  </ol>
+
+<li>
+Use the Python <tt>range()</tt> function to create this list:
+<tt>[ 11, 8, 5, 2 ]</tt>. <u>[3]</u>
+<br><i>range(11,-1,-3)</i>
+
+<li>
+Write Python code to create a 15x25 matrix, using lists. <u>[4]</u>
+<br><i><pre>
+matrix = [0] * 25
+for row in range(len(matrix)):
+	matrix[row] = [0] * 15
+</pre></i>
+
+<li>
+What is <b>wrong</b> with the following block of Python code?
+How would you fix it? <u>[4]</u>
+<pre>
+apples = [ 'Fuji', 'Gala', 'Braeburn', 'Rome' ]
+idx = 1
+while idx &lt;= len(apples):
+	print apples[idx],
+	idx += 1
+</pre>
+
+<i>The index iterates over the wrong range.  Python lists are indexed 
+starting at zero.  As-is, the last time through the loop will result
+in an error, accessing apples[4].
+Try initalizing idx to 0, then making the while loop
+condition be idx &lt; len(apples).</i>
+
+<li class="break">
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume the following initialization:
+<pre>	myApple = "Braeburn"	</pre><u>[14]</u>
+  <ol class="subparts">
+<li><tt> 2 + 3&gt;4 and (5/0 &lt; 1)	</tt> <i>ZeroDivisionError</i>
+<li><tt> 2.0 + 14 / 4	</tt> <i>5.0</i>
+<li><tt> "%03d%s" % (27.95, 'apples')	</tt> <i>'027apples'</i>
+<li><tt> "%05.2f" % 3.1415926	</tt> <i>'03.14'</i>
+<li><tt> len(myApple) = 7	</tt> <i>SyntaxError: can't assign</i>
+<li><tt> range(len(myApple))	</tt> <i>[0, 1, 2, 3, 4, 5, 6, 7]</i>
+<li><tt> myApple[2:5]	</tt> <i>'aeb'</i>
+<li><tt> string.upper(myApple[-1])	</tt> <i>'N'</i>
+<li><tt> myApple &lt; "Brayburn"	</tt> <i>True</i>
+<li><tt> 'z' &lt; 'w' </tt> <i>False</i>
+<li><tt> ord('z') - ord('w') </tt> <i>3</i>
+<li><tt> 'z' - 'w' </tt> <i>TypeError: can't subtract string</i>
+<li><tt> 'z' + 'w' </tt> <i>'zw'</i>
+<li><tt> 6 &amp; 5 </tt> <i>4</i>
+</ol>
+<br><br><br>
+
+<li>
+What is output by the following block of Python code? <u>[4]</u>
+<pre>
+def increment(x, y):
+	x += y
+a = 3
+b = range(3)
+increment(a, 1)
+increment(b, [1])
+print "a = ", a, "b = ", b
+</pre>
+<br><i>'a = 3 b = [0, 1, 2, 1]'</i>
+
+<li class="break">
+What is output by the following block of Python code? <u>[3]</u>
+<pre>
+myList = [ ('a', 'b'), range(5), [ [2, 3, 4], 5], 'xyz' ]
+for item in myList:
+	print len(item),
+</pre>
+<br><i>'2 5 2 3'</i>
+
+<li>
+Assume that <tt>myList</tt> is a Python list.  Explain all the differences
+between <br><tt>yrList = myList</tt> and <tt>yrList = myList[:]</tt>.
+<u>[3]</u>
+<br><i>The basic difference is between aliasing (the first command)
+	and copying (the second command).
+	If the first command is used, then any changes to yrList will
+	be reflected in myList, and vice versa, because both names refer
+	to the same list.  In the second case, yrList is a copy of myList,
+	so changes to one will not affect the other.</i>
+
+<li>
+Tell me everything you know about <b>libraries</b> in the context of 
+programming. <u>[4]</u>
+
+<br><i>
+Libraries are containers/groups of functions and other entities
+provided for other programmers to use.  A well-designed library will
+have a clear public interface (header or definition file) which tells
+the programmer what functionality the library provides and how to
+invoke its functions.  The other component of the library is its
+implmentation, which is the code or bodies of its functions.  The
+implmentation will often be hidden from the user.
+Some examples of standard Python libraries include math, sys, string,
+random.  An example of a function provided by a library is
+math.sin().  An example of a non-function entity provided by a library
+is math.pi; it is a constant rather than a function.
+</i>
+
+</ol>
+
+</body></html>
+

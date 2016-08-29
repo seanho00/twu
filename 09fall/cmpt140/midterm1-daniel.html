@@ -1,0 +1,223 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<script type="text/javascript" src="/exam.js"></script>
+<style type="text/css"><!--
+i { display: none; }
+--></style>
+<title>CMPT140 Fall 2009 Midterm 1, Trinity Western</title>
+</head><body>
+
+<div><a href="#" onClick="toggleAnswers()">[ answers in web view ]</a></div>
+
+<table class=nameblock>
+  <tr><td>Name:		</td><td>_______________________________
+  <i>K E Y</i></td></tr>
+  <tr><td>Student ID:	</td><td>_______________________________</td></tr>
+</table>
+
+<br>Total points: 80
+
+<ol class="main">
+
+<li>
+Name the five steps to <b>top-down</b>
+problem solving as described in the text.<br>
+(It's okay if you can't remember the exact wording;
+the concepts are more important.)
+<b>Also:</b> describe each step in your own words,
+and why it is important!
+<u>[7]</u><br>
+
+<center><table width=80%><tr>
+<td width=20%>_<i>Write</i>__________</td>
+<td width=20%>_<i>Apprehend</i>__________</td>
+<td width=20%>_<i>Design</i>__________</td>
+<td width=20%>_<i>Execute</i>__________</td>
+<td width=20%>_<i>Scrutinize</i>__________</td>
+</tr></table></center>
+
+<li>
+Describe the five <b>software</b> flow/control
+abstractions mentioned in class, and where applicable,
+describe a Python language construct that implements
+that abstraction.  (There is one abstraction that is
+beyond the scope of this course; no Python construct
+needed for that one.) <u>[5]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>_<i>Sequence: newline</i>__________</td>
+<td width=20%>_<i>Selection: if/elif/else</i>__________</td>
+<td width=20%>_<i>Repetition: while/for</i>__________</td>
+<td width=20%>_<i>Composition: def (functions)</i>__________</td>
+<td width=20%>_<i>Parallelism: (n/a)</i>__________</td>
+</tr></table></center>
+
+<li>
+Name the five computer <b>hardware</b> abstractions
+we talked about in class.  For each one, name one
+computer-related example, and also describe one
+non-computer-related example of the abstraction.
+<u>[7]</u><br><br>
+<center><table width=80%><tr>
+<td width=20%>_<i>Input: keyboard; steering wheel</i>__________</td>
+<td width=20%>_<i>Storage: RAM; odometre</i>__________</td>
+<td width=20%>_<i>Processing: CPU; ECU</i>__________</td>
+<td width=20%>_<i>Control: chipset; suspension/supporting systems</i>__________</td>
+<td width=20%>_<i>Output: screen; wheels</i>__________</td>
+</tr></table></center>
+
+<li>
+Show the <b>output</b> of the following Python loop:
+<u>[4]</u>
+<pre>
+for i in range(3):
+	for j in range(2):
+		print "(%d,%d)" % (i, j),
+	print
+</pre>
+<br>
+<i>
+  <tt>(0,0) (0,1) (0,2)<br>(1,0) (1,1) (1,2)</tt>
+</i>
+
+<li>
+Show the <b>output</b> of the following Python loop:
+<u>[4]</u>
+<pre>
+distance = 0.8
+while True:
+	print "%.1f" % distance,
+	distance -= 0.1
+	if distance == 0.0:
+		print "Boom!"
+		break
+</pre>
+<i>
+  Infinite loop!  Due to inaccuracy in floating-point, distance
+  may miss the sentinel value 0.0 and keep going negative, forever!
+</i>
+
+<li>
+The following is meant to be a guessing game that quits only
+when the user types the magic number ("42").  Find all the
+<b>bugs</b> in the code, and fix them. <u>[8]</u>
+<pre>
+while true:
+	guess == raw_input('Bet you can't guess my number! ')
+	if guess &gt; 42:
+		print 'Sorry, too high!'
+	else if guess &lt; 42:
+		print 'Sorry, too low!'
+	# guess = 42
+	print 'You got it!';
+	continue;
+</pre>
+<i>
+(1) True;
+(2) guess =, not guess ==
+(3) input(), not raw_input()
+(4) Double-quotes to protect "can't"
+(5) elif, not else if
+(6) Last two lines should be in an else clause
+(7) Delete semicolon at end of 'You got it!'
+(8) Use break instead of continue
+</ol></i>
+
+<li>
+Use the Python <tt>range()</tt> function to create this list
+(several possible answers):
+<tt>[-8, -3, 2, 7, 12]</tt>. <u>[3]</u>
+<br><i>range(-8, 13, 5), or ..., up to range(-8, 17, 5)</i>
+
+<!-- What is range(5,5)? -->
+
+<li>
+Compare and contrast <b>static</b> typing versus <b>dynamic</b> typing.
+What are pros/cons of each?
+<u>[4]</u><br>
+<i>
+  (The key here is <b>type</b>: not whether the values of the variables can
+  change, but whether their <b>types</b> can change.)
+  Static typing: variables cannot change type
+  Must declare type of variable and initialize value
+  Compiler enforces correct type
+  Dynamic typing: can change type
+  More flexible, but usually we don't want variables to change type
+</i>
+
+<li>
+Compare and contrast <b>C arrays</b> with <b>Python lists</b>.
+What are the limitations of arrays as compared with Python lists?
+<u>[5]</u><br>
+
+<li>
+Compare and contrast <b>Call-by-value</b> versus <b>call-by-reference</b>.
+Describe a situation in which you might want to use call-by-reference
+instead of call-by-value.
+<u>[6]</u><br>
+
+<li>
+Write "yes" or "no" next to each of the following six strings to indicate
+whether it can be used as a valid name for a user-defined Python variable.
+If "no", indicate why.
+<u>[6]</u><br>
+
+<center><table><tr>
+<td><tt>four		</tt></td><td width=90><i>yes</i>______</td>
+<td><tt>for		</tt></td><td width=90><i>no (reserved)</i>______</td>
+<td><tt>3D_Gaming	</tt></td><td width=90><i>no (starts with digit)</i>______</td>
+</tr><tr>
+<td><tt>wagesIn$USD	</tt></td><td width=90><i>no (punctuation)</i>______</td>
+<td><tt>__0__		</tt></td><td width=90><i>yes</i>______</td>
+<td><tt>In-N-Out	</tt></td><td width=90><i>no (punctuation)</i>______</td>
+</tr></table></center>
+<br><br>
+
+<li>
+<b>Evaluate</b> each of the following Python expressions
+exactly as given,
+or if it produces an error, describe the error.
+Assume each expression is independent of the others.
+Assume all necessary <tt>import</tt>s have been done.
+For all expressions, assume only the following initialization:
+<u>[13]</u>
+<pre>	myApple = "McIntosh"	</pre>
+  <ol class="subparts">
+<li><tt> string.upper(myApple[1])	</tt> <i>'C'</i>
+<li><tt> len(myApple) = 8	</tt> <i>SyntaxError: can't assign</i>
+<li><tt> len(myApple) /= 7 or len(myApple) /= 9</tt> <i>SyntaxError: can't assign</i>
+<li><tt> 10 - 21 / 2 / 3</tt> <i>7</i>
+<li><tt> 4 % 2</tt> <i>0</i>
+<li><tt> "04d" % 2</tt> <i>TypeError: mismatch in arguments</i>
+<li><tt> "1%04d.%s" % (23.92, 'jpg')	</tt> <i>'10023.jpg'</i>
+<li><tt> "%06.3f" % 3.1415926	</tt> <i>'03.142'</i>
+<li><tt> math.pi &gt; 5 and 12%0 == 0</tt> <i>False</i>
+<li><tt> chr(ord('d') + 3) </tt> <i>'g'</i>
+<li><tt> ord('f') - ord('d') </tt> <i>2</i>
+<li><tt> 'f' * 'd' </tt> <i>TypeError: can't multiply string</i>
+<li><tt> 2*'x' + 3*'y' + 'z' </tt> <i>'xxyyyz'</i>
+</ol>
+<br><br><br>
+
+<li>
+Write a Python <b>function</b> <tt>harmonic(n)</tt> that returns the
+mathematical sum 1 + 1/2 + 1/3 + 1/4 + ... + 1/n.
+(This is called the <b>harmonic series</b>.)
+<u>[8]</u>
+
+<p>
+Docstrings, including pre- and post-conditions, <b>are</b> required on this 
+exam!  Comments are not required, 
+however if your code is incorrect, your comments may earn you partial
+credit if they show good design thinking.  Little partial credit will be
+given for uncommented incorrect code.
+<br>
+<i>
+  See <a href="http://twu.seanho.com/python/sumsquares.py"><tt>sumsquares.py</tt></a>.
+</i>
+
+</ol>
+
+</body></html>
+
+

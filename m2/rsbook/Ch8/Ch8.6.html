@@ -1,0 +1,405 @@
+<HTML>
+<HEAD>
+<TITLE>8.6 Text I/O in ISO Standard Modula-2</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="text, i/o, output, iso, standard, restricted, rewindable, sequential, stream, streamfile, textio, swoleio, realio,longio, stextio, swholeio, srealio, slongio, stdchan, inchan, outchan, open, close, file, seqfile, reread, rewrite, openread, openapend, openwrite, read, write, old">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.6 Text I/O in ISO Standard Modula-2</B></H2>
+<P>This section assumes that the files being used are <I>text</I> files<!--‹-->--that is, that they are sequential recordings of text streams. There are (at least) two ways of viewing a text stream. </P>
+<P>A <I>Restricted Stream</I>: Reading is only from the beginning and writing is only to the current position.  If an existing file is opened for writing, it is written over, not appended to, unless it is first read all the way to the end.</P>
+<P>A <I>Rewindable Sequential Stream</I>: As above, except that there is the capability of rewinding the read or write position back to the start of the file.  This permits it, for instance, to be written to and then read over, or vice versa, without having to close it and then re-open it first.</P>
+<P>In the two subsections that follow, the ISO modules that elaborate each of these models will be discussed.</P>
+<H3><B><A NAME="8.6.1">8.6.1</A> The Restricted Stream Model</B></H3>
+<P>Sequential files are connected to using the facilities of the module <I>StreamFile</I> that contains procedures for defining, opening, and closing such files.  Writing to and reading from such files is done using <I>TextIO</I>, <I>WholeIO</I>, <I>RealIO</I>, and <I>LongIO</I>.  These are the analogues of the corresponding S-modules, except that each procedure has one more parameter<!--‹-->--the identifier of the file channel being employed.  For instance, to write a cardinal to the standard output, one uses</P>
+
+<PRE>SWholeIO.WriteCard (theCard, n);</PRE>
+<P>whereas, to write to some previously opened file channel called <I>outChan</I>, one employs</P>
+<PRE>
+WholeIO.WriteCard (outChan, theCard, n);</PRE>
+<P>To see how the various components of <I>StreamFile</I> and the <I>xxIO</I> modules work together, consider the following module, which gathers a sequence of numbers from the keyboard and records them in a sequential file.</P>
+<PRE>
+<B>MODULE</B> GetNStash;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of StreamFile *)
+(* using ISO standard Modula-2 *)
+(* last revision 1994 02 23 *)
+
+(* This module reads a series of Integers from the keyboard and places them into a disk file called <!--"-->&quot;numbers<!--"-->&quot;. *)
+
+<B>FROM</B> StreamFile <B>IMPORT</B>
+  ChanId, Open, write, Close, OpenResults;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  ReadInt;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteString, WriteChar, SkipLine;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>IMPORT</B> WholeIO; (* done qualified to distinguish *)
+<B>IMPORT</B> TextIO;  (* from the S-modules above *)
+
+<B>VAR</B>
+  outfile : ChanId; (* identifier of the channel to use *)
+  number  : <B>INTEGER</B>;
+  res : OpenResults; (* to store the result of an open attempt *)
+
+<B>BEGIN</B>
+  (* Establish output channel and attach to disk file *)
+  Open (outfile, <!--"-->&quot;numbers<!--"-->&quot;, write, res); 
+  <B>IF</B> res = opened
+    <B>THEN</B> (* Collect the numbers from the keyboard *)
+      WriteString ( <!--"-->&quot;Type in the integers.  Separate them<!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot; by carriage returns, and end  <!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;by typing a non-integer<!--"-->&quot;); 
+      WriteLn;
+      <B>REPEAT</B>
+        WriteChar (<!--"-->&quot;<!-->&gt;<!--"-->&quot;); (* prompt *)
+        ReadInt (number);
+        <B>IF</B> ReadResult() = allRight
+          <B>THEN</B>
+            SkipLine;
+            WholeIO.WriteInt (outfile, number, 0);
+            TextIO.WriteLn (outfile); (* separate the numbers *)
+          <B>END</B>;  (* if *)
+      <B>UNTIL</B> ReadResult() # allRight;
+      Close (outfile); (* Now close physical file. *)
+    <B>END</B> (* if res = opened *)
+ 
+<B>END</B> GetNStash.</PRE>
+<P>When this program was run the file <I>Numbers</I> was created and as numbers were typed, its contents became:</P>
+<PRE>12
+15
+54
+-100
+0</PRE>
+<P>It is important to understand that the procedures in such modules as <I>TextIO</I>, <I>WholeIO</I>, <I>RealIO</I>, and <I>LongIO</I> are identical to those of <I>STextIO</I>, <I>SWholeIO</I>, <I>SRealIO</I>, and <I>SLongIO</I> except for requiring the additional parameter specifying the channel.  Notice the import of procedures from both <I>STextIO</I> and <I>TextIO</I>, as some writing was done to the standard output and some was done to the file.  If it is considered desirable, all output could be done with <I>TextIO</I> provided that output to the standard channel is identified as such.  This requires:</P>
+<PRE>
+<B>FROM</B> StdChans <B>IMPORT</B>
+  OutChan;</PRE>
+<P>and then in the code, one may have both of:</P>
+<PRE>  
+  WriteInt (outfile, number, 0);
+  WriteString (OutChan (), <!--"-->&quot;by typing a non-integer<!--"-->&quot;);</PRE>
+<P>by importing only from <I>TextIO</I> and <I>WholeIO</I>, and not bothering with <I>STextIO</I>.  The same considerations apply to input, so that <I>SWholeIO</I> could be dispensed with altogether if one wrote:</P>
+<PRE>
+<B>FROM</B> StdChans <B>IMPORT</B>
+  StdInChan;</PRE>
+<P>and then in the code:</P>
+<PRE>  
+  ReadInt (StdInChan(), number);</PRE>
+<P>The function procedures <I>StdChan.OutChan</I> and <I>StdChan.InChan</I> return the currently selected output (input) channels for standard output (input), even if it has been redirected by <I>RedirStdIO.OpenOutput</I> or <I>RedirStdIO.OpenInput</I>.  If it is important to guarantee that the output goes to the default standard output stream (and is not subject to redirection) then import and use <I>StdChan.StdOutChan</I> or <I>StdChan.StdInChan</I> in the same way.</P>
+<P><B>WARNING</B>: The enclosing compiler or outer operating system cannot necessarily be assumed to know anything about the files created by user written program modules.  Consequently, the program is responsible for closing all its own files.  If this is not done, there is no guarantee that data will not be lost from the file.  In fact, one can almost guarantee that data will be lost.  Some implementations provide protection by having any program termination automatically close all open files, but this behaviour cannot be counted upon.</P>
+<P>In the example that follows, some of the variations mentioned above have been adopted for another module that reads all those numbers back from the disk file, sums them and prints out the sum.</P>
+<PRE>
+<B>MODULE</B> ReadNAdd;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of StreamFile *)
+(* using ISO standard Modula-2 *)
+(* last revision 1994 02 23 *)
+
+(* This module reads a series of Integers from the disk file called <!--"-->&quot;numbers<!--"-->&quot;. It sums them and prints out the sum. *)
+
+<B>FROM</B> StreamFile <B>IMPORT</B>
+  ChanId, Open, read, Close, OpenResults;
+<B>FROM</B> TextIO <B>IMPORT</B>
+  WriteLn, WriteString, SkipLine, ReadChar;
+<B>FROM</B> IOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> WholeIO <B>IMPORT</B> 
+  ReadInt, WriteInt;
+<B>FROM</B> StdChans <B>IMPORT</B>
+  StdInChan, StdOutChan;
+
+<B>VAR</B>
+  infile, stdOut, stdIn : ChanId;
+  number, sum : <B>INTEGER</B>;
+  res : OpenResults;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  stdOut := StdOutChan(); (* to force screen output *)
+  stdIn := StdInChan(); (* to force keyboard input *)
+  
+  Open (infile, <!--"-->&quot;numbers<!--"-->&quot;, read, res);
+  <B>IF</B> res = opened
+    <B>THEN</B>
+      sum := 0; (* initialize sum *)
+      <B>REPEAT</B>  (* Collect the numbers from the file *)
+        ReadInt (infile, number); 
+        <B>IF</B> ReadResult (infile) = allRight
+          <B>THEN</B>
+            SkipLine (infile);
+            <B>INC</B> (sum, number);    (* <B>OK</B>, so add to sum *)
+          <B>END</B>;  (* if *)
+      <B>UNTIL</B> ReadResult (infile) # allRight;
+ 
+     Close (infile);
+     WriteString (stdOut, <!--"-->&quot;The sum of the numbers is <!--"-->&quot;);
+     WriteInt (stdOut, sum, 6);
+     WriteLn (stdOut);
+    <B>ELSE</B>
+     WriteString (stdOut,<!--"-->&quot;Sorry, couldn't open the file<!--"-->&quot;);
+     WriteLn (stdOut);
+    <B>END</B>; (* if *)
+  WriteString (stdOut, <!--"-->&quot;type a character to continue==<!-->&gt; <!--"-->&quot;);
+  SkipLine (stdIn);
+  
+<B>END</B> ReadNAdd.</PRE>
+<P>When this program was run and allowed to work on the file generated above, the output was:</P>
+<PRE>
+The sum of the numbers is    -19
+type a character to continue==<!-->&gt; </PRE>
+<P>Notice that the mode of the stream is set with the third parameter of <I>Open</I>.  If a restricted stream is to be written to as well as read from, the procedure is called in the form:</P>
+<PRE>
+  Open (thefile, <!--"-->&quot;numbers<!--"-->&quot;, read+write, res);</PRE>
+<P>Of course, since in this model streams cannot be rewound, writing can only be done at the point last read.  If it is required that the program be permitted to write over (erasing) the contents of an existing file, then the command is given in the form:</P>
+<PRE>
+  Open (thefile, <!--"-->&quot;numbers<!--"-->&quot;, write+old, res);</PRE>
+<H3><B><A NAME="8.6.2">8.6.2</A> The Rewindable Sequential Stream Model</B></H3>
+<P>The rewindable sequential file model is supported by the ISO library suite using the facilities of the module <I>SeqFile</I> that contains procedures for defining, opening, and closing such files. While a file is open, and has been read in part or all, the reading position can be rewound to the beginning.  This is done using</P>
+<PRE>
+<B>PROCEDURE</B> Reread (cid: ChanId);</PRE>
+<P>If the purpose is to erase the current contents of the file and write over the top of them from the beginning, use</P>
+<PRE>
+<B>PROCEDURE</B> Rewrite (cid: ChanId);</PRE>
+<P>In order to open a file initially for reading, one uses <I>OpenRead</I>.  If it is desired to open the file for the purpose of writing to the end rather than to the beginning as was done in the <I>StreamFile</I> example above, it should be opened with <I>OpenAppend</I>, otherwise with <I>OpenWrite</I>.  However, all three open procedures take the <I>read</I>, <I>write</I>, and/or <I>old</I> parameters so as to allow additional combinations.  Whatever parameter is passed in the third position:</P>
+<P><I>OpenRead</I> implies <I>read</I> mode and unless <I>write</I> is passed, it implies <I>old</I><BR>
+<I>OpenWrite</I> implies <I>write</I><BR>
+<I>OpenAppend</I> implies both <I>write</I> and <I>old</I></P>
+<P>Each of the three Open procedures initializes a <I>mode</I>; a sequential file is either available for being read or written to at any given time, but not both. The third parameter in these routines is actually a set of permission flags relating to these modes. For the present purposes, these flags can be any combination of <I>read</I>, <I>write</I>, and <I>old</I>.  If more than one is given, use the + operator between them.  (The syntax of working with such sets will be covered in more detail later in the text.)  Thus, if a file is to be permitted to be open for either reading and writing, one can use either <I>OpenRead</I> or <I>OpenWrite</I> depending on what is to be done first, but the flag parameter should have <i>write</i> in the first case, and <i>read</i> in the second.  This makes it possible to change the mode of the file at a later time.  </P>
+<P>If the flag <I>old</I> is used with <I>OpenWrite</I> then an existing file can be written over; otherwise, it is an error to attempt to open an existing file for writing.</P>
+<P>One might begin with <I>OpenWrite</I> or <I>OpenAppend</I> and also supply the <I>read</I> parameter if planning to issue a <I>Reread</I> later on.  Indeed, if such was the plan, the read would have to be supplied, or <I>Reread</I> would be unable to select a mode and after it tried to execute neither reading nor writing could then take place.  Likewise, if the plan were to begin with <I>OpenRead</I> and later to write over or append to the file (the latter after reading to the end) by issuing a <I>Rewrite</I> then the <I>write</I> parameter would have to be supplied initially.</P>
+<P>However, at any <I>given</I> time, the file is in either <I>input</I> mode or <I>output</I> mode.  The mode is chosen initially according to the routine that opens it.  The mode can then be changed by <I>Rewrite</I> or <I>Reread</I>, provided that the appropriate <I>write</I> or <I>read</I> flags were provided in the first place.  Attempts to write when not in <I>output</I> mode or to read when not in <I>input</I> mode both produce run time errors. </P>
+<P>Notice that the same physical file may be opened with either <I>StreamFile</I> or with <I>SeqFile</I> depending on the logical needs at the time.  Of course, few operating systems would allow the file to be open in two ways simultaneously.  One might make a devious attempt:</P>
+<PRE>
+<B>IMPORT</B>  SeqFile;
+<B>IMPORT</B> StreamFile;
+<B>VAR</B>
+  seq : SeqFile.ChanId;
+  stream :  StreamFile.ChanId;
+  
+<B>BEGIN</B> (* pathological code *)
+  StreamFile.Open (stream, <!--"-->&quot;Myfile<!--"-->&quot;, StreamFile.read+StreamFile.write);
+  seq := stream; (* they are assignment compatible *)
+  SeqFile.Rewrite (seq); (* exception occurs *)</PRE>
+<P>This would fail, because the procedures of <I>SeqFile</I> check first to ensure that the channel operated on by them has in fact been opened by <I>SeqFile</I> and not by some other module (in this case <I>StreamFile</I>).</P>
+<P>What follows is a module to illustrate some of the points made thus far.  The same file employed above is opened once again, some more numbers are typed for it; the <I>Reread</I> is issued, and then the contents typed to the screen.  Note the use of both user-connected and standard channels, and the need, for instance, to use a channel parameter when issuing <I>SkipLine</I> commands.</P>
+<PRE>
+<B>MODULE</B> StashMoreAndType;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of SeqFile *)
+(* using ISO standard Modula-2 *)
+(* last revision 1994 02 23 *)
+
+(* This module reads a series of Integers from the keyboard and appends them to a disk file called <!--"-->&quot;numbers<!--"-->&quot;. *)
+
+<B>FROM</B> SeqFile <B>IMPORT</B>
+  ChanId, OpenAppend, write, read, Close, Reread, OpenResults;
+<B>FROM</B> TextIO <B>IMPORT</B>
+  WriteLn, WriteString, SkipLine, ReadChar, WriteChar;
+<B>FROM</B> IOResult <B>IMPORT</B>
+  ReadResult, ReadResults;
+<B>FROM</B> WholeIO <B>IMPORT</B> 
+  ReadInt, WriteInt;
+<B>FROM</B> StdChans <B>IMPORT</B>
+  StdInChan, StdOutChan;
+
+<B>VAR</B>
+  thefile, stdOut, stdIn : ChanId;
+  number : <B>INTEGER</B>;
+  res : OpenResults;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  stdOut := StdOutChan(); (* to force screen output *)
+  stdIn := StdInChan(); (* to force keyboard input *)
+
+    (* Establish channel and attach to disk file *)
+  OpenAppend (thefile, <!--"-->&quot;numbers<!--"-->&quot;, write+read, res); 
+  <B>IF</B> res = opened
+    <B>THEN</B> (* Collect the numbers from the keyboard *)
+      WriteString (stdOut, <!--"-->&quot;Type in the integers.  Separate <!--"-->&quot;);
+      WriteLn (stdOut);
+      WriteString (stdOut, <!--"-->&quot; by carriage returns, and end  <!--"-->&quot;);
+      WriteLn (stdOut);
+      WriteString (stdOut, <!--"-->&quot;by typing a non-integer<!--"-->&quot;); 
+      WriteLn (stdOut);
+      <B>REPEAT</B>
+        WriteChar (stdOut, <!--"-->&quot;<!-->&gt;<!--"-->&quot;); (* prompt *)
+        ReadInt (stdIn ,number);
+        <B>IF</B> ReadResult(stdIn) = allRight
+          <B>THEN</B>
+            SkipLine (stdIn);
+            WriteInt (thefile, number, 0);
+            WriteLn (thefile); (* separate the numbers *)
+          <B>END</B>;  (* if *)
+      <B>UNTIL</B> ReadResult(stdIn) # allRight; 
+      Reread (thefile);  (* go back to the start *)
+      <B>REPEAT</B>  (* Collect the numbers from the file *)
+        ReadInt (thefile, number); 
+        <B>IF</B> ReadResult (thefile) = allRight
+          <B>THEN</B> (* ok, so skip to next and print on screen *)
+            SkipLine (thefile);
+            WriteInt (stdOut, number, 10); 
+          <B>END</B>;  (* if *)
+      <B>UNTIL</B> ReadResult (thefile) # allRight;
+
+      Close (thefile); (* Now close physical file. *)
+      WriteLn (stdOut);
+      WriteString (stdOut, <!--"-->&quot;Contents typed to standard output.<!--"-->&quot;);
+      WriteLn (stdOut);
+      WriteString (stdOut, <!--"-->&quot;type a character to continue ==<!-->&gt; <!--"-->&quot;);
+      ReadChar (stdIn, ch);
+
+  <B>END</B> (* if res = opened *)
+ 
+<B>END</B> StashMoreAndType.</PRE>
+<P>When this program was executed and a few more numbers typed, the screen looked like this:</P>
+<PRE>
+Type in the integers.  Separate 
+ by carriage returns, and end  
+by typing a non-integer
+>12
+>15
+>-3
+>done
+        12        15        54      -100         0      
+  12        15        -3
+Contents typed to standard output.
+type a character to continue ==<!-->&gt; </PRE>
+<H3><B><A NAME="8.6.3">8.6.3</A> File Text I/O in non-Standard Modula-2</B></H3>
+<P>With minor changes to the names of modules, some of the procedure names, and some of the syntax, the material of this section can be adapted to the majority of non-ISO library systems as well.</P>
+<P>Such systems are usually based on the same two sets of routines described above</P>
+<UL><!--€--><LI> those for handling file tasks (open, close, etc.)</LI>
+		<UL>Library module: <i>Files/Filer/FileSystem</i></UL>
+<!--€--><LI> those for doing the actual stream I/O
+		<UL>Library module: included above, or a comprehensive <i>TextIO</i></UL></UL>
+<P>The non-standard comprehensive <I>TextIO</I> referred to here usually includes routines for all the <I>Readxx</I> and <I>Writexx</I> tasks that in the ISO libraries are split among <I>WholeIO</I>, <I>RealIO</I>, <I>LongIO</I>, and <I>TextIO</I>. The file housekeeping module (whatever its name) defines the data type <I>File</I> (or <i>FILE</i>)  and handles all the opening, creating, renaming, and other housekeeping tasks, and usually has some rudimentary text I/O such as <I>ReadChar</I> and <I>WriteChar</I> upon which the routines in <I>TextIO</I> are usually built.</P>
+<PRE>
+<B>DEFINITION</B> <B>MODULE</B> TextIO; (* non-standard *)
+
+<B>FROM</B> Files <B>IMPORT</B>
+  File;
+
+<B>CONST</B>
+  eol = 15C; (* implementation dependent character *)
+
+<B>VAR</B>
+  consoleOK, txDone : <B>BOOLEAN</B>;
+(* The first of these is for examining the success of the last operation on the console, and the second is for all other streams. *)
+  termCH : <B>CHAR</B>;
+  console : FILE;
+
+<B>PROCEDURE</B> WriteChar (f : FILE; ch : <B>CHAR</B>);
+<B>PROCEDURE</B> WriteString (f : FILE; s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> WriteLn (f : FILE);
+<B>PROCEDURE</B> WriteInt (f : FILE; i : <B>INTEGER</B>; flen : <B>CARDINAL</B>); 
+<B>PROCEDURE</B> WriteCard (f : FILE; c : <B>CARDINAL</B>; flen : <B>CARDINAL</B>); 
+<B>PROCEDURE</B> WriteReal (f : FILE; r : <B>REAL</B>; flen : <B>CARDINAL</B>; 
+                        digits: <B>INTEGER</B>);
+<B>PROCEDURE</B> ReadChar (f : FILE; <B>VAR</B> ch : <B>CHAR</B>);
+<B>PROCEDURE</B> ReadString (f : FILE; <B>VAR</B> s : <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+<B>PROCEDURE</B> ReadInt (f : FILE; <B>VAR</B> i : <B>INTEGER</B>);
+<B>PROCEDURE</B> ReadCard (f : FILE; <B>VAR</B> c : <B>CARDINAL</B>);
+<B>PROCEDURE</B> ReadReal (f : FILE; <B>VAR</B> r : <B>REAL</B>);
+<B>END</B> TextIO.</PRE>
+<P>There is much more variation in modules for file handling.  Not only are the names different, so is the syntax.  Only a careful perusal of the manuals can enlighten the user.  Indeed, since such a module is somewhat low level, even an ISO standard library suite probably imposes the two sequential file models on top of some implementation specific file handling module that is called to do all the actual work.  An example of such a module can be found in the appendix.  In any event, it is not too difficult to adapt the programs of the first two sections to work with these non-standard versions with a little re-writing.</P>
+<P>To illustrate the use of such a module, here follows a program that will copy the file of integers above to another file with a different name.  This copy will not employ <I>TextIO</I>, but instead will import only from a module called <I>Filer</I>.</P>
+<P>The student should make careful note of the differences in syntax and spelling that may be necessary.</P>
+<PRE>
+<B>MODULE</B> FileCopy;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate the use of nonstandard/low-level file handlers *)
+(* last revision 1994 02 23 *)
+
+(* This module reads a file called <!--"-->&quot;numbers<!--"-->&quot; and copies it into a file called <!--"-->&quot;numbers.bak<!--"-->&quot; with type <!--"-->&quot;TEXT<!--"-->&quot; and creator <!--"-->&quot;NISI<!--"-->&quot;. *)
+
+<B>FROM</B> Filer <B>IMPORT</B>
+  File, (* the type of the ADT *)
+  Open, Close, Create, (* typical housekeeping stuff *)
+  FileErr,  (* the type of the result variables *)
+  FileDone,  (* a global of the above type, set by all operations *)
+  ReadChar, WriteChar; (* simple I/O within the filing module *)
+
+<B>FROM</B> InOut <B>IMPORT</B> (* let's go entirely classical on this one *)
+  WriteLn, WriteString;
+
+<B>VAR</B>
+  infile, outfile : File;
+  nameIn, nameOut : <B>ARRAY</B> [0 .. 30] <B>OF</B> <B>CHAR</B>;
+  ch : <B>CHAR</B>;
+
+<B>BEGIN</B>
+  nameIn := <!--"-->&quot;numbers<!--"-->&quot;;
+  Open (infile, nameIn);
+  nameOut:= <!--"-->&quot;numbers.bak<!--"-->&quot;;
+  Create (nameOut, <!--"-->&quot;NISI<!--"-->&quot;, <!--"-->&quot;TEXT<!--"-->&quot;); (* Macintosh specific *)
+  Open (outfile, nameOut);
+  <B>REPEAT</B>
+    ReadChar (infile, ch);
+    <B>IF</B> FileDone = FileOK
+      <B>THEN</B>
+        WriteChar (outfile, ch);
+      <B>END</B>;
+  <B>UNTIL</B> FileDone # FileOK; 
+
+  Close (infile);
+  Close (outfile);
+  WriteString (<!--"-->&quot;Copy complete.  <!--"-->&quot;);
+  WriteString (nameIn);
+  WriteString (<!--"-->&quot;==<!-->&gt;  <!--"-->&quot;);
+  WriteString (nameOut);
+<B>END</B> FileCopy.</PRE>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

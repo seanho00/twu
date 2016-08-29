@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE>3.1 Statement Sequences</TITLE>
+<meta NAME="keywords" CONTENT="statement, sequence, order, semi-colon, semi, colon, empty">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Basic Pogram Structure Abstractions">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>3.1 Statement Sequences</B></H2>
+<P>Although a few machines can run two or more programs simultaneously, most modern computers execute programs as sequential steps (one after the other).  That is, programs consist of commands written in a particular order, and the compiler for the programming notation preserves this order when translating into machine-readable code.  Chapter two introduced several examples of Modula-2 commands or statements.  Examples in that chapter included numerous examples of sequences of such statements.  Here is another:</P>
+<PRE>
+  WriteString (<!--"-->&quot;This program computes the area of a square<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;It was written by<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Nellie Hacker<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;for CMPT 141<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;Assignment #2 Due 1992 09 22<!--"-->&quot;);
+  WriteLn;
+  WriteLn;</PRE>
+
+<P>Figure 3.1 summarizes the syntax of the statement sequence, and details the statement types encountered thus far.  The second diagram is incomplete, of course.  It will be added to in this chapter and for several chapters to come.  A complete version is in <A HREF="../Appendices/Ap2.html">Appendix 2</A>.</P>
+<P><CENTER><IMG SRC="Figure/Figure_3.1.GIF" BORDER="1"></CENTER><!----></P>
+<P>Notice that a statement need contain nothing at all!  Several consecutive semicolons therefore constitutes a valid statement sequence, though it is a rather uninteresting one.  Thus, (redundant) semicolons are allowed before an END (or in similar situations,) where they are not required because they are not separating statements.  This can be helpful to the programmer who frequently goes back to add new statements to the end of a sequence, and just as frequently forgets to insert a new semicolon before the first of the new statements.  If the sequence ends in a semicolon, one need not remember to put one in when extending it.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

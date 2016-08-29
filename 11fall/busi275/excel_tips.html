@@ -1,0 +1,52 @@
+<html><head>
+<link rel=stylesheet type="text/css" href="/handout.css" />
+<link rel=stylesheet type="text/css" href="/exam.css" />
+<title>Excel 2007 Tips :: BUSI275 11FA :: TWU</title>
+</head><body>
+
+<h1><a href="http://twu.seanho.com/11fall/busi275/">
+    BUSI 275 Fall 2011</a> Excel 2007 Tips</h1>
+
+<div>
+No guarantees these will work, but they are offered here for your reference!
+Generally, the tips are for Excel 2007, but they should work similarly for
+other versions.
+</div>
+
+<h2>Links</h2><ul>
+<li> <a href="http://mrexcel.com/">Mr. Excel</a>
+<li> <a href="http://wps.prenhall.com/bp_groebner_busstats_8/145/37311/9551671.cw/index.html">
+  Groebner, et al. 8th ed. textbook companion website</a>
+</ul>
+
+<h2>Boxplots</h2>
+Some add-ons (e.g., PHStat, which supposedly comes with the textbook) will have boxplots.
+Here is a trick by 
+<a href="http://www.bloggpro.com/box-plot-for-excel-2007/">BloggPro</a>
+using barcharts; for examples, see
+<a href="lectures/02-SportsShoes.xls">02-SportsShoes</a>: <ol>
+<li> Calculate the median, Q1, and Q3.
+<li> Calculate and put in three cells next to each other: Q1, Median-Q1, and Q3-Median.
+<li> Calculate 1.5*IQR.
+<li> Insert &rarr; Bar &rarr; Stacked (you could also use Column if you like)
+<li> Select Data: select the three cells with Q1, Median-Q1, and Q3-Median.
+<li> Select the first bar (usually blue): <ul>
+  <li> Chart Tools &rarr; Layout &rarr; Error Bars &rarr; More Error Bars Options...
+  <li> Under "Direction", select "Minus"
+  <li> Under "Error Amount", select "Custom..." and "Specify Value", select the cell with 1.5*IQR.
+  <li> Close the Format Error Bars dialog.
+</ul>
+<li> Select the last bar (usually green): <ul>
+  <li> Chart Tools &rarr; Layout &rarr; Error Bars &rarr; More Error Bars Options...
+  <li> Under "Direction", select "Plus"
+  <li> Under "Error Amount", select "Custom..." and "Specify Value", select the cell with 1.5*IQR.
+  <li> Close the Format Error Bars dialog.
+</ul>
+<li> Select the first bar (usually blue): <ul>
+  <li> Chart Tools &rarr; Format &rarr; Fill
+  <li> Select No Fill (this turns it invisible)
+</ul>
+
+</ol>
+
+</body></html>

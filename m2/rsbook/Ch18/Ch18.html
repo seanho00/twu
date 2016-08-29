@@ -1,0 +1,88 @@
+
+<HTML><HEAD><TITLE>Chapter 18: Introduction To Graphics</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Introduction To Graphics">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<CENTER><H1><B>Chapter 18<BR>
+Introduction To Graphics</B></H1></CENTER>
+<HR>
+
+<BR><A class = navgrn HREF="Ch18.0.html">18.0 Chapter Goals</A><!-- 	816-->
+<BR><A class = navgrn HREF="Ch18.1.html">18.1 Basic Graphics Concepts</A><!--	816-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.1.html#18.1.1">  18.1.1 Discrete Grids<!--‹-->--Graphing Pixels</A><!--	816-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.1.html#18.1.2">  18.1.2 Where is the origin?</A><!--	817-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.1.html#18.1.3">  18.1.3 Measuring Angles</A><!--	817-->
+<BR><A class = navgrn HREF="Ch18.2.html">18.2 A Graphics Environment</A><!--	818-->
+<BR><A class = navgrn HREF="Ch18.3.html">18.3 Using The Module GraphPaper</A><!--	820-->
+<BR><A class = navgrn HREF="Ch18.4.html">18.4 Recursive Drawing<!--‹-->--Fractals</A><!--	823-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.4.html#18.4.1">  18.4.1 Snowflake Fractals</A><!--	823-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.4.html#18.4.2">  18.4.2 A Tree Fractal</A><!--	826-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.4.html#18.4.3">  18.4.3 Singly-Recursive Snowflake-like Fractals</A><!--	827-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.4.html#18.4.4">  18.4.4 Sierpinski's Curve</A><!--	829-->
+<BR><A class = navgrn HREF="Ch18.5.html">18.5 String Art</A><!--	833-->
+<BR><A class = navgrn HREF="Ch18.6.html">18.6 An Extended Example<!--‹-->--Implementing  GraphPaper</A><!--	835-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.6.html#18.6.1">  18.6.1 Defining the Module GraphWindow</A><!--	835-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.6.html#18.6.2">  18.6.2 Implementing GraphWindow in MacOS</A><!--	836-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.6.html#18.6.3">  18.6.3 Implementing GraphWindow in Windows NT</A><!--	844-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.6.html#18.6.4">  18.6.4 Implementing GraphPaper in MacOS</A><!--	848-->
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;<A class = navgrn HREF="Ch18.6.html#18.6.5">  18.6.5 Implementing GraphPaper in Windows NT</A><!--	858-->
+<BR><A class = navgrn HREF="Ch18.7.html">18.7 Chapter Summary</A><!--	868-->
+<BR><A class = navgrn HREF="Ch18.8.html">18.8 Assignments</A><!--	869-->
+
+<!--Version History:
+Last Modified 1998 07 14
+3.0 In Process
+Version 5.0 corrected and revised 2002 08 30 by R. Sutcliffe
+«INCLUDE Ch18.1.html»
+«INCLUDE Ch18.2.html»
+«INCLUDE Ch18.3.html»
+«INCLUDE Ch18.4.html»
+«INCLUDE Ch18.5.html»
+«INCLUDE Ch18.6.html»
+«INCLUDE Ch18.7.html»
+«INCLUDE Ch18.8.html»-->
+<HR><CENTER><A class = navgrn HREF="../contents.html" TARGET="big_right">Contents</A></CENTER></BODY></HTML>

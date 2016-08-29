@@ -1,0 +1,163 @@
+<HTML>
+<HEAD>
+<TITLE>8.11 An Extended Low Level I/O Example--TermFile</TITLE></TITLE>
+<meta NAME="keywords" CONTENT="extended, low, level, i/o, example, termfile, echoing, copying, echo, copy, flag, line, mode, single, character, password, internal, external, buffer">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Data Storage and Issues">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>8.11 An Extended Low Level I/O Example<!--</B>‹<B>-->--TermFile</B></H2>
+<P>As remarked in a previous chapter, I/O using the terminal device has some special characteristics.  One is that characters typed at the console keyboard are usually placed on the screen as a visual aid to the user of what has been typed.</P>
+<BLOCKQUOTE><I><A NAME="Echoing">Copying</A> input characters to the output device is called <U>echoing</U>.</I></BLOCKQUOTE>
+<P>In most implementations, of ISO Modula-2 the Module <I>StdChans</I> probably sets up its default I/O channels through the facilities of <I>TermFile</I> (yet another device driver) though this dependence is not actually required by the standard itself.  Indeed, there is no requirement that an implementation even support a terminal, or even programs that do I/O at all.  Assuming it does, it is somewhat unlikely that many users would employ <I>TermFile</I> directly in a program.  However, <I>TermFile</I> does permit the opening of channels to the terminal (assuming one exists) in such a way that the user can determine at what point the items typed at the keyboard are to be echoed on the screen.</P>
+<BLOCKQUOTE><I><A NAME="Echo">If</A> a TermFile channel is opened without the flag echo, the channel is in <U>line mode</U> and the echoing to the screen is done when the character is typed.  If the echo flag is set for an input, then the channel is said to be in <U>single character mode</U> and characters are echoed only when they are read (presumably from an internal buffer) by a text read operation such as ReadChar, or ReadString and not at the time they are typed.</I></BLOCKQUOTE>
+<P>This may seem like a fine distinction; after all, it appears at first glance that the characters are all echoed to the screen sooner or later. In most cases, they are, but in single character mode (echo flag) if the read operation is <I>not</I> a <I>text read</I>, then the characters will never be echoed.  This can be useful if an application program requires the user is to type a password.  To prevent a snooper looking over her shoulder from reading that password from the screen, echoing should be disabled for that read.  This is easily done, because any number of channels may be opened to the terminal through <I>TermFile</I>, some with echoing, and some without.  Indeed, the rule applied by <I>TermFile</I> is that if <I>any</I> channels are open to the terminal in single character mode, then echoing must be postponed until characters are read.  Therefore, in such a case, if some characters are read with a <I>text read</I> operation such as <I>TextIO.ReadString</I>, they will be echoed.  If others are read by the use of <I>IOChan.Look</I> and <I>IOChan.Skip</I>, (defined in the standard as not being text reads for this purpose) they will not be echoed.</P>
+<P>Here is a module to determine whether this behaviour is properly exhibited by an ISO compliant <I>TermFile</I> device driver.</P>
+<PRE>
+<B>MODULE</B> TestTerminal;
+
+(* Written by R.J. Sutcliffe *)
+(* to illustrate aspects of the use of ISO module TermFile *)
+(* last revision 1994 02 21 *)
+
+<B>FROM</B> TermFile <B>IMPORT</B>
+  ChanId, Open, OpenResults, read, echo, Close;
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteString, ReadString, SkipLine, WriteLn;
+<B>FROM</B> IOChan <B>IMPORT</B>
+  SkipLook, Look, SetReadResult;
+<B>FROM</B> SIOResult <B>IMPORT</B>
+  ReadResults, ReadResult;
+  
+<B>PROCEDURE</B> ReadToken (cid: ChanId; <B>VAR</B> s: <B>ARRAY</B> <B>OF</B> <B>CHAR</B>);
+  (* Skips leading spaces, and then removes characters from the input stream cid before the next space or line mark, copying to s as many as can be accommodated as a string value. The read result is set to the value allRight, outOfRange, endOfLine, or endOfInput. *)
+
+<B>VAR</B>
+  lastToRead, count : <B>CARDINAL</B>;
+  ch : <B>CHAR</B>;
+  resRead : ReadResults;
+
+<B>BEGIN</B>
+  count := 0;
+  lastToRead := <B>HIGH</B>(s);
+  Look (cid, ch, resRead);
+  <B>WHILE</B> (ch = <!--"-->&quot; <!--"-->&quot;) <B>AND</B> (resRead = allRight)
+    <B>DO</B>
+      SkipLook (cid, ch, resRead);
+    <B>END</B>;
+  <B>WHILE</B> (count <!--<-->&lt;= lastToRead) <B>AND</B> (ch # <!--"-->&quot; <!--"-->&quot;)
+         <B>AND</B> (resRead = allRight)
+    <B>DO</B>
+      s[count] := ch;
+      <B>INC</B> (count);
+      SkipLook (cid, ch, resRead);
+    <B>END</B>;
+    (* if room left in string, terminate it *)
+  <B>IF</B> (count <!--<-->&lt;= lastToRead) <B>AND</B> ((ch = <!--"-->&quot; <!--"-->&quot;)
+        <B>OR</B> (resRead # allRight))
+     <B>THEN</B>
+       s[count] := 0C
+     <B>ELSIF</B> count <!-->&gt; lastToRead <B>THEN</B>
+       (* if the string for the token is not big enough, say so *)
+       SetReadResult (cid, outOfRange);
+       <B>WHILE</B> (ch # <!--"-->&quot; <!--"-->&quot;) <B>AND</B> (resRead = allRight)
+        <B>DO</B> (* and knock the rest out *)
+          <B>INC</B> (count);
+          SkipLook (cid, ch, resRead);
+        <B>END</B>;
+     <B>END</B>;
+<B>END</B> ReadToken;
+
+<B>VAR</B>
+  term : ChanId;
+  resOpen : OpenResults;
+  password : <B>ARRAY</B> [0..63] <B>OF</B> <B>CHAR</B>;
+  count : <B>CARDINAL</B>;
+
+<B>BEGIN</B>
+  (* first, do things in the usual way *)
+  WriteString (<!--"-->&quot;First test.  All terminal channels in line mode<!--"-->&quot;);
+  WriteLn;
+  WriteString (<!--"-->&quot;type password ==<!-->&gt;<!--"-->&quot;);
+  ReadString (password);
+  SkipLine;
+  WriteLn ;
+  WriteString (<!--"-->&quot;password typed was:  <!--"-->&quot;);
+  WriteString (password);
+  WriteLn ;
+  
+  (* Open new channel to the terminal in single character mode *)
+   Open (term, read+echo, resOpen);
+  <B>IF</B> resOpen = opened
+    <B>THEN</B>
+      WriteLn;
+      WriteString (<!--"-->&quot;Second test. One channel in char mode<!--"-->&quot;);
+      WriteLn;
+      WriteString (<!--"-->&quot;type password ==<!-->&gt;<!--"-->&quot;);
+      ReadToken (term, password);
+      SkipLine;
+      WriteLn ;
+      WriteString (<!--"-->&quot;password was:  <!--"-->&quot;);
+      WriteString (password);
+      Close (term);
+    <B>END</B>;
+
+<B>END</B> TestTerminal.</PRE>
+<P>When this program was executed, the output from one run looked like this:</P>
+<PRE>
+First test.  All terminal channels in line mode
+type password ==<!-->&gt;we34fd
+
+password typed was:  we34fd
+
+Second test. One channel in char mode
+type password ==<!-->&gt;
+password was:  ui56bn43</PRE>
+<P>Observe that, as expected, the password was echoed when typed in the normal (line) mode, and was not when there was a channel to the terminal open in character mode, even though that channel was not explicitly used for the input.</P>
+<P>Note also that the procedure <I>ReadToken</I> contained in the above test program is also taken from the author's implementation of <I>TextIO</I> and behaves in that way when imported.  That is, because it is implemented in terms of <I>Look</I> and <I>Skip</I>, it is not a <I>text</I> <I>read</I> for the purposes of this echoing rule.  Although the author has tested other implementations and found them to have the same interpretation, it is possible that some may not, and therefore the user may need the <I>ReadToken</I> shown here.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

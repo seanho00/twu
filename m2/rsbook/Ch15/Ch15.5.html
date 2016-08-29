@@ -1,0 +1,206 @@
+<HTML><HEAD><TITLE>15.5 Array Implementation and Sorting With Heaps</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Array Implementation and Sorting With Heaps">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT>
+<H2><B>15.5 Array Implementation and Sorting With Heaps</B></H2>
+<P>In the tree implementation of the heap, both binary tree pointers and linear pointers were employed so as to diversify the traversability of the tree. However, if it is noted that when the nodes are numbered in row order, the children of a node<sub>i</sub> are node<sub>2i</sub> and node<sub>2i+1</sub>, and that conversely, the parent of a node<sub>i</sub> is node<sub>iDIV2</sub>, it becomes apparent that the tree structure is not required for the implementation, and that an array could be used instead. The advantage of using an array is that items can be randomly accessed by their node number, and the necessity for all the linkage is removed. However, the linkage does allow for efficient binary type searches in the tree, so the advantage is not all to the array implementation.</P>
+<P>However, there is an exception to this even handed discussion, and it arises from the observation that it is possible to use a heap to generate sorted data. Consider some data that is already in a heap. By virtue of this, the root is the smallest item.  Swap it with the last item, mark it as "sorted" and sift the new root down the smaller branch (but not into the sorted part) until it is again a proper child. The root is now the second largest item.  Repeat the above process, swapping with the second last item. If we trace this with a seven item heap, and mark the sorted items in bold, the steps are:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.21.GIF" BORDER="1"></CENTER><!-- --><CENTER><IMG SRC="Figure/Figure15.22.GIF" BORDER="1"></CENTER><!----></P>
+<P></P>
+<P><CENTER><IMG SRC="Figure/Figure15.23.GIF" BORDER="1"></CENTER><!-- --><CENTER><IMG SRC="Figure/Figure15.24.GIF" BORDER="1"></CENTER><!----></P>
+<P><CENTER><IMG SRC="Figure/Figure15.25.GIF" BORDER="1"></CENTER><!----><CENTER><IMG SRC="Figure/Figure15.26.GIF" BORDER="1"></CENTER><!----></P>
+<P></P>
+
+<P>The largest item is now at the root, and the tree can now be traversed in reverse row order to visit the items from least to greatest. The structure is now both sorted and is a reverse (inverted) heap. All this could be implemented and added to the tree implementation shown above, or it could be implemented as a sorting routine acting on arrays in the same manner as the ones in Chapter 13.</P>
+
+<B><h2><a name="15.5.1">15.5.1</a> Heapsort</h2></B>
+<P>In the simple array implementation of the heapsort that follows, the parameters of the heapsort procedure are the same as in earlier sorting routines. The array is heapified by starting at the middle element and working back to the first element, sifting down as one goes. It is then sorted by the method outlined above.</P>
+
+
+<pre><B> MODULE</B> HSort;
+
+(* A simple demonstration of heap sorting
+  by R. Sutcliffe
+  modified 1996 10 22 *)
+  
+<B>FROM</B> STextIO <B>IMPORT</B>
+  WriteLn, WriteChar;
+<B>FROM</B> SWholeIO <B>IMPORT</B>
+  WriteCard;
+
+<B>CONST</B>
+  max = 18;
+<B>VAR</B> 
+  source : <B>ARRAY</B> [1..max] <B>OF</B> <B>CARDINAL</B>; (* the array to sort *)
+
+<B>PROCEDURE</B> WriteArray;
+(* writes out the elements comma delimited *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+<B>BEGIN</B> 
+  <B>FOR</B> count := 1 <B>TO</B> max
+    <B>DO</B>
+      WriteCard (source [count], 3);
+      <B>IF</B> count # max
+        <B>THEN</B>
+          WriteChar (",");
+        <B>ELSE</B>
+          WriteLn;
+        <B>END</B>;
+    <B>END</B>;
+<B>END</B> WriteArray;
+
+<B>PROCEDURE</B> Swap (<B>VAR</B> one, two : <B>CARDINAL</B>);
+  (* Exchange values in one and two. *)
+<B>VAR</B>
+   temp : <B>CARDINAL</B>;  
+<B>BEGIN</B>
+  temp := one; one := two; two := temp;
+<B>END</B> Swap;
+
+(* Since arrays to sort are open, they are numbered from 0.. n-1, so the child functions have to be altered from the way in which they are defined to add one to the index *)
+
+<B>PROCEDURE</B> LeftChild (n :<B> CARDINAL</B>)<B> : CARDINAL;
+BEGIN</B>
+  <B>RETURN</B> 2 * n + 1;
+<B>END</B> LeftChild;
+
+<B>PROCEDURE</B> RightChild (n : <B>CARDINAL</B>) : <B>CARDINAL</B>;
+<B>BEGIN
+  RETURN</B> 2 * n + 2;
+<B>END</B> RightChild;
+<B>
+PROCEDURE</B> SiftDown (<B>VAR</B> source : <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>; node, end : <B>CARDINAL</B>);
+(* Sift data item down through heap until it is a proper child.  If it is already in the right place, nothing happens. *)
+<B>VAR
+ </B> data : <B>CARDINAL</B>;
+<B>BEGIN</B>
+  (* set data item from node aside *)
+  data := source [node];
+  (* see if it needs to go down the tree *)
+  <B>WHILE</B> ((LeftChild (node) <!--<B><</B>-->&lt;<B>= </B>end) <B>AND</B>
+   ( data <!-->&gt; source [LeftChild (node)]))
+ <B>  </B>     <B>OR</B> ((RightChild (node) <!--<-->&lt;= end) <B>AND</B> (data <!-->&gt; source [RightChild (node)]))
+    <B>DO</B> (* pull up smaller child until it is a proper child  *)
+      (* yes, so move smaller child up and look lower *)
+      <B>IF</B> (RightChild (node) <!-->&gt; end)
+         <B>OR</B> (source [LeftChild (node)] <!--<-->&lt;= source [RightChild (node)])
+        <B>THEN</B>
+          source [node] := source [LeftChild (node)];
+          node := LeftChild (node);
+        <B>ELSE</B>
+          source [node] := source [RightChild (node)];
+          node := RightChild (node);
+        <B>END</B>; 
+    <B>END</B>;
+  (* put data into proper place *)
+  source [node] := data;
+<B>END</B> SiftDown;
+<B>
+ 
+PROCEDURE</B> HeapSort (<B>VAR</B> source: <B>ARRAY</B> <B>OF</B> <B>CARDINAL</B>;
+        lBound, uBound : <B>CARDINAL</B>);
+(* The heapsort is a two step proccess.  First, the data are put in a heap, and then the data is de-heaped in reverse sorted order. *)
+<B>VAR</B>
+  count : <B>CARDINAL</B>;
+  
+<B>BEGIN</B>
+  (* Construct the inital heap. *)
+  (* We do this by starting at the last item that has a child and sifting down, then backing up toward the top one step at a time and repeating. *)
+  <B>IF</B> (uBound <!--<-->&lt;= <B>HIGH</B> (source)) <B>AND</B> (uBound <!-->&gt; lBound)
+    <B>THEN</B>
+      (* find where to start in the middle *)
+      count := (lBound + uBound + 1) <B>DIV</B> 2; 
+      <B>WHILE</B> count <!-->&gt; lBound 
+        <B>DO</B>
+          <B>DEC</B> (count);
+          SiftDown (source, count, uBound);
+        <B>END</B>; (* while count *)
+   
+      (* Now de-heap smallest item to largest *)
+      count := uBound; 
+      <B>WHILE</B> count <!-->&gt; lBound 
+        <B>DO</B>
+          (* swap the smallest into the last position *)
+          Swap (source[lBound],source[count]);
+          <B>DEC</B> (count);
+          (* and sift the one swapped down to restore the heap up to one item short of the current last position *)
+          SiftDown (source, lBound, count);
+        <B>END</B>; (* while count *)
+    <B>END</B>; (* if *)
+<B>END</B> HeapSort;
+
+<B>BEGIN</B>
+  (* set up a little test *)
+  source [1] := 23; source [2] := 6; source [3] := 17;
+  source [4] := 32; source [5] := 13; source [6] := 67;
+  source [7] := 89; source [8] := 43; source [9] := 99;
+  source [10] := 56; source [11] := 32; source [12] := 83;
+  source [13] := 26; source [14] := 16; source [15] := 41;
+  source [16] := 98; source [17] := 34; source [18] := 77;
+  WriteArray;
+  HeapSort (source, 0, max-1);
+  WriteArray;
+
+<B>END</B> HSort.</pre>
+
+<P>In the method used, there are (n-1)/2 passes and up to nlog<sub>2</sub>n comparisons on each pass to make the heap in the first place.  Then, there are (n-2) passes with an average of up to (n/2)log<sub>2</sub>n comparisons to produce a sorted tree. Thus, heap sorting is <B>O</B>(nlog<sub>2</sub>n) and so is classified as an advanced sort.  The reason it was not take up in the chapter on sorting is that one has to be able to appreciate what a tree arranged like a heap is in order to follow the algorithm, even though it is often implemented on arrays as it is in this section.</P>
+<B><h2><a name="15.5.2">15.5.2</a> Heaps and Priority Queues</h2></B>
+<P>A priority queue  is a queue in which every data item has a priority.  Enqueing is done according to the priority, and dequeing is done in the normal manner.  Conceptually, there is still a single linear structure (a lineup) into which items are inserted according to their priority.  Items are then served from the front of the line.</P>
+<P>The heap makes an ideal base from which to implement a priority queue.  Enqueing can be done as e3nheaping, using the priority as the key field (highest on top of the heap).  Dequeing is accomplished by serving from the top (root) of the heap, then promoting the highest priority of the two descendents of the root, repeating recursively until a leaf node is reached, and then deleting the leaf node using the portion heap delete function that follows a find.  If one takes the reverse sorted heap from the first part of this section, thinks about the values now as priorities, and then does a serve, these steps are:</P>
+
+<P><CENTER><IMG SRC="Figure/Figure15.27.GIF" BORDER="1"></CENTER><!--  --><CENTER><IMG SRC="Figure/Figure15.28.GIF" BORDER="1"></CENTER><!--</P>
+<P></P>
+<P><CENTER><IMG SRC="Figure/Figure15.29.GIF" BORDER="1"></CENTER><!----></P>
+
+<P>As this is a reverse sorted heap, the node with priority 19 does not move when sift up is called.</P>
+<P>A complete implementation is not shown here, but is left as an exercise for the reader.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

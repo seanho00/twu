@@ -1,0 +1,233 @@
+<HTML><HEAD><TITLE>19.11 Extended Example--Points and Vectors</TITLE><STYLE TYPE="text/css"></STYLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Points and Vectors">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+if ((parent.frames.length) == 0){
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')}else
+{if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1){
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}else{parent.frames[0].location.replace('numberstr.html')}}
+//-->
+</SCRIPT>
+<H2><b>19.11 Extended Example<!--‹-->--Points and Vectors</b></H2>
+
+<P>The module Vectors in <A HREF="../Ch7/Ch7.11.html">section 7.11</A> and the module Points in section 6.9 share some basic concepts in common. These two data types could be implemented as classes with the latter as the superclass as shown below.</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> PointClassA;
+
+<b>TRACED</b> <b>CLASS</b> Points;
+  <b>REVEAL</b> assignR, firstCoord, secondCoord, abs, arg, assignP, reflectX, reflectY, 
+         reflect0, reflect45, scale, rotate, translate;
+  <b>TYPE</b>
+     Point = <b>ARRAY</b> [1 .. 2] <b>OF</b> <b>REAL</b>;
+  <b>VAR</b>
+     point : Point;
+
+  <b>PROCEDURE</b> assignR (x, y : <b>REAL</b>);
+  <b>PROCEDURE</b> firstCoord () : <b>REAL</b>;
+  <b>PROCEDURE</b> secondCoord () : <b>REAL</b>;
+  <b>PROCEDURE</b> abs () : <b>REAL</b>;
+  <b>PROCEDURE</b> arg () : <b>REAL</b>;
+  <b>PROCEDURE</b> assignP (abs, arg : <b>REAL</b>);
+  <b>PROCEDURE</b> reflectX;
+  <b>PROCEDURE</b> reflectY;
+  <b>PROCEDURE</b> reflect0;
+  <b>PROCEDURE</b> reflect45;
+  <b>PROCEDURE</b> scale (scaleFactor : <b>REAL</b>);
+  <b>PROCEDURE</b> rotate (rotAngle : <b>REAL</b>);
+  <b>PROCEDURE</b> translate (deltaX, deltaY : <b>REAL</b>);
+  <b>END</b> Points;
+
+<b>END</b> PointClassA.</PRE>
+
+<P>A few names have been changed here to make them more generic for subclasses. The reader should compare this with the original and note the simplicity of the definition when the parameter of type Point can be left out because the procedure acts only on the variable point that is its attribute component. When moving from here to subclass Vectors, it seems appropriate to have a new type name, and to remove all functional duplicates. This results in an even simpler interface:</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> VectorClassA; 
+<b>FROM</b> PointClassA <b>IMPORT</b>
+  Points;
+<b>TRACED</b> <b>CLASS</b> Vectors;
+  <b>INHERIT</b> Points;
+  <b>REVEAL</b> neg, add, sub, dotProduct;
+  <b>TYPE</b>
+    Vector = Point;
+  <b>PROCEDURE</b> neg;
+  <b>PROCEDURE</b> add (v : Vector);
+  <b>PROCEDURE</b> sub (v : Vector);
+  <b>PROCEDURE</b> dotProduct (v : Vector) : <b>REAL</b>;
+  <b>END</b> Vectors;
+
+<b>END</b> VectorClassA.</PRE>
+
+<P>However, this design leaves something to be desired, because reflections and rotations, while relevant to points are not relevant to vectors. Moreover, while one might <i>scale</i> a point, it is thought of as a multiplication with respect to vectors. It is better design to come up with a base or superclass that has only the bare essentials that are common, and then derive both <i>Points</i> and <i>Vectors</i> from this. Such a more basic concept is the idea of an ordered pair, or more generally, of an ordered n-tuple. This base class can have in it only the facilities for working with such tuples, and let both <i>Points</i> and <i>Vectors</i> define their own components. Figure 19.2 illustrates the relationship among the classes:</P>
+<CENTER><IMG SRC="Figure/figure19.2.GIF" BORDER="1"></CENTER><!---->
+<P>Indeed, in the design of this suite of classes, the base class or first superclass is a generic module.</P>
+
+<PRE><b>GENERIC</b> <b>DEFINITION</b> <b>MODULE</b> TupleClass (length : <b>CARDINAL</b>);
+(* base class for specific n-tuples
+  R. Sutcliffe 1998 10 02 *)
+
+<b>TRACED</b> <b>CLASS</b> Tuples;
+  <b>REVEAL</b> assignCoord, fetchCoord, abs;
+  <b>CONST</b>
+	  len = length; (* for inheritors *)
+	<b>VAR</b>
+     coords : <b>ARRAY</b> [1 .. len] <b>OF</b> <b>REAL</b>;
+
+  <b>PROCEDURE</b> assignCoord (coordNum : <b>CARDINAL</b>; value : <b>REAL</b>);
+  <b>PROCEDURE</b> fetchCoord (coordNum : <b>CARDINAL</b>) : <b>REAL</b>;
+  <b>PROCEDURE</b> abs () : <b>REAL</b>;
+  <b>END</b> Tuples;
+
+<b>END</b> TupleClass.</PRE>
+
+<P>To work with two dimensional vectors and points in a plane, this has to be refined by:</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> OrderedPair = TupleClass (2);
+(* produce a 2-dimensional base class of tuples for
+   corresponding vectors and points
+   R. Sutcliffe 1998 09 28 *)
+<b>END</b> OrderedPair.</PRE>
+
+<P>This in turn can be subclassed on the one hand to work with points in the plane.</P>
+
+<PRE><b>DEFINITION</b> <b>MODULE</b> Point2Class;
+(* subclasses OrderedPairs for the geometric notions of points 
+   R. Sutcliffe  1998 10 02 *)
+
+<b>FROM</b> OrderedPair <b>IMPORT</b>
+  Tuples;
+<b>TRACED</b> <b>CLASS</b> Points;
+  <b>INHERIT</b> Tuples;
+  <b>REVEAL</b>  reflectInAxis, reflect0, reflect45, scale, rotate, translate;
+
+  <b>PROCEDURE</b> arg () : <b>REAL</b>;
+  <b>PROCEDURE</b> reflectInAxis (n : <b>CARDINAL</b>);
+  <b>PROCEDURE</b> reflect0;
+  <b>PROCEDURE</b> reflect45;
+  <b>PROCEDURE</b> scale (scaleFactor : <b>REAL</b>);
+  <b>PROCEDURE</b> rotate (rotAngle : <b>REAL</b>);
+  <b>PROCEDURE</b> translate (deltaX, deltaY : <b>REAL</b>);
+  <b>END</b> Points;
+
+<b>END</b> Point2Class.</PRE>
+
+<P>On the other hand, it can be subclassed to work with two-dimensional vectors.</P>
+
+
+ <PRE><b>DEFINITION</b> <b>MODULE</b> Vector2Class; 
+(* subclasses OrderedPairs for vectors 
+  R. Sutcliffe 1998 10 01 *)
+
+ <b>FROM</b> OrderedPair <b>IMPORT</b>
+  Tuples;
+ <b>TRACED</b> <b>CLASS</b> Vector;
+  <b>INHERIT</b> Tuples;
+  <b>REVEAL</b> abscissa, ordinate, neg, add, sub, dotProduct, arg;
+ 
+  <b>PROCEDURE</b> abscissa () : <b>REAL</b>;
+  <b>PROCEDURE</b> ordinate () : <b>REAL</b>;
+  <b>PROCEDURE</b> neg;
+  <b>PROCEDURE</b> add (v : Vector);
+  <b>PROCEDURE</b> sub (v : Vector);
+  <b>PROCEDURE</b> dotProduct (v : Vector) : <b>REAL</b>;
+  <b>PROCEDURE</b> arg () : <b>REAL</b>;
+
+  <b>END</b> Vector;
+
+<b>END</b> Vector2Class.</PRE>
+
+<P>Observe that a method such as <i>Add</i> needs only to be passed the vector to add to SELF. In effect, such methods are messages to the object to add another vector to themselves. This is shown in some of the procedures of the partial implementation below.</P>
+
+<PRE><b>IMPLEMENTATION</b> <b>MODULE</b> Vector2Class; 
+(* subclasses OrderedPairs for vectors 
+  R. Sutcliffe 1998 10 01 *)
+
+ <b>TRACED</b> <b>CLASS</b> Vector;
+ 
+  <b>PROCEDURE</b> abscissa () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> coords [1];
+  <b>END</b> abscissa;
+ 
+  <b>PROCEDURE</b> ordinate () : <b>REAL</b>;
+  <b>BEGIN</b>
+    <b>RETURN</b> coords [2];
+  <b>END</b> ordinate;
+
+  <b>PROCEDURE</b> neg;
+  <b>VAR</b>
+    count : <b>CARDINAL</b>;
+  <b>BEGIN</b>
+    <b>FOR</b> count := 1 <b>TO</b> len
+      <b>DO</b>
+        coords [count] := - coords [count];
+      <b>END</b>;
+  <b>END</b> neg;
+ 
+  <b>PROCEDURE</b> add (v : Vector);
+  <b>VAR</b>
+    count : <b>CARDINAL</b>;
+  <b>BEGIN</b>
+    <b>FOR</b> count := 1 <b>TO</b> len
+      <b>DO</b>
+        coords [count] := coords [count] + v.coords [count];
+      <b>END</b>;
+  <b>END</b> add;
+
+  <b>PROCEDURE</b> sub (v : Vector);
+    (* similar to add *)
+  <b>END</b> sub;
+
+  <b>PROCEDURE</b> dotProduct (v : Vector) : <b>REAL</b>;
+  <b>VAR</b>
+    count : <b>CARDINAL</b>;
+    sum : <b>REAL</b>;
+  <b>BEGIN</b>
+    sum := 0.0;
+    <b>FOR</b> count := 1 <b>TO</b> len
+      <b>DO</b>
+        sum := sum + coords [count] * v.coords [count];
+      <b>END</b>;
+    <b>RETURN</b> sum;
+  <b>END</b> dotProduct;
+
+  <b>PROCEDURE</b> arg () : <b>REAL</b>;
+  <b>BEGIN</b>
+  (* code to work out angle here. Specific to two-vectors. *)
+  <b>END</b> arg;
+
+  <b>END</b> Vector;
+
+<b>END</b> Vector2Class.</PRE>
+
+<P>It should be evident to the reader that if complex numbers were not built in, they could be subclassed from ordered pairs as well, with new method components to handle such operations as multiplication and division.</P>
+
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

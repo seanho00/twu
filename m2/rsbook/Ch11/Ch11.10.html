@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>11.10 Assignments<</TITLE>
+<meta NAME="keywords" CONTENT="chapter, summary, recursion, backtrack, backtracking, case, statement, pragma, pragmas, efficiency, structure, constructor, constructors, variant, record, records, enclosure, enclosures, problem, problems, assignment, assignments, exercise, exercises">
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe: Intermediate Programming - Data and Techniques">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>11.10 Assignments</B></H2>
+<H3><B>Questions</B></H3>
+<P>1.  What is backtracking?</P>
+<P>2.  What are the two constructions for using selection in Modula-2?</P>
+<P>3.  Under what circumstances should each of the two constructions in the previous question be used?</P>
+<P>4.  What is wrong with the code:</P>
+<PRE><B>CASE</B> <B>CARDINAL</B> <B>OF</B>
+  <!--<-->&lt;cases and statement sequences here<!-->-->&gt;
+<B>END</B>;</PRE>
+<P>5.  Assume that Range is the range [0..500].  What is wrong with the code:</P>
+<PRE><B>CASE</B> Range <B>OF</B>
+  1..10:
+    statement sequence 1 |
+  2..20:
+    statement sequence 2 |
+  3..50:
+    statement sequence 3
+  <B>ELSE</B>
+    statement sequence 4
+<B>END</B>;</PRE>
+<P>6.  Under what circumstances should the generation of code to do run-time checking of array indices be turned off?</P>
+<P>7.  How does the implementation you are using achieve this?</P>
+<P>8.  What is a pragma?</P>
+<P>9.  Make a list of all the pragmas available in your system together with an explanation of what they are for.</P>
+<P>10. What are some possible strategies to reduce the running time of a program?</P>
+<P>11.  Is the compiler you use optimizing?  Try to discover (possibly by calling the technical support people in charge of the package) what is the nature of the optimizing being done, and summarize these.</P>
+<P>12. What is a program library?  Does your programming environment have a library manager to produce libraries from a collection of object files?  How is the facility used?</P>
+<P>13. What is a structure constructor, and what does it (can it) construct?</P>
+<P>14. Write a fragment to declare an array of REAL with ten components, and then a constant of this type with the value of 0.0 in all ten components.</P>
+<P>15. What is the difference between a statement separator and a case separator?  Give an example of each.</P>
+<P>16. What happens if the case selector variable does not match anything in the list of labels or label ranges?  How does one avoid this problem?</P>
+<P>17. What is a variant record field and how is one declared?</P>
+<P>18. Write out the declaration for an <I>employee</I>.  This record will have a last name, first name, sex, and birth date.  Marital status can be one of: single, married, or divorced.  If the employee is single, the record includes the name of the next of kin.  If the employee is married, the record includes the date of marriage, the first name of the spouse, and the number of children.  If divorced, the date of divorce and the next of kin are included.  Furthermore, if the employee is an <I>executive</I> include monthly salary, car allowance, and rank (a string).  Otherwise, include the hourly wage and the position (also a string).  Include all type declarations that will be used in creating <I>employee</I>.</P>
+<P>19. Declare suitable constants for default records of all the variants in the previous question.</P>
+<P>20. Discuss the advantages and disadvantages of using variant records as opposed to declaring a different type for each variant. </P>
+<P>21. What is meant by unrolling a loop? </P>
+<P>22. Why must one be concerned (but not overly so) with efficiency? </P>
+<H3><B>Problems</B></H3>
+<P>23.  Write out a module that will determine the size of the following records:</P>
+<PRE>(a) Rec2 =
+<B>TYPE</B>
+  Bin = [0..1];
+<B>RECORD</B>
+    flag1, flag2 : <B>BOOLEAN</B>;
+    number   : <B>REAL</B>;
+    flag3   : <B>BOOLEAN</B>;
+   <B>CASE</B> Tag : Bin <B>OF</B>
+     0:
+       realNum : <B>REAL</B> |
+     1:
+       flags: <B>ARRAY</B> [1..8] <B>OF</B> <B>BOOLEAN</B>
+   <B>END</B>
+<B>END</B> </PRE>
+<P>(b) Rec2, that is the same as the above, but with the fields <I>number</I> and <I>flag3</I> reversed. Obtain the size using SIZE under both cases, and explain the results.</P>
+<P>24. Many things can be improved in the Knight's tour.  Add code (perhaps a procedure) to check the validity of the input data.  Rewrite the program to speed it up. (It would take a very fast processor indeed to run it for a full sized eight by eight chessboard.)  One possibility:  Have a set of valid moves initialized for each board position so that the number of checks inside the loop is greatly reduced.</P>
+<P>25. Another chess problem is that of the eight queens.  Can eight queens be placed on a chess board so that no one is attacking any other?  Write a program to determine the answer.</P>
+<P>26. Write a small personal database using the type <I>Person</I> as in <A HREF="Ch11.7.html">section 11.7</A> (perhaps with some additions, but no deletions) as the base type.  Store the information in a file and include provisions to edit previously entered items.</P>
+<P>27. A number is perfect if it is the sum of its proper divisors.  Thus six is perfect because 1 + 2 + 3 = 6 .  If the sum of the proper divisors is less than the number, it is called deficient. 1 + 2 + 4 <!--<-->&lt; 8  which is deficient.  If the sum of the proper divisors is more than the number it is abundant.  1 + 2 + 3 + 4 + 6 = 16 <!-->&gt; 12 which is thus abundant.  Write a program to determine (and announce) whether a number input by the user is perfect, deficient, or abundant.  Use a CASE statement.</P>
+<P>28. There are several ways to solve a triangle, depending on whether the given data is three sides, two sides and an angle, or two angles and a side.  Write a program that will accept data about triangles and solve for the remaining data depending on the nature of the given data.  (You may need to research your old trigonometry text.)</P>
+<P>29. Write a program that can convert between word and decimal notations.  For instance, it should convert between 9 234 517 and <!--"-->&quot;nine million two hundred thirty-four thousand five hundred seventeen.<!--"-->&quot;</P>
+<P>30. Family records are to be kept consisting of last name, first name, marriage status, spouse name (if married), whether there are children, and their names if so.  Write a database program to keep such records in a file and to search the database for a particular last name or for a particular first name (whether main record name, spouse, or child).</P>
+<P>31. Payroll records are to be kept of employees, their employee number, whether salaried, wage earners, or retired.  If salaried, you need a field for the monthly salary.  If a wage earner, you need a field for hourly wage and number of hours worked in the month at regular time and at overtime (1.5 times pay.)  In both categories, deduct income tax at 25% for the first $1000 monthly salary and 39% thereafter, and deduct 6% for pension, and 4% for other benefits.  If retired, you need a field for the annual pension, but there are no deductions.  Your program is to prepare the monthly payroll of all three categories, with a summary of gross, deductions and net salary for the month.</P>
+<P>32. Write a program that will take any date in the format 1995 03 27 and print out the day of the week (in this case it is Monday).  A little research may be necessary.</P>
+<P>33. Run the program knight's tour on your machine and time how long it takes for boards of various sizes.  Does the time go up according to the formula or function you expect?  Can you run the program on more than one machine and make comparisons?</P>
+<P>34. Devise a program to test your implementation and processor to determine whether unrolling loops makes a performance difference or not.  If possible, run the test on two different platforms.</P>
+<P>35. In the 1960s and 1970s many computer programs were written that stored the year with only two digits for the date.  In the year 2000, a year stored as 00 will be interpreted as 1900 by such systems.  This is the year 2000 or Y2K problem.  One solution is to use windowing, wherein some convenient date, say 1950, is chosen, and all two digit dates from 00 to 49 are interpreted as 2000 through 2049, wheras those from 50 to 99 are interpreted as 1950 to 1999.  Write a program containing a record with two digit years and then, taking this as your legacy code, write additional code to solve the Y2K problem in your code using windowing.  In the documentation, describe the Y2K problem more accurately and discuss other solutions you may find in the literature.</P>
+<P>36. Write and test a program that will convert among and display dates in a variety of formats, including YYYY MM DD (1998 12 05), DD MM YYYY (05 12 1998), YY/MM/DD (98/12/05), Month da,yr (December 5, 1998), and at least two other variations.  Options in all cases should include (a) two or four digit years (b) leading zeros (or not) for months and days.</P>
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>

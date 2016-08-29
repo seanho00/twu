@@ -1,0 +1,83 @@
+<HTML><HEAD><TITLE>17.10 Chapter Summary</TITLE>
+
+<meta NAME="description" CONENT="Modula-2 shareware textbook by Rick Sutcliffe; Chapter Summary">
+<META NAME="Author" content="Rick Sutcliffe">
+<META NAME="Copyright" content="1983-2004 Rick Sutcliffe">
+<STYLE TYPE="text/css"></STYLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../linkstyles.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+</HEAD>
+<BODY BGCOLOR="#CCFFFF">
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+function framesGO() {
+// figures out the path to one directory above this document
+// (where the MAIN index.html is) and puts it into theString:
+
+theString=document.URL
+theString=theString.substring(0,theString.lastIndexOf("/",theString.length - 14))
+parent.window.location = theString + "/index.html?" + document.URL
+}
+
+// if this is the top frame, we'll create a link to activate some
+// JavaScript to set up the frames around this document.  For more
+// documentation, look at the comments in the source of the top frame
+// (numberstr.html in this directory - not numberstr1.html).
+
+if ((parent.frames.length) == 0)
+{
+document.write('<CENTER><A HREF=\"javascript:framesGO()\">Show outer (navigation) frames</A></CENTER><HR>')
+}
+else
+{
+if (navigator.appVersion.substring(0,1) == 3 && navigator.appName.lastIndexOf('Netscape') != -1)
+{
+parent.frames[0].location.replace('numberstr1.html')
+// For some reason netscape 3 gets confused when it tries to run the cool JavaScript
+// stuff in numberstr.html and continue to load this frame at the same time. >:-(
+// So, we'll load the boring numberstr1.html instead.
+}
+else
+{
+parent.frames[0].location.replace('numberstr.html')
+}
+}
+//-->
+</SCRIPT><H2><B>17.10 Chapter Summary</B></H2>
+<P>This chapter covered these topics:
+<UL><!--€--><LI> A discussion of the implementation of numeric data types such as complex numbers.</LI>
+<!--€--><LI> ISO standard support for complex numbers both within the language and in standard libraries.</LI>
+<!--€--><LI> One application of complex numbers in electrical circuits.</LI>
+<!--€--><LI> A discussion of complex number input and output, and an implementation of a library for these.</LI>
+<!--€--><LI> A discussion of decimal types and how these may be implemented (optional).</LI>
+<!--€--><LI> A suggestion for defining and implementing a polynomial type.</LI>
+<!--€--><LI> Date and time support in the ISO standard, and some comments on date and time arithmetic.</LI>
+<!--€--><LI> An extended discussion of whole number I/O with a look at the ISO libraries and their implementations.</LI></UL></P>
+
+<P>It included discussion of the following Modula-2 built-ins:</P>
+
+<TABLE WIDTH=350><TR><TH ALIGN=LEFT>Reserved Words</TH>	<TH ALIGN=LEFT>Standard Identifier</TH></TR>
+
+<TR>    <TD>none</TD>	<TD>COMPLEX</TD></TR>
+<TR>	<TD> </TD>	<TD>LONGCOMPLEX</TD></TR>
+<TR>	<TD> </TD>	<TD>RE</TD></TR>
+<TR>	<TD> </TD>	<TD>IM</TD></TR>
+<TR>	<TD> </TD>	<TD>CMPLX</TD></TR></TABLE>
+
+<b>Standard Libraries</b>
+
+  <UL>ComplexMath<BR>
+  LongComplexMath<BR>
+  SysClock<BR>
+  ConvTypes<BR>
+  CharClass<BR>
+  WholeConv<BR>
+  WholeStr<BR>
+  (The real and long versions of the latter two were also mentioned.)</UL>
+
+<HR>
+<CENTER><A HREF="../contents.html" TARGET="big_right">Contents</A>
+</CENTER>
+</BODY>
+</HTML>
